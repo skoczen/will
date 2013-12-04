@@ -34,3 +34,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+celeryd.pid
+
+.dewey_autocomplete.sh
+
+celerybeat-schedule

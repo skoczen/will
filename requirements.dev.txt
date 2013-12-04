@@ -1,0 +1,7 @@
+bottle
+celery
+gevent
+jinja2
+redis
+requests
+sleekxmpp
