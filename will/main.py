@@ -1,3 +1,4 @@
+import logging
 import sys
 import time
 from gevent import monkey; monkey.patch_all()
@@ -10,6 +11,14 @@ from listen import WillClient
 from celeryconfig import app
 import settings
 from plugins.keep_alive import *
+
+# Force UTF8
+if sys.version_info < (3, 0):
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+else:
+    raw_input = input
+
 
 def bootstrap_celery():
     print "bootstrapping celery"
@@ -38,6 +47,8 @@ def bootstrap_xmpp():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
+
     # Start up threads.
 
     # Celery
