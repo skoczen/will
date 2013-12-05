@@ -3,6 +3,7 @@ celery
 dnspython
 gevent
 jinja2
+hiredis
 redis
 requests
 pyasn1

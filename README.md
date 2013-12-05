@@ -21,8 +21,10 @@ Will supports:
     export WILL_USERNAME='12345_123456@chat.hipchat.com'
     export WILL_PASSWORD='asj2498q89dsf89a8df'
     export WILL_TOKEN='kjadfj89a34878adf78789a4fae3'
-    export WILL_ROOMS='12345_room1@conf.hipchat.com;12345_room2@conf.hipchat.com'  # Semicolon-separated, so you can have commas in names.
+    export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
+    export WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'  # Semicolon-separated, so you can have commas in names.
     export WILL_NAME='William T. Kahuna'
+    export WILL_HANDLE='will'
     export WILL_REDIS_URL="redis://localhost:6379/7"
     export WILL_HTTPSERVER_PORT="80"
 
