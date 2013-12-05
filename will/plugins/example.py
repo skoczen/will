@@ -1,8 +1,11 @@
 import datetime
-from will import BotPlugin, respond_to, scheduled, one_time_task, hear, randomly, crontab, settings
+from will.plugin_base import WillPlugin
+from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, crontab, route
+import will.settings as settings
 
 
-class GoldStarPlugin(BotPlugin):
+
+class GoldStarPlugin(WillPlugin):
 
     @respond_to("award (?P<num_stars>\d)+ gold stars? to (?P<user_name>.*)")
     def gold_stars(self, message, num_stars=1, user_name=None):
@@ -16,8 +19,7 @@ class GoldStarPlugin(BotPlugin):
 
         self.say("Awarded %s stars to %s." % (num_stars, user_name) )
 
-
-class RemindMePlugin(BotPlugin):
+class RemindMePlugin(WillPlugin):
 
     @respond_to("remind me to (?P<action>\w)+ at (?P<time>.*)")
     def remind_me(self, message, action, time):
@@ -30,21 +32,21 @@ class RemindMePlugin(BotPlugin):
             self.say("@%s, you asked me to remind you to %s.", html=False)
 
 
-class StandupPlugin(BotPlugin):
+class StandupPlugin(WillPlugin):
 
     @scheduled(run_every=crontab(hour=10, minute=0))
     def standup(self):
         self.say("@all Standup! %s" % settings.STANDUP_URL)
 
 
-class CookiesPlugin(BotPlugin):
+class CookiesPlugin(WillPlugin):
 
     @hear("cookies", include_me=False)
     def will_likes_cookies(self):
         self.say(rendered_template("cookies.html", {}))
 
 
-class WalkmasterPlugin(BotPlugin):
+class WalkmasterPlugin(WillPlugin):
 
     @randomly(start_hour=8, end_hour=6, weekdays_only=True)
     def go_for_a_walk(self):
@@ -52,7 +54,7 @@ class WalkmasterPlugin(BotPlugin):
         self.set_topic("Walk Time!")
 
 
-class KeepAlivePlugin(BotPlugin):
+class KeepAlivePlugin(WillPlugin):
 
     @scheduled(run_every=crontab(minute=1))
     def go_for_a_walk(self):

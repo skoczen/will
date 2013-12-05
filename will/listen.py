@@ -55,5 +55,3 @@ class WillClient(ClientXMPP):
     def message(self, msg):
         if msg['type'] in ('chat', 'normal'):
             msg.reply("Thanks for sending\n%(body)s" % msg).send()
-
-

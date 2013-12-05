@@ -1,7 +1,10 @@
 bottle
 celery
+dnspython
 gevent
 jinja2
 redis
 requests
+pyasn1
+pyasn1_modules
 sleekxmpp
