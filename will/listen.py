@@ -11,6 +11,7 @@ class WillXMPPClientMixin(ClientXMPP):
         ClientXMPP.__init__(self, settings.WILL_USERNAME, settings.WILL_PASSWORD)
         self.rooms = []
         self.available_rooms = {}
+        self.first_session_start = True
 
         if hasattr(settings, "WILL_DEFAULT_ROOM"):
             self.default_room = settings.WILL_DEFAULT_ROOM
@@ -32,24 +33,26 @@ class WillXMPPClientMixin(ClientXMPP):
         self.nick = settings.WILL_NAME
         self.handle = settings.WILL_HANDLE
         self.handle_regex = re.compile("@%s" % self.handle)
-        self.initialized_at = datetime.datetime.now()
-        self.initial_ignoring_done = False
+        
 
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message)
         self.add_event_handler("groupchat_message", self.room_message)
         
-        self.register_plugin('xep_0004') # Data Forms
         self.register_plugin('xep_0045') # MUC
-        self.register_plugin('xep_0060') # PubSub
 
     def session_start(self, event):
-        print "session_start"
-        self.send_presence()
-        self.get_roster()
-        self.update_will_roster_and_rooms()
-        for r in self.rooms:
-            self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+        print "session_start event happened"
+        if self.first_session_start:
+            self.first_session_start = False
+            self.initialized_at = datetime.datetime.now()
+            self.initial_ignoring_done = False
+            
+            self.send_presence()
+            self.get_roster()
+            self.update_will_roster_and_rooms()
+            for r in self.rooms:
+                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
 
     def update_will_roster_and_rooms(self):
         internal_roster = self.load('will_roster', {})
