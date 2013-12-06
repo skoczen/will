@@ -19,6 +19,15 @@ class GoldStarPlugin(WillPlugin):
 
         self.say(message, "Awarded %s stars to %s." % (num_stars, user_name) )
 
+
+
+class NewTopicPlugin(WillPlugin):
+
+    @respond_to("new topic (?P<topic>.*)")
+    def new_topic(self, message, topic="something or other. nobody told me."):
+        self.set_topic(message, topic)
+
+
 class RemindMePlugin(WillPlugin):
 
     @respond_to("remind me to (?P<action>\w)+ at (?P<time>.*)")

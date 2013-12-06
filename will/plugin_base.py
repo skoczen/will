@@ -21,6 +21,7 @@ def strip_tags(html):
     return s.get_data()
 
 ROOM_NOTIFICATION_URL = "https://api.hipchat.com/v2/room/%(room_id)s/notification?auth_token=%(token)s"
+ROOM_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 PRIVATE_MESSAGE_URL = "https://api.hipchat.com/v2/user/%(user_id)s/message?auth_token=%(token)s"
 SET_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 
@@ -87,6 +88,13 @@ class WillPlugin(StorageMixin, object):
 
             self.send_direct_message_reply(message, content)
 
+    def set_topic(self, message, topic):
+        if message["type"] == "groupchat":
+            room = self.get_room_by_jid(message.getMucroom())
+            self.set_room_topic(room["room_id"], topic)
+        elif message['type'] in ('chat', 'normal'):
+            self.send_direct_message_reply(message, "I can't set the topic of a one-to-one chat.  Let's just talk.")
+
     def send_direct_message(self, user_id, message_body):
         # https://www.hipchat.com/docs/apiv2/method/private_message_user
         url = PRIVATE_MESSAGE_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
@@ -118,5 +126,19 @@ class WillPlugin(StorageMixin, object):
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             r = requests.post(url, headers=headers, data=json.dumps(data))
+        except:
+            import traceback; traceback.print_exc();
+
+
+    def set_room_topic(self, room_id, topic):
+        try:
+            # https://www.hipchat.com/docs/apiv2/method/send_room_notification
+            url = ROOM_TOPIC_URL % {"room_id": room_id, "token": settings.WILL_V2_TOKEN}
+            
+            data = {
+                "topic": topic,
+            }
+            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            r = requests.put(url, headers=headers, data=json.dumps(data))
         except:
             import traceback; traceback.print_exc();

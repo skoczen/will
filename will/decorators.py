@@ -6,9 +6,9 @@ from bottle import route, run, template
 def respond_to(regex, include_me=False):
     def wrap(f):
         passed_args = []
-        def wrapped_f(*args):
+        def wrapped_f(*args, **kwargs):
             passed_args = args
-            f(*args)
+            f(*args, **kwargs)
         wrapped_f.listener_regex = regex
         wrapped_f.listens_only_to_direct_mentions = True
         wrapped_f.listener_includes_me = include_me
@@ -21,24 +21,24 @@ def respond_to(regex, include_me=False):
 
 def scheduled(run_every):
     def wrap(f):
-        def wrapped_f(*args):
-            f(*args)
+        def wrapped_f(*args, **kwargs):
+            f(*args, **kwargs)
         return wrapped_f
     return wrap
 
 def one_time_task(when):
     def wrap(f):
-        def wrapped_f(*args):
-            f(*args)
+        def wrapped_f(*args, **kwargs):
+            f(*args, **kwargs)
         return wrapped_f
     return wrap
 
 def hear(regex, include_me=False):
     def wrap(f):
         passed_args = []
-        def wrapped_f(*args):
+        def wrapped_f(*args, **kwargs):
             passed_args = args
-            f(*args)
+            f(*args, **kwargs)
         wrapped_f.listener_regex = regex
         wrapped_f.listens_only_to_direct_mentions = False
         wrapped_f.listener_includes_me = include_me
@@ -51,8 +51,8 @@ def hear(regex, include_me=False):
 
 def randomly(start_hour=0, end_hour=23, weekdays_only=False):
     def wrap(f):
-        def wrapped_f(*args):
-            f(*args)
+        def wrapped_f(*args, **kwargs):
+            f(*args, **kwargs)
         return wrapped_f
     return wrap
 
@@ -65,8 +65,8 @@ def rendered_template(template_name, context=None):
         return template.render(**context)
     else:
         def wrap(f):
-            def wrapped_f(*args):
-                context = f(*args)
+            def wrapped_f(*args, **kwargs):
+                context = f(*args, **kwargs)
                 if type(context) == type({}):
                     template = env.get_template(template_name)
                     return template.render(**context)

@@ -11,7 +11,6 @@ class WillXMPPClientMixin(ClientXMPP):
         ClientXMPP.__init__(self, settings.WILL_USERNAME, settings.WILL_PASSWORD)
         self.rooms = []
         self.available_rooms = {}
-        self.first_session_start = True
 
         if hasattr(settings, "WILL_DEFAULT_ROOM"):
             self.default_room = settings.WILL_DEFAULT_ROOM
@@ -34,6 +33,8 @@ class WillXMPPClientMixin(ClientXMPP):
         self.handle = settings.WILL_HANDLE
         self.handle_regex = re.compile("@%s" % self.handle)
         
+        self.whitespace_keepalive = True
+        self.whitespace_keepalive_interval = 30
 
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message)
@@ -43,16 +44,14 @@ class WillXMPPClientMixin(ClientXMPP):
 
     def session_start(self, event):
         print "session_start event happened"
-        if self.first_session_start:
-            self.first_session_start = False
-            self.initialized_at = datetime.datetime.now()
-            self.initial_ignoring_done = False
-            
-            self.send_presence()
-            self.get_roster()
-            self.update_will_roster_and_rooms()
-            for r in self.rooms:
-                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+        self.initialized_at = datetime.datetime.now()
+        self.initial_ignoring_done = False
+        
+        self.send_presence()
+        self.get_roster()
+        self.update_will_roster_and_rooms()
+        for r in self.rooms:
+            self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
 
     def update_will_roster_and_rooms(self):
         internal_roster = self.load('will_roster', {})
@@ -99,9 +98,10 @@ class WillXMPPClientMixin(ClientXMPP):
             or msg['mucnick'] != self.nick):  # or I didn't send it
                 body = msg["body"]
                 for l in self.message_listeners:
-                    if (l["regex"].search(body)  # The search regex matches and
+                    search_matches = l["regex"].search(body)
+                    if (search_matches  # The search regex matches and
                         and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
                         and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body))  # I'm mentioned, or this is an overheard, or we're in a 1-1
                     ):
-                        l["fn"](msg, *l["args"])
+                        l["fn"](msg, *l["args"], **search_matches.groupdict())
 
