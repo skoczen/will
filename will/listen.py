@@ -55,7 +55,6 @@ class WillXMPPClientMixin(ClientXMPP):
 
     def update_will_roster_and_rooms(self):
         internal_roster = self.load('will_roster', {})
-        rooms = self.load('hipchat_rooms', {})
         for roster_id in self.roster:
             cur_roster = self.roster[roster_id]
             for user_id in cur_roster:

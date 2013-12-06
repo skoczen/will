@@ -1,4 +1,5 @@
 import json
+from logging import logger
 import requests
 import settings
 from storage import StorageMixin
@@ -100,7 +101,7 @@ class WillPlugin(StorageMixin, object):
         url = PRIVATE_MESSAGE_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
         data = {"message": message_body}
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        r = requests.post(url, headers=headers, data=json.dumps(data))
+        requests.post(url, headers=headers, data=json.dumps(data))
 
     def send_direct_message_reply(self, message, message_body):
         message.reply(message_body).send()
@@ -125,7 +126,7 @@ class WillPlugin(StorageMixin, object):
 
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            r = requests.post(url, headers=headers, data=json.dumps(data))
+            requests.post(url, headers=headers, data=json.dumps(data))
         except:
             import traceback; traceback.print_exc();
 
@@ -139,6 +140,6 @@ class WillPlugin(StorageMixin, object):
                 "topic": topic,
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            r = requests.put(url, headers=headers, data=json.dumps(data))
+            requests.put(url, headers=headers, data=json.dumps(data))
         except:
             import traceback; traceback.print_exc();

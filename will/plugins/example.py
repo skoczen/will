@@ -24,7 +24,7 @@ class GoldStarPlugin(WillPlugin):
 class NewTopicPlugin(WillPlugin):
 
     @respond_to("new topic (?P<topic>.*)")
-    def new_topic(self, message, topic="something or other. nobody told me."):
+    def new_topic(self, message, topic="Something or other. You weren't terribly specific."):
         self.set_topic(message, topic)
 
 
