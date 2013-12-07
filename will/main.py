@@ -6,6 +6,7 @@ import pkgutil
 import re
 import sys
 import time
+import traceback
 from os.path import abspath, join, curdir, isdir
 from multiprocessing import Process
 # Monkeypatch has to come early
@@ -15,7 +16,9 @@ from bottle import route, run, template
 from celery.bin.celeryd_detach import detached_celeryd
 
 from listen import WillXMPPClientMixin
+from mixins import ScheduleMixin
 from storage import StorageMixin
+from scheduler import Scheduler
 from celeryconfig import app
 import settings
 from plugin_base import WillPlugin
@@ -36,7 +39,7 @@ sys.path.append(join(PROJECT_ROOT, "will"))
 
 
 
-class WillBot(WillXMPPClientMixin, StorageMixin):
+class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
 
     def __init__(self):
         pass
@@ -80,16 +83,18 @@ class WillBot(WillXMPPClientMixin, StorageMixin):
                     time.sleep(0.5)
 
     def bootstrap_celery(self):
-        print "bootstrapping celery"
-        import celery.app
-        celery_app = celery.app.app_or_default()
+        self.scheduler = Scheduler()
+        self.scheduler.start_loop(self)
+        # print "bootstrapping celery"
+        # import celery.app
+        # celery_app = celery.app.app_or_default()
 
-        # The Celery config needs to be imported before it can be used with config_from_object().
-        importlib.import_module('celeryconfig')
-        celery_app.config_from_object("celeryconfig")
+        # # The Celery config needs to be imported before it can be used with config_from_object().
+        # importlib.import_module('celeryconfig')
+        # celery_app.config_from_object("celeryconfig")
 
-        celery_app.start(["celeryd", "worker", "--beat",])
-        # detached_celeryd(app).execute_from_commandline()
+        # celery_app.start(["celeryd", "worker", "--beat",])
+        # # detached_celeryd(app).execute_from_commandline()
 
 
     def bootstrap_bottle(self):
@@ -118,31 +123,50 @@ class WillBot(WillXMPPClientMixin, StorageMixin):
                         module_path = ".".join(module_paths)
                     else:
                         module_path = module
-                    plugin_modules[module] = importlib.import_module("will.plugins.%s" % module_path)
+                    try:
+                        plugin_modules[module] = importlib.import_module("will.plugins.%s" % module_path)
+                    except:
+                        logging.critical("Error will.plugins.%s.  \n\n%s\nContinuing...\n" % (module_path, traceback.format_exc() ))
 
         self.plugins = []
         for name, module in plugin_modules.items():
-            for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
-                if hasattr(cls, "is_will_plugin") and cls.is_will_plugin:
-                    self.plugins.append({"name": class_name, "class": cls})
-
+            try:
+                for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                    try:
+                        if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
+                            self.plugins.append({"name": class_name, "class": cls})
+                    except:
+                        logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (class_name, traceback.format_exc() ))
+            except:
+                logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (name, traceback.format_exc() ))
 
         # Sift and Sort.
         self.message_listeners = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
-            for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
-                if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
-                    self.message_listeners.append({
-                        "regex": re.compile(fn.listener_regex),
-                        "fn": getattr(plugin_info["class"](), function_name),
-                        "args": fn.listener_args,
-                        "include_me": fn.listener_includes_me,
-                        "direct_mentions_only": fn.listens_only_to_direct_mentions,
-                    })
-                    if fn.listener_includes_me:
-                        self.some_listeners_include_me = True
-
+            try:
+                print "Adding %s plugin." % plugin_info["name"]
+                for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
+                    try:
+                        if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
+                            regex = fn.listener_regex
+                            if not fn.case_sensitive:
+                                regex = "(?i)%s" % regex
+                            self.message_listeners.append({
+                                "function_name": function_name,
+                                "regex_pattern": regex,
+                                "regex": re.compile(fn.listener_regex),
+                                "fn": getattr(plugin_info["class"](), function_name),
+                                "args": fn.listener_args,
+                                "include_me": fn.listener_includes_me,
+                                "direct_mentions_only": fn.listens_only_to_direct_mentions,
+                            })
+                            if fn.listener_includes_me:
+                                self.some_listeners_include_me = True
+                    except:
+                        logging.critical("Error bootstrapping %s.%s. \n\n%s\nContinuing...\n" % (plugin_info["class"], function_name, traceback.format_exc() ))
+            except:
+                logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (plugin_info["class"], traceback.format_exc() ))
 
 
         # def scheduled(run_every):

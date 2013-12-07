@@ -4,8 +4,10 @@ dnspython
 gevent
 jinja2
 hiredis
+natural
 redis
 requests
+parsedatetime
 pyasn1
 pyasn1_modules
 sleekxmpp

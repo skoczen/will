@@ -1,15 +1,14 @@
 from celery.task.schedules import crontab
-from bottle import route, run, template
+from bottle import route
 
 
-
-def respond_to(regex, include_me=False):
+def respond_to(regex, include_me=False, case_sensitive=False):
     def wrap(f):
         passed_args = []
         def wrapped_f(*args, **kwargs):
-            passed_args = args
             f(*args, **kwargs)
         wrapped_f.listener_regex = regex
+        wrapped_f.case_sensitive = case_sensitive
         wrapped_f.listens_only_to_direct_mentions = True
         wrapped_f.listener_includes_me = include_me
         wrapped_f.listens_to_messages = True
@@ -33,13 +32,13 @@ def one_time_task(when):
         return wrapped_f
     return wrap
 
-def hear(regex, include_me=False):
+def hear(regex, include_me=False, case_sensitive=False):
     def wrap(f):
         passed_args = []
         def wrapped_f(*args, **kwargs):
-            passed_args = args
             f(*args, **kwargs)
         wrapped_f.listener_regex = regex
+        wrapped_f.case_sensitive = case_sensitive
         wrapped_f.listens_only_to_direct_mentions = False
         wrapped_f.listener_includes_me = include_me
         wrapped_f.listens_to_messages = True
@@ -61,8 +60,8 @@ def rendered_template(template_name, context=None):
     from jinja2 import Environment, PackageLoader
     env = Environment(loader=PackageLoader('will', 'templates'))
     if context is not None:
-        template = env.get_template(template_name)
-        return template.render(**context)
+        this_template = env.get_template(template_name)
+        return this_template.render(**context)
     else:
         def wrap(f):
             def wrapped_f(*args, **kwargs):
@@ -75,4 +74,6 @@ def rendered_template(template_name, context=None):
             return wrapped_f
         return wrap
 
+# For import
 crontab = crontab
+route = route

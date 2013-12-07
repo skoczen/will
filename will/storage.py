@@ -18,6 +18,11 @@ class StorageMixin(object):
             self.bootstrap_storage()
         return self.storage.set(key, pickle.dumps(value))
 
+    def clear(self, key):
+        if not hasattr(self, "storage"):
+            self.bootstrap_storage()
+        return self.storage.delete(key)
+
     def load(self, key, default=None):
         if not hasattr(self, "storage"):
             self.bootstrap_storage()

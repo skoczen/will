@@ -1,0 +1,5 @@
+Here's who I know: <br>
+{% for user in internal_roster %}
+<li><b>@{{user.nick|lower}}</b> - {{user.name}}.  (#{{user.hipchat_id}})</li>
+{% endfor %}
+</ul>

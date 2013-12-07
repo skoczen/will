@@ -1,8 +1,7 @@
-import json
-from logging import logger
-import requests
+import logging
 import settings
 from storage import StorageMixin
+from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatAPIMixin
 from HTMLParser import HTMLParser
 
 # To strip tags.
@@ -21,51 +20,38 @@ def strip_tags(html):
     s.feed(html)
     return s.get_data()
 
-ROOM_NOTIFICATION_URL = "https://api.hipchat.com/v2/room/%(room_id)s/notification?auth_token=%(token)s"
-ROOM_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%(token)s"
-PRIVATE_MESSAGE_URL = "https://api.hipchat.com/v2/user/%(user_id)s/message?auth_token=%(token)s"
-SET_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 
-class WillPlugin(StorageMixin, object):
+class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatAPIMixin):
     is_will_plugin = True
 
-    @property
-    def internal_roster(self):
-        if not hasattr(self, "_internal_roster"):
-            self._internal_roster = self.load('will_roster', {})
-        return self._internal_roster
+    def _rooms_from_message_and_room(self, message, room):
+        if room == "ALL_ROOMS":
+            rooms = self.available_rooms
+        elif room:
+            rooms = [room,]
+        else:
+            if message:
+                rooms = [self.get_room_from_message(message),]
+            else:
+                rooms = self.available_rooms
+        return rooms
 
-    @property
-    def available_rooms(self):
-        if not hasattr(self, "_available_rooms"):
-            self._available_rooms = self.load('hipchat_rooms', {})
-        return self._available_rooms
-
-    def get_room_by_jid(self, jid):
-        for name, room in self.available_rooms.items():
-            if room["xmpp_jid"] == jid:
-                return room
-        return None
-
-    def get_user_by_full_name(self, name):
-        for jid, info in self.internal_roster.items():
-            if info["name"] == name:
-                return info
-        return None
-
-    def say(self, message, content, **kwargs):
+    def say(self, message, content, room=None, **kwargs):
         # Valid kwargs:
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
+
         if message["type"] == "groupchat":
-            room = self.get_room_by_jid(message.getMucroom())
-            self.send_room_message(room["room_id"], content, **kwargs)
+            rooms = self._rooms_from_message_and_room(message, room)
+            for r in rooms:
+                self.send_room_message(r["room_id"], content, **kwargs)
         else:
             if kwargs.get("html", False):
                 content = strip_tags(content)
-
-            self.send_direct_message_reply(message, content)
+            
+            sender = self.get_user_from_message(message)
+            self.send_direct_message(sender["hipchat_id"], content)
        
     def reply(self, message, content, **kwargs):
         # Valid kwargs:
@@ -73,9 +59,9 @@ class WillPlugin(StorageMixin, object):
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
 
+        sender = self.get_user_from_message(message)
         if message["type"] == "groupchat":
             # Reply, speaking to the room.
-            sender = self.get_user_by_full_name(message["mucnick"])
             content = "@%s %s" % (sender["nick"], content)
 
             self.say(message, content, **kwargs)
@@ -87,59 +73,23 @@ class WillPlugin(StorageMixin, object):
             if kwargs.get("html", False):
                 content = strip_tags(content)
 
-            self.send_direct_message_reply(message, content)
+            self.send_direct_message(sender["hipchat_id"], content)
 
     def set_topic(self, message, topic):
         if message["type"] == "groupchat":
-            room = self.get_room_by_jid(message.getMucroom())
+            room = self.get_room_from_message(message)
             self.set_room_topic(room["room_id"], topic)
         elif message['type'] in ('chat', 'normal'):
-            self.send_direct_message_reply(message, "I can't set the topic of a one-to-one chat.  Let's just talk.")
-
-    def send_direct_message(self, user_id, message_body):
-        # https://www.hipchat.com/docs/apiv2/method/private_message_user
-        url = PRIVATE_MESSAGE_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
-        data = {"message": message_body}
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        requests.post(url, headers=headers, data=json.dumps(data))
-
-    def send_direct_message_reply(self, message, message_body):
-        message.reply(message_body).send()
-
-    def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
-        if kwargs:
-            logger.warn("Unknown keyword args for send_room_message: %s" % kwargs)
+            sender = self.get_user_from_message(message)
+            self.send_direct_message(sender["hipchat_id"], "I can't set the topic of a one-to-one chat.  Let's just talk.")
+   
+    def schedule_say(self, message, content, when, *args, **kwargs):
+        if message["type"] == "groupchat":
+            rooms = self._rooms_from_message_and_room(message, None)
+            for r in rooms:
+                self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
+        elif message['type'] in ('chat', 'normal'):
+            if kwargs.get("html", False):
+                content = strip_tags(content)
+            self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
         
-        format = "text"
-        if html:
-            format = "html"
-
-        try:
-            # https://www.hipchat.com/docs/apiv2/method/send_room_notification
-            url = ROOM_NOTIFICATION_URL % {"room_id": room_id, "token": settings.WILL_V2_TOKEN}
-            
-            data = {
-                "message": message_body,
-                "message_format": format,
-                "color": color,
-                "notify": notify,
-
-            }
-            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            requests.post(url, headers=headers, data=json.dumps(data))
-        except:
-            import traceback; traceback.print_exc();
-
-
-    def set_room_topic(self, room_id, topic):
-        try:
-            # https://www.hipchat.com/docs/apiv2/method/send_room_notification
-            url = ROOM_TOPIC_URL % {"room_id": room_id, "token": settings.WILL_V2_TOKEN}
-            
-            data = {
-                "topic": topic,
-            }
-            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            requests.put(url, headers=headers, data=json.dumps(data))
-        except:
-            import traceback; traceback.print_exc();
