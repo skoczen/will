@@ -45,11 +45,6 @@ class CookiesPlugin(WillPlugin):
     def will_likes_cookies(self, message):
         self.say(message, rendered_template("cookies.html", {}), html=True)
 
-    @respond_to("^hi")
-    def will_is_friendly(self, message):
-        self.reply(message, "hello!")
-
-
 
 class WalkmasterPlugin(WillPlugin):
 
