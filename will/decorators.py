@@ -1,4 +1,3 @@
-from celery.task.schedules import crontab
 from bottle import route
 
 
@@ -75,5 +74,4 @@ def rendered_template(template_name, context=None):
         return wrap
 
 # For import
-crontab = crontab
 route = route

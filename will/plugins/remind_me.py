@@ -1,8 +1,6 @@
 import datetime
-import requests
 from will.plugin_base import WillPlugin
-from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, crontab, route, rendered_template
-import will.settings as settings
+from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, route, rendered_template
 
 
 class RemindMePlugin(WillPlugin):
@@ -19,4 +17,3 @@ class RemindMePlugin(WillPlugin):
         }
         self.schedule_say(message, formatted_reminder_text, parsed_time)
         self.say(message, "%(reminder_text)s %(natural_datetime)s. Got it." % locals())
-

@@ -1,7 +1,7 @@
 import datetime
 import requests
 from will.plugin_base import WillPlugin
-from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, crontab, route, rendered_template
+from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, route, rendered_template
 import will.settings as settings
 
 

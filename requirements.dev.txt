@@ -1,5 +1,4 @@
 bottle
-celery
 dnspython
 gevent
 jinja2

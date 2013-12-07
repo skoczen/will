@@ -13,13 +13,11 @@ from multiprocessing import Process
 from gevent import monkey; monkey.patch_all()
 
 from bottle import route, run, template
-from celery.bin.celeryd_detach import detached_celeryd
 
 from listen import WillXMPPClientMixin
 from mixins import ScheduleMixin
 from storage import StorageMixin
 from scheduler import Scheduler
-from celeryconfig import app
 import settings
 from plugin_base import WillPlugin
 
@@ -52,9 +50,9 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
 
         # Start up threads.
 
-        # Celery
-        celery_thread = Process(target=self.bootstrap_celery)
-        # celery_thread.daemon = True
+        # Scheduler
+        scheduler_thread = Process(target=self.bootstrap_scheduler)
+        # scheduler_thread.daemon = True
         
         # Bottle
         bottle_thread = Process(target=self.bootstrap_bottle)
@@ -65,37 +63,26 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         # xmpp_thread.daemon = True
 
         try:
-            celery_thread.start()
+            scheduler_thread.start()
             bottle_thread.start()
             xmpp_thread.start()
 
             while True: time.sleep(100)
         except (KeyboardInterrupt, SystemExit):
-            celery_thread.terminate()
+            scheduler_thread.terminate()
             bottle_thread.terminate()
             xmpp_thread.terminate()
             print '\n\nReceived keyboard interrupt, quitting threads.',
-            while celery_thread.is_alive() or\
+            while scheduler_thread.is_alive() or\
                   bottle_thread.is_alive() or\
                   xmpp_thread.is_alive():
                     sys.stdout.write(".")
                     sys.stdout.flush()
                     time.sleep(0.5)
 
-    def bootstrap_celery(self):
+    def bootstrap_scheduler(self):
         self.scheduler = Scheduler()
         self.scheduler.start_loop(self)
-        # print "bootstrapping celery"
-        # import celery.app
-        # celery_app = celery.app.app_or_default()
-
-        # # The Celery config needs to be imported before it can be used with config_from_object().
-        # importlib.import_module('celeryconfig')
-        # celery_app.config_from_object("celeryconfig")
-
-        # celery_app.start(["celeryd", "worker", "--beat",])
-        # # detached_celeryd(app).execute_from_commandline()
-
 
     def bootstrap_bottle(self):
         print "bootstrapping bottle"
