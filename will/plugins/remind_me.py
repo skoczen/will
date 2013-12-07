@@ -5,7 +5,6 @@ from will.decorators import respond_to, scheduled, one_time_task, hear, randomly
 import will.settings as settings
 
 
-
 class RemindMePlugin(WillPlugin):
 
     @respond_to("remind me to (?P<reminder_text>.*?) (at|on) (?P<remind_time>.*)")
@@ -21,7 +20,3 @@ class RemindMePlugin(WillPlugin):
         self.schedule_say(message, formatted_reminder_text, parsed_time)
         self.say(message, "%(reminder_text)s %(natural_datetime)s. Got it." % locals())
 
-
-    @respond_to("remind me to (?P<reminder_text>.*?) in (?P<time>.*)")
-    def remind_me_in(self, message, reminder_text=None, time=None):
-        self.say(message, "Remind you to %s in %s?" % (reminder_text, time))

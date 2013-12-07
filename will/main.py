@@ -154,8 +154,8 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                                 regex = "(?i)%s" % regex
                             self.message_listeners.append({
                                 "function_name": function_name,
-                                "regex_pattern": regex,
-                                "regex": re.compile(fn.listener_regex),
+                                "regex_pattern": fn.listener_regex,
+                                "regex": re.compile(regex),
                                 "fn": getattr(plugin_info["class"](), function_name),
                                 "args": fn.listener_args,
                                 "include_me": fn.listener_includes_me,
