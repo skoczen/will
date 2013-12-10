@@ -5,7 +5,7 @@ import traceback
 import threading
 
 from mixins import ScheduleMixin, HipChatAPIMixin, RosterMixin, StorageMixin
-from plugin_base import WillPlugin
+from plugin import WillPlugin
 
 class Scheduler(ScheduleMixin):
 

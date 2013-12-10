@@ -1,23 +1,6 @@
-import logging
 import settings
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatAPIMixin, StorageMixin
-from HTMLParser import HTMLParser
-
-# To strip tags.
-# Via http://stackoverflow.com/a/925630
-class MLStripper(HTMLParser):
-    def __init__(self):
-        self.reset()
-        self.fed = []
-    def handle_data(self, d):
-        self.fed.append(d)
-    def get_data(self):
-        return ''.join(self.fed)
-
-def strip_tags(html):
-    s = MLStripper()
-    s.feed(html)
-    return s.get_data()
+from utils import strip_tags
 
 
 class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatAPIMixin):

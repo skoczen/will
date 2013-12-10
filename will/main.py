@@ -2,23 +2,22 @@ import logging
 import inspect
 import importlib
 import os
-import pkgutil
 import re
 import sys
 import time
 import traceback
-from os.path import abspath, join, curdir, isdir
+from os.path import abspath, join, curdir
 from multiprocessing import Process
 # Monkeypatch has to come early
 from gevent import monkey; monkey.patch_all()
 
 import bottle
 
-from listen import WillXMPPClientMixin
+from listener import WillXMPPClientMixin
 from mixins import ScheduleMixin, StorageMixin
+from plugin import WillPlugin
 from scheduler import Scheduler
 import settings
-from plugin_base import WillPlugin
 
 
 # Force UTF8
@@ -28,9 +27,11 @@ if sys.version_info < (3, 0):
 else:
     raw_input = input
 
+
 # Update path
 PROJECT_ROOT = abspath(curdir)
 PLUGINS_ROOT = abspath(join(PROJECT_ROOT, "will", "plugins"))
+TEMPLATES_ROOT = abspath(join(TEMPLATES_ROOT, "will", "templates"))
 sys.path.append(PROJECT_ROOT)
 sys.path.append(join(PROJECT_ROOT, "will"))
 

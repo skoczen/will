@@ -11,6 +11,7 @@ import settings
 from utils import Bunch
 from mixins import RosterMixin, RoomMixin, HipChatAPIMixin
 
+
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatAPIMixin):
 
     def start_xmpp_client(self):
