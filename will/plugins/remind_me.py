@@ -1,6 +1,6 @@
 import datetime
 from will.plugin_base import WillPlugin
-from will.decorators import respond_to, periodic, one_time_task, hear, randomly, route, rendered_template
+from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 
 
 class RemindMePlugin(WillPlugin):

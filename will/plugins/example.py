@@ -1,7 +1,7 @@
 import datetime
 import requests
 from will.plugin_base import WillPlugin
-from will.decorators import respond_to, periodic, one_time_task, hear, randomly, route, rendered_template
+from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 import will.settings as settings
 
 def crontab(*args, **kwargs):
@@ -38,14 +38,6 @@ class CookiesPlugin(WillPlugin):
     @hear("cookies", include_me=False)
     def will_likes_cookies(self, message):
         self.say(rendered_template("cookies.html", {}), message=message, html=True, )
-
-
-class WalkmasterPlugin(WillPlugin):
-
-    @randomly(start_hour=8, end_hour=6, weekdays_only=True)
-    def go_for_a_walk(self):
-        self.say("@all time for a walk!", room="GreenKahuna")
-        self.set_topic("Walk Time!")
 
 
 class KeepAlivePlugin(WillPlugin):

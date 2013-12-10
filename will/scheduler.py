@@ -19,8 +19,18 @@ class Scheduler(ScheduleMixin):
         except (KeyboardInterrupt, SystemExit):
             pass
 
-    def _run_applicable_actions_in_list(self, sched_list, periodic_list=False):
-        now = datetime.datetime.now()
+    def _clear_random_tasks(self):
+        self.bot.save("scheduler_lock", True)
+        periodic_list = self.bot.get_schedule_list(periodic_list=True)
+        new_periodic_list = []
+        for task in periodic_list:
+            if not "random_task" in task:
+                new_periodic_list.append(task)
+        self.bot.save_schedule_list(new_periodic_list, periodic_list=True)
+        self.bot.save("scheduler_lock", False)
+
+
+    def _run_applicable_actions_in_list(self, now, sched_list, periodic_list=False):
         for i in reversed(range(0, len(sched_list))):
             try:
                 if sched_list[i]["when"] < now:
@@ -35,11 +45,18 @@ class Scheduler(ScheduleMixin):
 
 
     def check_scheduled_actions(self):
+        now = datetime.datetime.now()
+        # Re-schedule random tasks
+        # TODO: add a key so we catch this even if we miss midnight.
+        if now.hour == 0 and now.minute == 0:
+            self._clear_random_tasks()
+            for cls, fn in self.random_tasks:
+                self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         try:
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
                 self.bot.save("scheduler_lock", True)
-                self._run_applicable_actions_in_list(self.bot.get_schedule_list())
-                self._run_applicable_actions_in_list(self.bot.get_schedule_list(periodic_list=True), periodic_list=True)
+                self._run_applicable_actions_in_list(now, self.bot.get_schedule_list())
+                self._run_applicable_actions_in_list(now, self.bot.get_schedule_list(periodic_list=True), periodic_list=True)
                 self.bot.save("scheduler_lock", False)
         except:
             logging.critical("Scheduler run blew up.\n\n%s\nContinuing...\n" % (traceback.format_exc(), ))
@@ -56,3 +73,8 @@ class Scheduler(ScheduleMixin):
 
             # Schedule the next one.
             self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
+        elif task["type"] == "random_task":
+            # Run the task
+            task["function"](task["class"]())
+
+            # The next one will be auto scheduled at midnight

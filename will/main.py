@@ -88,6 +88,8 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         self.clear_locks()
         for cls, fn in self.periodic_tasks:
             self.add_periodic_task(cls, fn.sched_args, fn.sched_kwargs, fn,)
+        for cls, fn in self.random_tasks:
+            self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         self.scheduler.start_loop(self)
 
     def bootstrap_bottle(self):
@@ -137,6 +139,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         # Sift and Sort.
         self.message_listeners = []
         self.periodic_tasks = []
+        self.random_tasks = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
             try:
@@ -162,6 +165,9 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                         elif hasattr(fn, "periodic_task") and fn.periodic_task:
                             print " - %s" % function_name
                             self.periodic_tasks.append((plugin_info["class"], fn))
+                        elif hasattr(fn, "random_task") and fn.random_task:
+                            print " - %s" % function_name
+                            self.random_tasks.append((plugin_info["class"], fn))
                     except:
                         logging.critical("Error bootstrapping %s.%s. \n\n%s\nContinuing...\n" % (plugin_info["class"], function_name, traceback.format_exc() ))
             except:

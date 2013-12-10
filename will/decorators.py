@@ -28,12 +28,6 @@ def periodic(*sched_args, **sched_kwargs):
         return wrapped_f
     return wrap
 
-def one_time_task(when):
-    def wrap(f):
-        def wrapped_f(*args, **kwargs):
-            f(*args, **kwargs)
-        return wrapped_f
-    return wrap
 
 def hear(regex, include_me=False, case_sensitive=False):
     def wrap(f):
@@ -51,10 +45,16 @@ def hear(regex, include_me=False, case_sensitive=False):
     return wrap
 
 
-def randomly(start_hour=0, end_hour=23, weekdays_only=False):
+def randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
     def wrap(f):
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
+        wrapped_f.random_task = True
+        wrapped_f.start_hour = int(start_hour)
+        wrapped_f.end_hour = int(end_hour)
+        wrapped_f.day_of_week = day_of_week
+        wrapped_f.num_times_per_day = int(num_times_per_day)
+
         return wrapped_f
     return wrap
 
