@@ -31,7 +31,7 @@ else:
 # Update path
 PROJECT_ROOT = abspath(curdir)
 PLUGINS_ROOT = abspath(join(PROJECT_ROOT, "will", "plugins"))
-TEMPLATES_ROOT = abspath(join(TEMPLATES_ROOT, "will", "templates"))
+TEMPLATES_ROOT = abspath(join(PROJECT_ROOT, "will", "templates"))
 sys.path.append(PROJECT_ROOT)
 sys.path.append(join(PROJECT_ROOT, "will"))
 
