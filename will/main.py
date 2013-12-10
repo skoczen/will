@@ -15,8 +15,7 @@ from gevent import monkey; monkey.patch_all()
 import bottle
 
 from listen import WillXMPPClientMixin
-from mixins import ScheduleMixin
-from storage import StorageMixin
+from mixins import ScheduleMixin, StorageMixin
 from scheduler import Scheduler
 import settings
 from plugin_base import WillPlugin
@@ -64,7 +63,6 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
             scheduler_thread.start()
             bottle_thread.start()
             
-            print "started"
             while True: time.sleep(100)
         except (KeyboardInterrupt, SystemExit):
             scheduler_thread.terminate()
@@ -78,14 +76,10 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                     sys.stdout.flush()
                     time.sleep(0.5)
 
-    def clear_locks(self):
-        self.save("scheduler_add_lock", False)
-        self.save("scheduler_lock", False)    
-        self.save("will_periodic_list", [])
-
     def bootstrap_scheduler(self):
+        Scheduler.clear_locks(self)
         self.scheduler = Scheduler()
-        self.clear_locks()
+        
         for cls, fn in self.periodic_tasks:
             self.add_periodic_task(cls, fn.sched_args, fn.sched_kwargs, fn,)
         for cls, fn in self.random_tasks:
@@ -93,7 +87,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         self.scheduler.start_loop(self)
 
     def bootstrap_bottle(self):
-        print "bootstrapping bottle"
+        print "Bootstrapping bottle..."
 
         for cls, function_name in self.bottle_routes:
             instantiated_cls = cls()
@@ -104,7 +98,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         pass
 
     def bootstrap_xmpp(self):
-        print "bootstrapping xmpp"
+        print "Bootstrapping xmpp..."
         self.start_xmpp_client()
         self.connect()
         self.process(block=True)
@@ -184,7 +178,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                         logging.critical("Error bootstrapping %s.%s. \n\n%s\nContinuing...\n" % (plugin_info["class"], function_name, traceback.format_exc() ))
             except:
                 logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (plugin_info["class"], traceback.format_exc() ))
-
+        print "Done.\n"
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')

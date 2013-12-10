@@ -17,6 +17,6 @@ class StoragePlugin(WillPlugin):
 
     @respond_to("^SERIOUSLY. REALLY. Clear all keys.", case_sensitive=True)
     def clear_all_keys_listener(self, message):
-        self.say("Ok, I'm clearing them. You're probably going to want to restart me. I just forgot everything.", message=message)
+        self.say("Ok, I'm clearing them. You're probably going to want to restart me. I just forgot everything, including who I am and where the chat room is.", message=message)
         self.clear_all_keys()
         

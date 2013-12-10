@@ -1,6 +1,5 @@
 from bottle import route as bottle_route
-from mixins import ScheduleMixin
-from storage import StorageMixin
+from mixins import ScheduleMixin, StorageMixin
 
 def respond_to(regex, include_me=False, case_sensitive=False):
     def wrap(f):

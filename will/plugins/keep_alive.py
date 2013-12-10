@@ -1,8 +1,7 @@
-import datetime
 import requests
 from will.plugin_base import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
-import will.settings as settings
+from will import settings
 
 keep_alive_url = "/keep-alive"
 class KeepAlivePlugin(WillPlugin):

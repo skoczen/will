@@ -1,9 +1,9 @@
 import copy
 import datetime
 import logging
-from multiprocessing import Process
 import re
 import requests
+import threading
 import traceback
 from sleekxmpp import ClientXMPP
 
@@ -132,6 +132,8 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatAPIMixin):
                         and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body) or sent_directly_to_me)  # I'm mentioned, or this is an overheard, or we're in a 1-1
                     ):
                         try:
-                            l["fn"](msg, *l["args"], **search_matches.groupdict())
+                            thread_args = [msg,] + l["args"]
+                            thread = threading.Thread(target=l["fn"], args=thread_args, kwargs=search_matches.groupdict())
+                            thread.start()
                         except:
                             logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))

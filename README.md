@@ -181,6 +181,11 @@ class KeepAlivePlugin(WillPlugin):
 
 ```
 
+### Deploying on heroku
+- forking
+- pip installing
+
+
 
 ### Shoulders of Giants
 

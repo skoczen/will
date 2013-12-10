@@ -1,7 +1,6 @@
 import logging
 import settings
-from storage import StorageMixin
-from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatAPIMixin
+from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatAPIMixin, StorageMixin
 from HTMLParser import HTMLParser
 
 # To strip tags.

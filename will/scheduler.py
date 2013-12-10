@@ -2,15 +2,22 @@ import logging
 import datetime
 import time
 import traceback
+import threading
 
-from mixins import ScheduleMixin, HipChatAPIMixin, RosterMixin
-from storage import StorageMixin
+from mixins import ScheduleMixin, HipChatAPIMixin, RosterMixin, StorageMixin
 from plugin_base import WillPlugin
 
 class Scheduler(ScheduleMixin):
 
+    @classmethod
+    def clear_locks(cls, bot):
+        bot.save("scheduler_add_lock", False)
+        bot.save("scheduler_lock", False)    
+        bot.save("will_periodic_list", [])
+
     def start_loop(self, bot):
         self.bot = bot
+        self.active_processes = []
 
         try:
             while True: 
@@ -46,8 +53,10 @@ class Scheduler(ScheduleMixin):
 
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
-        # Re-schedule random tasks
+
         # TODO: add a key so we catch this even if we miss midnight.
+        # Re-schedule random tasks
+
         if now.hour == 0 and now.minute == 0:
             self._clear_random_tasks()
             for cls, fn in self.random_tasks:
@@ -69,12 +78,14 @@ class Scheduler(ScheduleMixin):
             self.bot.send_direct_message(user["hipchat_id"], task["content"], *task["args"], **task["kwargs"])
         elif task["type"] == "periodic_task":
             # Run the task
-            task["function"](task["class"]())
+            thread = threading.Thread(target=task["function"], args=[task["class"](),])
+            thread.start()
 
             # Schedule the next one.
             self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
-            task["function"](task["class"]())
+            thread = threading.Thread(target=task["function"], args=[task["class"](),])
+            thread.start()
 
             # The next one will be auto scheduled at midnight
