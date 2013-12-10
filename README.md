@@ -150,71 +150,58 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 
 ### Plugin decorators
 
-```python
-@hear(regex, include_me=False, case_sensitive=False)
-```
+`@hear(regex, include_me=False, case_sensitive=False)`
 
--`regex`: a regular expression to match.
--`include_me`: whether will should hear what he says
--`case_sensitive`: should the regex be case sensitive?
+    - `regex`: a regular expression to match.
+    - `include_me`: whether will should hear what he says
+    - `case_sensitive`: should the regex be case sensitive?
 
-```python
-@respond_to(regex, include_me=False, case_sensitive=False)
-```
+`@respond_to(regex, include_me=False, case_sensitive=False)`
 
--`regex`: a regular expression to match.
--`include_me`: whether will should hear what he says
--`case_sensitive`: should the regex be case sensitive?
+    - `regex`: a regular expression to match.
+    - `include_me`: whether will should hear what he says
+    - `case_sensitive`: should the regex be case sensitive?
 
-```python
-@periodic(*periodic_args)
-```
+`@periodic(*periodic_args)`
 
 Args are parsed by [apscheduler](http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields).
 
--`year`: 4-digit year number
--`month`: month number (1-12)
--`day`: day of the month (1-31)
--`week`: ISO week number (1-53)
--`day_of_week`: number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)
--`hour`: hour (0-23)
--`minute`: minute (0-59)
--`second`: second (0-59)
+    - `year`: 4-digit year number
+    - `month`: month number (1-12)
+    - `day`: day of the month (1-31)
+    - `week`: ISO week number (1-53)
+    - `day_of_week`: number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)
+    - `hour`: hour (0-23)
+    - `minute`: minute (0-59)
+    - `second`: second (0-59)
     The following expressions are valid:
--`*` (any): Fire on every value
--`*/a` (any): Fire every a values, starting from the minimum
--`a-b` (any): Fire on any value within the a-b range (a must be smaller than b)
--`a-b/c` (any): Fire every c values within the a-b range
--`xth y` (day): Fire on the x -th occurrence of weekday y within the month
--`last x` (day): Fire on the last occurrence of weekday x within the month
--`last` (day): Fire on the last day within the month
--`x,y,z` (any): Fire on any matching expression; can combine any number of any of the above expressions
+    - `*` (any): Fire on every value
+    - `*/a` (any): Fire every a values, starting from the minimum
+    - `a-b` (any): Fire on any value within the a-b range (a must be smaller than b)
+    - `a-b/c` (any): Fire every c values within the a-b range
+    - `xth y` (day): Fire on the x -th occurrence of weekday y within the month
+    - `last x` (day): Fire on the last occurrence of weekday x within the month
+    - `last` (day): Fire on the last day within the month
+    - `x,y,z` (any): Fire on any matching expression; can combine any number of any of the above expressions
 
-```python
-@randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1)
-```
+`@randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1)`
 
--`start_hour`: the earliest a random task could fall.
--`end_hour`: the latest hour a random task could fall (inclusive, so end_hour:59 is a possible time.)
--`day_of_week`: valid days of the week, same expressions available as ```python
-@periodic
-```
--`num_times_per_day`: number of times this task should happen per day.
+    - `start_hour`: the earliest a random task could fall.
+    - `end_hour`: the latest hour a random task could fall (inclusive, so end_hour:59 is a possible time.)
+    - `day_of_week`: valid days of the week, same expressions available as `@periodic`
+    - `num_times_per_day`: number of times this task should happen per day.
 
-```python
-@route(routing_rule)
-```
+`@route(routing_rule)`
 
--`routing_rule`:  A [bottle routing rule](http://bottlepy.org/docs/dev/routing.html). 
+    - `routing_rule`:  A [bottle routing rule](http://bottlepy.org/docs/dev/routing.html). 
 
-```python
-@rendered_template("template_name.html")
-```
+`@rendered_template("template_name.html")`
 
--`"template_name.html"`: the path to the template, relative to the `templates` directory. Assumes the function returns a dictionary, to be used as the template context.
+    - `"template_name.html"`: the path to the template, relative to the `templates` directory. Assumes the function returns a dictionary, to be used as the template context.
 
 
 ### High-level chat methods
+
 ```python
 self.say(content, message=None, room=None, html=False, color="green", notify=False)
 self.reply(message, content, html=False, color="green", notify=False)
