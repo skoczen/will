@@ -246,12 +246,12 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
     # For Production:
-    export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to 80.)
+    export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.)
     export WILL_URL="http://my-will.herokuapp.com/" # If will isn't accessible at localhost (heroku, etc):
 
     # Optional
     export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
-    export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o'  # For google hangouts:
+    export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
 
     ```
 4. Run will:  `./start_will.py`
@@ -259,9 +259,30 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
 
 ### Deploying on heroku
-- forking
-- pip installing
-
+1. Fork and clone this repo.
+2. Set up your heroku app, and a redis addon.
+    
+    ```bash
+    heroku create our-will-name
+    heroku addons:add rediscloud
+    # Or redistogo, etc. Your call.
+    ```
+3. Add all the needed environment variables:
+```bash
+heroku config:set \
+WILL_URL="http://our-will-name.herokuapp.com/"\
+WILL_USERNAME='12345_123456@chat.hipchat.com'\
+WILL_PASSWORD='asj2498q89dsf89a8df'\
+WILL_TOKEN='kjadfj89a34878adf78789a4fae3'\
+WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'\
+WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'\
+WILL_NAME='William T. Kahuna'\
+WILL_HANDLE='will'\
+WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`"\
+WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'\
+WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'
+```
+4. `git push heroku`
 
 ### Shoulders of Giants
 
