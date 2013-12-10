@@ -1,8 +1,6 @@
 Will
 ====
 
-Will is a simple python bot that's beautiful to use.
-
 Will is the friendliest, easiest-to-teach bot you've ever used.
 
 ## He can:
@@ -11,7 +9,8 @@ Will is the friendliest, easiest-to-teach bot you've ever used.
 
 ```python
 class CookiesPlugin(WillPlugin):
-    @hear("cookies", include_me=False)
+
+    @hear("cookies")
     def will_likes_cookies(self, message):
         self.say("I LOOOOVE COOOKIEEESS!!!")
 ```
@@ -21,6 +20,11 @@ class CookiesPlugin(WillPlugin):
 ### Do things on a schedule.
 
 ### Do things randomly
+
+### Remember
+Even across reboots
+`self.save()`
+`self.load()`
 
 ### Respond to webhooks
 @rendered_template("keep_alive.html")
@@ -176,3 +180,15 @@ class KeepAlivePlugin(WillPlugin):
         return rendered_template("keep_alive.html", {})
 
 ```
+
+
+### Shoulders of Giants
+
+Will leverages some fantastic libraries.  He wouldn't exist without them.
+
+* Bottle for http handling
+* Jinja for templating
+* Sleepxmpp for listening to xmpp
+* natural and parsedatetime for natural date parsing
+* apscheduler for scheduled task parsing
+* Requests to make http sane.

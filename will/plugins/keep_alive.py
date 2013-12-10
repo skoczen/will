@@ -4,9 +4,8 @@ from will.plugin_base import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 import will.settings as settings
 
-
+keep_alive_url = "/keep-alive"
 class KeepAlivePlugin(WillPlugin):
-    keep_alive_url = "/keep-alive"
 
     @periodic(second=0)
     def ping_keep_alive(self):
