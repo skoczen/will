@@ -46,6 +46,13 @@ def standup(self):
 ```python
 @randomly(start_hour='10', end_hour='17', day_of_week="mon-fri", num_times_per_day=1)
 def walkmaster(self):
+    self.say("@all Walk happening in 5 minutes!")
+```
+
+#### Schedule things on the fly
+```python
+@randomly(start_hour='10', end_hour='17', day_of_week="mon-fri", num_times_per_day=1)
+def walkmaster(self):
     now = datetime.datetime.now()
     in_5_minutes = now + datetime.timedelta(minutes=5)
 
@@ -79,9 +86,9 @@ def keep_alive(self):
 # With full control, multiple templates, still connected to chat.
 @route("/complex_page/")
 def complex_page(self):
-    
+    # Talk to chat
     self.say("Hey, somebody's loading the complex page.")
-
+    # Render templates
     header = rendered_template("header.html")
     some_other_context = {}
     some_other_context["header"] = header
@@ -106,6 +113,7 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
     # Parse the time
     now = datetime.datetime.now()
     parsed_time = self.parse_natural_time(remind_time)
+
     # Make a friendly reply
     natural_datetime = self.to_natural_day_and_time(parsed_time)
 
@@ -116,7 +124,7 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
     }
     self.schedule_say(formatted_reminder_text, parsed_time, message=message)
 
-    # Confirm that he hear you.
+    # Confirm that he heard you.
     self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
 
 # e.g.
@@ -133,61 +141,72 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 ### Plugin decorators
 
 <dl>
-    <dt>``@hear(regex, include_me=False, case_sensitive=False)``</dt>
+    <dt><code>@hear(regex, include_me=False, case_sensitive=False)</code></dt>
     <dd>
-        - `regex`: a regular expression to match.
-        - `include_me`: whether will should hear what he says
-        - `case_sensitive`: should the regex be case sensitive?
+        <ul>
+        <li><code>regex</code>: a regular expression to match.
+        <li><code>include_me</code>: whether will should hear what he says
+        <li><code>case_sensitive</code>: should the regex be case sensitive?
+        </ul>
     </dd>
     
-    <dt>`@respond_to(regex, include_me=False, case_sensitive=False)`</dt>
+    <dt><code>@respond_to(regex, include_me=False, case_sensitive=False)</code></dt>
     <dd>
-        - `regex`: a regular expression to match.
-        - `include_me`: whether will should hear what he says
-        - `case_sensitive`: should the regex be case sensitive?
+        <ul>
+        <li><code>regex</code>: a regular expression to match.
+        <li><code>include_me</code>: whether will should hear what he says
+        <li><code>case_sensitive</code>: should the regex be case sensitive?
+        </ul>
     </dd>
     
-    <dt>`@periodic(*periodic_args)<`/dt>
+    <dt><code>@periodic(*periodic_args)</code></dt>
     <dd>
         Args are parsed by [apscheduler](http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields).
-
-        - `year`: 4-digit year number
-        - `month`: month number (1-12)
-        - `day`: day of the month (1-31)
-        - `week`: ISO week number (1-53)
-        - `day_of_week`: number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)
-        - `hour`: hour (0-23)
-        - `minute`: minute (0-59)
-        - `second`: second (0-59)
-
+        <ul>
+        <li><code>year</code>: 4-digit year number
+        <li><code>month</code>: month number (1-12)
+        <li><code>day</code>: day of the month (1-31)
+        <li><code>week</code>: ISO week number (1-53)
+        <li><code>day_of_week</code>: number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)
+        <li><code>hour</code>: hour (0-23)
+        <li><code>minute</code>: minute (0-59)
+        <li><code>second</code>: second (0-59)
+        </ul>
         The following expressions are valid:
-
-        - `*` (any): Fire on every value
-        - `*/a` (any): Fire every a values, starting from the minimum
-        - `a-b` (any): Fire on any value within the a-b range (a must be smaller than b)
-        - `a-b/c` (any): Fire every c values within the a-b range
-        - `xth y` (day): Fire on the x -th occurrence of weekday y within the month
-        - `last x` (day): Fire on the last occurrence of weekday x within the month
-        - `last` (day): Fire on the last day within the month
-        - `x,y,z` (any): Fire on any matching expression; can combine any number of any of the above expressions
+        <ul>
+        <li><code>*</code> (any): Fire on every value
+        <li><code>*/a</code> (any): Fire every a values, starting from the minimum
+        <li><code>a-b</code> (any): Fire on any value within the a-b range (a must be smaller than b)
+        <li><code>a-b/c</code> (any): Fire every c values within the a-b range
+        <li><code>xth y</code> (day): Fire on the x -th occurrence of weekday y within the month
+        <li><code>last x</code> (day): Fire on the last occurrence of weekday x within the month
+        <li><code>last</code> (day): Fire on the last day within the month
+        <li><code>x,y,z</code> (any): Fire on any matching expression; can combine any number of any of the above expressions
+        </ul>
     </dd>
     
-    <dt>`@randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1)<`/dt>
+    <dt><code>@randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1)</code></dt>
     <dd>
-        - `start_hour`: the earliest a random task could fall.
-        - `end_hour`: the latest hour a random task could fall (inclusive, so end_hour:59 is a possible time.)
-        - `day_of_week`: valid days of the week, same expressions available as `@periodic`
-        - `num_times_per_day`: number of times this task should happen per day.
+        <ul>
+        <li><code>start_hour</code>: the earliest a random task could fall.
+        <li><code>end_hour</code>: the latest hour a random task could fall (inclusive, so end_hour:59 is a possible time.)
+        <li><code>day_of_week</code>: valid days of the week, same expressions available as <code>@periodic</code>
+        <li><code>num_times_per_day</code>: number of times this task should happen per day.
+        </ul>
     </dd>
     
-    <dt>`@route(routing_rule)<`/dt>
+    <dt><code>@route(routing_rule)</code></dt>
     <dd>
-        - `routing_rule`:  A [bottle routing rule](http://bottlepy.org/docs/dev/routing.html). 
+        <ul>
+        <li><code>routing_rule</code>:  A [bottle routing rule](http://bottlepy.org/docs/dev/routing.html). 
+        </ul>
     </dd>
 
-    <dt>`@rendered_template("template_name.html")`</dt>
+    <dt><code>@rendered_template("template_name.html")</code></dt>
     <dd>
-        - `"template_name.html"`: the path to the template, relative to the `templates` directory. Assumes the function returns a dictionary, to be used as the template context.
+        <ul>
+        <li><code>"template_name.html"</code>: the path to the template, relative to the `templates` directory. Assumes the function returns a dictionary, to be used as the template context.
+        </ul>
     </dd>
 </dl>
 

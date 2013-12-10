@@ -30,3 +30,5 @@ nosetests.xml
 .project
 .pydevproject
 .dewey_autocomplete.sh
+
+README.html
