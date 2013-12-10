@@ -279,9 +279,9 @@ Advanced:
 
 Will leverages some fantastic libraries.  He wouldn't exist without them.
 
-* Bottle for http handling
-* Jinja for templating
-* Sleepxmpp for listening to xmpp
-* natural and parsedatetime for natural date parsing
-* apscheduler for scheduled task parsing
-* Requests to make http sane.
+- [Bottle](http://bottlepy.org/docs/dev/) for http handling
+- [Jinja](http://jinja.pocoo.org/) for templating
+- [Sleekxmpp](http://sleekxmpp.com/) for listening to xmpp
+- [natural](https://github.com/tehmaze/natural) and [parsedatetime](https://github.com/bear/parsedatetime) for natural date parsing
+- [apscheduler](http://apscheduler.readthedocs.org/en/latest/) for scheduled task parsing
+- [Requests](http://requests.readthedocs.org/en/latest/) to make http sane.
