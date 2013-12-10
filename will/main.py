@@ -187,10 +187,3 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
             except Exception, e:
                 self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
         print "Done.\n"
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
-    bot = WillBot()
-    bot.bootstrap()
-
-    print "\nExiting."

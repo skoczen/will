@@ -1,9 +1,8 @@
 import logging
-
 import redis
 import dill as pickle
-# import pickle
-import settings
+
+from will import settings
 
 
 class StorageMixin(object):

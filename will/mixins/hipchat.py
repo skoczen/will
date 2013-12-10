@@ -2,7 +2,7 @@ import json
 import logging
 import requests
 
-import settings
+from will import settings
 
 ROOM_NOTIFICATION_URL = "https://api.hipchat.com/v2/room/%(room_id)s/notification?auth_token=%(token)s"
 ROOM_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%(token)s"

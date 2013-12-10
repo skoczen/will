@@ -1,9 +1,7 @@
-Will
-====
 
 Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.
 
-### He can:
+# Basic Examples
 
 #### Hear
 
@@ -100,6 +98,8 @@ def complex_page(self):
 
 #### Talk in HTML and plain text
 
+roster.py
+
 ```python
 @respond_to("who do you know about\?")
 def list_roster(self, message):
@@ -146,7 +146,7 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 ```
 
 
-## Full API:
+# Basic Examples
 
 ### Plugin decorators
 
@@ -211,22 +211,28 @@ self.set_topic(self, topic, message=None, room=None) # note you can't set the to
 self.schedule_say(content, when, message=None, room=None, html=False, color="green", notify=False)
 ```
 
-#### High-level helpers
+### High-level helpers
 ```python
 self.parse_natural_time(remind_time)
 self.to_natural_day_and_time(parsed_time)
 self.rendered_template(template_name, context={})
 ```
 
+### Advanced Topics
 
-Advanced:
-- multiple rooms
-- 1-1 chat
+#### Multiple Chat Rooms
+
+Will fully supports multiple chat rooms.  To take advantage of them, you'll need to:
+
+1. Include both rooms, semicolon-separated in `WILL_ROOMS`
+2. Make sure to include either `message` or `room` on any calls to `.say()`, `set_topic()`, or `schedule_say()` you have a specific room in mind for.
 
 
-## Setup via pip
-1. Install via `pip install will`, or fork and clone this repo.
-2. Set environment variables:
+# Installation
+
+1. Fork and clone this repo.
+2. Install and configure redis
+3. Set environment variables:
 
    ```
     # Required
@@ -239,23 +245,16 @@ Advanced:
     export WILL_HANDLE='will'
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
-   
-    # Optional / Production
+    # For Production:
+    export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to 80.)
+    export WILL_URL="http://my-will.herokuapp.com/" # If will isn't accessible at localhost (heroku, etc):
 
-    # Default room: (otherwise defaults to the first of WILL_ROOMS)
-    export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  
-    
-    # For google hangouts:
-    export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o'
-    
-    # If will isn't accessible at localhost (heroku, etc):
-    export WILL_URL="http://my-will.herokuapp.com/"
+    # Optional
+    export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
+    export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o'  # For google hangouts:
 
-    # Defaults to 80
-    export WILL_HTTPSERVER_PORT="80"
-    
     ```
-3. Run will. `will`
+4. Run will:  `./start_will.py`
 
 
 
