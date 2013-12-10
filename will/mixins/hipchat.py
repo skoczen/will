@@ -11,7 +11,7 @@ SET_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%(
 USER_DETAILS_URL = "https://api.hipchat.com/v2/user/%(user_id)s?auth_token=%(token)s"
 
 
-class HipChatAPIMixin(object):
+class HipChatMixin(object):
 
     def send_direct_message(self, user_id, message_body):
         # https://www.hipchat.com/docs/apiv2/method/private_message_user

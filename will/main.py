@@ -8,14 +8,14 @@ import time
 import traceback
 from os.path import abspath, join, curdir
 from multiprocessing import Process
-# Monkeypatch has to come early
-from gevent import monkey; monkey.patch_all()
 
+from gevent import monkey
+# Monkeypatch has to come before bottle
+monkey.patch_all()
 import bottle
 
 from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin
-from plugin import WillPlugin
+from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin, RoomMixin
 from scheduler import Scheduler
 import settings
 
@@ -37,7 +37,7 @@ sys.path.append(join(PROJECT_ROOT, "will"))
 
 
 
-class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
+class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin):
 
     def __init__(self):
         pass
@@ -63,7 +63,14 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
             xmpp_thread.start()
             scheduler_thread.start()
             bottle_thread.start()
-            
+
+            errors = self.get_startup_errors()
+            if len(errors) > 0:
+                default_room = self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM)["room_id"]
+                self.send_room_message(default_room, "FYI, I had some errors starting up:")
+                for err in errors:
+                    self.send_room_message(default_room, err)
+
             while True: time.sleep(100)
         except (KeyboardInterrupt, SystemExit):
             scheduler_thread.terminate()
@@ -122,8 +129,8 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                         module_path = module
                     try:
                         plugin_modules[module] = importlib.import_module("will.plugins.%s" % module_path)
-                    except:
-                        logging.critical("Error will.plugins.%s.  \n\n%s\nContinuing...\n" % (module_path, traceback.format_exc() ))
+                    except Exception, e:
+                        self.startup_error("Error loading will.plugins.%s" % (module_path,), e)
 
         self.plugins = []
         for name, module in plugin_modules.items():
@@ -132,10 +139,10 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                     try:
                         if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
                             self.plugins.append({"name": class_name, "class": cls})
-                    except:
-                        logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (class_name, traceback.format_exc() ))
-            except:
-                logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (name, traceback.format_exc() ))
+                    except Exception, e:
+                        self.startup_error("Error bootstrapping %s" % (class_name,), e)
+            except Exception, e:
+                self.startup_error("Error bootstrapping %s" % (name,), e)
 
         # Sift and Sort.
         self.message_listeners = []
@@ -175,10 +182,10 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                             self.bottle_routes.append((plugin_info["class"], function_name))
 
 
-                    except:
-                        logging.critical("Error bootstrapping %s.%s. \n\n%s\nContinuing...\n" % (plugin_info["class"], function_name, traceback.format_exc() ))
-            except:
-                logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (plugin_info["class"], traceback.format_exc() ))
+                    except Exception, e:
+                        self.startup_error("Error bootstrapping %s.%s" % (plugin_info["class"], function_name,), e)
+            except Exception, e:
+                self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
         print "Done.\n"
 
 if __name__ == '__main__':

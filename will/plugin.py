@@ -1,9 +1,9 @@
 import settings
-from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatAPIMixin, StorageMixin
+from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin
 from utils import strip_tags
 
 
-class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatAPIMixin):
+class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatMixin):
     is_will_plugin = True
 
     def _rooms_from_message_and_room(self, message, room):

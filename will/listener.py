@@ -9,10 +9,10 @@ from sleekxmpp import ClientXMPP
 
 import settings
 from utils import Bunch
-from mixins import RosterMixin, RoomMixin, HipChatAPIMixin
+from mixins import RosterMixin, RoomMixin, HipChatMixin
 
 
-class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatAPIMixin):
+class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
         ClientXMPP.__init__(self, settings.WILL_USERNAME, settings.WILL_PASSWORD)

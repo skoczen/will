@@ -4,7 +4,7 @@ import time
 import traceback
 import threading
 
-from mixins import ScheduleMixin, HipChatAPIMixin, RosterMixin, StorageMixin
+from mixins import ScheduleMixin, HipChatMixin, RosterMixin, StorageMixin
 from plugin import WillPlugin
 
 class Scheduler(ScheduleMixin):
