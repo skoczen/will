@@ -1,7 +1,7 @@
 import datetime
 import requests
 from will.plugin_base import WillPlugin
-from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, route, rendered_template
+from will.decorators import respond_to, periodic, one_time_task, hear, randomly, route, rendered_template
 import will.settings as settings
 
 
@@ -13,13 +13,13 @@ class FriendlyPlugin(WillPlugin):
 
     @hear("^(good )?(morning?)")
     def morning(self, message):
-        self.say(message, "mornin', %s" % message.sender.nick)
+        self.say("mornin', %s" % message.sender.nick, message=message)
 
     @hear("^(good ?|g')?('?night)")
     def good_night(self, message):
         now = datetime.datetime.now()
         if now.weekday() == 4:  # Friday
-            self.say(message, "have a good weekend!")
+            self.say("have a good weekend!", message=message)
         else:
-            self.say(message, "have a good night!")
+            self.say("have a good night!", message=message)
 

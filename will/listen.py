@@ -17,8 +17,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatAPIMixin):
         ClientXMPP.__init__(self, settings.WILL_USERNAME, settings.WILL_PASSWORD)
         self.rooms = []
 
-        if hasattr(settings, "WILL_DEFAULT_ROOM"):
-            self.default_room = settings.WILL_DEFAULT_ROOM
+        self.default_room = settings.WILL_DEFAULT_ROOM
 
         # Property boostraps the list
         self.available_rooms

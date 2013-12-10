@@ -29,7 +29,9 @@ Will supports:
     export WILL_HTTPSERVER_PORT="80"
 
     # Optional
-    export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'
+    export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # otherwise defaults to the first of WILL_ROOMS
+    # For google hangouts:
+    export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o'
     ```
 3. Run will. `will`
 
@@ -39,13 +41,6 @@ Will supports:
 Will was designed to make building a bot easy, fun, and simple.  Here are some examples.
 
 ```python
-import datetime
-import requests
-from will.plugin_base import WillPlugin
-from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, route, rendered_template
-import will.settings as settings
-
-
 
 class GoldStarPlugin(WillPlugin):
 
@@ -70,40 +65,30 @@ class NewTopicPlugin(WillPlugin):
         self.set_topic(message, topic)
 
 
-class StandupPlugin(WillPlugin):
-
-    @scheduled(run_every=crontab(hour=10, minute=0))
-    def standup(self):
-        self.say(message, "@all Standup! %s" % settings.STANDUP_URL)
-
 
 class CookiesPlugin(WillPlugin):
 
     @hear("cookies", include_me=False)
     def will_likes_cookies(self, message):
-        self.say(message, rendered_template("cookies.html", {}), html=True)
-
-    @respond_to("^hi")
-    def will_is_friendly(self, message):
-        self.reply(message, "hello!")
-
+        self.say(rendered_template("cookies.html", {}), message=message, html=True, )
 
 
 class WalkmasterPlugin(WillPlugin):
 
     @randomly(start_hour=8, end_hour=6, weekdays_only=True)
     def go_for_a_walk(self):
-        self.say(message, "@all time for a walk!")
+        self.say("@all time for a walk!", room="GreenKahuna")
         self.set_topic("Walk Time!")
 
 
 class KeepAlivePlugin(WillPlugin):
 
-    @scheduled(run_every=crontab(minute=1))
+    @periodic(run_every=crontab(minute=1))
     def go_for_a_walk(self):
         requests.get("%s/keep-alive" % settings.WILL_URL)
 
     @route("/keep-alive")
     def keep_alive(self):
         return rendered_template("keep_alive.html", {})
+
 ```

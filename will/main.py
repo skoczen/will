@@ -42,13 +42,9 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
     def __init__(self):
         pass
 
-
-
     def bootstrap(self):
         self.bootstrap_storage()
         self.bootstrap_plugins()
-
-        # Start up threads.
 
         # Scheduler
         scheduler_thread = Process(target=self.bootstrap_scheduler)
@@ -63,10 +59,12 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         # xmpp_thread.daemon = True
 
         try:
+            # Start up threads.
+            xmpp_thread.start()
             scheduler_thread.start()
             bottle_thread.start()
-            xmpp_thread.start()
-
+            
+            print "started"
             while True: time.sleep(100)
         except (KeyboardInterrupt, SystemExit):
             scheduler_thread.terminate()
@@ -80,8 +78,16 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                     sys.stdout.flush()
                     time.sleep(0.5)
 
+    def clear_locks(self):
+        self.save("scheduler_add_lock", False)
+        self.save("scheduler_lock", False)    
+        self.save("will_periodic_list", [])
+
     def bootstrap_scheduler(self):
         self.scheduler = Scheduler()
+        self.clear_locks()
+        for cls, fn in self.periodic_tasks:
+            self.add_periodic_task(cls, fn.sched_args, fn.sched_kwargs, fn,)
         self.scheduler.start_loop(self)
 
     def bootstrap_bottle(self):
@@ -96,6 +102,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         self.process(block=True)
 
     def bootstrap_plugins(self):
+        print "Bootstrapping plugins..."
         plugin_modules = {}
 
         # Sure does feel like this should be a solved problem somehow.
@@ -129,13 +136,15 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
 
         # Sift and Sort.
         self.message_listeners = []
+        self.periodic_tasks = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
             try:
-                print "Adding %s plugin." % plugin_info["name"]
+                print "\n %s:" % plugin_info["name"]
                 for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
                     try:
                         if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
+                            print " - %s" % function_name
                             regex = fn.listener_regex
                             if not fn.case_sensitive:
                                 regex = "(?i)%s" % regex
@@ -150,40 +159,13 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                             })
                             if fn.listener_includes_me:
                                 self.some_listeners_include_me = True
+                        elif hasattr(fn, "periodic_task") and fn.periodic_task:
+                            print " - %s" % function_name
+                            self.periodic_tasks.append((plugin_info["class"], fn))
                     except:
                         logging.critical("Error bootstrapping %s.%s. \n\n%s\nContinuing...\n" % (plugin_info["class"], function_name, traceback.format_exc() ))
             except:
                 logging.critical("Error bootstrapping %s.  \n\n%s\nContinuing...\n" % (plugin_info["class"], traceback.format_exc() ))
-
-
-        # def scheduled(run_every):
-        #     def wrap(f):
-        #         def wrapped_f(*args):
-        #             # print "Decorator arguments:", regex
-        #             f(*args)
-        #         return wrapped_f
-        #     return wrap
-
-        # def one_time_task(when):
-        #     def wrap(f):
-        #         def wrapped_f(*args):
-        #             # print "Decorator arguments:", regex
-        #             f(*args)
-        #         return wrapped_f
-        #     return wrap
-
-        # def randomly(start_hour=0, end_hour=23, weekdays_only=False):
-        #     def wrap(f):
-        #         def wrapped_f(*args):
-        #             # print "Decorator arguments:", 
-        #             f(*args)
-        #         return wrapped_f
-        #     return wrap
-
-
-        # Get all methods on the plugin
-        # inspect.getmembers(module, predicate=inspect.isfunction)
-
 
 
 if __name__ == '__main__':

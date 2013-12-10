@@ -28,21 +28,21 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
         if room == "ALL_ROOMS":
             rooms = self.available_rooms
         elif room:
-            rooms = [room,]
+            rooms = [self.get_room_from_name_or_id(room),]
         else:
             if message:
                 rooms = [self.get_room_from_message(message),]
             else:
-                rooms = self.available_rooms
+                rooms = [self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM), ]
         return rooms
 
-    def say(self, message, content, room=None, **kwargs):
+    def say(self, content, message=None, room=None, **kwargs):
         # Valid kwargs:
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
 
-        if message["type"] == "groupchat":
+        if message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
                 self.send_room_message(r["room_id"], content, **kwargs)
@@ -60,11 +60,11 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
         # notify: Ping everyone. Default is False
 
         sender = self.get_user_from_message(message)
-        if message["type"] == "groupchat":
+        if message is None or message["type"] == "groupchat":
             # Reply, speaking to the room.
             content = "@%s %s" % (sender["nick"], content)
 
-            self.say(message, content, **kwargs)
+            self.say(content, message=message, **kwargs)
 
         elif message['type'] in ('chat', 'normal'):
             # Reply to the user (1-1 chat)
@@ -75,21 +75,24 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
 
             self.send_direct_message(sender["hipchat_id"], content)
 
-    def set_topic(self, message, topic):
-        if message["type"] == "groupchat":
-            room = self.get_room_from_message(message)
-            self.set_room_topic(room["room_id"], topic)
+    def set_topic(self, topic, message=None, room=None):
+
+        if message is None or message["type"] == "groupchat":
+            rooms = self._rooms_from_message_and_room(message, room)
+            for r in rooms:    
+                self.set_room_topic(room["room_id"], topic)
         elif message['type'] in ('chat', 'normal'):
             sender = self.get_user_from_message(message)
             self.send_direct_message(sender["hipchat_id"], "I can't set the topic of a one-to-one chat.  Let's just talk.")
    
-    def schedule_say(self, message, content, when, *args, **kwargs):
-        if message["type"] == "groupchat":
-            rooms = self._rooms_from_message_and_room(message, None)
+    def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
+        if message is None or message["type"] == "groupchat":
+            rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
                 self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
         elif message['type'] in ('chat', 'normal'):
             if kwargs.get("html", False):
                 content = strip_tags(content)
             self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
-        
+
+

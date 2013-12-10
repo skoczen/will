@@ -1,5 +1,6 @@
 from bottle import route
-
+from mixins import ScheduleMixin
+from storage import StorageMixin
 
 def respond_to(regex, include_me=False, case_sensitive=False):
     def wrap(f):
@@ -17,10 +18,13 @@ def respond_to(regex, include_me=False, case_sensitive=False):
     return wrap
 
 
-def scheduled(run_every):
+def periodic(*sched_args, **sched_kwargs):
     def wrap(f):
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
+        wrapped_f.periodic_task = True
+        wrapped_f.sched_args = sched_args
+        wrapped_f.sched_kwargs = sched_kwargs
         return wrapped_f
     return wrap
 

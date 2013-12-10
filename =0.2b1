@@ -1,0 +1,19 @@
+Downloading/unpacking dill
+{'_Request__r_type': '//pypi.python.org/simple/dill/', '_Request__original': 'https://pypi.python.org/simple/dill/', 'data': None, '_tunnel_host': None, 'host': 'pypi.python.org', 'origin_req_host': 'pypi.python.org', 'headers': {}, '_Request__fragment': None, 'timeout': <object object at 0x1022a8120>, '_Request__r_host': '/simple/dill/', 'unredirected_hdrs': {'Host': 'pypi.python.org', 'User-agent': 'pip/1.4.1 CPython/2.7.3 Darwin/13.0.0'}, 'unverifiable': False, 'type': 'https', 'port': None}
+200
+OK
+Date: Mon, 09 Dec 2013 22:41:36 GMT
+Content-Type: text/html; charset=utf-8
+X-PYPI-LAST-SERIAL: 930846
+Cache-Control: max-age=86400, public
+Strict-Transport-Security: max-age=31536000
+Content-Length: 1981
+Accept-Ranges: bytes
+Age: 82899
+Vary: Accept-Encoding
+Connection: close
+
+  Could not find a version that satisfies the requirement dill (from versions: 0.2a1, 0.2a1, 0.2b1, 0.2b1, 0.1a1)
+Cleaning up...
+No distributions matching the version for dill
+Storing complete log in /Users/skoczen/.pip/pip.log

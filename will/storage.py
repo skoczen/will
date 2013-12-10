@@ -1,6 +1,8 @@
 import logging
+
 import redis
-import pickle
+import dill as pickle
+# import pickle
 import settings
 
 
@@ -23,15 +25,21 @@ class StorageMixin(object):
             self.bootstrap_storage()
         return self.storage.delete(key)
 
+    def clear_all_keys(self):
+        if not hasattr(self, "storage"):
+            self.bootstrap_storage()
+        return self.storage.flushdb()
+
     def load(self, key, default=None):
         if not hasattr(self, "storage"):
             self.bootstrap_storage()
-        val = self.storage.get(key)
-        if val:
-            try:
+
+        try:
+            val = self.storage.get(key)
+            if val is not None:
                 return pickle.loads(val)
-            except:
-                logging.warn("Unable to load %s" % key)
-                pass
-        
+                
+        except:
+            logging.warn("Unable to load %s" % key)
+
         return default

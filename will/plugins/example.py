@@ -1,7 +1,7 @@
 import datetime
 import requests
 from will.plugin_base import WillPlugin
-from will.decorators import respond_to, scheduled, one_time_task, hear, randomly, route, rendered_template
+from will.decorators import respond_to, periodic, one_time_task, hear, randomly, route, rendered_template
 import will.settings as settings
 
 def crontab(*args, **kwargs):
@@ -32,33 +32,27 @@ class NewTopicPlugin(WillPlugin):
         self.set_topic(message, topic)
 
 
-class StandupPlugin(WillPlugin):
-
-    @scheduled(run_every=crontab(hour=10, minute=0))
-    def standup(self):
-        self.say(message, "@all Standup! %s" % settings.STANDUP_URL)
-
 
 class CookiesPlugin(WillPlugin):
 
     @hear("cookies", include_me=False)
     def will_likes_cookies(self, message):
-        self.say(message, rendered_template("cookies.html", {}), html=True)
+        self.say(rendered_template("cookies.html", {}), message=message, html=True, )
 
 
 class WalkmasterPlugin(WillPlugin):
 
     @randomly(start_hour=8, end_hour=6, weekdays_only=True)
     def go_for_a_walk(self):
-        self.say(message, "@all time for a walk!")
+        self.say("@all time for a walk!", room="GreenKahuna")
         self.set_topic("Walk Time!")
 
 
 class KeepAlivePlugin(WillPlugin):
 
-    @scheduled(run_every=crontab(minute=1))
-    def go_for_a_walk(self):
-        requests.get("%s/keep-alive" % settings.WILL_URL)
+    # @periodic(run_every=crontab(minute=1))
+    # def go_for_a_walk(self):
+    #     requests.get("%s/keep-alive" % settings.WILL_URL)
 
     @route("/keep-alive")
     def keep_alive(self):
