@@ -38,16 +38,3 @@ class CookiesPlugin(WillPlugin):
     @hear("cookies", include_me=False)
     def will_likes_cookies(self, message):
         self.say(rendered_template("cookies.html", {}), message=message, html=True, )
-
-
-class KeepAlivePlugin(WillPlugin):
-
-    # @periodic(run_every=crontab(minute=1))
-    # def go_for_a_walk(self):
-    #     requests.get("%s/keep-alive" % settings.WILL_URL)
-
-    @route("/keep-alive")
-    def keep_alive(self):
-        return rendered_template("keep_alive.html", {})
-
-

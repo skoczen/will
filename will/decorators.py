@@ -1,4 +1,4 @@
-from bottle import route
+from bottle import route as bottle_route
 from mixins import ScheduleMixin
 from storage import StorageMixin
 
@@ -77,5 +77,8 @@ def rendered_template(template_name, context=None):
             return wrapped_f
         return wrap
 
-# For import
-route = route
+def route(path):
+    def wrap(f):
+        f.bottle_route = path
+        return f
+    return wrap

@@ -18,6 +18,7 @@ Will supports:
 2. Set environment variables:
 
    ```
+    # Required
     export WILL_USERNAME='12345_123456@chat.hipchat.com'
     export WILL_PASSWORD='asj2498q89dsf89a8df'
     export WILL_TOKEN='kjadfj89a34878adf78789a4fae3'
@@ -26,12 +27,22 @@ Will supports:
     export WILL_NAME='William T. Kahuna'
     export WILL_HANDLE='will'
     export WILL_REDIS_URL="redis://localhost:6379/7"
-    export WILL_HTTPSERVER_PORT="80"
+   
+   
+    # Optional / Production
 
-    # Optional
-    export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # otherwise defaults to the first of WILL_ROOMS
+    # Default room: (otherwise defaults to the first of WILL_ROOMS)
+    export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  
+    
     # For google hangouts:
     export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o'
+    
+    # If will isn't accessible at localhost (heroku, etc):
+    export WILL_URL="http://my-will.herokuapp.com/"
+
+    # Defaults to 80
+    export WILL_HTTPSERVER_PORT="80"
+    
     ```
 3. Run will. `will`
 
@@ -39,6 +50,12 @@ Will supports:
 ## Sample Code:
 
 Will was designed to make building a bot easy, fun, and simple.  Here are some examples.
+
+To Doc:
+- only need message if
+    : reply
+    : more than one room.
+
 
 ```python
 

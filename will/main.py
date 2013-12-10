@@ -12,7 +12,7 @@ from multiprocessing import Process
 # Monkeypatch has to come early
 from gevent import monkey; monkey.patch_all()
 
-from bottle import route, run, template
+import bottle
 
 from listen import WillXMPPClientMixin
 from mixins import ScheduleMixin
@@ -94,7 +94,13 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
 
     def bootstrap_bottle(self):
         print "bootstrapping bottle"
-        run(host='localhost', port=settings.WILL_HTTPSERVER_PORT, server='gevent')
+
+        for cls, function_name in self.bottle_routes:
+            instantiated_cls = cls()
+            instantiated_fn = getattr(instantiated_cls, function_name)
+            bottle.route(instantiated_fn.bottle_route)(instantiated_fn)
+
+        bottle.run(host='localhost', port=settings.WILL_HTTPSERVER_PORT, server='gevent')
         pass
 
     def bootstrap_xmpp(self):
@@ -140,6 +146,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
         self.message_listeners = []
         self.periodic_tasks = []
         self.random_tasks = []
+        self.bottle_routes = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
             try:
@@ -168,6 +175,11 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin):
                         elif hasattr(fn, "random_task") and fn.random_task:
                             print " - %s" % function_name
                             self.random_tasks.append((plugin_info["class"], fn))
+                        elif hasattr(fn, "bottle_route"):
+                            print " - %s" % function_name
+                            self.bottle_routes.append((plugin_info["class"], function_name))
+
+
                     except:
                         logging.critical("Error bootstrapping %s.%s. \n\n%s\nContinuing...\n" % (plugin_info["class"], function_name, traceback.format_exc() ))
             except:
