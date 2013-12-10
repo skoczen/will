@@ -2,7 +2,6 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 
 
-
 class StoragePlugin(WillPlugin):
 
     @respond_to("^SERIOUSLY. Clear (?P<key>.*)", case_sensitive=True)
