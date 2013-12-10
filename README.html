@@ -166,7 +166,7 @@ def walkmaster(self):
 </code></pre>
 
 <h4 id="remember">Remember</h4>
-<p>Will can remember almost any python object, even across reboots.</p>
+<p>Will can remember <a href="https://pypi.python.org/pypi/dill">almost any</a> python object, even across reboots.</p>
 <pre><code class="python">self.save(&quot;my_key&quot;, &quot;my_value&quot;)
 self.load(&quot;my_key&quot;, &quot;default value&quot;)
 </code></pre>
@@ -184,7 +184,7 @@ def keep_alive(self):
     return {}
 
 # With full control, multiple templates, still connected to chat.
-@route(&quot;/complex_page&quot;)
+@route(&quot;/complex_page/&quot;)
 def complex_page(self):
 
     self.say(&quot;Hey, somebody's loading the complex page.&quot;)
@@ -205,31 +205,50 @@ def list_roster(self, message):
 <h4 id="understand-natural-time">Understand natural time</h4>
 <pre><code class="python">@respond_to(&quot;remind me to (?P&lt;reminder_text&gt;.*?) (at|on) (?P&lt;remind_time&gt;.*)&quot;)
 def remind_me_at(self, message, reminder_text=None, remind_time=None):
+
+    # Parse the time
     now = datetime.datetime.now()
     parsed_time = self.parse_natural_time(remind_time)
+    # Make a friendly reply
     natural_datetime = self.to_natural_day_and_time(parsed_time)
+
+    # Schedule the reminder    
+    formatted_reminder_text = &quot;@%(from_handle)s, you asked me to remind you %(reminder_text)s&quot; % {
+        &quot;from_handle&quot;: message.sender.nick,
+        &quot;reminder_text&quot;: reminder_text,
+    }
+    self.schedule_say(formatted_reminder_text, parsed_time, message=message)
+
+    # Confirm that he hear you.
     self.say(&quot;%(reminder_text)s %(natural_datetime)s. Got it.&quot; % locals(), message=message)
+
+# e.g.
+# @will remind me to take out the trash at 6pm tomorrow
+# &gt; take out the trash tomorrow at 6pm. Got it.
+# or
+# @will remind me to take out the trash at 6pm monday
+# &gt; take out the trash December 16 at 6pm. Got it.
 </code></pre>
 
 <h2 id="full-api">Full API:</h2>
 <h3 id="plugin-decorators">Plugin decorators</h3>
-<pre><code>&lt;dl&gt;
-    &lt;dt&gt;`@hear(regex, include_me=False, case_sensitive=False)`&lt;/dt&gt;
-    &lt;dd&gt;
+<dl>
+    <dt>``@hear(regex, include_me=False, case_sensitive=False)``</dt>
+    <dd>
         - `regex`: a regular expression to match.
         - `include_me`: whether will should hear what he says
         - `case_sensitive`: should the regex be case sensitive?
-    &lt;/dd&gt;
+    </dd>
 
-    &lt;dt&gt;`@respond_to(regex, include_me=False, case_sensitive=False)`&lt;/dt&gt;
-    &lt;dd&gt;
+    <dt>`@respond_to(regex, include_me=False, case_sensitive=False)`</dt>
+    <dd>
         - `regex`: a regular expression to match.
         - `include_me`: whether will should hear what he says
         - `case_sensitive`: should the regex be case sensitive?
-    &lt;/dd&gt;
+    </dd>
 
-    &lt;dt&gt;@periodic(*periodic_args)&lt;/dt&gt;
-    &lt;dd&gt;
+    <dt>`@periodic(*periodic_args)<`/dt>
+    <dd>
         Args are parsed by [apscheduler](http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields).
 
         - `year`: 4-digit year number
@@ -251,24 +270,26 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
         - `last x` (day): Fire on the last occurrence of weekday x within the month
         - `last` (day): Fire on the last day within the month
         - `x,y,z` (any): Fire on any matching expression; can combine any number of any of the above expressions
-    &lt;/dd&gt;
+    </dd>
 
-    &lt;dt&gt;@randomly(start_hour=0, end_hour=23, day_of_week=&quot;*&quot;, num_times_per_day=1)&lt;/dt&gt;
-    &lt;dd&gt;
+    <dt>`@randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1)<`/dt>
+    <dd>
         - `start_hour`: the earliest a random task could fall.
         - `end_hour`: the latest hour a random task could fall (inclusive, so end_hour:59 is a possible time.)
         - `day_of_week`: valid days of the week, same expressions available as `@periodic`
         - `num_times_per_day`: number of times this task should happen per day.
-    &lt;/dd&gt;
+    </dd>
 
-    &lt;dt&gt;@route(routing_rule)&lt;/dt&gt;
-    &lt;dd&gt;
-        - `routing_rule`:  A ()
-    &lt;/dd&gt;
-&lt;/dl&gt;
+    <dt>`@route(routing_rule)<`/dt>
+    <dd>
+        - `routing_rule`:  A [bottle routing rule](http://bottlepy.org/docs/dev/routing.html). 
+    </dd>
 
-@rendered_template(&quot;template_name.html&quot;)
-</code></pre>
+    <dt>`@rendered_template("template_name.html")`</dt>
+    <dd>
+        - `"template_name.html"`: the path to the template, relative to the `templates` directory. Assumes the function returns a dictionary, to be used as the template context.
+    </dd>
+</dl>
 
 <h3 id="high-level-chat-methods">High-level chat methods</h3>
 <pre><code>self.say(content, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
@@ -287,17 +308,8 @@ self.to_natural_day_and_time(parsed_time)
 
 <h3 id="low-level-chat-methods">Low-level chat methods:</h3>
 <p>Advanced
-- change topic
 - multiple rooms
 - 1-1 chat</p>
-<p>Will supports:
-- Replies
-- Scheduled tasks
-- One-time tasks
-- Random tasks
-- Every-message listening
-- A web server, via Bottle
-- Full HTML templating, via Jinja</p>
 <h2 id="setup-via-pip">Setup via pip</h2>
 <ol>
 <li>Install via <code>pip install will</code>, or fork and clone this repo.</li>

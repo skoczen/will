@@ -102,17 +102,36 @@ def list_roster(self, message):
 ```python
 @respond_to("remind me to (?P<reminder_text>.*?) (at|on) (?P<remind_time>.*)")
 def remind_me_at(self, message, reminder_text=None, remind_time=None):
+    
+    # Parse the time
     now = datetime.datetime.now()
     parsed_time = self.parse_natural_time(remind_time)
+    # Make a friendly reply
     natural_datetime = self.to_natural_day_and_time(parsed_time)
+
+    # Schedule the reminder    
+    formatted_reminder_text = "@%(from_handle)s, you asked me to remind you %(reminder_text)s" % {
+        "from_handle": message.sender.nick,
+        "reminder_text": reminder_text,
+    }
+    self.schedule_say(formatted_reminder_text, parsed_time, message=message)
+
+    # Confirm that he hear you.
     self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
+
+# e.g.
+# @will remind me to take out the trash at 6pm tomorrow
+# > take out the trash tomorrow at 6pm. Got it.
+# or
+# @will remind me to take out the trash at 6pm monday
+# > take out the trash December 16 at 6pm. Got it.
 ```
 
 
 ## Full API:
 
 ### Plugin decorators
-```
+
 <dl>
     <dt>``@hear(regex, include_me=False, case_sensitive=False)``</dt>
     <dd>
@@ -172,7 +191,6 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
     </dd>
 </dl>
 
-```
 
 ### High-level chat methods
 ```
