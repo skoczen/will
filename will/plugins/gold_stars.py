@@ -15,19 +15,3 @@ class GoldStarPlugin(WillPlugin):
         self.save("gold_stars", stars)
 
         self.saymessage, ("Awarded %s stars to %s." % (num_stars, user_name))
-
-
-
-class NewTopicPlugin(WillPlugin):
-
-    @respond_to("new topic (?P<topic>.*)")
-    def new_topic(self, message, topic="Something or other. You weren't terribly specific."):
-        self.set_topic(message, topic)
-
-
-
-class CookiesPlugin(WillPlugin):
-
-    @hear("cookies", include_me=False)
-    def will_likes_cookies(self, message):
-        self.say(rendered_template("cookies.html", {}), message=message, html=True, )

@@ -22,7 +22,6 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
         # Property boostraps the list
         self.available_rooms
-
         for r in settings.WILL_ROOMS:
             if r != "":
                 if not hasattr(self, "default_room"):
@@ -82,7 +81,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
     def room_message(self, msg):
         # Ugly hack to ignore the room backlog when joining.
         if not self.initial_ignoring_done:
-            if (datetime.datetime.now() - self.initialized_at).total_seconds() > 4:
+            if (datetime.datetime.now() - self.initialized_at).total_seconds() > 3:
                 self.initial_ignoring_done = True
         
         if self.initial_ignoring_done:

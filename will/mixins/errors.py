@@ -3,7 +3,9 @@ import traceback
 
 class ErrorMixin(object):
     def get_startup_errors(self):
-        return self._startup_errors or []
+        if hasattr(self, "_startup_errors"):
+            return self._startup_errors
+        return []
 
     def startup_error(self, error_message, exception_instance):
         error_message = "%s%s" % (
