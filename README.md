@@ -304,7 +304,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
 ## Local installation
 
-1. Fork and clone this repo.
+1. Fork and clone this repo.  Set up a virtualenv, `pip install requirements.dev.txt`, the usual.
 2. Install and configure redis
 3. Set environment variables:
 
