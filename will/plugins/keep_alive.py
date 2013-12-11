@@ -3,7 +3,7 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 from will import settings
 
-keep_alive_url = "keep-alive"
+keep_alive_url = "/keep-alive"
 class KeepAlivePlugin(WillPlugin):
 
     @periodic(second=0)

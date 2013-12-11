@@ -321,7 +321,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
    
     # For Production:
     export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.)
-    export WILL_URL="http://my-will.herokuapp.com/" # If will isn't accessible at localhost (heroku, etc):
+    export WILL_URL="http://my-will.herokuapp.com" # If will isn't accessible at localhost (heroku, etc). No trailing slash.:
 
     # Optional
     export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
@@ -344,7 +344,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
     ```bash
     heroku config:set \
-    WILL_URL="http://our-will-name.herokuapp.com/"\
+    WILL_URL="http://our-will-name.herokuapp.com"\
     WILL_USERNAME='12345_123456@chat.hipchat.com'\
     WILL_PASSWORD='asj2498q89dsf89a8df'\
     WILL_TOKEN='kjadfj89a34878adf78789a4fae3'\
