@@ -108,6 +108,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
     def bootstrap_xmpp(self):
         print "Bootstrapping xmpp..."
         self.start_xmpp_client()
+        self.save("all_listener_regexes", self.all_listener_regexes)
         self.connect()
         self.process(block=True)
 
@@ -149,6 +150,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
         self.periodic_tasks = []
         self.random_tasks = []
         self.bottle_routes = []
+        self.all_listener_regexes = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
             try:
@@ -160,6 +162,10 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                             regex = fn.listener_regex
                             if not fn.case_sensitive:
                                 regex = "(?i)%s" % regex
+                            help_regex = fn.listener_regex
+                            if fn.listens_only_to_direct_mentions:
+                                help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
+                            self.all_listener_regexes.append(help_regex)
                             self.message_listeners.append({
                                 "function_name": function_name,
                                 "regex_pattern": fn.listener_regex,
