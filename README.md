@@ -174,7 +174,7 @@ We've built will to be easy to extend, change, and write.  Check out the plugins
 - `include_me`: whether will should hear what he says
 - `case_sensitive`: should the regex be case sensitive?
 
-###### @periodic(*periodic_args)
+###### @periodic(**periodic_args)
 
 Args are parsed by [apscheduler](http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields).
 
