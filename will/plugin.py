@@ -1,6 +1,6 @@
 import settings
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin
-from utils import strip_tags
+from utils import html_to_text
 
 
 class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatMixin):
@@ -30,7 +30,7 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
                 self.send_room_message(r["room_id"], content, **kwargs)
         else:
             if kwargs.get("html", False):
-                content = strip_tags(content)
+                content = html_to_text(content)
             
             sender = self.get_user_from_message(message)
             self.send_direct_message(sender["hipchat_id"], content)
@@ -53,7 +53,7 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
 
             # 1-1 can't have HTML.
             if kwargs.get("html", False):
-                content = strip_tags(content)
+                content = html_to_text(content)
 
             self.send_direct_message(sender["hipchat_id"], content)
 
@@ -74,7 +74,7 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
                 self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
         elif message['type'] in ('chat', 'normal'):
             if kwargs.get("html", False):
-                content = strip_tags(content)
+                content = html_to_text(content)
             self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
 
 
