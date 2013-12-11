@@ -302,9 +302,9 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
 # Installation
 
-## Local installation
+## Starting a new will
 
-1. Fork and clone this repo.  Set up a virtualenv, `pip install requirements.dev.txt`, the usual.
+1. `pip install will`
 2. Install and configure redis
 3. Set environment variables:
 
@@ -328,12 +328,34 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
 
     ```
-4. Run will:  `./start_will.py`
+
+4. Run "generate_will_project.py".  This will create the following structure (you can also create it by hand):
+
+    ```
+    /plugins
+        __init__.py
+    /templates
+    run_will.py
+    requirements.txt
+    Procfile
+    ```
+
+    Where `run_will.py` is
+    ```python
+    #!/usr/bin/env python
+    from will.main import WillBot
+
+    if __name__ == '__main__':
+        bot = WillBot(plugins_dirs=["plugins",], template_dirs=["templates",]
+        bot.bootstrap()
+    ```
+
+5. `./run_will.py`
 
 
 
 ## Deploying on Heroku
-1. Fork and clone this repo.
+1. Create a new will, as above.
 2. Set up your heroku app, and a redis addon.
     
     ```bash

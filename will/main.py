@@ -40,6 +40,7 @@ sys.path.append(join(PROJECT_ROOT, "will"))
 class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin):
 
     def __init__(self):
+        logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
         pass
 
     def bootstrap(self):
