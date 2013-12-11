@@ -4,6 +4,11 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class StoragePlugin(WillPlugin):
 
+    @respond_to("^How big is the db?")
+    def db_size(self, message):
+        self.bootstrap_storage()
+        self.say("It's %s." % self.storage.info()["used_memory_human"], message=message)
+
     @respond_to("^SERIOUSLY. Clear (?P<key>.*)", case_sensitive=True)
     def clear_storage(self, message, key=None):
         if not key:
