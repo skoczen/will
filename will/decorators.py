@@ -1,6 +1,7 @@
 from bottle import route as bottle_route
 from mixins import ScheduleMixin, StorageMixin
 
+
 def respond_to(regex, include_me=False, case_sensitive=False):
     def wrap(f):
         passed_args = []
@@ -59,8 +60,14 @@ def randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
 
 
 def rendered_template(template_name, context=None):
-    from jinja2 import Environment, PackageLoader
-    env = Environment(loader=PackageLoader('will', 'templates'))
+    import os
+    from jinja2 import Environment, FileSystemLoader
+
+    template_dirs = os.environ["WILL_TEMPLATE_DIRS_PICKLED"].split(";;")
+
+    loader = FileSystemLoader(template_dirs)
+    env = Environment(loader=loader)
+
     if context is not None:
         this_template = env.get_template(template_name)
         return this_template.render(**context)

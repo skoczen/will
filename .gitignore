@@ -32,3 +32,5 @@ nosetests.xml
 .dewey_autocomplete.sh
 
 README.html
+
+shelf.db

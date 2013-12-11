@@ -36,12 +36,19 @@ sys.path.append(PROJECT_ROOT)
 sys.path.append(join(PROJECT_ROOT, "will"))
 
 
-
 class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin):
 
-    def __init__(self):
+    def __init__(self, plugins_dirs=[], template_dirs=[]):
         logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
-        pass
+        self.plugins_dirs = plugins_dirs + [PLUGINS_ROOT, ]
+        
+        full_path_template_dirs = []
+        for t in template_dirs:
+            full_path_template_dirs.append(os.path.abspath(t))
+        if not TEMPLATES_ROOT in full_path_template_dirs:
+            full_path_template_dirs += [TEMPLATES_ROOT, ]
+
+        os.environ["WILL_TEMPLATE_DIRS_PICKLED"] = ";;".join(full_path_template_dirs)
 
     def bootstrap(self):
         self.bootstrap_storage()
@@ -120,33 +127,34 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
         plugin_modules = {}
 
         # Sure does feel like this should be a solved problem somehow.
-        for root, dirs, files in os.walk(PLUGINS_ROOT, topdown=False):
-            for f in files:
-                if f[-3:] == ".py" and f != "__init__.py":
-                    module = f[:-3]
-                    parent_module = root.replace("%s" % PLUGINS_ROOT, "")
-                    if parent_module != "":
-                        module_paths = parent_module.split("/")[1:]
-                        module_paths.append(module)
-                        module_path = ".".join(module_paths)
-                    else:
-                        module_path = module
-                    try:
-                        plugin_modules[module] = importlib.import_module("will.plugins.%s" % module_path)
-                    except Exception, e:
-                        self.startup_error("Error loading will.plugins.%s" % (module_path,), e)
+        for plugin_root in self.plugins_dirs:
+            for root, dirs, files in os.walk(PLUGINS_ROOT, topdown=False):
+                for f in files:
+                    if f[-3:] == ".py" and f != "__init__.py":
+                        module = f[:-3]
+                        parent_module = root.replace("%s" % PLUGINS_ROOT, "")
+                        if parent_module != "":
+                            module_paths = parent_module.split("/")[1:]
+                            module_paths.append(module)
+                            module_path = ".".join(module_paths)
+                        else:
+                            module_path = module
+                        try:
+                            plugin_modules[module] = importlib.import_module("will.plugins.%s" % module_path)
+                        except Exception, e:
+                            self.startup_error("Error loading will.plugins.%s" % (module_path,), e)
 
-        self.plugins = []
-        for name, module in plugin_modules.items():
-            try:
-                for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
-                    try:
-                        if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
-                            self.plugins.append({"name": class_name, "class": cls})
-                    except Exception, e:
-                        self.startup_error("Error bootstrapping %s" % (class_name,), e)
-            except Exception, e:
-                self.startup_error("Error bootstrapping %s" % (name,), e)
+            self.plugins = []
+            for name, module in plugin_modules.items():
+                try:
+                    for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                        try:
+                            if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
+                                self.plugins.append({"name": class_name, "class": cls})
+                        except Exception, e:
+                            self.startup_error("Error bootstrapping %s" % (class_name,), e)
+                except Exception, e:
+                    self.startup_error("Error bootstrapping %s" % (name,), e)
 
         # Sift and Sort.
         self.message_listeners = []

@@ -328,7 +328,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_URL="http://my-will.herokuapp.com" # If will isn't accessible at localhost (heroku, etc). No trailing slash.:
     ```
 
-4. Run "generate_will_project.py".  This will create the following structure (you can also create it by hand):
+4. Run `generate_will_project`.  This will create the following structure (you can also create it by hand):
 
     ```
     /plugins
@@ -346,7 +346,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     from will.main import WillBot
 
     if __name__ == '__main__':
-        bot = WillBot(plugins_dirs=["plugins",], template_dirs=["templates",]
+        bot = WillBot(plugins_dirs=["plugins",], template_dirs=["templates",])
         bot.bootstrap()
     ```
 
