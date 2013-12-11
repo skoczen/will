@@ -1,20 +1,16 @@
 
 Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.
 
-[Examples](README.md#will-can)
-
-[High-level AP:](README.md#high-level-api)
-
-- [Plugin method decorators](README.md#plugin-method-decorators)
-- [High-level helpers](README.md#high-level-helpers)
-- [Advanced Topics](README.md#advanced-topics)
-
-[Installation:](README.md#installation)
-
-- [Local installation](README.md#local-installation)
-- [Deploying on Heroku](README.md#deploying-on-heroku)
-
-[The Shoulders of Giants](README.md#the-shoulders-of-giants)
+Quick-links:
+- [Examples](README.md#will-can)
+- [High-level API:](README.md#high-level-api)
+    - [Plugin method decorators](README.md#plugin-method-decorators)
+    - [High-level helpers](README.md#high-level-helpers)
+    - [Advanced Topics](README.md#advanced-topics)
+- [Installation:](README.md#installation)
+    - [Local installation](README.md#local-installation)
+    - [Deploying on Heroku](README.md#deploying-on-heroku)
+- [The Shoulders of Giants](README.md#the-shoulders-of-giants)
 
 
 # Will can:
@@ -126,9 +122,11 @@ def list_roster(self, message):
 roster.html
 ```html
 Here's who I know: <br>
-{% for user in internal_roster %}
--<b>@{{user.nick|lower}}</b> - {{user.name}}.  (#{{user.hipchat_id}})</li>
-{% endfor %}
+<ul>
+    {% for user in internal_roster %}
+    <li><b>@{{user.nick|lower}}</b> - {{user.name}}.  (# {{user.hipchat_id}})</li>
+    {% endfor %}
+</ul>
 ```
 
 #### Understand natural time
