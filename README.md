@@ -254,11 +254,26 @@ Schedule a `.say()` for a future time
 
 
 ### High-level helpers
-```python
-self.parse_natural_time(remind_time)
-self.to_natural_day_and_time(parsed_time)
-self.rendered_template(template_name, context={})
-```
+
+##### self.parse_natural_time(time_string)
+
+Parses a textual time string using [parsedatetime](https://github.com/bear/parsedatetime)
+
+- `time_string`: the time string you want to parse.
+
+##### self.to_natural_day_and_time(my_datetime)
+
+Converts a python `datetime` into a human-friendly string using [natural](https://github.com/tehmaze/natural), and a bit of extra code.
+
+- `my_datetime`: the python datetime to convert
+
+##### self.rendered_template(template_name, context={})
+
+Renders a template using [Jinja](http://jinja.pocoo.org/)
+
+- `template_name`: path to the template, relative to `/templates`.
+- `context`: a dictionary to render the template with.
+
 
 ### Advanced Topics
 
