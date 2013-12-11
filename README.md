@@ -1,6 +1,17 @@
 
 Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.
 
+[Examples](README.md#will-can)
+[High-level API](README.md#high-level-api)
+- [Plugin method decorators](README.md#plugin-method-decorators)
+- [High-level helpers](README.md#high-level-helpers)
+- [Advanced Topics](README.md#advanced-topics)
+[Installation](README.md#installation)
+- [Local installation](README.md#local-installation]
+- [Deploying on Heroku](README.md#deploying-on-heroku)
+[The Shoulders of Giants](README.md#the-shoulders-of-giants)
+
+
 # Will can:
 
 #### Hear
@@ -287,6 +298,8 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
 # Installation
 
+## Local installation
+
 1. Fork and clone this repo.
 2. Install and configure redis
 3. Set environment variables:
@@ -315,7 +328,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
 
 
-### Deploying on heroku
+## Deploying on Heroku
 1. Fork and clone this repo.
 2. Set up your heroku app, and a redis addon.
     
@@ -342,7 +355,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
 4. `git push heroku`
 
-## The Shoulders of Giants
+# The Shoulders of Giants
 
 Will leverages some fantastic libraries.  He wouldn't exist without them.
 
