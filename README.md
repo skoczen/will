@@ -92,13 +92,16 @@ def keep_alive(self):
     return {}
 
 # With full control, multiple templates, still connected to chat.
-@route("/complex_page/")
-def complex_page(self):
+@route("/complex_page/<page_id:int>", method=POST)
+def complex_page(self, page_id):
     # Talk to chat
     self.say("Hey, somebody's loading the complex page.")
+    # Get JSON post data:
+    post_data = self.request.json
+
     # Render templates
-    header = rendered_template("header.html")
-    some_other_context = {}
+    header = rendered_template("header.html", post_data)
+    some_other_context = {"page_id": page_id}
     some_other_context["header"] = header
     return rendered_template("complex_page.html", some_other_context)
 ```
@@ -207,7 +210,9 @@ The following expressions are valid:
 
 ###### @route(routing_rule)
 
-- `routing_rule`:  A [bottle routing rule](http://bottlepy.org/docs/dev/routing.html). 
+Routes a bottle request.  Note that `self.request` will contain the [bottle request object](http://bottlepy.org/docs/dev/api.html#the-request-object)
+
+- `routing_rule`:  A [bottle routing rule](http://bottlepy.org/docs/dev/routing.html).  Args in the bottle rule are automatically passed into the function.
 
 ###### @rendered_template("template_name.html")
 
@@ -217,6 +222,8 @@ The following expressions are valid:
 ### High-level chat methods
 
 _A note about multiple rooms:_ For all methods that include `message=None, room=None`, both are optional, unless you have multiple chat rooms.  If you have multiple rooms, you will need to specify one or the other.  To reply to the room the message came from, use `message`.  To send to a specific room, use `room`.
+
+Typically, it's considered good form to pass `message=message` along when you have it - it'll save you from needing to refactor when you do have multiple rooms!
 
 ##### self.say(content, message=None, room=None, html=False, color="green", notify=False)
 

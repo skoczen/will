@@ -1,10 +1,12 @@
 import settings
+from bottle import request
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin
 from utils import html_to_text
 
 
 class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatMixin):
     is_will_plugin = True
+    request = request
 
     def _rooms_from_message_and_room(self, message, room):
         if room == "ALL_ROOMS":
