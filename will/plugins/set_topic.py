@@ -6,4 +6,4 @@ class NewTopicPlugin(WillPlugin):
 
     @respond_to("(?:new|set) topic (?P<topic>.*)")
     def new_topic(self, message, topic="Something or other. You weren't terribly specific."):
-        self.set_topic(message, topic)
+        self.set_topic(topic, message=message)

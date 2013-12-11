@@ -148,9 +148,9 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 #### A lot more
 We've built will to be easy to extend, change, and write.  Check out the plugins directory for lots more examples!
 
-# Basic Examples
+# High-level API
 
-### Plugin decorators
+### Plugin method decorators
 
 ###### @hear(regex, include_me=False, case_sensitive=False)
 
@@ -206,12 +206,52 @@ The following expressions are valid:
 
 ### High-level chat methods
 
-```python
-self.say(content, message=None, room=None, html=False, color="green", notify=False)
-self.reply(message, content, html=False, color="green", notify=False) # note html is stripped for 1-1 messages
-self.set_topic(self, topic, message=None, room=None) # note you can't set the topic of a 1-1 chat
-self.schedule_say(content, when, message=None, room=None, html=False, color="green", notify=False)
-```
+* _A note about multiple rooms:_ For all methods that include `message=None, room=None`, both are optional, unless you have multiple chat rooms.  If you have multiple rooms, you will need to specify one or the other.  To reply to the room the message came from, use `message`.  To send to a specific room, use `room`.
+
+##### self.say(content, message=None, room=None, html=False, color="green", notify=False)
+
+Speak directly into a room or 1-1 message.
+
+- `content`: the content you want to send to the room. HTML or plain text.
+- `message`: (optional) The incoming message object
+- `room`: (optional) The room object (from self.available_rooms) to send the message to.
+- `html`: if the message is HTML. `True` or `False.
+- `color`: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- `notify`: whether the message should trigger a 'ping' notification. `True` or `False.
+
+##### self.reply(message, content, html=False, color="green", notify=False) # note html is stripped for 1-1 messages
+
+Reply to a direct message, either `@will`'d, or in a 1-1 room.
+
+- `message`: The incoming message object.  Required
+- `content`: the content you want to send to the room. HTML or plain text.
+- `html`: if the message is HTML. `True` or `False.
+- `color`: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- `notify`: whether the message should trigger a 'ping' notification. `True` or `False.
+
+##### self.set_topic(topic, message=None, room=None) 
+
+Set the room topic.
+
+_Note:_ you can't set the topic of a 1-1 chat. Will will complain politely.
+
+- `topic`: The string you want to set the topic to
+- `message`: (optional) The incoming message object
+- `room`: (optional) The room object (from self.available_rooms) to send the message to.
+
+
+##### self.schedule_say(content, when, message=None, room=None, html=False, color="green", notify=False)
+
+Schedule a `.say()` for a future time
+
+- `content`: the content you want to send to the room. HTML or plain text.
+- `when`: when you want the message to be said. Python `datetime` object.
+- `message`: (optional) The incoming message object
+- `room`: (optional) The room object (from self.available_rooms) to send the message to.
+- `html`: if the message is HTML. `True` or `False.
+- `color`: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- `notify`: whether the message should trigger a 'ping' notification. `True` or `False.
+
 
 ### High-level helpers
 ```python
