@@ -1,7 +1,7 @@
 
 Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.
 
-# Basic Examples
+# Will can:
 
 #### Hear
 
@@ -145,6 +145,8 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 # > take out the trash December 16 at 6pm. Got it.
 ```
 
+#### A lot more
+We've built will to be easy to extend, change, and write.  Check out the plugins directory for lots more examples!
 
 # Basic Examples
 
@@ -264,27 +266,28 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     
     ```bash
     heroku create our-will-name
-    heroku addons:add rediscloud
-    # Or redistogo, etc. Your call.
+    heroku addons:add rediscloud   # Or redistogo, etc. Your call.
     ```
 3. Add all the needed environment variables:
-```bash
-heroku config:set \
-WILL_URL="http://our-will-name.herokuapp.com/"\
-WILL_USERNAME='12345_123456@chat.hipchat.com'\
-WILL_PASSWORD='asj2498q89dsf89a8df'\
-WILL_TOKEN='kjadfj89a34878adf78789a4fae3'\
-WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'\
-WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'\
-WILL_NAME='William T. Kahuna'\
-WILL_HANDLE='will'\
-WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`"\
-WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'\
-WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'
-```
+
+    ```bash
+    heroku config:set \
+    WILL_URL="http://our-will-name.herokuapp.com/"\
+    WILL_USERNAME='12345_123456@chat.hipchat.com'\
+    WILL_PASSWORD='asj2498q89dsf89a8df'\
+    WILL_TOKEN='kjadfj89a34878adf78789a4fae3'\
+    WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'\
+    WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'\
+    WILL_NAME='William T. Kahuna'\
+    WILL_HANDLE='will'\
+    WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`"\
+    WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'\
+    WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'
+    ```
+
 4. `git push heroku`
 
-### Shoulders of Giants
+## The Shoulders of Giants
 
 Will leverages some fantastic libraries.  He wouldn't exist without them.
 
