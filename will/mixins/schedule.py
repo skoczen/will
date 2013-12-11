@@ -7,6 +7,11 @@ from apscheduler.triggers.cron import CronTrigger
 
 class ScheduleMixin(object):
 
+    def times_key(self, periodic_list=False):
+        if periodic_list:
+            return "will_periodic_times_list"
+        
+        return "will_schedule_times_list"
     
     def schedule_key(self, periodic_list=False):
         if periodic_list:
@@ -19,7 +24,14 @@ class ScheduleMixin(object):
         return self.load(self.schedule_key(periodic_list=periodic_list), [])
 
     def save_schedule_list(self, new_list, periodic_list=True):
-        return self.save(self.schedule_key(periodic_list=periodic_list))
+        return self.save(self.schedule_key(periodic_list=periodic_list), new_list)
+
+    def get_times_list(self, periodic_list=False):
+        # TODO: Clean this up.
+        return self.load(self.times_key(periodic_list=periodic_list), [])
+
+    def save_times_list(self, new_list, periodic_list=True):
+        return self.save(self.times_key(periodic_list=periodic_list), new_list)
 
     def add_direct_message_to_schedule(self, when, content, message, *args, **kwargs):
         target_user = self.get_user_from_message(message)
@@ -48,11 +60,14 @@ class ScheduleMixin(object):
                 time.sleep(random.random())
 
             self.save("scheduler_add_lock", True)
-            sched_list = self.get_schedule_list(periodic_list)
+            sched_list = self.get_schedule_list(periodic_list=periodic_list)
+            times_list = self.get_times_list(periodic_list=periodic_list)
             item["when"] = when
             sched_list.append(item)
-            self.save(self.schedule_key(periodic_list=periodic_list), sched_list)
-            
+            times_list.append(when)
+            self.save_schedule_list(sched_list, periodic_list=periodic_list)
+            self.save_times_list(times_list, periodic_list=periodic_list)
+           
         except:
             logging.critical("Error adding to schedule at %s.  \n\n%s\nContinuing...\n" % (when, traceback.format_exc() ))
         self.save("scheduler_add_lock", False)
@@ -60,8 +75,11 @@ class ScheduleMixin(object):
     def remove_from_schedule(self, index, periodic_list=False):
         # If this is ever called from anywhere outside the scheduler_lock, it needs its own lock.
         sched_list = self.get_schedule_list(periodic_list=periodic_list)
+        times_list = self.get_times_list(periodic_list=periodic_list)
         del sched_list[index]
-        self.save(self.schedule_key(periodic_list=periodic_list), sched_list)
+        del times_list[index]
+        self.save_schedule_list(sched_list, periodic_list=periodic_list)
+        self.save_times_list(times_list, periodic_list=periodic_list)
 
     def add_periodic_task(self, cls, sched_args, sched_kwargs, fn, ignore_scheduler_lock=False):
         now = datetime.datetime.now()

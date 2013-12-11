@@ -14,6 +14,7 @@ class Scheduler(ScheduleMixin):
         bot.save("scheduler_add_lock", False)
         bot.save("scheduler_lock", False)    
         bot.save("will_periodic_list", [])
+        bot.save("will_periodic_times_list", [])
 
     def start_loop(self, bot):
         self.bot = bot
@@ -29,26 +30,48 @@ class Scheduler(ScheduleMixin):
     def _clear_random_tasks(self):
         self.bot.save("scheduler_lock", True)
         periodic_list = self.bot.get_schedule_list(periodic_list=True)
+        periodic_times_list = self.bot.get_times_list(periodic_list=True)
+        
         new_periodic_list = []
+        new_periodic_times_list = []
+        
         for task in periodic_list:
             if not "random_task" in task:
                 new_periodic_list.append(task)
+                new_periodic_times_list.append(task)
+        
         self.bot.save_schedule_list(new_periodic_list, periodic_list=True)
+        self.bot.save_times_list(new_periodic_times_list, periodic_list=True)
+        
         self.bot.save("scheduler_lock", False)
 
 
-    def _run_applicable_actions_in_list(self, now, sched_list, periodic_list=False):
-        for i in reversed(range(0, len(sched_list))):
+    def _run_applicable_actions_in_list(self, now, periodic_list=False):
+        times_list = self.bot.get_times_list(periodic_list=periodic_list)
+        
+        # Iterate through times_list first, before loading the full schedule_list into memory (big pickled stuff, etc)
+        a_task_needs_run = False
+        for i in reversed(range(0, len(times_list))):
             try:
-                if sched_list[i]["when"] < now:
-                    self.run_action(sched_list[i])
-                    self.bot.remove_from_schedule(i, periodic_list=periodic_list)
+                if times_list[i] < now:
+                    a_task_needs_run = True
+                    break
             except:
-                logging.critical("Error running task %s.  \n\n%s\nTrying to delete it and recover...\n" % (sched_list[i], traceback.format_exc() ))
+                pass
+        
+        if a_task_needs_run:
+            sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
+            for i in reversed(range(0, len(sched_list))):
                 try:
-                    self.bot.remove_from_schedule(i, periodic_list=periodic_list)
+                    if sched_list[i]["when"] < now:
+                        self.run_action(sched_list[i])
+                        self.bot.remove_from_schedule(i, periodic_list=periodic_list)
                 except:
-                    logging.critical("Unable to remove task. Leaving it in, you'll have to clean it out by hand. Sorry! \n\n%s\nContinuing...\n" % (traceback.format_exc(), ))
+                    logging.critical("Error running task %s.  \n\n%s\nTrying to delete it and recover...\n" % (sched_list[i], traceback.format_exc() ))
+                    try:
+                        self.bot.remove_from_schedule(i, periodic_list=periodic_list)
+                    except:
+                        logging.critical("Unable to remove task. Leaving it in, you'll have to clean it out by hand. Sorry! \n\n%s\nContinuing...\n" % (traceback.format_exc(), ))
 
 
     def check_scheduled_actions(self):
@@ -64,8 +87,8 @@ class Scheduler(ScheduleMixin):
         try:
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
                 self.bot.save("scheduler_lock", True)
-                self._run_applicable_actions_in_list(now, self.bot.get_schedule_list())
-                self._run_applicable_actions_in_list(now, self.bot.get_schedule_list(periodic_list=True), periodic_list=True)
+                self._run_applicable_actions_in_list(now,)
+                self._run_applicable_actions_in_list(now, periodic_list=True)
                 self.bot.save("scheduler_lock", False)
         except:
             logging.critical("Scheduler run blew up.\n\n%s\nContinuing...\n" % (traceback.format_exc(), ))

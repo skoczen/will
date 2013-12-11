@@ -11,4 +11,3 @@ class WalkmasterPlugin(WillPlugin):
 
         self.say("@all Walk happening in 5 minutes!")
         self.schedule_say("@all It's walk time!", in_5_minutes)
-

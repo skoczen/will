@@ -67,9 +67,11 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
             errors = self.get_startup_errors()
             if len(errors) > 0:
                 default_room = self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM)["room_id"]
-                self.send_room_message(default_room, "FYI, I had some errors starting up:")
+                error_message = "FYI, I had some errors starting up:"
                 for err in errors:
-                    self.send_room_message(default_room, err)
+                    error_message += "\n%s\n" % err
+                self.send_room_message(default_room, error_message)
+                
 
             while True: time.sleep(100)
         except (KeyboardInterrupt, SystemExit):
