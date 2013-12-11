@@ -3,12 +3,16 @@ Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hip
 
 [Examples](README.md#will-can)
 [High-level API](README.md#high-level-api)
+
 - [Plugin method decorators](README.md#plugin-method-decorators)
 - [High-level helpers](README.md#high-level-helpers)
 - [Advanced Topics](README.md#advanced-topics)
+
 [Installation](README.md#installation)
-- [Local installation](README.md#local-installation]
+
+- [Local installation](README.md#local-installation)
 - [Deploying on Heroku](README.md#deploying-on-heroku)
+
 [The Shoulders of Giants](README.md#the-shoulders-of-giants)
 
 
