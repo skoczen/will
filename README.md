@@ -8,7 +8,7 @@ Quick-links:
     - [High-level helpers](README.md#high-level-helpers)
     - [Advanced Topics](README.md#advanced-topics)
 - [Installation:](README.md#installation)
-    - [Local installation](README.md#local-installation)
+    - [Starting a new Will](README.md#starting-a-new-will)
     - [Deploying on Heroku](README.md#deploying-on-heroku)
 - [The Shoulders of Giants](README.md#the-shoulders-of-giants)
 
@@ -319,14 +319,13 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_HANDLE='will'
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
-    # For Production:
-    export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.)
-    export WILL_URL="http://my-will.herokuapp.com" # If will isn't accessible at localhost (heroku, etc). No trailing slash.:
-
     # Optional
     export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
     export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
 
+    # For Production:
+    export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.)
+    export WILL_URL="http://my-will.herokuapp.com" # If will isn't accessible at localhost (heroku, etc). No trailing slash.:
     ```
 
 4. Run "generate_will_project.py".  This will create the following structure (you can also create it by hand):
@@ -334,6 +333,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     ```
     /plugins
         __init__.py
+        hello.py
     /templates
     run_will.py
     requirements.txt
@@ -351,7 +351,6 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     ```
 
 5. `./run_will.py`
-
 
 
 ## Deploying on Heroku
