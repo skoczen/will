@@ -89,3 +89,7 @@ class Scheduler(ScheduleMixin):
             thread.start()
 
             # The next one will be auto scheduled at midnight
+        elif task["type"] == "function":
+            # Run the task
+            thread = threading.Thread(target=task["function"], args=task["args"], kwargs=task["kwargs"])
+            thread.start()

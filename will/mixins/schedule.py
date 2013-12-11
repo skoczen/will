@@ -57,6 +57,14 @@ class ScheduleMixin(object):
             logging.critical("Error adding to schedule at %s.  \n\n%s\nContinuing...\n" % (when, traceback.format_exc() ))
         self.save("scheduler_add_lock", False)
 
+    def add_function_to_schedule(self, when, fn, *args, **kwargs):
+        self.add_to_schedule(when, {
+            "type": "function",
+            "function": fn,
+            "args": args,
+            "kwargs": kwargs,
+        })
+
     def remove_from_schedule(self, index, periodic_list=False):
         # If this is ever called from anywhere outside the scheduler_lock, it needs its own lock.
         sched_list = self.get_schedule_list(periodic_list=periodic_list)

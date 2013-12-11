@@ -79,4 +79,6 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
                 content = html_to_text(content)
             self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
 
-
+    def schedule(self, when, fn, *args, **kwargs):
+        self.add_function_to_schedule(when, fn, *args, **kwargs)
+        
