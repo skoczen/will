@@ -28,7 +28,7 @@ class StorageMixin(object):
         try:
             ret = self.storage.set(key, pickle.dumps(value))
             print ret
-            print self.storage.get(pickle.loads(key))
+            print pickle.loads(self.storage.get(key))
             return ret
         except:
             import traceback; traceback.print_exc();
