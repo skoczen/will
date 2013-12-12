@@ -25,14 +25,14 @@ class StorageMixin(object):
             self.bootstrap_storage()
         print "saving %s...." % key
         print self.storage
-        pipe = self.storage.pipeline()
+
         try:
-            ret = pipe.set(key, pickle.dumps(value))
+            ret = self.storage.set(key, pickle.dumps(value))
             # This really shouldn't be needed, but without it, a subsequent load fails.
-            _ = pipe.get(key)
-            # pipe.save()
+            _ = self.storage.get(key)
+            # self.storage.save()
             print ret
-            pipe.execute()
+            
             print pickle.loads(_)
             return ret
         except:
