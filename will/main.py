@@ -118,7 +118,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
             instantiated_fn = getattr(instantiated_cls, function_name)
             bottle.route(instantiated_fn.bottle_route)(instantiated_fn)
 
-        bottle.run(host='localhost', port=settings.WILL_HTTPSERVER_PORT, server='gevent')
+        bottle.run(host='0.0.0.0', port=settings.WILL_HTTPSERVER_PORT, server='gevent')
         pass
 
     def bootstrap_xmpp(self):
