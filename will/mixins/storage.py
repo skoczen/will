@@ -36,13 +36,13 @@ class StorageMixin(object):
             if _ is not None:
                 print "_ is not none"
                 print type(_)
-                print pickle.loads(_)
+                print "pickle.loads(_) %s" % pickle.loads(_)
             return ret
         except:
             import traceback; traceback.print_exc();
             logging.warn("Unable to save %s" % key)
             # print _
-            
+
 
     def clear(self, key):
         if not hasattr(self, "storage"):
