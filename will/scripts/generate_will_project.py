@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     print "  README.md"
     # Create the readme
-    readme_path = os.path.join(plugins_dir, "README.md")
+    readme_path = os.path.join(current_dir, "README.md")
     if not os.path.exists(readme_path):
         with open(readme_path, 'w+') as f:
             f.write("""
