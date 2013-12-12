@@ -23,7 +23,10 @@ class StorageMixin(object):
     def save(self, key, value):
         if not hasattr(self, "storage"):
             self.bootstrap_storage()
-        return self.storage.set(key, pickle.dumps(value))
+        try:
+            return self.storage.set(key, pickle.dumps(value))
+        except:
+            logging.warn("Unable to save %s" % key)
 
     def clear(self, key):
         if not hasattr(self, "storage"):

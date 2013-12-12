@@ -11,6 +11,7 @@ class Scheduler(ScheduleMixin):
 
     @classmethod
     def clear_locks(cls, bot):
+        print "clear_locks"
         bot.save("scheduler_add_lock", False)
         bot.save("scheduler_lock", False)    
         bot.save("will_periodic_list", [])
@@ -28,6 +29,7 @@ class Scheduler(ScheduleMixin):
             pass
 
     def _clear_random_tasks(self):
+        print "_clear_random_tasks"
         self.bot.save("scheduler_lock", True)
         periodic_list = self.bot.get_schedule_list(periodic_list=True)
         periodic_times_list = self.bot.get_times_list(periodic_list=True)
