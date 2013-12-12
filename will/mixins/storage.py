@@ -21,8 +21,11 @@ class StorageMixin(object):
         self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
 
     def save(self, key, value):
-        if not hasattr(self, "storage"):
+        if hasattr(self, "bot"):
+            storage = self.bot.storage
+        elif not hasattr(self, "storage"):
             self.bootstrap_storage()
+            storage = self.storage
         print "saving %s...." % key
         print self.storage
 
@@ -40,9 +43,10 @@ class StorageMixin(object):
             return ret
         except:
             import traceback; traceback.print_exc();
-            logging.warn("Unable to save %s" % key)
             print errors(_)
-            # print _
+            print "Unable to save %s" % key
+            logging.warn("Unable to save %s" % key)
+            print _
 
 
     def clear(self, key):
