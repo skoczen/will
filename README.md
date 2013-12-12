@@ -335,9 +335,11 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
         __init__.py
         hello.py
     /templates
+    .gitignore
     run_will.py
     requirements.txt
     Procfile
+    README.md
     ```
 
     Where `run_will.py` is
@@ -350,7 +352,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
         bot.bootstrap()
     ```
 
-5. `./run_will.py`
+5. Just run `./run_will.py`! 
 
 
 ## Deploying on Heroku

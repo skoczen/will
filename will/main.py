@@ -1,12 +1,13 @@
 import logging
 import inspect
 import importlib
+import imp
 import os
 import re
 import sys
 import time
 import traceback
-from os.path import abspath, join, curdir
+from os.path import abspath, curdir, dirname
 from multiprocessing import Process
 
 from gevent import monkey
@@ -29,19 +30,24 @@ else:
 
 
 # Update path
-PROJECT_ROOT = abspath(curdir)
-PLUGINS_ROOT = abspath(join(PROJECT_ROOT, "will", "plugins"))
-TEMPLATES_ROOT = abspath(join(PROJECT_ROOT, "will", "templates"))
+PROJECT_ROOT = abspath(os.path.join(dirname(__file__)))
+PLUGINS_ROOT = abspath(os.path.join(PROJECT_ROOT, "plugins"))
+TEMPLATES_ROOT = abspath(os.path.join(PROJECT_ROOT, "templates"))
 sys.path.append(PROJECT_ROOT)
-sys.path.append(join(PROJECT_ROOT, "will"))
+sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
 class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin):
 
     def __init__(self, plugins_dirs=[], template_dirs=[]):
         logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
-        self.plugins_dirs = plugins_dirs + [PLUGINS_ROOT, ]
-        
+
+        self.plugins_dirs = [PLUGINS_ROOT, ]
+        for plugin_dir in plugins_dirs:
+            p = os.path.abspath(plugin_dir)
+            if p not in self.plugins_dirs:
+                self.plugins_dirs.append(p)
+
         full_path_template_dirs = []
         for t in template_dirs:
             full_path_template_dirs.append(os.path.abspath(t))
@@ -128,21 +134,17 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
 
         # Sure does feel like this should be a solved problem somehow.
         for plugin_root in self.plugins_dirs:
-            for root, dirs, files in os.walk(PLUGINS_ROOT, topdown=False):
+            for root, dirs, files in os.walk(plugin_root, topdown=False):
                 for f in files:
                     if f[-3:] == ".py" and f != "__init__.py":
-                        module = f[:-3]
-                        parent_module = root.replace("%s" % PLUGINS_ROOT, "")
-                        if parent_module != "":
-                            module_paths = parent_module.split("/")[1:]
-                            module_paths.append(module)
-                            module_path = ".".join(module_paths)
-                        else:
-                            module_path = module
                         try:
-                            plugin_modules[module] = importlib.import_module("will.plugins.%s" % module_path)
+                            module_path = os.path.join(root, f)
+                            path_components = os.path.split(module_path)
+                            module_name = path_components[-1][:-3]
+                            full_module_name = ".".join(path_components)
+                            plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
                         except Exception, e:
-                            self.startup_error("Error loading will.plugins.%s" % (module_path,), e)
+                            self.startup_error("Error loading %s" % (module_path,), e)
 
             self.plugins = []
             for name, module in plugin_modules.items():

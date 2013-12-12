@@ -64,7 +64,6 @@ def rendered_template(template_name, context=None):
     from jinja2 import Environment, FileSystemLoader
 
     template_dirs = os.environ["WILL_TEMPLATE_DIRS_PICKLED"].split(";;")
-
     loader = FileSystemLoader(template_dirs)
     env = Environment(loader=loader)
 

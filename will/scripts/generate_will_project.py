@@ -13,6 +13,7 @@ def main():
     run_will.py
     requirements.txt
     Procfile
+    README.md
     """
     print "\nGenerating will scaffold..."
 
@@ -99,5 +100,14 @@ if __name__ == '__main__':
     if not os.path.exists(requirements_path):
         with open(requirements_path, 'w+') as f:
             f.write("web: python run_will.py")
+
+    print "  README.md"
+    # Create the readme
+    readme_path = os.path.join(plugins_dir, "README.md")
+    if not os.path.exists(readme_path):
+        with open(readme_path, 'w+') as f:
+            f.write("""
+This is our bot, a [https://github.com/greenkahuna/will](will) bot.
+""")
 
     print "\nDone."

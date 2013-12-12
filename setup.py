@@ -21,6 +21,7 @@ setup(
     download_url = ['https://github.com/greenkahuna/will/tarball/%s' % VERSION, ],
     install_requires=reqs,
     packages=find_packages(),
+    include_package_data=True,
     keywords = ["hipchat", "bot"],
     classifiers=[
         "Programming Language :: Python",

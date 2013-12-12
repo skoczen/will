@@ -1,6 +1,7 @@
 import json
 import logging
 import requests
+import traceback
 
 from will import settings
 
@@ -14,14 +15,20 @@ USER_DETAILS_URL = "https://api.hipchat.com/v2/user/%(user_id)s?auth_token=%(tok
 class HipChatMixin(object):
 
     def send_direct_message(self, user_id, message_body):
-        # https://www.hipchat.com/docs/apiv2/method/private_message_user
-        url = PRIVATE_MESSAGE_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
-        data = {"message": message_body}
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        requests.post(url, headers=headers, data=json.dumps(data))
+        try:
+            # https://www.hipchat.com/docs/apiv2/method/private_message_user
+            url = PRIVATE_MESSAGE_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
+            data = {"message": message_body}
+            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            requests.post(url, headers=headers, data=json.dumps(data))
+        except:
+            logging.critical("Error in send_direct_message: \n%s" % traceback.format_exc())
 
     def send_direct_message_reply(self, message, message_body):
-        message.reply(message_body).send()
+        try:
+            message.reply(message_body).send()
+        except:
+            logging.critical("Error in send_direct_message_reply: \n%s" % traceback.format_exc())
 
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
         if kwargs:
@@ -45,7 +52,7 @@ class HipChatMixin(object):
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data))
         except:
-            import traceback; traceback.print_exc();
+            logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())
 
     def set_room_topic(self, room_id, topic):
         try:
@@ -58,7 +65,7 @@ class HipChatMixin(object):
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.put(url, headers=headers, data=json.dumps(data))
         except:
-            import traceback; traceback.print_exc();
+            logging.critical("Error in set_room_topic: \n%s" % traceback.format_exc())
 
     def get_hipchat_user(self, user_id):
         url = USER_DETAILS_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
