@@ -26,7 +26,10 @@ class ScheduleMixin(object):
     def save_schedule_list(self, new_list, periodic_list=False):
         print "save_schedule_list for (%s)" % periodic_list
         print new_list
-        return self.save(self.schedule_key(periodic_list=periodic_list), new_list)
+
+        self.save(self.schedule_key(periodic_list=periodic_list), new_list)
+        print "Saved"
+        print self.get_schedule_list(periodic_list=periodic_list)
 
     def get_times_list(self, periodic_list=False):
         # TODO: Clean this up.
