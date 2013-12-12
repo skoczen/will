@@ -31,6 +31,7 @@ class StorageMixin(object):
             print self.storage.get(pickle.loads(key))
             return ret
         except:
+            import traceback; traceback.print_exc();
             logging.warn("Unable to save %s" % key)
 
     def clear(self, key):
