@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 
 reqs = []
 with open("requirements.txt", "r+") as f:
