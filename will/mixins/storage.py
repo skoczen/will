@@ -18,20 +18,22 @@ class StorageMixin(object):
         else:
             db = 0
 
-        self.storage = redis.StrictRedis(host=url.hostname, port=url.port, db=db, password=url.password)
+        self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
 
     def save(self, key, value):
         if not hasattr(self, "storage"):
             self.bootstrap_storage()
         print "saving %s...." % key
         print self.storage
+        pipe = self.storage.pipeline()
         try:
-            ret = self.storage.set(key, pickle.dumps(value))
+            ret = pipe.set(key, pickle.dumps(value))
             # This really shouldn't be needed, but without it, a subsequent load fails.
-            _ = self.storage.get(key)
-            # self.storage.save()
+            _ = pipe.get(key)
+            # pipe.save()
             print ret
-            print pickle.loads(self.storage.get(key))
+            print pickle.loads(pipe.get(key))
+            pipe.execute()
             return ret
         except:
             import traceback; traceback.print_exc();
