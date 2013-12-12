@@ -39,9 +39,10 @@ class StorageMixin(object):
                 print pickle.loads(_)
             return ret
         except:
-            print _
             import traceback; traceback.print_exc();
             logging.warn("Unable to save %s" % key)
+            print _
+            
 
     def clear(self, key):
         if not hasattr(self, "storage"):
