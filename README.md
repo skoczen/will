@@ -224,7 +224,7 @@ Routes a bottle request.  Note that `self.request` will contain the [bottle requ
 
 ### High-level chat methods
 
-_A note about multiple rooms:_ For all methods that include `message=None, room=None`, both are optional, unless you have multiple chat rooms.  If you have multiple rooms, you will need to specify one or the other.  To reply to the room the message came from, use `message`.  To send to a specific room, use `room`.
+_A note about multiple rooms:_ For all methods that include `message=None, room=None`, both are optional, unless you have multiple chat rooms.  If you have multiple rooms, you will need to specify either `message` or `room`.  To reply to the room the message came from, use `message`.  To send to a specific room, use `room`.
 
 Typically, it's considered good form to pass `message=message` along when you have it - it'll save you from needing to refactor when you do have multiple rooms!
 
@@ -235,9 +235,9 @@ Speak directly into a room or 1-1 message.
 - `content`: the content you want to send to the room. HTML or plain text.
 - `message`: (optional) The incoming message object
 - `room`: (optional) The room object (from self.available_rooms) to send the message to.
-- `html`: if the message is HTML. `True` or `False.
+- `html`: if the message is HTML. `True` or `False`.
 - `color`: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
-- `notify`: whether the message should trigger a 'ping' notification. `True` or `False.
+- `notify`: whether the message should trigger a 'ping' notification. `True` or `False`.
 
 ##### self.reply(message, content, html=False, color="green", notify=False)
 
@@ -245,9 +245,9 @@ Reply to a direct message, either `@will`'d, or in a 1-1 room.  _Note_: html is 
 
 - `message`: The incoming message object.  Required
 - `content`: the content you want to send to the room. HTML or plain text.
-- `html`: if the message is HTML. `True` or `False.
+- `html`: if the message is HTML. `True` or `False`.
 - `color`: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
-- `notify`: whether the message should trigger a 'ping' notification. `True` or `False.
+- `notify`: whether the message should trigger a 'ping' notification. `True` or `False`.
 
 ##### self.set_topic(topic, message=None, room=None) 
 
@@ -266,9 +266,9 @@ Schedule a `.say()` for a future time
 - `when`: when you want the message to be said. Python `datetime` object.
 - `message`: (optional) The incoming message object
 - `room`: (optional) The room object (from self.available_rooms) to send the message to.
-- `html`: if the message is HTML. `True` or `False.
+- `html`: if the message is HTML. `True` or `False`.
 - `color`: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
-- `notify`: whether the message should trigger a 'ping' notification. `True` or `False.
+- `notify`: whether the message should trigger a 'ping' notification. `True` or `False`.
 
 
 ### High-level helpers
@@ -300,7 +300,7 @@ Renders a template using [Jinja](http://jinja.pocoo.org/)
 Will fully supports multiple chat rooms.  To take advantage of them, you'll need to:
 
 1. Include both rooms, semicolon-separated in `WILL_ROOMS`
-2. Make sure to include either `message` or `room` on any calls to `.say()`, `set_topic()`, or `schedule_say()` you have a specific room in mind for.
+2. Make sure to include either `message` or `room` on any calls to `.say()`, `set_topic()`, or `schedule_say()` you have a specific room in mind for, or don't want going to the default room.
 
 
 # Installation
