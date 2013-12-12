@@ -51,8 +51,11 @@ class Scheduler(ScheduleMixin):
         
         # Iterate through times_list first, before loading the full schedule_list into memory (big pickled stuff, etc)
         a_task_needs_run = False
+        print times_list
         for i in reversed(range(0, len(times_list))):
             try:
+                print times_list[i]["when"]
+                print now
                 if times_list[i] < now:
                     a_task_needs_run = True
                     break
