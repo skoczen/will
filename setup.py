@@ -4,16 +4,23 @@ from setuptools import setup, find_packages
 
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
-VERSION = "0.1"
+VERSION = "0.1.1"
 
 reqs = []
 with open("requirements.txt", "r+") as f:
     for line in f.readlines():
         reqs.append(line.strip())
 
+try:
+   import pypandoc
+   long_description = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError):
+    long_description = ''   
+
 setup(
     name="will",
     description="A friendly python hipchat bot",
+    long_description=long_description,
     author="Steven Skoczen",
     author_email="steven@greenkahuna.com",
     url="https://github.com/greenkahuna/will",
@@ -37,4 +44,5 @@ setup(
     entry_points={
         'console_scripts': ['generate_will_project = will.scripts.generate_will_project:main'],
     },
+
 )
