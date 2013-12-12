@@ -88,7 +88,7 @@ class Scheduler(ScheduleMixin):
         now = datetime.datetime.now()
         print "\n-------------------------\n\ncheck_scheduled_actions"
         print now
-        print self.bot.get_schedule_list(periodic_list=True)
+        # print self.bot.get_schedule_list(periodic_list=True)
 
         # TODO: add a key so we catch this even if we miss midnight.
         # Re-schedule random tasks
