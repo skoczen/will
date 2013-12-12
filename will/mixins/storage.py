@@ -41,7 +41,7 @@ class StorageMixin(object):
         except:
             import traceback; traceback.print_exc();
             logging.warn("Unable to save %s" % key)
-            print _
+            # print _
             
 
     def clear(self, key):
