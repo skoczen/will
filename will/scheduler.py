@@ -65,15 +65,19 @@ class Scheduler(ScheduleMixin):
             sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
             print sched_list
             for i in reversed(range(0, len(sched_list))):
+                running_task = False
                 try:
                     print sched_list[i]["when"]
                     print now
                     print "---"
+
                     if sched_list[i]["when"] < now:
+                        running_task = True
                         self.run_action(sched_list[i])
-                        self.bot.remove_from_schedule(i, periodic_list=periodic_list)
                 except:
                     logging.critical("Error running task %s.  \n\n%s\nTrying to delete it and recover...\n" % (sched_list[i], traceback.format_exc() ))
+                    
+                if running_task:
                     try:
                         self.bot.remove_from_schedule(i, periodic_list=periodic_list)
                     except:

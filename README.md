@@ -1,5 +1,5 @@
 
-Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.
+Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.  Batteries included.
 
 Quick-links:
 - [Examples](README.md#will-can)
