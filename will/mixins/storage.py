@@ -1,5 +1,6 @@
 import logging
 import redis
+import urlparse
 import dill as pickle
 
 from will import settings
@@ -8,14 +9,16 @@ from will import settings
 class StorageMixin(object):
     def bootstrap_storage(self):
         # redis://localhost:6379/7
-        parts = settings.WILL_REDIS_URL.replace("redis://", "")
-        host = parts.split(":")[0]
-        port = parts.split(":")[1].split("/")[0]
-        try:
-            db = parts.split(":")[1].split("/")[1]
-        except:
-            db = None
-        self.storage = redis.StrictRedis(host=host, port=port, db=db)
+        # or
+        # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
+        url = urlparse.urlparse(settings.WILL_REDIS_URL)
+
+        if hasattr(url, "path"):
+            db = url.path[1:]
+        else:
+            db = 0
+
+        self.storage = redis.StrictRedis(host=url.hostname, port=url.port, db=db, password=url.password)
 
     def save(self, key, value):
         if not hasattr(self, "storage"):
