@@ -28,8 +28,9 @@ class StorageMixin(object):
         try:
             ret = self.storage.set(key, pickle.dumps(value))
             # This really shouldn't be needed, but without it, a subsequent load fails.
-            self.storage.save()
-            # print ret
+            self.storage.get(key)
+            # self.storage.save()
+            print ret
             # print pickle.loads(self.storage.get(key))
             return ret
         except:
