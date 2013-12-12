@@ -61,8 +61,12 @@ class Scheduler(ScheduleMixin):
         
         if a_task_needs_run:
             sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
+            print sched_list
             for i in reversed(range(0, len(sched_list))):
                 try:
+                    print sched_list[i]["when"]
+                    print now
+                    print "---"
                     if sched_list[i]["when"] < now:
                         self.run_action(sched_list[i])
                         self.bot.remove_from_schedule(i, periodic_list=periodic_list)
