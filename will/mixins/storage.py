@@ -32,8 +32,8 @@ class StorageMixin(object):
             _ = pipe.get(key)
             # pipe.save()
             print ret
-            print pickle.loads(pipe.get(key))
             pipe.execute()
+            print pickle.loads(_)
             return ret
         except:
             import traceback; traceback.print_exc();
