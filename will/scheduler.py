@@ -52,16 +52,12 @@ class Scheduler(ScheduleMixin):
         # Iterate through times_list first, before loading the full schedule_list into memory (big pickled stuff, etc)
         a_task_needs_run = False
         print times_list
-        for i in reversed(range(0, len(times_list))):
-            try:
-                print times_list[i]["when"]
-                print now
-                if times_list[i] < now:
-                    a_task_needs_run = True
-                    break
-            except:
-                pass
-        
+        for task_time in times_list:
+            if task_time < now:
+                a_task_needs_run = True
+                break
+
+        print "a_task_needs_run: %s" % a_task_needs_run
         if a_task_needs_run:
             sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
             print sched_list
