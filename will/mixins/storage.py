@@ -2,7 +2,7 @@ import logging
 import redis
 import urlparse
 import dill as pickle
-
+from dill.detect import errors
 from will import settings
 
 
@@ -41,6 +41,7 @@ class StorageMixin(object):
         except:
             import traceback; traceback.print_exc();
             logging.warn("Unable to save %s" % key)
+            print errors(_)
             # print _
 
 
