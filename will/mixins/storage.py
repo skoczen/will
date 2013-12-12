@@ -48,7 +48,7 @@ class StorageMixin(object):
             print errors(value)
             print "Unable to save %s" % key
             logging.critical("Unable to save %s" % key)
-            print _
+            # print _
 
 
     def clear(self, key):
