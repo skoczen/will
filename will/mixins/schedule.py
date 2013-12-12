@@ -23,14 +23,14 @@ class ScheduleMixin(object):
         # TODO: Clean this up.
         return self.load(self.schedule_key(periodic_list=periodic_list), [])
 
-    def save_schedule_list(self, new_list, periodic_list=True):
+    def save_schedule_list(self, new_list, periodic_list=False):
         return self.save(self.schedule_key(periodic_list=periodic_list), new_list)
 
     def get_times_list(self, periodic_list=False):
         # TODO: Clean this up.
         return self.load(self.times_key(periodic_list=periodic_list), [])
 
-    def save_times_list(self, new_list, periodic_list=True):
+    def save_times_list(self, new_list, periodic_list=False):
         return self.save(self.times_key(periodic_list=periodic_list), new_list)
 
     def add_direct_message_to_schedule(self, when, content, message, *args, **kwargs):

@@ -47,6 +47,7 @@ class Scheduler(ScheduleMixin):
 
 
     def _run_applicable_actions_in_list(self, now, periodic_list=False):
+        print "\n periodic_list: %s" % periodic_list
         times_list = self.bot.get_times_list(periodic_list=periodic_list)
         
         # Iterate through times_list first, before loading the full schedule_list into memory (big pickled stuff, etc)
@@ -79,7 +80,7 @@ class Scheduler(ScheduleMixin):
 
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
-        print "check_scheduled_actions"
+        print "\n-------------------------\n\ncheck_scheduled_actions"
         print now
 
         # TODO: add a key so we catch this even if we miss midnight.
