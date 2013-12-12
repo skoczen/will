@@ -24,7 +24,7 @@ class Scheduler(ScheduleMixin):
         try:
             while True: 
                 self.check_scheduled_actions()
-                time.sleep(1)
+                time.sleep(0.95)
         except (KeyboardInterrupt, SystemExit):
             pass
 

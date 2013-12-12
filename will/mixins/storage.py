@@ -33,7 +33,7 @@ class StorageMixin(object):
             _ = self.storage.get(key)
             # self.storage.save()
             print ret
-            if _:
+            if _ is not None:
                 print pickle.loads(_)
             return ret
         except:
