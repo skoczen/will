@@ -28,7 +28,7 @@ class StorageMixin(object):
         try:
             ret = self.storage.set(key, pickle.dumps(value))
             print ret
-            print self.storage.get(key)
+            print self.storage.get(pickle.loads(key))
             return ret
         except:
             logging.warn("Unable to save %s" % key)
