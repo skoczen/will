@@ -93,7 +93,7 @@ class Scheduler(ScheduleMixin):
         # TODO: add a key so we catch this even if we miss midnight.
         # Re-schedule random tasks
 
-        if now.hour == 0 and now.minute == 0:
+        if now.hour == 0 and now.minute == 0 and now.second == 1:
             self._clear_random_tasks()
             for cls, fn in self.random_tasks:
                 self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)

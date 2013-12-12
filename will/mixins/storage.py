@@ -44,10 +44,10 @@ class StorageMixin(object):
             return ret
         except:
             import traceback; traceback.print_exc();
-            "print errors(value):"
+            print "errors(value):"
             print errors(value)
             print "Unable to save %s" % key
-            logging.warn("Unable to save %s" % key)
+            logging.critical("Unable to save %s" % key)
             print _
 
 
