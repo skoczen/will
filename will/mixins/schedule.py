@@ -61,7 +61,9 @@ class ScheduleMixin(object):
 
             self.save("scheduler_add_lock", True)
             sched_list = self.get_schedule_list(periodic_list=periodic_list)
-            print "adding:"
+            print "adding: "
+            print periodic_list
+            print item
             print sched_list
             times_list = self.get_times_list(periodic_list=periodic_list)
             item["when"] = when

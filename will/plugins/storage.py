@@ -22,3 +22,11 @@ class StoragePlugin(WillPlugin):
         self.say("Ok, I'm clearing them. You're probably going to want to restart me. I just forgot everything, including who I am and where the chat room is.", message=message)
         self.clear_all_keys()
         
+
+    @respond_to("^Show me the storage for (?P<key>.*)", case_sensitive=True)
+    def show_storage(self, message, key=None):
+        if not key:
+            self.say("Not sure what you're looking for.", message=message)
+        else:
+            val = self.load(key)
+            self.say("%s is %s" % (key, val), message=message)
