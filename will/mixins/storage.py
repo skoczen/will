@@ -11,7 +11,10 @@ class StorageMixin(object):
         parts = settings.WILL_REDIS_URL.replace("redis://", "")
         host = parts.split(":")[0]
         port = parts.split(":")[1].split("/")[0]
-        db = parts.split(":")[1].split("/")[1]
+        try:
+            db = parts.split(":")[1].split("/")[1]
+        except:
+            db = None
         self.storage = redis.StrictRedis(host=host, port=port, db=db)
 
     def save(self, key, value):

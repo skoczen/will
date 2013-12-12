@@ -369,20 +369,21 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
     ```bash
     heroku config:set \
-    WILL_URL="http://our-will-name.herokuapp.com"\
-    WILL_USERNAME='12345_123456@chat.hipchat.com'\
-    WILL_PASSWORD='asj2498q89dsf89a8df'\
-    WILL_TOKEN='kjadfj89a34878adf78789a4fae3'\
-    WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'\
-    WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'\
-    WILL_NAME='William T. Kahuna'\
-    WILL_HANDLE='will'\
-    WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`"\
-    WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'\
+    WILL_URL="http://our-will-name.herokuapp.com" \
+    WILL_USERNAME='12345_123456@chat.hipchat.com' \
+    WILL_PASSWORD='asj2498q89dsf89a8df' \
+    WILL_TOKEN='kjadfj89a34878adf78789a4fae3' \
+    WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
+    WILL_ROOMS='Testing, Will Kahuna;GreenKahuna' \
+    WILL_NAME='William T. Kahuna' \
+    WILL_HANDLE='will' \
+    WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`" \
+    WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com' \
     WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'
     ```
 
 4. `git push heroku`
+5. `heroku scale web=1`
 
 # The Shoulders of Giants
 
