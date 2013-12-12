@@ -10,6 +10,7 @@ Quick-links:
 - [Installation:](README.md#installation)
     - [Starting a new Will](README.md#starting-a-new-will)
     - [Deploying on Heroku](README.md#deploying-on-heroku)
+    - [Hacking on Will](README.md#hacking-on-will)
 - [The Shoulders of Giants](README.md#the-shoulders-of-giants)
 
 
@@ -379,11 +380,21 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     WILL_HANDLE='will' \
     WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`" \
     WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com' \
-    WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'
+    WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...' \
+    TZ="America/Los_Angeles"
+    # Or whatever your time zone is.
     ```
 
 4. `git push heroku`
 5. `heroku scale web=1`
+
+## Hacking on will
+Most of the time, you'll want to start a new will, as above, and add your functionality to your project.  However, if you'd like to make improvements to will itself (PRs are welcome!), here's how to test.
+
+1. Fork this repo.
+2. Clone down a copy, set up redis and the env, as above.
+3. Run `./start_dev_will.py` to start up just core will.
+
 
 # The Shoulders of Giants
 

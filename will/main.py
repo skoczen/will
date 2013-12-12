@@ -101,6 +101,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                     time.sleep(0.5)
 
     def bootstrap_scheduler(self):
+        print "Bootstrapping bottle..."
         Scheduler.clear_locks(self)
         self.scheduler = Scheduler()
         

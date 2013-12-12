@@ -76,6 +76,8 @@ class Scheduler(ScheduleMixin):
 
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
+        print "check_scheduled_actions"
+        print now
 
         # TODO: add a key so we catch this even if we miss midnight.
         # Re-schedule random tasks
@@ -85,6 +87,7 @@ class Scheduler(ScheduleMixin):
             for cls, fn in self.random_tasks:
                 self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         try:
+            print not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False)
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
                 self.bot.save("scheduler_lock", True)
                 self._run_applicable_actions_in_list(now,)

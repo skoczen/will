@@ -92,6 +92,8 @@ class ScheduleMixin(object):
             "sched_args": sched_args,
             "sched_kwargs": sched_kwargs,
         }
+        print when
+        print item
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
 
