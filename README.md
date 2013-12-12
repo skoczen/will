@@ -161,6 +161,8 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 #### A lot more
 We've built will to be easy to extend, change, and write.  Check out the plugins directory for lots more examples!
 
+You can also take a look at [our will](https://github.com/greenkahuna/our-will).  He's open-source, handles our deploys and lots of fun things - enjoy!
+
 # High-level API
 
 ### Plugin method decorators
