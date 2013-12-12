@@ -34,6 +34,8 @@ class StorageMixin(object):
             # self.storage.save()
             print ret
             if _ is not None:
+                print "_ is not none"
+                print type(_)
                 print pickle.loads(_)
             return ret
         except:
