@@ -113,7 +113,6 @@ class ScheduleMixin(object):
 
     def add_random_tasks(self, module_name, cls_name, function_name, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
         # This function is fired at startup, and every day at midnight.
-
         if end_hour < start_hour:
             raise Exception("start_hour is after end_hour!")
 
@@ -128,7 +127,7 @@ class ScheduleMixin(object):
 
         ct = CronTrigger(hour=adjusted_start_hour, day_of_week=day_of_week)
         fire_time = ct.get_next_fire_time(now)
-    
+
         # If it's today, schedule it. Otherwise, it'll be scheduled at midnight of its run day.
         if fire_time.day == now.day:
 

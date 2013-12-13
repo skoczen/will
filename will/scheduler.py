@@ -5,8 +5,8 @@ import time
 import traceback
 import threading
 
-from mixins import ScheduleMixin, HipChatMixin, RosterMixin, StorageMixin, PluginModulesLibraryMixin
-from plugin import WillPlugin
+from mixins import ScheduleMixin, PluginModulesLibraryMixin
+
 
 class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
 
@@ -87,8 +87,8 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
             self.bot.save("last_random_schedule", now)
             self.last_random_schedule = now
             self._clear_random_tasks()
-            for cls, fn in self.bot.random_tasks:
-                self.bot.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
+            for plugin_info, fn, function_name in self.bot.random_tasks:
+                self.add_random_tasks(plugin_info["full_module_name"], plugin_info["name"], function_name, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         try:
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
                 self.bot.save("scheduler_lock", True)
