@@ -114,17 +114,15 @@ class Scheduler(ScheduleMixin):
             user = self.bot.get_user_by_jid(task["target_jid"])
             self.bot.send_direct_message(user["hipchat_id"], task["content"], *task["args"], **task["kwargs"])
         elif task["type"] == "periodic_task":
-            print "task"
-            print task
-            print "about to schedule the next periodic task"
-            self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
-            
             # Run the task
             thread = threading.Thread(target=task["function"], args=[task["class"](),])
             thread.start()
 
             # Schedule the next one.
-
+            print "task"
+            print task
+            print "about to schedule the next periodic task"
+            self.bot.add_periodic_task_directly(task, ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
             thread = threading.Thread(target=task["function"], args=[task["class"](),])
