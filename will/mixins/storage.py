@@ -41,9 +41,7 @@ class StorageMixin(object):
             if _ is not None:
                 print "_ is not none"
                 print type(_)
-                ret = self.storage.set(key, pickle.dumps(value))
-                _ = self.storage.get(key)
-                print "pickle.loads(_) %s" % pickle.loads(_)
+                print "pickle.loads(_) %s" % pickle.loads("%s" % _)
             return ret
         except:
             print "we blew up trying to save:"
