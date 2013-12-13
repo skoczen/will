@@ -122,7 +122,6 @@ class Scheduler(ScheduleMixin):
             print "task"
             print task
             print "about to schedule the next periodic task"
-            print task.__dict__
             self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
