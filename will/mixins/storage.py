@@ -2,8 +2,8 @@ import logging
 import redis
 import urlparse
 import pickle
-# import dill as pickle
-# from dill.detect import errors
+import dill as pickle
+from dill.detect import errors
 from will import settings
 
 
