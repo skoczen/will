@@ -141,6 +141,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
             self.start_xmpp_client()
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
+            bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:

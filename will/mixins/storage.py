@@ -1,9 +1,8 @@
 import logging
 import redis
+import traceback
 import urlparse
-import pickle
 import dill as pickle
-from dill.detect import errors
 from will import settings
 
 
@@ -32,9 +31,7 @@ class StorageMixin(object):
         try:
             return self.storage.set(key, pickle.dumps(value))
         except:
-            print "Unable to save %s" % key
-            logging.critical("Unable to save %s" % key)
-            import traceback; traceback.print_exc();
+            logging.critical("Unable to save %s: \n%s" % (key, traceback.format_exc()) )
 
     def clear(self, key):
         if not hasattr(self, "storage"):

@@ -19,9 +19,3 @@ class KeepAlivePlugin(WillPlugin):
     def ping(self):
         self.say("Someone pinged me!")
         return "PONG"
-
-
-    @randomly(start_hour=14, end_hour=16, num_times_per_day=110, day_of_week="fri")
-    def test(self):
-        print "yo"
-        
