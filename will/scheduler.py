@@ -1,13 +1,14 @@
 import logging
 import datetime
+import imp
 import time
 import traceback
 import threading
 
-from mixins import ScheduleMixin, HipChatMixin, RosterMixin, StorageMixin
+from mixins import ScheduleMixin, HipChatMixin, RosterMixin, StorageMixin, PluginModulesLibraryMixin
 from plugin import WillPlugin
 
-class Scheduler(ScheduleMixin):
+class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
 
     @classmethod
     def clear_locks(cls, bot):
@@ -56,9 +57,6 @@ class Scheduler(ScheduleMixin):
                 a_task_needs_run = True
                 break
 
-        print periodic_list
-        print a_task_needs_run
-        print self.bot.get_schedule_list(periodic_list=periodic_list)
         if a_task_needs_run:
             sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
             for item_hash, item in sched_list.items():
@@ -80,7 +78,6 @@ class Scheduler(ScheduleMixin):
 
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
-        print now
 
         # Re-schedule random tasks at midnight
         if not hasattr(self, "last_random_schedule"):
@@ -109,14 +106,24 @@ class Scheduler(ScheduleMixin):
             self.bot.send_direct_message(user["hipchat_id"], task["content"], *task["args"], **task["kwargs"])
         elif task["type"] == "periodic_task":
             # Run the task
-            thread = threading.Thread(target=getattr(task["class"](),task["function"]))
+            module_info = self.plugin_modules_library[task["module_name"]]
+            module = imp.load_source(module_info["name"], module_info["file_path"])
+            cls = getattr(module, task["class_name"])
+            fn = getattr(cls(), task["function_name"])
+
+            thread = threading.Thread(target=fn)
             thread.start()
 
             # Schedule the next one.
-            self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
+            self.bot.add_periodic_task(task["module_name"], task["class_name"], task["function_name"], task["sched_args"], task["sched_kwargs"], ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
-            thread = threading.Thread(target=getattr(task["class"](),task["function"]))
+            module_info = self.plugin_modules_library[task["module_name"]]
+            module = imp.load_source(module_info["name"], module_info["file_path"])
+            cls = getattr(module, task["class_name"])
+            fn = getattr(cls(), task["function_name"])
+
+            thread = threading.Thread(target=fn)
             thread.start()
 
             # The next one will be auto-scheduled at midnight

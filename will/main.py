@@ -16,7 +16,7 @@ monkey.patch_all()
 import bottle
 
 from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin, RoomMixin
+from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin, RoomMixin, PluginModulesLibraryMixin
 from scheduler import Scheduler
 import settings
 
@@ -37,7 +37,7 @@ sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
-class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin):
+class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
 
     def __init__(self, plugins_dirs=[], template_dirs=[]):
         logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
@@ -101,37 +101,57 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                     time.sleep(0.5)
 
     def bootstrap_scheduler(self):
-        print "Bootstrapping bottle..."
-        Scheduler.clear_locks(self)
-        self.scheduler = Scheduler()
-        
-        for cls, fn in self.periodic_tasks:
-            self.add_periodic_task(cls, fn.sched_args, fn.sched_kwargs, fn.function_name,)
-        for cls, fn in self.random_tasks:
-            self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
-        self.scheduler.start_loop(self)
+        print "Bootstrapping scheduler..."
+        bootstrapped = False
+        try:
+            
+            self.save("plugin_modules_library", self._plugin_modules_library)
+            Scheduler.clear_locks(self)
+            self.scheduler = Scheduler()
+            
+            for plugin_info, fn, function_name in self.periodic_tasks:
+                self.add_periodic_task(plugin_info["full_module_name"], plugin_info["name"], function_name, fn.sched_args, fn.sched_kwargs, fn.function_name,)
+            for plugin_info, fn, function_name in self.random_tasks:
+                self.add_random_tasks(plugin_info["full_module_name"], plugin_info["name"], function_name, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
+            bootstrapped = True
+        except Exception, e:
+            self.startup_error("Error bootstrapping scheduler", e)
+        if bootstrapped:
+            self.scheduler.start_loop(self)
+           
 
     def bootstrap_bottle(self):
         print "Bootstrapping bottle..."
-
-        for cls, function_name in self.bottle_routes:
-            instantiated_cls = cls()
-            instantiated_fn = getattr(instantiated_cls, function_name)
-            bottle.route(instantiated_fn.bottle_route)(instantiated_fn)
-
-        bottle.run(host='0.0.0.0', port=settings.WILL_HTTPSERVER_PORT, server='gevent')
-        pass
+        bootstrapped = False
+        try:
+            for cls, function_name in self.bottle_routes:
+                instantiated_cls = cls()
+                instantiated_fn = getattr(instantiated_cls, function_name)
+                bottle.route(instantiated_fn.bottle_route)(instantiated_fn)
+            bootstrapped = True
+        except Exception, e:
+            self.startup_error("Error bootstrapping bottle", e)
+        if bootstrapped:
+            bottle.run(host='0.0.0.0', port=settings.WILL_HTTPSERVER_PORT, server='gevent')
 
     def bootstrap_xmpp(self):
         print "Bootstrapping xmpp..."
-        self.start_xmpp_client()
-        self.save("all_listener_regexes", self.all_listener_regexes)
-        self.connect()
-        self.process(block=True)
+        bootstrapped = False
+        try:
+            self.start_xmpp_client()
+            self.save("all_listener_regexes", self.all_listener_regexes)
+            self.connect()
+        except Exception, e:
+            self.startup_error("Error bootstrapping bottle", e)
+        if bootstrapped:
+            self.process(block=True)
 
     def bootstrap_plugins(self):
         print "Bootstrapping plugins..."
         plugin_modules = {}
+        plugin_modules_library = {}
+
+        # NOTE: You can't access self.storage here, or it will deadlock when the threads try to access redis.
 
         # Sure does feel like this should be a solved problem somehow.
         for plugin_root in self.plugins_dirs:
@@ -143,7 +163,13 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                             path_components = os.path.split(module_path)
                             module_name = path_components[-1][:-3]
                             full_module_name = ".".join(path_components)
+                            # Need to pass along module name, path all the way through
                             plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
+                            plugin_modules_library[full_module_name] = {
+                                "full_module_name": full_module_name,
+                                "file_path": module_path,
+                                "name": module_name,
+                            }
                         except Exception, e:
                             self.startup_error("Error loading %s" % (module_path,), e)
 
@@ -153,11 +179,13 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                     for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                         try:
                             if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
-                                self.plugins.append({"name": class_name, "class": cls})
+                                self.plugins.append({"name": class_name, "class": cls, "module": module, "full_module_name": name})
                         except Exception, e:
                             self.startup_error("Error bootstrapping %s" % (class_name,), e)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s" % (name,), e)
+
+        self._plugin_modules_library = plugin_modules_library
 
         # Sift and Sort.
         self.message_listeners = []
@@ -193,10 +221,10 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                                 self.some_listeners_include_me = True
                         elif hasattr(fn, "periodic_task") and fn.periodic_task:
                             print " - %s" % function_name
-                            self.periodic_tasks.append((plugin_info["class"], fn))
+                            self.periodic_tasks.append((plugin_info, fn, function_name))
                         elif hasattr(fn, "random_task") and fn.random_task:
                             print " - %s" % function_name
-                            self.random_tasks.append((plugin_info["class"], fn))
+                            self.random_tasks.append((plugin_info, fn, function_name))
                         elif hasattr(fn, "bottle_route"):
                             print " - %s" % function_name
                             self.bottle_routes.append((plugin_info["class"], function_name))

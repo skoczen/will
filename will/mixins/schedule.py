@@ -87,24 +87,27 @@ class ScheduleMixin(object):
         self.save_schedule_list(sched_list, periodic_list=periodic_list)
         self.save_times_list(times_list, periodic_list=periodic_list)
 
-    def add_periodic_task(self, cls, sched_args, sched_kwargs, function_name, ignore_scheduler_lock=False):
+    def add_periodic_task(self, module_name, cls_name, function_name, sched_args, sched_kwargs, ignore_scheduler_lock=False):
         now = datetime.datetime.now()
         ct = CronTrigger(*sched_args, **sched_kwargs)
         when = ct.get_next_fire_time(now)
         item = {
             "type": "periodic_task",
-            "class": cls,
-            "function": function_name,
+            "module_name": module_name,
+            "class_name": cls_name,
+            "function_name": function_name,
             "sched_args": sched_args,
             "sched_kwargs": sched_kwargs,
         }
+        print "adding %s" % item
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
-    def add_single_random_task(self, when, cls, fn, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
+    def add_single_random_task(self, when, module_name, cls_name, function_name, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
         item = {
             "type": "random_task",
-            "class": cls,
-            "function": fn,
+            "module_name": module_name,
+            "class_name": cls_name,
+            "function_name": function_name,
             "start_hour": start_hour,
             "end_hour": end_hour,
             "day_of_week": day_of_week,
@@ -113,7 +116,7 @@ class ScheduleMixin(object):
 
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
-    def add_random_tasks(self, cls, fn, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
+    def add_random_tasks(self, module_name, cls_name, function_name, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
         # This function is fired at startup, and every day at midnight.
 
         if end_hour < start_hour:
@@ -147,4 +150,4 @@ class ScheduleMixin(object):
 
                 # If we're starting up mid-day, this may not be true.
                 if when >= now:
-                    self.add_single_random_task(when, cls, fn, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=ignore_scheduler_lock)
+                    self.add_single_random_task(when, module_name, cls_name, function_name, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=ignore_scheduler_lock)

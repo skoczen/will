@@ -9,31 +9,30 @@ from will import settings
 
 class StorageMixin(object):
     def bootstrap_storage(self):
-        if hasattr(self, "bot"):
-            self.storage = self.bot.storage
-        elif not hasattr(self, "storage"):
-            # redis://localhost:6379/7
-            # or
-            # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
-            url = urlparse.urlparse(settings.WILL_REDIS_URL)
-
-            if hasattr(url, "path"):
-                db = url.path[1:]
+        if not hasattr(self, "storage"):
+            if hasattr(self, "bot") and hasattr(self.bot, "storage"):
+                self.storage = self.bot.storage
             else:
-                db = 0
+                # redis://localhost:6379/7
+                # or
+                # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
+                url = urlparse.urlparse(settings.WILL_REDIS_URL)
 
-            self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
+                if hasattr(url, "path"):
+                    db = url.path[1:]
+                else:
+                    db = 0
+
+                self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
 
     def save(self, key, value):
         if not hasattr(self, "storage"):
             self.bootstrap_storage()
 
         try:
-            print "saving %s" % key
-            ret = self.storage.set(key, pickle.dumps(value))
-            print pickle.loads(self.storage.get(key))
-            return ret
+            return self.storage.set(key, pickle.dumps(value))
         except:
+            print "Unable to save %s" % key
             logging.critical("Unable to save %s" % key)
             import traceback; traceback.print_exc();
 
