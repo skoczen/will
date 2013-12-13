@@ -119,7 +119,7 @@ class Scheduler(ScheduleMixin):
             thread.start()
 
             # Schedule the next one.
-            self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
+            self.bot.add_periodic_task(task["class"], task["function"].sched_args, task["function"].sched_kwargs, task["function"], ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
             thread = threading.Thread(target=task["function"], args=[task["class"](),])
