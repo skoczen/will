@@ -19,7 +19,6 @@ def respond_to(regex, include_me=False, case_sensitive=False):
 
 
 def periodic(*sched_args, **sched_kwargs):
-    print "**periodic called"
     def wrap(f):
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)

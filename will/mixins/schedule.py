@@ -24,12 +24,7 @@ class ScheduleMixin(object):
         return self.load(self.schedule_key(periodic_list=periodic_list), [])
 
     def save_schedule_list(self, new_list, periodic_list=False):
-        print "save_schedule_list for (%s)" % periodic_list
-        print new_list
-
         self.save(self.schedule_key(periodic_list=periodic_list), new_list)
-        print "Saved"
-        print self.get_schedule_list(periodic_list=periodic_list)
 
     def get_times_list(self, periodic_list=False):
         # TODO: Clean this up.
@@ -66,10 +61,6 @@ class ScheduleMixin(object):
 
             self.save("scheduler_add_lock", True)
             sched_list = self.get_schedule_list(periodic_list=periodic_list)
-            print "adding: "
-            print periodic_list
-            print item
-            print sched_list
             times_list = self.get_times_list(periodic_list=periodic_list)
             item["when"] = when
             sched_list.append(item)
@@ -101,9 +92,6 @@ class ScheduleMixin(object):
             "sched_args": sched_args,
             "sched_kwargs": sched_kwargs,
         }
-        print "add_periodic_task"
-        print when
-        print item
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
     def add_single_random_task(self, when, cls, fn, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):

@@ -10,10 +10,8 @@ from will import settings
 class StorageMixin(object):
     def bootstrap_storage(self):
         if hasattr(self, "bot"):
-            print "from bot"
             self.storage = self.bot.storage
         elif not hasattr(self, "storage"):
-            print "new"
             # redis://localhost:6379/7
             # or
             # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
@@ -25,38 +23,16 @@ class StorageMixin(object):
                 db = 0
 
             self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
-        else:
-            print "existed"
+
     def save(self, key, value):
-        
         if not hasattr(self, "storage"):
             self.bootstrap_storage()
 
-        print "saving %s...." % key
-
         try:
-
-            ret = self.storage.set(key, pickle.dumps(value))
-            # self.storage.save()
-            # This really shouldn't be needed, but without it, a subsequent load fails.
-            _ = self.storage.get(key)
-            # self.storage.save()
-            print ret
-            if _ is not None:
-                print "_ is not none"
-                print type(_)
-                print "pickle.loads(_) %s" % pickle.loads("%s" % _)
-            return ret
+            return self.storage.set(key, pickle.dumps(value))
         except:
-            print "we blew up trying to save:"
-            print value
-            import traceback; traceback.print_exc();
-            print "errors(value):"
-            print errors(value)
-            print "Unable to save %s" % key
             logging.critical("Unable to save %s" % key)
-            # print _
-
+            import traceback; traceback.print_exc();
 
     def clear(self, key):
         if not hasattr(self, "storage"):

@@ -11,7 +11,6 @@ class Scheduler(ScheduleMixin):
 
     @classmethod
     def clear_locks(cls, bot):
-        print "clear_locks"
         bot.save("scheduler_add_lock", False)
         bot.save("scheduler_lock", False)    
         bot.save("will_periodic_list", [])
@@ -22,14 +21,13 @@ class Scheduler(ScheduleMixin):
         self.active_processes = []
 
         try:
-            while True: 
+            while True:
                 self.check_scheduled_actions()
-                time.sleep(0.95)
+                time.sleep(0.995)
         except (KeyboardInterrupt, SystemExit):
             pass
 
     def _clear_random_tasks(self):
-        print "_clear_random_tasks"
         self.bot.save("scheduler_lock", True)
         periodic_list = self.bot.get_schedule_list(periodic_list=True)
         periodic_times_list = self.bot.get_times_list(periodic_list=True)
@@ -49,27 +47,20 @@ class Scheduler(ScheduleMixin):
 
 
     def _run_applicable_actions_in_list(self, now, periodic_list=False):
-        print "\n periodic_list: %s" % periodic_list
         times_list = self.bot.get_times_list(periodic_list=periodic_list)
         
         # Iterate through times_list first, before loading the full schedule_list into memory (big pickled stuff, etc)
         a_task_needs_run = False
-        print times_list
         for task_time in times_list:
             if task_time < now:
                 a_task_needs_run = True
                 break
 
-        print "a_task_needs_run: %s" % a_task_needs_run
         if a_task_needs_run:
             sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
-            print sched_list
             for i in reversed(range(0, len(sched_list))):
                 running_task = False
                 try:
-                    print sched_list[i]["when"]
-                    print now
-                    print "---"
 
                     if sched_list[i]["when"] < now:
                         running_task = True
@@ -86,9 +77,6 @@ class Scheduler(ScheduleMixin):
 
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
-        print "\n-------------------------\n\ncheck_scheduled_actions"
-        print now
-        print self.bot.get_schedule_list(periodic_list=True)
 
         # TODO: add a key so we catch this even if we miss midnight.
         # Re-schedule random tasks
@@ -98,7 +86,6 @@ class Scheduler(ScheduleMixin):
             for cls, fn in self.random_tasks:
                 self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         try:
-            print not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False)
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
                 self.bot.save("scheduler_lock", True)
                 self._run_applicable_actions_in_list(now,)
@@ -119,9 +106,6 @@ class Scheduler(ScheduleMixin):
             thread.start()
 
             # Schedule the next one.
-            print "task"
-            print task
-            print "about to schedule the next periodic task"
             self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
