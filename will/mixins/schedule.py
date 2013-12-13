@@ -106,12 +106,6 @@ class ScheduleMixin(object):
         print item
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
-    def add_periodic_task_directly(self, item, ignore_scheduler_lock=False):
-        now = datetime.datetime.now()
-        ct = CronTrigger(*item["sched_args"], **item["sched_kwargs"])
-        when = ct.get_next_fire_time(now)
-        self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
-
     def add_single_random_task(self, when, cls, fn, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
         item = {
             "type": "random_task",
