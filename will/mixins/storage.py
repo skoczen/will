@@ -29,7 +29,10 @@ class StorageMixin(object):
             self.bootstrap_storage()
 
         try:
-            return self.storage.set(key, pickle.dumps(value))
+            print "saving %s" % key
+            ret = self.storage.set(key, pickle.dumps(value))
+            print pickle.loads(self.storage.get(key))
+            return ret
         except:
             logging.critical("Unable to save %s" % key)
             import traceback; traceback.print_exc();

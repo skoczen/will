@@ -21,14 +21,14 @@ class ScheduleMixin(object):
 
     def get_schedule_list(self, periodic_list=False):
         # TODO: Clean this up.
-        return self.load(self.schedule_key(periodic_list=periodic_list), [])
+        return self.load(self.schedule_key(periodic_list=periodic_list), {})
 
     def save_schedule_list(self, new_list, periodic_list=False):
         self.save(self.schedule_key(periodic_list=periodic_list), new_list)
 
     def get_times_list(self, periodic_list=False):
         # TODO: Clean this up.
-        return self.load(self.times_key(periodic_list=periodic_list), [])
+        return self.load(self.times_key(periodic_list=periodic_list), {})
 
     def save_times_list(self, new_list, periodic_list=False):
         return self.save(self.times_key(periodic_list=periodic_list), new_list)
@@ -62,9 +62,12 @@ class ScheduleMixin(object):
             self.save("scheduler_add_lock", True)
             sched_list = self.get_schedule_list(periodic_list=periodic_list)
             times_list = self.get_times_list(periodic_list=periodic_list)
+            print sched_list
             item["when"] = when
-            sched_list.append(item)
-            times_list.append(when)
+            item_hash = hash(repr(sorted(item.items())))
+            item["hash"] = item_hash
+            sched_list[item_hash] = item
+            times_list[item_hash] = when
             self.save_schedule_list(sched_list, periodic_list=periodic_list)
             self.save_times_list(times_list, periodic_list=periodic_list)
            
@@ -72,12 +75,15 @@ class ScheduleMixin(object):
             logging.critical("Error adding to schedule at %s.  \n\n%s\nContinuing...\n" % (when, traceback.format_exc() ))
         self.save("scheduler_add_lock", False)
 
-    def remove_from_schedule(self, index, periodic_list=False):
+    def remove_from_schedule(self, item_hash, periodic_list=False):
         # If this is ever called from anywhere outside the scheduler_lock, it needs its own lock.
         sched_list = self.get_schedule_list(periodic_list=periodic_list)
         times_list = self.get_times_list(periodic_list=periodic_list)
-        del sched_list[index]
-        del times_list[index]
+        print "removing"
+        print sched_list
+        print times_list
+        del sched_list[item_hash]
+        del times_list[item_hash]
         self.save_schedule_list(sched_list, periodic_list=periodic_list)
         self.save_times_list(times_list, periodic_list=periodic_list)
 
