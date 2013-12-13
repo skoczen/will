@@ -88,7 +88,7 @@ class Scheduler(ScheduleMixin):
         now = datetime.datetime.now()
         print "\n-------------------------\n\ncheck_scheduled_actions"
         print now
-        # print self.bot.get_schedule_list(periodic_list=True)
+        print self.bot.get_schedule_list(periodic_list=True)
 
         # TODO: add a key so we catch this even if we miss midnight.
         # Re-schedule random tasks
@@ -119,7 +119,8 @@ class Scheduler(ScheduleMixin):
             thread.start()
 
             # Schedule the next one.
-            self.bot.add_periodic_task(task["class"], task["function"].sched_args, task["function"].sched_kwargs, task["function"], ignore_scheduler_lock=True)
+            print task
+            self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
             thread = threading.Thread(target=task["function"], args=[task["class"](),])
