@@ -108,7 +108,7 @@ class ScheduleMixin(object):
 
     def add_periodic_task_directly(self, item, ignore_scheduler_lock=False):
         now = datetime.datetime.now()
-        ct = CronTrigger(*sched_args, **sched_kwargs)
+        ct = CronTrigger(item["sched_args"], item["sched_kwargs"])
         when = ct.get_next_fire_time(now)
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
