@@ -57,6 +57,9 @@ class Scheduler(ScheduleMixin):
                 a_task_needs_run = True
                 break
 
+        print periodic_list
+        print a_task_needs_run
+        print self.bot.get_schedule_list(periodic_list=periodic_list)
         if a_task_needs_run:
             sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
             for i in reversed(range(0, len(sched_list))):
