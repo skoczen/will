@@ -115,7 +115,7 @@ class Scheduler(ScheduleMixin):
             self.bot.send_direct_message(user["hipchat_id"], task["content"], *task["args"], **task["kwargs"])
         elif task["type"] == "periodic_task":
             # Run the task
-            thread = threading.Thread(target=task["function"], args=[task["class"](),])
+            thread = threading.Thread(target=getattr(task["class"](),task["function"]))
             thread.start()
 
             # Schedule the next one.
@@ -125,7 +125,7 @@ class Scheduler(ScheduleMixin):
             self.bot.add_periodic_task(task["class"], task["sched_args"], task["sched_kwargs"], task["function"], ignore_scheduler_lock=True)
         elif task["type"] == "random_task":
             # Run the task
-            thread = threading.Thread(target=task["function"], args=[task["class"](),])
+            thread = threading.Thread(target=getattr(task["class"](),task["function"]))
             thread.start()
 
             # The next one will be auto-scheduled at midnight

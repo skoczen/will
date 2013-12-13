@@ -106,7 +106,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
         self.scheduler = Scheduler()
         
         for cls, fn in self.periodic_tasks:
-            self.add_periodic_task(cls, fn.sched_args, fn.sched_kwargs, fn,)
+            self.add_periodic_task(cls, fn.sched_args, fn.sched_kwargs, fn.function_name,)
         for cls, fn in self.random_tasks:
             self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         self.scheduler.start_loop(self)

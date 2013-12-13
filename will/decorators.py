@@ -19,10 +19,12 @@ def respond_to(regex, include_me=False, case_sensitive=False):
 
 
 def periodic(*sched_args, **sched_kwargs):
+    print "**periodic called"
     def wrap(f):
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
         wrapped_f.periodic_task = True
+        wrapped_f.function_name = f.__name__
         wrapped_f.sched_args = sched_args
         wrapped_f.sched_kwargs = sched_kwargs
         return wrapped_f

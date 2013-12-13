@@ -90,14 +90,14 @@ class ScheduleMixin(object):
         self.save_schedule_list(sched_list, periodic_list=periodic_list)
         self.save_times_list(times_list, periodic_list=periodic_list)
 
-    def add_periodic_task(self, cls, sched_args, sched_kwargs, fn, ignore_scheduler_lock=False):
+    def add_periodic_task(self, cls, sched_args, sched_kwargs, function_name, ignore_scheduler_lock=False):
         now = datetime.datetime.now()
         ct = CronTrigger(*sched_args, **sched_kwargs)
         when = ct.get_next_fire_time(now)
         item = {
             "type": "periodic_task",
             "class": cls,
-            "function": fn,
+            "function": function_name,
             "sched_args": sched_args,
             "sched_kwargs": sched_kwargs,
         }
