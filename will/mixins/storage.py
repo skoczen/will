@@ -10,8 +10,10 @@ from will import settings
 class StorageMixin(object):
     def bootstrap_storage(self):
         if hasattr(self, "bot"):
+            print "from bot"
             self.storage = self.bot.storage
         elif not hasattr(self, "storage"):
+            print "new"
             # redis://localhost:6379/7
             # or
             # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
@@ -23,7 +25,8 @@ class StorageMixin(object):
                 db = 0
 
             self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
-
+        else:
+            print "existed"
     def save(self, key, value):
         
         if not hasattr(self, "storage"):
