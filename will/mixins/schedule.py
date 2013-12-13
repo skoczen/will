@@ -72,7 +72,7 @@ class ScheduleMixin(object):
             print sched_list
             times_list = self.get_times_list(periodic_list=periodic_list)
             item["when"] = when
-            sched_list.append(item)
+            # sched_list.append(item)
             times_list.append(when)
             self.save_schedule_list(sched_list, periodic_list=periodic_list)
             self.save_times_list(times_list, periodic_list=periodic_list)
