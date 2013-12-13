@@ -35,10 +35,11 @@ class Scheduler(ScheduleMixin):
         new_periodic_list = []
         new_periodic_times_list = []
         
-        for task in periodic_list:
+        for i in range(0, len(periodic_list)):
+            task = periodic_list[i]
             if not "random_task" in task:
                 new_periodic_list.append(task)
-                new_periodic_times_list.append(task)
+                new_periodic_times_list.append(periodic_times_list[i])
         
         self.bot.save_schedule_list(new_periodic_list, periodic_list=True)
         self.bot.save_times_list(new_periodic_times_list, periodic_list=True)
@@ -78,13 +79,14 @@ class Scheduler(ScheduleMixin):
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
 
-        # TODO: add a key so we catch this even if we miss midnight.
-        # Re-schedule random tasks
-
-        if now.hour == 0 and now.minute == 0 and now.second == 1:
-            self._clear_random_tasks()
-            for cls, fn in self.random_tasks:
-                self.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
+        # Re-schedule random tasks at midnight
+        if now.hour == 0 and now.minute == 0:
+            last_random_schedule = self.bot.load("last_random_schedule")
+            if last_random_schedule is None or last_random_schedule.day != now.day:
+                self.bot.save("last_random_schedule", now)
+                self._clear_random_tasks()
+                for cls, fn in self.bot.random_tasks:
+                    self.bot.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         try:
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
                 self.bot.save("scheduler_lock", True)
