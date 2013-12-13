@@ -31,6 +31,7 @@ class StorageMixin(object):
         print "saving %s...." % key
 
         try:
+
             ret = self.storage.set(key, pickle.dumps(value))
             # self.storage.save()
             # This really shouldn't be needed, but without it, a subsequent load fails.
@@ -45,6 +46,8 @@ class StorageMixin(object):
                 print "pickle.loads(_) %s" % pickle.loads(_)
             return ret
         except:
+            print "we blew up trying to save:"
+            print value
             import traceback; traceback.print_exc();
             print "errors(value):"
             print errors(value)
