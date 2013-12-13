@@ -80,13 +80,15 @@ class Scheduler(ScheduleMixin):
         now = datetime.datetime.now()
 
         # Re-schedule random tasks at midnight
-        if now.hour == 0 and now.minute == 0:
-            last_random_schedule = self.bot.load("last_random_schedule")
-            if last_random_schedule is None or last_random_schedule.day != now.day:
-                self.bot.save("last_random_schedule", now)
-                self._clear_random_tasks()
-                for cls, fn in self.bot.random_tasks:
-                    self.bot.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
+        if not hasattr(self, "last_random_schedule"):
+            self.last_random_schedule = self.bot.load("last_random_schedule")
+
+        if self.last_random_schedule is None or self.last_random_schedule.day != now.day:
+            self.bot.save("last_random_schedule", now)
+            self.last_random_schedule = now
+            self._clear_random_tasks()
+            for cls, fn in self.bot.random_tasks:
+                self.bot.add_random_tasks(cls, fn, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
         try:
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
                 self.bot.save("scheduler_lock", True)
