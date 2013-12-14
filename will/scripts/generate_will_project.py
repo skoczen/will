@@ -9,6 +9,7 @@ def main():
         __init__.py
         hello.py
     /templates
+        blank.html
     .gitignore
     run_will.py
     requirements.txt
@@ -51,6 +52,11 @@ class HelloPlugin(WillPlugin):
     print "  /templates"
     if not os.path.exists(templates_dir):
         os.makedirs(templates_dir)
+    
+    print "     blank.html"
+    # Create the plugins __init__.py
+    with open(os.path.join(templates_dir, "blank.html"), 'w+') as f:
+        pass
 
     print "  .gitignore"
     # Create .gitignore, or at least add shelf.db
