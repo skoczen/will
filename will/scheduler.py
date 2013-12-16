@@ -19,6 +19,10 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
 
     def start_loop(self, bot):
         self.bot = bot
+        # For other mixins that expect save.
+        self.save = self.bot.save
+        self.load = self.bot.load
+
         self.active_processes = []
 
         try:
