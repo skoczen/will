@@ -1,3 +1,5 @@
+import re
+
 import settings
 from bottle import request
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin
@@ -20,20 +22,29 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
                 rooms = [self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM), ]
         return rooms
 
+    def _prepared_content(self, content, message, kwargs):
+        
+        if kwargs.get("html", False) and message['type'] in ('chat', 'normal'):
+            # 1-1 can't have HTML.
+            content = html_to_text(content)
+        elif kwargs.get("html", True):
+            # Hipchat is weird about spaces between tags.
+            content = re.sub(r'>\s+<', '><', content)
+        return content
+
+
     def say(self, content, message=None, room=None, **kwargs):
         # Valid kwargs:
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
 
+        content = self._prepared_content(content, message, kwargs)
         if message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
                 self.send_room_message(r["room_id"], content, **kwargs)
         else:
-            if kwargs.get("html", False):
-                content = html_to_text(content)
-            
             sender = self.get_user_from_message(message)
             self.send_direct_message(sender["hipchat_id"], content)
        
@@ -44,6 +55,7 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
         # notify: Ping everyone. Default is False
 
         sender = self.get_user_from_message(message)
+        content = self._prepared_content(content, message, kwargs)
         if message is None or message["type"] == "groupchat":
             # Reply, speaking to the room.
             content = "@%s %s" % (sender["nick"], content)
@@ -52,10 +64,6 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
 
         elif message['type'] in ('chat', 'normal'):
             # Reply to the user (1-1 chat)
-
-            # 1-1 can't have HTML.
-            if kwargs.get("html", False):
-                content = html_to_text(content)
 
             self.send_direct_message(sender["hipchat_id"], content)
 
@@ -70,13 +78,13 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
             self.send_direct_message(sender["hipchat_id"], "I can't set the topic of a one-to-one chat.  Let's just talk.")
    
     def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
+
+        content = self._prepared_content(content, message, kwargs)
         if message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
                 self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
         elif message['type'] in ('chat', 'normal'):
-            if kwargs.get("html", False):
-                content = html_to_text(content)
             self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
 
 

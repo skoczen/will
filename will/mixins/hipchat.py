@@ -47,7 +47,6 @@ class HipChatMixin(object):
                 "message_format": format,
                 "color": color,
                 "notify": notify,
-
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data))

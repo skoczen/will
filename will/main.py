@@ -211,6 +211,7 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                             self.all_listener_regexes.append(help_regex)
                             self.message_listeners.append({
                                 "function_name": function_name,
+                                "class_name": plugin_info["name"],
                                 "regex_pattern": fn.listener_regex,
                                 "regex": re.compile(regex),
                                 "fn": getattr(plugin_info["class"](), function_name),

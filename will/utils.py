@@ -25,7 +25,7 @@ class HTMLStripper(HTMLParser):
 
 def html_to_text(html):
     # Do some light cleanup.
-    html = html.replace("\n", "").replace("<br>", "\n").replace("<br/>", "\n").replace('<li>', "\n-")
+    html = html.replace("\n", "").replace("<br>", "\n").replace("<br/>", "\n").replace('<li>', "\n - ")
     # Strip the tags
     s = HTMLStripper()
     s.feed(html)

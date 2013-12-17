@@ -23,7 +23,7 @@ class StoragePlugin(WillPlugin):
         self.clear_all_keys()
         
 
-    @respond_to("^Show me the storage for (?P<key>.*)")
+    @respond_to("^Show (?:me )?(?:the )?storage for (?P<key>.*)")
     def show_storage(self, message, key=None):
         if not key:
             self.say("Not sure what you're looking for.", message=message)

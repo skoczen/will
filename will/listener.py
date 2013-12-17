@@ -124,7 +124,6 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 msg.room = self.get_room_from_message(msg)
                 msg.sender = self.get_user_from_message(msg)
 
-                matching_listeners = []
                 for l in self.message_listeners:
                     search_matches = l["regex"].search(body)
                     if (search_matches  # The search regex matches and
@@ -133,7 +132,19 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                     ):
                         try:
                             thread_args = [msg,] + l["args"]
-                            thread = threading.Thread(target=l["fn"], args=thread_args, kwargs=search_matches.groupdict())
+                            def fn():
+                                try:
+                                    l["fn"](*thread_args, **search_matches.groupdict())
+                                except:
+                                    content = "I ran into trouble running %s.%s:\n\n%s" % (l["class_name"], l["function_name"], traceback.format_exc(),)
+
+                                    if msg is None or msg["type"] == "groupchat":
+                                        content = "@%s %s" % (msg.sender["nick"], content)
+                                        self.send_room_message(msg.room["room_id"], content, color="red")
+                                    elif msg['type'] in ('chat', 'normal'):
+                                        self.send_direct_message(msg.sender["hipchat_id"], content)
+
+                            thread = threading.Thread(target=fn)
                             thread.start()
                         except:
                             logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))
