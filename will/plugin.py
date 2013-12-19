@@ -45,8 +45,7 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
             for r in rooms:
                 self.send_room_message(r["room_id"], content, **kwargs)
         else:
-            sender = self.get_user_from_message(message)
-            self.send_direct_message(sender["hipchat_id"], content)
+            self.send_direct_message(message.sender["hipchat_id"], content)
        
     def reply(self, message, content, **kwargs):
         # Valid kwargs:
@@ -54,28 +53,26 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
 
-        sender = self.get_user_from_message(message)
         content = self._prepared_content(content, message, kwargs)
         if message is None or message["type"] == "groupchat":
             # Reply, speaking to the room.
-            content = "@%s %s" % (sender["nick"], content)
+            content = "@%s %s" % (message.sender["nick"], content)
 
             self.say(content, message=message, **kwargs)
 
         elif message['type'] in ('chat', 'normal'):
             # Reply to the user (1-1 chat)
 
-            self.send_direct_message(sender["hipchat_id"], content)
+            self.send_direct_message(message.sender["hipchat_id"], content)
 
     def set_topic(self, topic, message=None, room=None):
 
         if message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:    
-                self.set_room_topic(room["room_id"], topic)
+                self.set_room_topic(r["room_id"], topic)
         elif message['type'] in ('chat', 'normal'):
-            sender = self.get_user_from_message(message)
-            self.send_direct_message(sender["hipchat_id"], "I can't set the topic of a one-to-one chat.  Let's just talk.")
+            self.send_direct_message(message.sender["hipchat_id"], "I can't set the topic of a one-to-one chat.  Let's just talk.")
    
     def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
 
