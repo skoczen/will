@@ -132,11 +132,11 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                     ):
                         try:
                             thread_args = [msg,] + l["args"]
-                            def fn():
+                            def fn(listener, args, kwargs):
                                 try:
-                                    l["fn"](*thread_args, **search_matches.groupdict())
+                                    listener["fn"](*args, **kwargs)
                                 except:
-                                    content = "I ran into trouble running %s.%s:\n\n%s" % (l["class_name"], l["function_name"], traceback.format_exc(),)
+                                    content = "I ran into trouble running %s.%s:\n\n%s" % (listener["class_name"], listener["function_name"], traceback.format_exc(),)
 
                                     if msg is None or msg["type"] == "groupchat":
                                         content = "@%s %s" % (msg.sender["nick"], content)
@@ -144,7 +144,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                                     elif msg['type'] in ('chat', 'normal'):
                                         self.send_direct_message(msg.sender["hipchat_id"], content)
 
-                            thread = threading.Thread(target=fn)
+                            thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
                             thread.start()
                         except:
                             logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))

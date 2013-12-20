@@ -20,4 +20,3 @@ class FriendlyPlugin(WillPlugin):
             self.say("have a good weekend!", message=message)
         else:
             self.say("have a good night!", message=message)
-
