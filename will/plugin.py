@@ -23,8 +23,10 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
         return rooms
 
     def _prepared_content(self, content, message, kwargs):
-        
-        if kwargs.get("html", False) and message['type'] in ('chat', 'normal'):
+        if kwargs is None:
+            kwargs = {}
+
+        if kwargs.get("html", False) and (message and message['type'] in ('chat', 'normal')):
             # 1-1 can't have HTML.
             content = html_to_text(content)
         elif kwargs.get("html", True):
