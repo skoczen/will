@@ -210,9 +210,9 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                                 help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
                             self.all_listener_regexes.append(help_regex)
                             if fn.multiline:
-                                compiled_regex = re.complile(regex, re.MULTILINE)
+                                compiled_regex = re.compile(regex, re.MULTILINE)
                             else:
-                                compiled_regex = re.complile(regex)
+                                compiled_regex = re.compile(regex)
                             self.message_listeners.append({
                                 "function_name": function_name,
                                 "class_name": plugin_info["name"],
