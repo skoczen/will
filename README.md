@@ -168,13 +168,13 @@ You can also take a look at [our will](https://github.com/greenkahuna/our-will).
 
 ### Plugin method decorators
 
-###### @hear(regex, include_me=False, case_sensitive=False)
+###### @hear(regex, include_me=False, case_sensitive=False, multiline=False)
 
 - `regex`: a regular expression to match.
 - `include_me`: whether will should hear what he says
 - `case_sensitive`: should the regex be case sensitive?
 
-###### @respond_to(regex, include_me=False, case_sensitive=False)
+###### @respond_to(regex, include_me=False, case_sensitive=False, multiline=False)
 
 - `regex`: a regular expression to match.
 - `include_me`: whether will should hear what he says

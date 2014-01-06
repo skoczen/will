@@ -209,11 +209,15 @@ class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, Room
                             if fn.listens_only_to_direct_mentions:
                                 help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
                             self.all_listener_regexes.append(help_regex)
+                            if fn.multiline:
+                                compiled_regex = re.complile(regex, re.MULTILINE)
+                            else:
+                                compiled_regex = re.complile(regex)
                             self.message_listeners.append({
                                 "function_name": function_name,
                                 "class_name": plugin_info["name"],
                                 "regex_pattern": fn.listener_regex,
-                                "regex": re.compile(regex),
+                                "regex": compiled_regex,
                                 "fn": getattr(plugin_info["class"](), function_name),
                                 "args": fn.listener_args,
                                 "include_me": fn.listener_includes_me,
