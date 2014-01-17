@@ -15,11 +15,13 @@ class TimePlugin(WillPlugin):
         else:
             r = requests.get("http://api.worldweatheronline.com/free/v1/tz.ashx?q=%s&format=json&key=%s" % (place, settings.WORLD_WEATHER_ONLINE_KEY))
             resp = r.json()
-            print resp
-            place = resp["data"]["request"][0]["query"]
-            current_time = self.parse_natural_time(resp["data"]["time_zone"][0]["localtime"])
+            if "request" in resp["data"] and len(resp["data"]["request"]) > 0:
+                place = resp["data"]["request"][0]["query"]
+                current_time = self.parse_natural_time(resp["data"]["time_zone"][0]["localtime"])
 
-            self.say("It's %s in %s." % (self.to_natural_day_and_time(current_time), place), message=message)
+                self.say("It's %s in %s." % (self.to_natural_day_and_time(current_time), place), message=message)
+            else:
+                self.say("I couldn't find anywhere named %s." % (place, ), message=message)
 
     @respond_to("what time is it(\?)?$", multiline=False)
     def what_time_is_it(self, message):
