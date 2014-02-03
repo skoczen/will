@@ -4,18 +4,21 @@ from will import settings
 
 
 class RoomMixin(object):
+    def update_available_rooms(self):
+        self._available_rooms = {}
+        url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.WILL_TOKEN,)
+        r = requests.get(url)
+        for room in r.json()["rooms"]:
+            self._available_rooms[room["name"]] = room
+
+        self.save("hipchat_rooms", self._available_rooms)
+
     @property
     def available_rooms(self):
         if not hasattr(self, "_available_rooms"):
             self._available_rooms = self.load('hipchat_rooms', None)
             if not self._available_rooms:
-                self._available_rooms = {}
-                url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.WILL_TOKEN,)
-                r = requests.get(url)
-                for room in r.json()["rooms"]:
-                    self._available_rooms[room["name"]] = room
-
-                self.save("hipchat_rooms", self._available_rooms)
+                self.update_available_rooms()
 
         return self._available_rooms
 

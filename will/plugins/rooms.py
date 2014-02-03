@@ -8,3 +8,9 @@ class RoomsPlugin(WillPlugin):
     def list_rooms(self, message):
         context = {"rooms": self.available_rooms.values(),}
         self.say(rendered_template("rooms.html", context), message=message, html=True)
+
+
+    @respond_to("^update the room list")
+    def update_rooms(self, message):
+        self.update_available_rooms()
+        self.say("Done!", message=message)
