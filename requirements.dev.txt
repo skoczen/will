@@ -8,7 +8,7 @@ hiredis
 natural
 redis
 requests
-parsedatetime
+parsedatetime==1.1.2
 pyasn1
 pyasn1_modules
 sleekxmpp
