@@ -326,6 +326,10 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
     export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
 
+    # Email
+    export WILL_DEFAULT_FROM_EMAIL="will@greenkahuna.com"
+    export WILL_MAILGUN_API_KEY="key-12398912329381"
+
     # For Production:
     export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.)
     export WILL_URL="http://my-will.herokuapp.com" # If will isn't accessible at localhost (heroku, etc). No trailing slash.:

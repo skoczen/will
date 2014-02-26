@@ -34,3 +34,4 @@ nosetests.xml
 README.html
 
 shelf.db
+.idea/*
