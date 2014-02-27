@@ -3,11 +3,12 @@ import requests
 
 import settings
 from bottle import request
-from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin
+from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin, \
+    EmailMixin
 from utils import html_to_text
 
 
-class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatMixin, SettingsMixin):
+class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatMixin, SettingsMixin):
     is_will_plugin = True
     request = request
 
@@ -86,49 +87,3 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
                 self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
         elif message['type'] in ('chat', 'normal'):
             self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
-
-    # Sends an email to a list of recipients using the default from email unless the from_email argument is specified
-    #
-    # from_email - Who the email is from, default to WILL_DEFAULT_FROM_EMAIL
-    # email_list - A list of emails to.. email!
-    # subject - The subject of the message
-    # message - The body of the message to send
-    #
-    # Example:
-    #     r = requests.get(url)
-    #
-    #     if r.status_code == 500:
-    #         self._send_email(
-    #             "ERROR! <errors@greenkahuna.com>",
-    #             ["helper@scrapbin.com"],
-    #             "Website 500 error - %s" % url,
-    #             "%s is down!" % url
-    #         )
-    #
-    # Returns nothing
-    def send_email(self, from_email=None, email_list=[], subject="", message=""):
-        if not hasattr(settings, 'WILL_MAILGUN_API_KEY'):
-            raise Exception("Will requires a Mailgun api key in the environment variable WILL_MAILGUN_API_KEY")
-
-        if from_email is None:
-            from_email = settings.WILL_DEFAULT_FROM_EMAIL
-
-            if from_email is None:
-                raise ValueError("Couldn't send email, from_email was None and there was no WILL_DEFAULT_FROM_EMAIL")
-
-        if email_list is None or len(email_list) == 0:
-            raise ValueError("Couldn't send email, email_list was None or empty?!")
-
-        resp = requests.post(
-            "https://api.mailgun.net/v2/scrapbin.com/messages",
-            auth=("api", settings.WILL_MAILGUN_API_KEY),
-            data={
-                "from": from_email,
-                "to": email_list,
-                "subject": "Website 500 error",
-                "text": message
-            }
-        )
-
-        if resp.status_code != 200:
-            raise Exception("Could not send email, got a %s response" % resp.status_code)
