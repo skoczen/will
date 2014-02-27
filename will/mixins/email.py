@@ -1,6 +1,6 @@
 import requests
 
-import settings
+from will import settings
 
 
 class EmailMixin(object):
