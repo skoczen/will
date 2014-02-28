@@ -327,6 +327,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
     export WILL_DEFAULT_FROM_EMAIL="will@greenkahuna.com"
     export WILL_MAILGUN_API_KEY="key-12398912329381"
+    export WILL_MAILGUN_API_URL="scrapbin.com"
 
     # For Production:
     export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.)
