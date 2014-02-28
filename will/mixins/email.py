@@ -34,4 +34,4 @@ class EmailMixin(object):
         )
 
         if resp.status_code != 200:
-            raise Exception("Could not send email, got a %s response, data: %s" % (resp.status_code, resp.json))
+            raise Exception("Could not send email, got a %s response posting to mailgun" % resp.status_code)
