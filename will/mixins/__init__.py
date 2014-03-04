@@ -1,4 +1,5 @@
 from errors import ErrorMixin
+from email import EmailMixin
 from hipchat import HipChatMixin
 from naturaltime import NaturalTimeMixin
 from room import RoomMixin

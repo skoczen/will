@@ -1,12 +1,14 @@
 import re
+import requests
 
 import settings
 from bottle import request
-from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin
+from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin, \
+    EmailMixin
 from utils import html_to_text
 
 
-class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatMixin, SettingsMixin):
+class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, ScheduleMixin, HipChatMixin, SettingsMixin):
     is_will_plugin = True
     request = request
 
@@ -85,5 +87,3 @@ class WillPlugin(StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin, Schedul
                 self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
         elif message['type'] in ('chat', 'normal'):
             self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
-
-

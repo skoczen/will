@@ -16,7 +16,8 @@ monkey.patch_all()
 import bottle
 
 from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin, RoomMixin, PluginModulesLibraryMixin
+from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin, RoomMixin, PluginModulesLibraryMixin, \
+    EmailMixin
 from scheduler import Scheduler
 import settings
 
@@ -37,7 +38,7 @@ sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
-class WillBot(WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
+class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
 
     def __init__(self, plugins_dirs=[], template_dirs=[]):
         logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
