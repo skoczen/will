@@ -409,3 +409,7 @@ Will leverages some fantastic libraries.  He wouldn't exist without them.
 - [natural](https://github.com/tehmaze/natural) and [parsedatetime](https://github.com/bear/parsedatetime) for natural date parsing
 - [apscheduler](http://apscheduler.readthedocs.org/en/latest/) for scheduled task parsing
 - [Requests](http://requests.readthedocs.org/en/latest/) to make http sane.
+
+He also has had help from lots of coders:
+
+- [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.

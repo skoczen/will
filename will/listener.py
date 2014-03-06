@@ -47,7 +47,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.initial_ignoring_done = False
         
         self.send_presence()
-        self.get_roster()
+        self.get_roster(block=True)
         self.update_will_roster_and_rooms()
         for r in self.rooms:
             self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
