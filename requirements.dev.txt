@@ -11,7 +11,7 @@ requests
 parsedatetime==1.1.2
 pyasn1
 pyasn1_modules
-sleekxmpp
+sleekxmpp>=1.2
 
 # Dev only
 pyandoc

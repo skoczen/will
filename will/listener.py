@@ -36,6 +36,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
 
+        self.add_event_handler("roster_update", self.join_rooms)
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
@@ -43,12 +44,14 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.register_plugin('xep_0045') # MUC
 
     def session_start(self, event):
+        self.send_presence()
+        self.get_roster()
+
+    def join_rooms(self, event):
         self.initialized_at = datetime.datetime.now()
         self.initial_ignoring_done = False
-        
-        self.send_presence()
-        self.get_roster(block=True)
         self.update_will_roster_and_rooms()
+
         for r in self.rooms:
             self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
 
