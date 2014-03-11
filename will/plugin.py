@@ -32,8 +32,11 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             # 1-1 can't have HTML.
             content = html_to_text(content)
         elif kwargs.get("html", True):
-            # Hipchat is weird about spaces between tags.
-            content = re.sub(r'>\s+<', '><', content)
+            try:
+                # Hipchat is weird about spaces between tags.
+                content = re.sub(r'>\s+<', '><', content)
+            except TypeError:
+                raise Exception("Could not clean up HTML template, was there an error parsing the template?")
         return content
 
 
