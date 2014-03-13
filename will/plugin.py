@@ -1,5 +1,6 @@
 import re
 import requests
+import traceback
 
 import settings
 from bottle import request
@@ -24,6 +25,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM), ]
         return rooms
 
+
     def _prepared_content(self, content, message, kwargs):
         if kwargs is None:
             kwargs = {}
@@ -32,10 +34,15 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             # 1-1 can't have HTML.
             content = html_to_text(content)
         elif kwargs.get("html", True):
-            # Hipchat is weird about spaces between tags.
-            content = re.sub(r'>\s+<', '><', content)
-        return content
+            try:
+                # Hipchat is weird about spaces between tags.
+                content = re.sub(r'>\s+<', '><', content)
+            except:
+                exception_message = "Could not clean up HTML template, was there an error parsing the template?\n " \
+                                    "%s" % traceback.format_exc()
 
+                self.say(content=exception_message, message=message, color="red")
+        return content
 
     def say(self, content, message=None, room=None, **kwargs):
         # Valid kwargs:
