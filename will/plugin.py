@@ -40,12 +40,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             except:
                 exception_message = "Could not clean up HTML template, was there an error parsing the template?\n " \
                                     "%s" % traceback.format_exc()
-                if message is None or message["type"] == "groupchat":
-                    self.send_room_message(message.room["room_id"], exception_message, color="red")
-                elif message['type'] in ('chat', 'normal'):
-                    self.send_direct_message(message.sender["hipchat_id"], exception_message)
 
-                content = None
+                self.say(content=exception_message, message=message, color="red")
         return content
 
     def say(self, content, message=None, room=None, **kwargs):
