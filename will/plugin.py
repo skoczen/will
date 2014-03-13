@@ -35,8 +35,9 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             try:
                 # Hipchat is weird about spaces between tags.
                 content = re.sub(r'>\s+<', '><', content)
-            except TypeError:
-                raise Exception("Could not clean up HTML template, was there an error parsing the template?")
+            except:
+                self.say("Could not clean up HTML template, was there an error parsing the template?", message=message)
+                raise
         return content
 
 
