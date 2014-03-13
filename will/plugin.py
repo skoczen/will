@@ -1,5 +1,6 @@
 import re
 import requests
+import traceback
 
 import settings
 from bottle import request
@@ -24,6 +25,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM), ]
         return rooms
 
+
     def _prepared_content(self, content, message, kwargs):
         if kwargs is None:
             kwargs = {}
@@ -36,10 +38,15 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 # Hipchat is weird about spaces between tags.
                 content = re.sub(r'>\s+<', '><', content)
             except:
-                self.say("Could not clean up HTML template, was there an error parsing the template?", message=message)
-                raise
-        return content
+                exception_message = "Could not clean up HTML template, was there an error parsing the template?\n " \
+                                    "%s" % traceback.format_exc()
+                if message is None or message["type"] == "groupchat":
+                    self.send_room_message(message.room["room_id"], exception_message, color="red")
+                elif message['type'] in ('chat', 'normal'):
+                    self.send_direct_message(message.sender["hipchat_id"], exception_message)
 
+                content = None
+        return content
 
     def say(self, content, message=None, room=None, **kwargs):
         # Valid kwargs:
