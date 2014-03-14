@@ -318,8 +318,8 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_TOKEN='kjadfj89a34878adf78789a4fae3'
     export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
     export WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'  # Semicolon-separated, so you can have commas in names.
-    export WILL_NAME='William T. Kahuna'
-    export WILL_HANDLE='will'
+    export WILL_NAME='William T. Kahuna'  # Must be the *exact, case-sensitive* full name from hipchat.
+    export WILL_HANDLE='will'  # Must be the exact handle from hipchat.
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
     # Optional
