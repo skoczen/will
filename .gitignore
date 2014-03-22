@@ -26,12 +26,16 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
-.mr.developer.cfg
-.project
-.pydevproject
 .dewey_autocomplete.sh
 
 README.html
 
 shelf.db
+
+# Editor and IDE files
+*~
 .idea/*
+.mr.developer.cfg
+.project
+.pydevproject
+
