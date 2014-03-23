@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+export WILL_ROOMS='Hipnos is only the beginning'
 
 `find . -name "start_dev_will.py"` &
 PID=$!
