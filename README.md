@@ -411,8 +411,8 @@ Will leverages some fantastic libraries.  He wouldn't exist without them.
 - [Requests](http://requests.readthedocs.org/en/latest/) to make http sane.
 
 Will was originally written by [Steven Skoczen](https://github.com/skoczen) at [GreenKahuna](https://www.greenkahuna.com).  The rest of the GK team has also pitched in, including:
-- [levithomason](http://github.com/levithomason), and 
-- [ckcollab](http://github.com/ckcollab)
+- [ckcollab](http://github.com/ckcollab), and 
+- [levithomason](http://github.com/levithomason)
 
 Will's also has had help from lots of coders:
 
