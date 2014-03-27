@@ -1,0 +1,12 @@
+language: python
+
+# Versions of Python on which to test
+python:
+  - "2.7"
+
+# command to install dependencies
+install: "pip install -r requirements.txt"
+
+# Test script to run
+script: ./will/scripts/test_run.sh
+
