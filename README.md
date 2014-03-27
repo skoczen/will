@@ -309,7 +309,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 
 1. `pip install will`
 2. Install and configure redis
-3. Set environment variables:
+3. Set environment variables.  The easiest way to do this is to put all of the following in your virtualenv's `bin/postactivate` file, so it's always there when you `workon will`, and things Just Work:
 
    ```
     # Required
@@ -410,6 +410,11 @@ Will leverages some fantastic libraries.  He wouldn't exist without them.
 - [apscheduler](http://apscheduler.readthedocs.org/en/latest/) for scheduled task parsing
 - [Requests](http://requests.readthedocs.org/en/latest/) to make http sane.
 
-He also has had help from lots of coders:
+Will was originally written by [Steven Skoczen](https://github.com/skoczen) at [GreenKahuna](https://www.greenkahuna.com).  The rest of the GK team has also pitched in, including:
+- [levithomason](http://github.com/levithomason), and 
+- [ckcollab](http://github.com/ckcollab)
+
+Will's also has had help from lots of coders:
 
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
+- [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
