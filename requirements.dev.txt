@@ -1,17 +1,2 @@
-apscheduler
-bottle
-dill>=0.2b1
-dnspython
-gevent
-jinja2
-hiredis
-natural
-redis
-requests
-parsedatetime==1.1.2
-pyasn1
-pyasn1_modules
-sleekxmpp>=1.2
-
-# Dev only
+-r requirements.txt
 pyandoc
