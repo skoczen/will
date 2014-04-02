@@ -56,6 +56,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
             self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
 
     def update_will_roster_and_rooms(self):
+        fullroster={}
         internal_roster = self.load('will_roster', {})
         for roster_id in self.roster:
             cur_roster = self.roster[roster_id]
@@ -73,7 +74,9 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                     })
 
                     if not hasattr(internal_roster[user_id], "nick"):
-                        user_data = self.get_hipchat_user(hipchat_id)
+                        if int(hipchat_id) not in fullroster:
+                            fullroster=self.get_all_users()
+                        user_data = fullroster[int(hipchat_id)]
                         internal_roster[user_id].nick = user_data["mention_name"]
                         internal_roster[user_id].mention_name = user_data["mention_name"]
 

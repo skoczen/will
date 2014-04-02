@@ -10,6 +10,7 @@ ROOM_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%
 PRIVATE_MESSAGE_URL = "https://api.hipchat.com/v2/user/%(user_id)s/message?auth_token=%(token)s"
 SET_TOPIC_URL = "https://api.hipchat.com/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 USER_DETAILS_URL = "https://api.hipchat.com/v2/user/%(user_id)s?auth_token=%(token)s"
+ALL_USERS_URL = "https://api.hipchat.com/v2/user?auth_token=%(token)s&start-index=%(starti)s&include-deleted=%(includedd)s"
 
 
 class HipChatMixin(object):
@@ -70,3 +71,16 @@ class HipChatMixin(object):
         url = USER_DETAILS_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
         r = requests.get(url)
         return r.json()
+
+    def get_all_users(self):
+        fullroster={}
+        url = ALL_USERS_URL % { "token" : settings.WILL_V2_TOKEN, "starti": 0, "includedd": "false" }
+        r = requests.get(url)
+        for user in r.json()['items']:
+            fullroster[user['id']]=user
+        while 'next' in r.json()['links']:
+            url = '%(link)s&auth_token=%(token)s' % { 'link': r.json()['links']['next'], 'token' : settings.WILL_V2_TOKEN }
+            r = requests.get(url)
+            for user in r.json()['items']:
+                fullroster[user['id']]=user
+        return fullroster
