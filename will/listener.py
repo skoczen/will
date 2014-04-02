@@ -89,6 +89,8 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
         self.save("will_roster", internal_roster)
 
+        self.update_available_rooms()
+
     def room_message(self, msg):
         # Ugly hack to ignore the room backlog when joining.
         if not self.initial_ignoring_done:
