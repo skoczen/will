@@ -56,32 +56,37 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
             self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
 
     def update_will_roster_and_rooms(self):
-        fullroster={}
         internal_roster = self.load('will_roster', {})
+        # Loop through the connected rooms
         for roster_id in self.roster:
+
             cur_roster = self.roster[roster_id]
+            # Loop through the users in a given room
             for user_id in cur_roster:
                 user_data = cur_roster[user_id]
                 if user_data["name"] != "":
+                    # If we don't have this user in the internal_roster, add them.
                     if not user_id in internal_roster:
                         internal_roster[user_id] = Bunch()
 
                     hipchat_id = user_id.split("@")[0].split("_")[1]
+                    # Update their info
                     internal_roster[user_id].update({
                         "name": user_data["name"],
                         "jid": user_id,
                         "hipchat_id": hipchat_id,
                     })
 
+                    # If we don't have a nick yet, pull it and mention_name off the master user list.
                     if not hasattr(internal_roster[user_id], "nick"):
-                        if int(hipchat_id) not in fullroster:
-                            fullroster=self.get_all_users()
-                        user_data = fullroster[int(hipchat_id)]
+                        user_data = self.full_hipchat_user_list[hipchat_id]
                         internal_roster[user_id].nick = user_data["mention_name"]
                         internal_roster[user_id].mention_name = user_data["mention_name"]
 
+                    # If it's me, save that info!
                     if internal_roster[user_id]["name"] == self.nick:
                         self.me = internal_roster[user_id]
+
         self.save("will_roster", internal_roster)
 
     def room_message(self, msg):

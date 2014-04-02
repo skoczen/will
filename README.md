@@ -12,7 +12,7 @@ Quick-links:
     - [Deploying on Heroku](README.md#deploying-on-heroku)
     - [Hacking on Will](README.md#hacking-on-will)
 - [The Shoulders of Giants](README.md#the-shoulders-of-giants)
-
+- [Releases](README.md#releases)
 
 # Will can:
 
@@ -418,3 +418,16 @@ Will's also has had help from lots of coders:
 
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
+
+
+# Releases
+
+### 0.4.3
+
+* Support for hundreds of users and rooms without hitting the API limit.
+    - get_all_users use of the bulk API [added](https://github.com/greenkahuna/will/pull/18) by [quixeybrian](https://github.com/quixeybrian)
+    - update_available_rooms changed to use the bulk API.   Thanks to [jbeluch](https://github.com/jbeluch) and [jdrukman](https://github.com/jdrukman) for nudges in the right direction.
+
+### 0.4
+
+* Ye olden past before we started keeping this list.  All contributions by GreenKahuna.  Will did everything that's not in the release list above.  That's called lazy retconning release lists!
