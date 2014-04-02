@@ -425,8 +425,10 @@ Will's also has had help from lots of coders:
 ### 0.4.3
 
 * Support for hundreds of users and rooms without hitting the API limit.
-    - get_all_users use of the bulk API [added](https://github.com/greenkahuna/will/pull/18) by [quixeybrian](https://github.com/quixeybrian)
-    - update_available_rooms changed to use the bulk API.   Thanks to [jbeluch](https://github.com/jbeluch) and [jdrukman](https://github.com/jdrukman) for nudges in the right direction.
+    - `get_all_users` use of the bulk API [added](https://github.com/greenkahuna/will/pull/18) by [quixeybrian](https://github.com/quixeybrian).  Thanks also to [jbeluch](https://github.com/jbeluch) and [jdrukman](https://github.com/jdrukman) for nudges in the right direction.
+    - The start of some useful comments - the meat of will was hacked out by one person over a handful of days - and it looks that way. Slowly but surely making this codebase more friendly to other contributions!
+    - Added a CONTRIBUTING.md file thanks to [michaeljoseph](https://github.com/michaeljoseph).
+    - Proper releases in the docs, and an updated `AUTHORS` file.  If you see something awry, send a PR!
 
 ### 0.4
 
