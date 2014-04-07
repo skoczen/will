@@ -6,9 +6,15 @@ from will import settings
 class RoomMixin(object):
     def update_available_rooms(self):
         self._available_rooms = {}
-        url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.WILL_TOKEN,)
-        r = requests.get(url)
-        for room in r.json()["rooms"]:
+        url = "https://api.hipchat.com/v2/room?auth_token=%s" % (settings.WILL_V2_TOKEN,)
+        rooms = requests.get(url).json()
+
+        for room in rooms["items"]:
+            url = room["links"]["self"] + "/?auth_token=%s;expand=xmpp_jid" % (settings.WILL_V2_TOKEN,)
+            room_details = requests.get(url).json()
+            # map certain hipchat API v2 kv pairs to their v1 equivalent
+            room["xmpp_jid"] = room_details["xmpp_jid"]
+            room["room_id"] = room["id"]
             self._available_rooms[room["name"]] = room
 
         self.save("hipchat_rooms", self._available_rooms)
