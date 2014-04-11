@@ -8,6 +8,8 @@ class RoomMixin(object):
         self._available_rooms = {}
         url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.WILL_TOKEN,)
         r = requests.get(url)
+        if r.status_code == requests.codes.unauthorized:
+            raise Exception("WILL_TOKEN authentication failed with HipChat")
         for room in r.json()["rooms"]:
             self._available_rooms[room["name"]] = room
 
