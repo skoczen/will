@@ -422,6 +422,11 @@ Will's also has had help from lots of coders:
 
 # Releases
 
+
+### 0.4.4
+    - Removes the dependence on the v1 token (though it still helps with rate-limiting), thanks to [bfhenderson](https://github.com/bfhenderson)
+    - Much friendlier error message on an invalid API key, thanks to [adamgilman](https://github.com/adamgilman)
+
 ### 0.4.3
 
 * Support for hundreds of users and rooms without hitting the API limit.
