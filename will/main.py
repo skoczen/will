@@ -144,7 +144,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
             self.connect()
             bootstrapped = True
         except Exception, e:
-            self.startup_error("Error bootstrapping bottle", e)
+            self.startup_error("Error bootstrapping xmpp", e)
         if bootstrapped:
             self.process(block=True)
 
