@@ -418,14 +418,17 @@ Will's also has had help from lots of coders:
 
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
+- [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
+- [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the key was invalid.
 
 
 # Releases
 
 
 ### 0.4.4
-    - Removes the dependence on the v1 token (though it still helps with rate-limiting), thanks to [bfhenderson](https://github.com/bfhenderson)
-    - Much friendlier error message on an invalid API key, thanks to [adamgilman](https://github.com/adamgilman)
+
+* Removes the dependence on the v1 token (though it still helps with rate-limiting), thanks to [bfhenderson](https://github.com/bfhenderson)
+* Much friendlier error message on an invalid API key, thanks to [adamgilman](https://github.com/adamgilman)
 
 ### 0.4.3
 
