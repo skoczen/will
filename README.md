@@ -322,7 +322,7 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
     # Optional
-    export WILL_TOKEN='kjadfj89a34878adf78789a4fae3' # for v1 API. Must be an 'admin' token, not just notification.
+    export WILL_TOKEN='kjadfj89a34878adf78789a4fae3' # for v1 API. Must be an 'admin' token, not just notification. Optional, unless you have > ~30 rooms.
     export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
     export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
     export WILL_DEFAULT_FROM_EMAIL="will@example.com"
