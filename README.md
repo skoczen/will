@@ -1,3 +1,6 @@
+<img  align="right" src="https://gk-will.s3.amazonaws.com/will-head.png?v2" alt="Will's smilling face" title="Will's smilling face"/>
+
+Meet Will.
 
 Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.  Batteries included.
 
