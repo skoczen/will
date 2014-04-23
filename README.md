@@ -426,12 +426,12 @@ Will's also has had help from lots of coders:
 # Releases
 
 
-### 0.4.4
+### 0.4.4 - April 22, 2014
 
 * Removes the dependence on the v1 token (though it still helps with rate-limiting), thanks to [bfhenderson](https://github.com/bfhenderson).
 * Much friendlier error message on an invalid API key, thanks to [adamgilman](https://github.com/adamgilman).
 
-### 0.4.3
+### 0.4.3 - ~ April 1, 2014
 
 * Support for hundreds of users and rooms without hitting the API limit.
     - `get_all_users` use of the bulk API [added](https://github.com/greenkahuna/will/pull/18) by [quixeybrian](https://github.com/quixeybrian).  Thanks also to [jbeluch](https://github.com/jbeluch) and [jdrukman](https://github.com/jdrukman) for nudges in the right direction.
@@ -439,6 +439,6 @@ Will's also has had help from lots of coders:
     - Added a CONTRIBUTING.md file thanks to [michaeljoseph](https://github.com/michaeljoseph).
     - Proper releases in the docs, and an updated `AUTHORS` file.  If you see something awry, send a PR!
 
-### 0.4
+### 0.4 - ~ March 2014
 
 * Ye olden past before we started keeping this list.  All contributions by GreenKahuna.  Will did everything that's not in the release list above.  That's called lazy retconning release lists!
