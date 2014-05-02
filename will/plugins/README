@@ -1,0 +1,4 @@
+If you want a function displayed in the "help" function/plugin then add a 
+docstring to it.  The docstring will be displayed.  If a function does not 
+have a docstring, then the function will not show up in the help menu, but 
+will work just fine.
