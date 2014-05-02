@@ -144,6 +144,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
             self.start_xmpp_client()
             self.help_files.sort()
             self.save("help_files", self.help_files)
+            self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
             bootstrapped = True
         except Exception, e:
@@ -197,6 +198,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         self.periodic_tasks = []
         self.random_tasks = []
         self.bottle_routes = []
+        self.all_listener_regexes = []
         self.help_files = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
@@ -212,6 +214,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
                             help_regex = fn.listener_regex
                             if fn.listens_only_to_direct_mentions:
                                 help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
+                            self.all_listener_regexes.append(help_regex)
                             self.help_files.append(fn.__doc__)
                             if fn.multiline:
                                 compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
