@@ -153,14 +153,30 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 
     # Confirm that he heard you.
     self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
-
-# e.g.
-# @will remind me to take out the trash at 6pm tomorrow
-# > take out the trash tomorrow at 6pm. Got it.
-# or
-# @will remind me to take out the trash at 6pm monday
-# > take out the trash December 16 at 6pm. Got it.
 ```
+
+Then:
+> <b>You:</b> @will remind me to take out the trash at 6pm tomorrow<br>
+> <b>Will:</b> take out the trash tomorrow at 6pm. Got it.
+
+or:
+> <b>You:</b> @will remind me to take out the trash at 6pm monday<br>
+> <b>Will:</b> take out the trash December 16 at 6pm. Got it.
+
+
+#### Document himself
+```python
+@respond_to("image me (?P<search_query>.*)$")
+def image_me(self, message, search_query):
+    """image me ___ : Search google images for ___, and post a random one."""
+    pass
+```
+
+Then:
+> <b>You:</b> @will help<br>
+> <b>Will:</b> Sure thing, Steven. <br>
+> <b>Will:</b> Here's what I know how to do:<br><b>&nbsp; &nbsp;image me ___</b> : Search google images for ___, and post a random one.
+
 
 #### A lot more
 We've built will to be easy to extend, change, and write.  Check out the plugins directory for lots more examples!
@@ -168,6 +184,12 @@ We've built will to be easy to extend, change, and write.  Check out the plugins
 You can also take a look at [our will](https://github.com/greenkahuna/our-will).  He's open-source, handles our deploys and lots of fun things - enjoy!
 
 # High-level API
+
+###### @hear(regex, include_me=False, case_sensitive=False, multiline=False)
+
+- `regex`: a regular expression to match.
+- `include_me`: whether will should hear what he says
+- `case_sensitive`: should the regex be case sensitive?
 
 ### Plugin method decorators
 
@@ -305,6 +327,14 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 1. Include both rooms, semicolon-separated in `WILL_ROOMS`
 2. Make sure to include either `message` or `room` on any calls to `.say()`, `set_topic()`, or `schedule_say()` you have a specific room in mind for, or don't want going to the default room.
 
+#### Auto documentation
+
+Will has two kinds of help: _regular_ help, and _programmer_ help.
+
+Regular help lists all listen/reply methods that have docstrings.  If the docstring includes a colon, i.e. "my command: does cool stuff", it will be formatted nicely as "**my command**: does cool stuff"
+
+Programmer help lists the regexes for all listen/reply methods.  It's significantly less friendly, but still useful for more buried/admin-type functions.
+
 
 # Installation
 
@@ -422,11 +452,17 @@ Will's also has had help from lots of coders:
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
-- [quixeybrian](https://github.com/quixeybrian) stopped the rate limit nightmare, by writing `get_all_users`.
+- [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the key was invalid.
 
 
 # Releases
+
+### 0.4.5 - May 22, 2014
+
+* Awesome new help system by [quixeybrian](https://github.com/quixeybrian).  
+* @will help now only displays functions with docstrings, and formats them nicely.
+* Old help (regexes and all) is available at "@will programmer help"
 
 
 ### 0.4.4 - April 22, 2014

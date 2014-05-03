@@ -9,7 +9,7 @@ class TimePlugin(WillPlugin):
 
     @respond_to("what time is it in (?P<place>.*)")
     def what_time_is_it_in(self, message, place):
-        print "responding to in"
+        """what time is it in ___: Say the time in almost any city on earth."""
         if not hasattr(settings, "WORLD_WEATHER_ONLINE_KEY"):
             self.say("I need a world weather online key to do that.\n You can get one at http://developer.worldweatheronline.com, and then set the key as WORLD_WEATHER_ONLINE_KEY", message=message)
         else:
@@ -25,5 +25,6 @@ class TimePlugin(WillPlugin):
 
     @respond_to("what time is it(\?)?$", multiline=False)
     def what_time_is_it(self, message):
+        """what time is it: Say the time where I am."""
         now = datetime.datetime.now()
         self.say("It's %s." % self.to_natural_day_and_time(now), message=message)

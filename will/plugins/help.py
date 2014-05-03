@@ -7,12 +7,13 @@ class HelpPlugin(WillPlugin):
 
     @respond_to("^help")
     def help(self, message):
-        """help:  I like to help it, help it...I like to help it, help it...
-I like to...MOVE IT!"""
         help_data = self.load("help_files")
-        help_text = "Here is what I can do:"
+        self.say("Sure thing, %s." % message.sender.nick, message=message)
+        help_text = "Here's what I know how to do:"
         for line in help_data:
             if line:
-                help_text += "\n{}".format(line.split('\n')[0])
+                if ":" in line:
+                    line = "<b>%s</b>%s" % (line[:line.find(":")], line[line.find(":"):])
+                help_text += "<br/> %s" % line
 
-        self.say(help_text, message=message)
+        self.say(help_text, message=message, html=True)

@@ -7,6 +7,7 @@ class FriendlyPlugin(WillPlugin):
 
     @respond_to("^hi")
     def hi(self, message):
+        """hi: I know how to say hello."""
         self.reply(message, "hello!")
 
     @hear("^(good )?(morning?)")

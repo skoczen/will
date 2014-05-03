@@ -8,6 +8,7 @@ class ImagesPlugin(WillPlugin):
 
     @respond_to("image me (?P<search_query>.*)$")
     def image_me(self, message, search_query):
+        """image me ___ : Search google images for ___, and post a random one."""
         data = {
             "q": search_query,
             "v": "1.0",
