@@ -447,13 +447,14 @@ Will was originally written by [Steven Skoczen](https://github.com/skoczen) at [
 - [ckcollab](http://github.com/ckcollab), and 
 - [levithomason](http://github.com/levithomason)
 
-Will's also has had help from lots of coders:
+Will's also has had help from lots of coders. Alphabetically:
 
+- [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the key was invalid.
+- [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
-- [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
-- [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the key was invalid.
+
 
 
 # Releases
