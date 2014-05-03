@@ -458,10 +458,10 @@ Will's also has had help from lots of coders:
 
 # Releases
 
-### 0.4.5 - May 22, 2014
+### 0.4.5 - May 2, 2014
 
 * Awesome new help system by [quixeybrian](https://github.com/quixeybrian).  
-* @will help now only displays functions with docstrings, and formats them nicely.
+* "@will help" now only displays functions with docstrings, and formats them nicely.
 * Old help (regexes and all) is available at "@will programmer help"
 
 
