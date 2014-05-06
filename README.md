@@ -459,6 +459,11 @@ Will's also has had help from lots of coders. Alphabetically:
 
 # Releases
 
+### 0.4.6 - May 5, 2014
+
+* `@route` decorators now honor all bottle arguments, most helpfully `method`! 
+
+
 ### 0.4.5 - May 2, 2014
 
 * Awesome new help system by [quixeybrian](https://github.com/quixeybrian).  

@@ -92,8 +92,10 @@ def rendered_template(template_name, context=None):
         return wrap
 
 
-def route(path):
+def route(path, *args, **kwargs):
     def wrap(f):
         f.bottle_route = path
+        for k, v in kwargs.items():
+            setattr(f, "bottle_%s" % k, v)
         return f
     return wrap

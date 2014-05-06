@@ -130,7 +130,11 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
             for cls, function_name in self.bottle_routes:
                 instantiated_cls = cls()
                 instantiated_fn = getattr(instantiated_cls, function_name)
-                bottle.route(instantiated_fn.bottle_route)(instantiated_fn)
+                bottle_route_args = {}
+                for k, v in instantiated_fn.__dict__.items():
+                    if "bottle_" in k and k != "bottle_route":
+                        bottle_route_args[k[len("bottle_"):]] = v
+                bottle.route(instantiated_fn.bottle_route, **bottle_route_args)(instantiated_fn)
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping bottle", e)
