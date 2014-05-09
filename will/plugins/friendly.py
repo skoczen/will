@@ -5,7 +5,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class FriendlyPlugin(WillPlugin):
 
-    @respond_to("^hi")
+    @respond_to("^(hi|hello|sup)")
     def hi(self, message):
         self.reply(message, "hello!")
 
