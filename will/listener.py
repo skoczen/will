@@ -13,6 +13,7 @@ from mixins import RosterMixin, RoomMixin, HipChatMixin
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
+        logger = logging.getLogger(__name__)
         ClientXMPP.__init__(self, settings.WILL_USERNAME, settings.WILL_PASSWORD)
         self.rooms = []
 
@@ -25,7 +26,12 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 if not hasattr(self, "default_room"):
                     self.default_room = r
 
-                self.rooms.append(self.available_rooms[r])
+                try:
+                    self.rooms.append(self.available_rooms[r])
+                except KeyError:
+                    logger.error(
+                        u'"{0}" is not an available room: {1}'
+                        .format(r, u', '.join(self.available_rooms.keys())))
 
         self.nick = settings.WILL_NAME
         self.handle = settings.WILL_HANDLE
