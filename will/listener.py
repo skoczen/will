@@ -1,8 +1,6 @@
-import copy
 import datetime
 import logging
 import re
-import requests
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
@@ -32,7 +30,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.nick = settings.WILL_NAME
         self.handle = settings.WILL_HANDLE
         self.handle_regex = re.compile("@%s" % self.handle)
-        
+
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
 
@@ -40,7 +38,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
-        
+
         self.register_plugin('xep_0045') # MUC
 
     def session_start(self, event):
@@ -96,7 +94,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         if not self.initial_ignoring_done:
             if (datetime.datetime.now() - self.initialized_at).total_seconds() > 3:
                 self.initial_ignoring_done = True
-        
+
         if self.initial_ignoring_done:
             self._handle_message_listeners(msg)
 
@@ -115,7 +113,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         if start_pos != -1:
             cut_start = start_pos + len(start)
             return msg_str[cut_start:msg_str.find('"', cut_start)]
-        
+
         return msg["from"]
 
 
