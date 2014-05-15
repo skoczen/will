@@ -30,8 +30,9 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                     self.rooms.append(self.available_rooms[r])
                 except KeyError:
                     logger.error(
-                        u'"{0}" is not an available room: {1}'
-                        .format(r, u', '.join(self.available_rooms.keys())))
+                        u'"{0}" is not an available room, ask'
+                        ' "@{1} what are the rooms?" for the full list.'
+                        .format(r, settings.WILL_HANDLE))
 
         self.nick = settings.WILL_NAME
         self.handle = settings.WILL_HANDLE
