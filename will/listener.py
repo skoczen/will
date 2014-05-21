@@ -1,4 +1,3 @@
-import datetime
 import logging
 import re
 import threading
@@ -14,7 +13,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
         logger = logging.getLogger(__name__)
-        ClientXMPP.__init__(self, settings.WILL_USERNAME, settings.WILL_PASSWORD)
+        ClientXMPP.__init__(self, "%s/bot" % settings.WILL_USERNAME, settings.WILL_PASSWORD)
         self.rooms = []
 
         self.default_room = settings.WILL_DEFAULT_ROOM
@@ -53,8 +52,6 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.get_roster()
 
     def join_rooms(self, event):
-        self.initialized_at = datetime.datetime.now()
-        self.initial_ignoring_done = False
         self.update_will_roster_and_rooms()
 
         for r in self.rooms:
@@ -97,13 +94,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.update_available_rooms()
 
     def room_message(self, msg):
-        # Ugly hack to ignore the room backlog when joining.
-        if not self.initial_ignoring_done:
-            if (datetime.datetime.now() - self.initialized_at).total_seconds() > 3:
-                self.initial_ignoring_done = True
-
-        if self.initial_ignoring_done:
-            self._handle_message_listeners(msg)
+        self._handle_message_listeners(msg)
 
 
     def message_recieved(self, msg):
