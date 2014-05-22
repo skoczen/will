@@ -455,14 +455,19 @@ Will's also has had help from lots of coders. Alphabetically:
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
-
+- [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages.
 
 
 # Releases
 
+### 0.4.8 - May 21, 2014
+
+* Will now ignores all previously sent messages properly, by passing in `bot` as the resource instead of an ugly time hack, thanks to [dpoirier](https://github.com/dpoirier).
+
+
 ### 0.4.7 - May 15, 2014
 
-* Will now prints a helpful message if one of your `WILL_ROOMS` is wrong, and continues starting, instead of crashing in a fiery ball, thanks to [crccheck](https://github.com/crccheck)
+* Will now prints a helpful message if one of your `WILL_ROOMS` is wrong, and continues starting, instead of crashing in a fiery ball, thanks to [crccheck](https://github.com/crccheck).
 
 
 ### 0.4.6 - May 5, 2014
@@ -486,7 +491,7 @@ Will's also has had help from lots of coders. Alphabetically:
 
 * Support for hundreds of users and rooms without hitting the API limit.
 * `get_all_users` use of the bulk API [added](https://github.com/greenkahuna/will/pull/18) by [quixeybrian](https://github.com/quixeybrian).  Thanks also to [jbeluch](https://github.com/jbeluch) and [jdrukman](https://github.com/jdrukman) for nudges in the right direction.
-* The start of some useful comme* the meat of will was hacked out by one person over a handful of d* and it looks that way. Slowly but surely making this codebase more friendly to other contributions!
+* The start of some useful comments - the meat of will was hacked out by one person over a handful of days and it looks that way. Slowly but surely making this codebase more friendly to other contributions!
 * Added a CONTRIBUTING.md file thanks to [michaeljoseph](https://github.com/michaeljoseph).
 * Proper releases in the docs, and an updated `AUTHORS` file.  If you see something awry, send a PR!
 
