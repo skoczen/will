@@ -455,7 +455,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
-
+- [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages.
 
 
 # Releases
