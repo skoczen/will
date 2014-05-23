@@ -450,13 +450,12 @@ Will was originally written by [Steven Skoczen](https://github.com/skoczen) at [
 Will's also has had help from lots of coders. Alphabetically:
 
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
-- [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
+- [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
+- [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
-- [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages.
-
 
 # Releases
 
