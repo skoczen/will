@@ -44,7 +44,10 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # notify: Ping everyone. Default is False
 
         content = self._prepared_content(content, message, kwargs)
-        if message is None or message["type"] == "groupchat":
+        rooms = []
+        if room is not None:
+            self.send_room_message(room["room_id"], content, **kwargs)
+        elif message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
                 self.send_room_message(r["room_id"], content, **kwargs)
