@@ -163,6 +163,9 @@ or:
 > <b>You:</b> @will remind me to take out the trash at 6pm monday<br>
 > <b>Will:</b> take out the trash December 16 at 6pm. Got it.
 
+### Accept invitations
+Use HipChat Room actions to invite Will to a room and he will join it. Will
+remembers the rooms he's been invited to and rejoins them if he's restarted.
 
 #### Document himself
 ```python
