@@ -42,7 +42,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
     ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
 
     def __init__(self, plugins_dirs=[], template_dirs=[]):
-        logging.basicConfig(level=logging.ERROR,\
+        log_level = getattr(settings, 'WILL_LOGLEVEL', logging.ERROR)
+        logging.basicConfig(level=log_level,\
             format='%(levelname)-8s %(message)s')
 
         self.plugins_dirs = [PLUGINS_ROOT, ]
