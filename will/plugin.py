@@ -1,4 +1,5 @@
 import re
+import logging
 import requests
 
 import settings
@@ -46,7 +47,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         content = self._prepared_content(content, message, kwargs)
         rooms = []
         if room is not None:
-            self.send_room_message(room["room_id"], content, **kwargs)
+            try:
+                room_id = room["room_id"]
+            except KeyError:
+                logging.error(u'"{0}" is not a room object.'.format(room))
+            else:
+                self.send_room_message(room_id, content, **kwargs)
         elif message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
