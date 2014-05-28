@@ -453,12 +453,19 @@ Will's also has had help from lots of coders. Alphabetically:
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
-- [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages.
+- [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
+- [rbp](https://github.com/rbp) fixed a bug with `room` not being passed along properly to messages.
 
 # Releases
+
+### 0.4.9 - May 28, 2014
+
+* Passing a `room` to a `.say()` now works properly, thanks to [rbp](https://github.com/rbp).
+* New optional `WILL_LOGLEVEL` setting, thanks to [dpoirier](https://github.com/dpoirier).
+
 
 ### 0.4.8 - May 21, 2014
 
