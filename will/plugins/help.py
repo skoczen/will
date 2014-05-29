@@ -4,7 +4,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class HelpPlugin(WillPlugin):
 
-    @respond_to("^help")
+    @respond_to("^help$")
     def help(self, message):
         all_regexes = self.load("all_listener_regexes")
         help_text = "Here's everything I know how to listen to:"
