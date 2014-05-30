@@ -2,6 +2,22 @@
 import os
 import stat
 
+# Big refactor for this coming.
+# 
+# - Add config.py file
+# - Ask for will's hipchat username
+# - Ask for will's hipchat password
+# - Ask for will's hipchat v2 token
+# - Ask for rooms (default all)
+# - Ask for default room (default first room)
+# - Ask set up heroku?
+#   - Ask for heroku app name
+
+
+
+
+
+
 def main():
     """
     Creates the following structure:
