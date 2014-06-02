@@ -16,8 +16,8 @@ monkey.patch_all()
 import bottle
 
 from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin, RoomMixin, PluginModulesLibraryMixin, \
-    EmailMixin
+from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
+    RoomMixin, PluginModulesLibraryMixin, EmailMixin
 from scheduler import Scheduler
 import settings
 
@@ -38,10 +38,13 @@ sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
-class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
+class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
+    ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
 
     def __init__(self, plugins_dirs=[], template_dirs=[]):
-        logging.basicConfig(level=logging.ERROR, format='%(levelname)-8s %(message)s')
+        log_level = getattr(settings, 'WILL_LOGLEVEL', logging.ERROR)
+        logging.basicConfig(level=log_level,\
+            format='%(levelname)-8s %(message)s')
 
         self.plugins_dirs = [PLUGINS_ROOT, PROJECT_ROOT + "/../../plugins"]
         for plugin_dir in plugins_dirs:
@@ -55,7 +58,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
         if not TEMPLATES_ROOT in full_path_template_dirs:
             full_path_template_dirs += [TEMPLATES_ROOT, ]
 
-        os.environ["WILL_TEMPLATE_DIRS_PICKLED"] = ";;".join(full_path_template_dirs)
+        os.environ["WILL_TEMPLATE_DIRS_PICKLED"] =\
+            ";;".join(full_path_template_dirs)
 
     def bootstrap(self):
         self.bootstrap_storage()
@@ -64,7 +68,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
         # Scheduler
         scheduler_thread = Process(target=self.bootstrap_scheduler)
         # scheduler_thread.daemon = True
-        
+
         # Bottle
         bottle_thread = Process(target=self.bootstrap_bottle)
         # bottle_thread.daemon = True
@@ -86,9 +90,9 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
                 for err in errors:
                     error_message += "\n%s\n" % err
                 self.send_room_message(default_room, error_message)
-                
 
-            while True: time.sleep(100)
+            while True:
+                time.sleep(100)
         except (KeyboardInterrupt, SystemExit):
             scheduler_thread.terminate()
             bottle_thread.terminate()
@@ -105,11 +109,11 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
         print "Bootstrapping scheduler..."
         bootstrapped = False
         try:
-            
+
             self.save("plugin_modules_library", self._plugin_modules_library)
             Scheduler.clear_locks(self)
             self.scheduler = Scheduler()
-            
+
             for plugin_info, fn, function_name in self.periodic_tasks:
                 self.add_periodic_task(plugin_info["full_module_name"], plugin_info["name"], function_name, fn.sched_args, fn.sched_kwargs, fn.function_name,)
             for plugin_info, fn, function_name in self.random_tasks:
@@ -119,7 +123,6 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
             self.startup_error("Error bootstrapping scheduler", e)
         if bootstrapped:
             self.scheduler.start_loop(self)
-           
 
     def bootstrap_bottle(self):
         print "Bootstrapping bottle..."
@@ -128,7 +131,11 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
             for cls, function_name in self.bottle_routes:
                 instantiated_cls = cls()
                 instantiated_fn = getattr(instantiated_cls, function_name)
-                bottle.route(instantiated_fn.bottle_route)(instantiated_fn)
+                bottle_route_args = {}
+                for k, v in instantiated_fn.__dict__.items():
+                    if "bottle_" in k and k != "bottle_route":
+                        bottle_route_args[k[len("bottle_"):]] = v
+                bottle.route(instantiated_fn.bottle_route, **bottle_route_args)(instantiated_fn)
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping bottle", e)
@@ -140,6 +147,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
         bootstrapped = False
         try:
             self.start_xmpp_client()
+            self.help_files.sort()
+            self.save("help_files", self.help_files)
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
             bootstrapped = True
@@ -195,6 +204,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
         self.random_tasks = []
         self.bottle_routes = []
         self.all_listener_regexes = []
+        self.help_files = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
             try:
@@ -210,8 +220,9 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
                             if fn.listens_only_to_direct_mentions:
                                 help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
                             self.all_listener_regexes.append(help_regex)
+                            self.help_files.append(fn.__doc__)
                             if fn.multiline:
-                                compiled_regex = re.compile(regex, re.MULTILINE|re.DOTALL)
+                                compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                             else:
                                 compiled_regex = re.compile(regex)
                             self.message_listeners.append({
@@ -235,7 +246,6 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin, Erro
                         elif hasattr(fn, "bottle_route"):
                             print " - %s" % function_name
                             self.bottle_routes.append((plugin_info["class"], function_name))
-
 
                     except Exception, e:
                         self.startup_error("Error bootstrapping %s.%s" % (plugin_info["class"], function_name,), e)

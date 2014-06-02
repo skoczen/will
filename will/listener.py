@@ -1,8 +1,5 @@
-import copy
-import datetime
 import logging
 import re
-import requests
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
@@ -15,7 +12,8 @@ from mixins import RosterMixin, RoomMixin, HipChatMixin
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
-        ClientXMPP.__init__(self, settings.WILL_USERNAME, settings.WILL_PASSWORD)
+        logger = logging.getLogger(__name__)
+        ClientXMPP.__init__(self, "%s/bot" % settings.WILL_USERNAME, settings.WILL_PASSWORD)
         self.rooms = []
 
         self.default_room = settings.WILL_DEFAULT_ROOM
@@ -27,12 +25,18 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 if not hasattr(self, "default_room"):
                     self.default_room = r
 
-                self.rooms.append(self.available_rooms[r])
+                try:
+                    self.rooms.append(self.available_rooms[r])
+                except KeyError:
+                    logger.error(
+                        u'"{0}" is not an available room, ask'
+                        ' "@{1} what are the rooms?" for the full list.'
+                        .format(r, settings.WILL_HANDLE))
 
         self.nick = settings.WILL_NAME
         self.handle = settings.WILL_HANDLE
         self.handle_regex = re.compile("@%s" % self.handle)
-        
+
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
 
@@ -40,7 +44,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
-        
+
         self.register_plugin('xep_0045') # MUC
 
     def session_start(self, event):
@@ -48,8 +52,6 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.get_roster()
 
     def join_rooms(self, event):
-        self.initialized_at = datetime.datetime.now()
-        self.initial_ignoring_done = False
         self.update_will_roster_and_rooms()
 
         for r in self.rooms:
@@ -92,13 +94,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.update_available_rooms()
 
     def room_message(self, msg):
-        # Ugly hack to ignore the room backlog when joining.
-        if not self.initial_ignoring_done:
-            if (datetime.datetime.now() - self.initialized_at).total_seconds() > 3:
-                self.initial_ignoring_done = True
-        
-        if self.initial_ignoring_done:
-            self._handle_message_listeners(msg)
+        self._handle_message_listeners(msg)
 
 
     def message_recieved(self, msg):
@@ -115,7 +111,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         if start_pos != -1:
             cut_start = start_pos + len(start)
             return msg_str[cut_start:msg_str.find('"', cut_start)]
-        
+
         return msg["from"]
 
 

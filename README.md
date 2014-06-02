@@ -1,3 +1,6 @@
+<img  align="right" src="https://gk-will.s3.amazonaws.com/will-head.png?v2" alt="Will's smilling face" title="Will's smilling face"/>
+
+Meet Will.
 
 Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.  Batteries included.
 
@@ -150,14 +153,30 @@ def remind_me_at(self, message, reminder_text=None, remind_time=None):
 
     # Confirm that he heard you.
     self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
-
-# e.g.
-# @will remind me to take out the trash at 6pm tomorrow
-# > take out the trash tomorrow at 6pm. Got it.
-# or
-# @will remind me to take out the trash at 6pm monday
-# > take out the trash December 16 at 6pm. Got it.
 ```
+
+Then:
+> <b>You:</b> @will remind me to take out the trash at 6pm tomorrow<br>
+> <b>Will:</b> take out the trash tomorrow at 6pm. Got it.
+
+or:
+> <b>You:</b> @will remind me to take out the trash at 6pm monday<br>
+> <b>Will:</b> take out the trash December 16 at 6pm. Got it.
+
+
+#### Document himself
+```python
+@respond_to("image me (?P<search_query>.*)$")
+def image_me(self, message, search_query):
+    """image me ___ : Search google images for ___, and post a random one."""
+    pass
+```
+
+Then:
+> <b>You:</b> @will help<br>
+> <b>Will:</b> Sure thing, Steven. <br>
+> <b>Will:</b> Here's what I know how to do:<br><b>&nbsp; &nbsp;image me ___</b> : Search google images for ___, and post a random one.
+
 
 #### A lot more
 We've built will to be easy to extend, change, and write.  Check out the plugins directory for lots more examples!
@@ -165,6 +184,12 @@ We've built will to be easy to extend, change, and write.  Check out the plugins
 You can also take a look at [our will](https://github.com/greenkahuna/our-will).  He's open-source, handles our deploys and lots of fun things - enjoy!
 
 # High-level API
+
+###### @hear(regex, include_me=False, case_sensitive=False, multiline=False)
+
+- `regex`: a regular expression to match.
+- `include_me`: whether will should hear what he says
+- `case_sensitive`: should the regex be case sensitive?
 
 ### Plugin method decorators
 
@@ -302,6 +327,14 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
 1. Include both rooms, semicolon-separated in `WILL_ROOMS`
 2. Make sure to include either `message` or `room` on any calls to `.say()`, `set_topic()`, or `schedule_say()` you have a specific room in mind for, or don't want going to the default room.
 
+#### Auto documentation
+
+Will has two kinds of help: _regular_ help, and _programmer_ help.
+
+Regular help lists all listen/reply methods that have docstrings.  If the docstring includes a colon, i.e. "my command: does cool stuff", it will be formatted nicely as "**my command**: does cool stuff"
+
+Programmer help lists the regexes for all listen/reply methods.  It's significantly less friendly, but still useful for more buried/admin-type functions.
+
 
 # Installation
 
@@ -322,12 +355,13 @@ Will fully supports multiple chat rooms.  To take advantage of them, you'll need
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
     # Optional
-    export WILL_TOKEN='kjadfj89a34878adf78789a4fae3' # for v1 API. Must be an 'admin' token, not just notification.
+    export WILL_TOKEN='kjadfj89a34878adf78789a4fae3' # for v1 API. Must be an 'admin' token, not just notification. Optional, unless you have > ~30 rooms.
     export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
     export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
     export WILL_DEFAULT_FROM_EMAIL="will@example.com"
     export WILL_MAILGUN_API_KEY="key-12398912329381"
     export WILL_MAILGUN_API_URL="example.com"
+    export WILL_LOGLEVEL="DEBUG"
 
     # For Production:
     export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.) Set > 1024 to run without elevated permission.
@@ -414,22 +448,60 @@ Will was originally written by [Steven Skoczen](https://github.com/skoczen) at [
 - [ckcollab](http://github.com/ckcollab), and 
 - [levithomason](http://github.com/levithomason)
 
-Will's also has had help from lots of coders:
+Will's also has had help from lots of coders. Alphabetically:
 
+- [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
+- [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
+- [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
+- [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
-
+- [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
+- [rbp](https://github.com/rbp) fixed a bug with `room` not being passed along properly to messages.
 
 # Releases
 
-### 0.4.3
+### 0.4.9 - May 28, 2014
+
+* Passing a `room` to a `.say()` now works properly, thanks to [rbp](https://github.com/rbp).
+* New optional `WILL_LOGLEVEL` setting, thanks to [dpoirier](https://github.com/dpoirier).
+
+
+### 0.4.8 - May 21, 2014
+
+* Will now ignores all previously sent messages properly, by passing in `bot` as the resource instead of an ugly time hack, thanks to [dpoirier](https://github.com/dpoirier).
+
+
+### 0.4.7 - May 15, 2014
+
+* Will now prints a helpful message if one of your `WILL_ROOMS` is wrong, and continues starting, instead of crashing in a fiery ball, thanks to [crccheck](https://github.com/crccheck).
+
+
+### 0.4.6 - May 5, 2014
+
+* `@route` decorators now honor all bottle arguments, most helpfully `method`! 
+
+
+### 0.4.5 - May 2, 2014
+
+* Awesome new help system by [quixeybrian](https://github.com/quixeybrian).  
+* "@will help" now only displays functions with docstrings, and formats them nicely.
+* Old help (regexes and all) is available at "@will programmer help"
+
+
+### 0.4.4 - April 22, 2014
+
+* Removes the dependence on the v1 token (though it still helps with rate-limiting), thanks to [bfhenderson](https://github.com/bfhenderson).
+* Much friendlier error message on an invalid API key, thanks to [adamgilman](https://github.com/adamgilman).
+
+### 0.4.3 - ~ April 1, 2014
 
 * Support for hundreds of users and rooms without hitting the API limit.
-    - `get_all_users` use of the bulk API [added](https://github.com/greenkahuna/will/pull/18) by [quixeybrian](https://github.com/quixeybrian).  Thanks also to [jbeluch](https://github.com/jbeluch) and [jdrukman](https://github.com/jdrukman) for nudges in the right direction.
-    - The start of some useful comments - the meat of will was hacked out by one person over a handful of days - and it looks that way. Slowly but surely making this codebase more friendly to other contributions!
-    - Added a CONTRIBUTING.md file thanks to [michaeljoseph](https://github.com/michaeljoseph).
-    - Proper releases in the docs, and an updated `AUTHORS` file.  If you see something awry, send a PR!
+* `get_all_users` use of the bulk API [added](https://github.com/greenkahuna/will/pull/18) by [quixeybrian](https://github.com/quixeybrian).  Thanks also to [jbeluch](https://github.com/jbeluch) and [jdrukman](https://github.com/jdrukman) for nudges in the right direction.
+* The start of some useful comments - the meat of will was hacked out by one person over a handful of days and it looks that way. Slowly but surely making this codebase more friendly to other contributions!
+* Added a CONTRIBUTING.md file thanks to [michaeljoseph](https://github.com/michaeljoseph).
+* Proper releases in the docs, and an updated `AUTHORS` file.  If you see something awry, send a PR!
 
-### 0.4
+### 0.4 - ~ March 2014
 
 * Ye olden past before we started keeping this list.  All contributions by GreenKahuna.  Will did everything that's not in the release list above.  That's called lazy retconning release lists!

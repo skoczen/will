@@ -5,6 +5,7 @@ from mixins import ScheduleMixin, StorageMixin
 def respond_to(regex, include_me=False, case_sensitive=False, multiline=False):
     def wrap(f):
         passed_args = []
+
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
         wrapped_f.listener_regex = regex
@@ -14,6 +15,7 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False):
         wrapped_f.listener_includes_me = include_me
         wrapped_f.listens_to_messages = True
         wrapped_f.listener_args = passed_args
+        wrapped_f.__doc__ = f.__doc__
         return wrapped_f
 
     return wrap
@@ -21,6 +23,7 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False):
 
 def periodic(*sched_args, **sched_kwargs):
     def wrap(f):
+
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
         wrapped_f.periodic_task = True
@@ -34,6 +37,7 @@ def periodic(*sched_args, **sched_kwargs):
 def hear(regex, include_me=False, case_sensitive=False, multiline=False):
     def wrap(f):
         passed_args = []
+
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
         wrapped_f.listener_regex = regex
@@ -43,13 +47,15 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False):
         wrapped_f.listener_includes_me = include_me
         wrapped_f.listens_to_messages = True
         wrapped_f.listener_args = passed_args
+        wrapped_f.__doc__ = f.__doc__
         return wrapped_f
-    
+
     return wrap
 
 
 def randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
     def wrap(f):
+
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
         wrapped_f.random_task = True
@@ -85,8 +91,11 @@ def rendered_template(template_name, context=None):
             return wrapped_f
         return wrap
 
-def route(path):
+
+def route(path, *args, **kwargs):
     def wrap(f):
         f.bottle_route = path
+        for k, v in kwargs.items():
+            setattr(f, "bottle_%s" % k, v)
         return f
     return wrap
