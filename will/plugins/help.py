@@ -12,7 +12,7 @@ class HelpPlugin(WillPlugin):
         self.say("Sure thing, %s." % message.sender.nick, message=message)
         help_text = "Here's what I know how to do:"
         for plugin_name, plugin_cmds in help_data.iteritems():
-            if plugin_cmds:
+            if plugin_cmds != []:
                 help_text += "<br/>%s" % plugin_name
             for line in plugin_cmds:
                 if line:
