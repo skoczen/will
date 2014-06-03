@@ -13,7 +13,7 @@ class HelpPlugin(WillPlugin):
         help_text = "Here's what I know how to do:"
         for plugin_name, plugin_cmds in help_data:
             if plugin_cmds:
-                help_text += "<br/><h3>%s</h3>" % plugin_name
+                help_text += "<br/>%s" % plugin_name
             for line in plugin_cmds:
                 if line:
                     if ":" in line:
