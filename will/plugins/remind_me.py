@@ -5,7 +5,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class RemindMePlugin(WillPlugin):
 
-    @respond_to("remind me (to )?(?P<reminder_text>.*?) (at|on) (?P<remind_time>.*)")
+    @respond_to("remind me to (?P<reminder_text>.*?) (at|on) (?P<remind_time>.*)")
     def remind_me_at(self, message, reminder_text=None, remind_time=None):
         """remind me to ___ at ___: Set a reminder for a thing, at a time."""
         now = datetime.datetime.now()
