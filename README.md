@@ -361,7 +361,7 @@ Programmer help lists the regexes for all listen/reply methods.  It's significan
     export WILL_DEFAULT_FROM_EMAIL="will@example.com"
     export WILL_MAILGUN_API_KEY="key-12398912329381"
     export WILL_MAILGUN_API_URL="example.com"
-    export WILL_ADMINS="GreenKahuna AnotherAdmin" # Space-separated @reply names of admins, used by the admin_only option of the respond_to and hear decorators.
+    export WILL_ADMINS="GreenKahuna AnotherAdmin" # Space-separated @mention names of admins, used by the admin_only option of the respond_to and hear decorators.
 
     # For Production:
     export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.) Set > 1024 to run without elevated permission.
