@@ -46,7 +46,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         logging.basicConfig(level=log_level,\
             format='%(levelname)-8s %(message)s')
 
-        self.plugins_dirs = [PLUGINS_ROOT, ]
+        self.plugins_dirs = [PLUGINS_ROOT, PROJECT_ROOT + "/../../plugins"]
         for plugin_dir in plugins_dirs:
             p = os.path.abspath(plugin_dir)
             if p not in self.plugins_dirs:
