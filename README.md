@@ -382,7 +382,15 @@ Programmer help lists the regexes for all listen/reply methods.  It's significan
     README.md
     ```
 
-    Where `run_will.py` can be called with or without arguments to bootstrap an instance of WillBot. 
+    Where `run_will.py` is
+    ```python
+    #!/usr/bin/env python
+    from will.main import WillBot
+
+    if __name__ == '__main__':
+        bot = WillBot(plugins_dirs=["plugins",], template_dirs=["templates",])
+        bot.bootstrap()
+    ```
 
 5. Just run `./run_will.py`! 
 
