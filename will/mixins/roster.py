@@ -1,3 +1,4 @@
+from will import settings
 
 class RosterMixin(object):
     @property
@@ -26,3 +27,7 @@ class RosterMixin(object):
             return self.get_user_by_jid(jid)
         else:
             return None
+
+    def message_is_from_admin(self, message):
+        nick = self.get_user_from_message(message)['nick']
+        return settings.WILL_ADMINS and nick.lower() in settings.WILL_ADMINS
