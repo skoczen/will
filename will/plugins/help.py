@@ -8,7 +8,6 @@ class HelpPlugin(WillPlugin):
     @respond_to("^help$")
     def help(self, message):
         help_data = self.load("help_files")
-        print help_data
         self.say("Sure thing, %s." % message.sender.nick, message=message)
         help_text = "Here's what I know how to do:"
         for plugin_name, plugin_cmds in help_data.iteritems():

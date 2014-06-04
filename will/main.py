@@ -209,7 +209,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
             try:
                 print "\n %s: (%s)" % (plugin_info["name"], plugin_info["class"].__doc__)
                 self.help_files[plugin_info["name"]] = []
-                help_class = self.help_files[plugin_info["name"]]
+                plugin_help = self.help_files[plugin_info["name"]]
                 for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
                     try:
                         if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
@@ -221,7 +221,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
                             if fn.listens_only_to_direct_mentions:
                                 help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
                             self.all_listener_regexes.append(help_regex)
-                            help_class.append(fn.__doc__)
+                            plugin_help.append(fn.__doc__)
                             if fn.multiline:
                                 compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                             else:
