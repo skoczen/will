@@ -40,7 +40,7 @@ PLUGINS = [
 
 # All plugins are enabled by default, unless in this list
 PLUGIN_BLACKLIST = [
-    # But only sad people would deprive will of cookies.
+    # Who would deprive will of cookies??
     # "will/friendly/cookies.py",
 ]
 
