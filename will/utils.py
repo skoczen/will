@@ -1,4 +1,6 @@
 from HTMLParser import HTMLParser
+from . import settings
+
 
 class Bunch(dict):
     def __init__(self, **kw):
@@ -30,3 +32,6 @@ def html_to_text(html):
     s = HTMLStripper()
     s.feed(html)
     return s.get_data()
+
+def is_admin(nick):
+    return settings.WILL_ADMINS == '*' or nick.lower() in settings.WILL_ADMINS
