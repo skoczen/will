@@ -185,25 +185,23 @@ You can also take a look at [our will](https://github.com/greenkahuna/our-will).
 
 # High-level API
 
-###### @hear(regex, include_me=False, case_sensitive=False, multiline=False)
-
-- `regex`: a regular expression to match.
-- `include_me`: whether will should hear what he says
-- `case_sensitive`: should the regex be case sensitive?
-
 ### Plugin method decorators
 
-###### @hear(regex, include_me=False, case_sensitive=False, multiline=False)
+###### @hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
 
 - `regex`: a regular expression to match.
 - `include_me`: whether will should hear what he says
 - `case_sensitive`: should the regex be case sensitive?
+- `multiline`: should the regex allow multiline matches?
+- `admin_only`: only runs the command if the sender is in `WILL_ADMINS`
 
-###### @respond_to(regex, include_me=False, case_sensitive=False, multiline=False)
+###### @respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
 
 - `regex`: a regular expression to match.
 - `include_me`: whether will should hear what he says
 - `case_sensitive`: should the regex be case sensitive?
+- `multiline`: should the regex allow multiline matches?
+- `admin_only`: only runs the command if the sender is in `WILL_ADMINS`
 
 ###### @periodic(**periodic_args)
 
@@ -451,15 +449,21 @@ Will was originally written by [Steven Skoczen](https://github.com/skoczen) at [
 Will's also has had help from lots of coders. Alphabetically:
 
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
-- [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token.
+- [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
-- [rbp](https://github.com/rbp) fixed a bug with `room` not being passed along properly to messages.
+- [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 
 # Releases
+
+### 0.4.10 - June 6, 2014
+
+* Brand-new `admin_only` argument to `hear()` and `respond_to()`, thanks to [rbp](https://github.com/rbp).
+* `help` now only responds to direct asks, allowing other plugins to handle "help me with x", thanks to [bfhenderson](https://github.com/bfhenderson)
+
 
 ### 0.4.9 - May 28, 2014
 

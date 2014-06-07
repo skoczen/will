@@ -5,7 +5,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route,\
 
 class HelpPlugin(WillPlugin):
 
-    @respond_to("^help")
+    @respond_to("^help$")
     def help(self, message):
         help_data = self.load("help_files")
         self.say("Sure thing, %s." % message.sender.nick, message=message)
