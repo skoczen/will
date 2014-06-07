@@ -462,7 +462,8 @@ Will's also has had help from lots of coders. Alphabetically:
 
 ### 0.4.10 - June 6, 2014
 
-* Brand-new `admin_only` argument to `hear()` and `respond_to()`, thanks to [rbp](https://github.com/rbp).
+* Brand-new `admin_only` argument to `hear()` and `respond_to()`, thanks to [rbp](https://github.com/rbp).  If a user is not in `WILL_ADMINS`, they won't be able to run any `admin_only=True` plugins.  Default for `WILL_ADMINS` is all users to retain backwards-compatibility.
+* All commands in the `storage.py` plugin are now admin-only.
 * `help` now only responds to direct asks, allowing other plugins to handle "help me with x", thanks to [bfhenderson](https://github.com/bfhenderson)
 
 
