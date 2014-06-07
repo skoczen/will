@@ -1,4 +1,6 @@
 from will import settings
+from ..utils import is_admin
+
 
 class RosterMixin(object):
     @property
@@ -30,4 +32,4 @@ class RosterMixin(object):
 
     def message_is_from_admin(self, message):
         nick = self.get_user_from_message(message)['nick']
-        return settings.WILL_ADMINS and nick.lower() in settings.WILL_ADMINS
+        return is_admin(nick)

@@ -19,4 +19,5 @@ if not "WILL_HTTPSERVER_PORT" in os.environ:
 if not "WILL_URL" in os.environ:
     WILL_URL = "http://localhost:%s" % WILL_HTTPSERVER_PORT
 
-WILL_ADMINS = [a.strip().lower() for a in os.environ.get('WILL_ADMINS', '').split(';') if a.strip()]
+WILL_ADMINS = "*" if os.environ.get('WILL_ADMINS', '*') == "*" else \
+    [a.strip().lower() for a in os.environ.get('WILL_ADMINS', '').split(';') if a.strip()]
