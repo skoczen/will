@@ -10,10 +10,13 @@ class HelpPlugin(WillPlugin):
         help_data = self.load("help_files")
         self.say("Sure thing, %s." % message.sender.nick, message=message)
         help_text = "Here's what I know how to do:"
-        for line in help_data:
-            if line:
-                if ":" in line:
-                    line = "<b>%s</b>%s" % (line[:line.find(":")], line[line.find(":"):])
-                help_text += "<br/> %s" % line
+        for plugin_name, plugin_cmds in help_data.iteritems():
+            if filter(lambda x: x is not None, plugin_cmds):
+                help_text += "<br/>%s" % plugin_name
+            for line in plugin_cmds:
+                if line:
+                    if ":" in line:
+                        line = "<b>%s</b>%s" % (line[:line.find(":")], line[line.find(":"):])
+                    help_text += "<li>%s</li>" % line
 
         self.say(help_text, message=message, html=True)
