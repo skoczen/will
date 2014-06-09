@@ -18,9 +18,12 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
         self.default_room = settings.WILL_DEFAULT_ROOM
 
+        # Also join any rooms we've previously been invited into
+        invited_rooms = self.load("invited_rooms", [])
+
         # Property boostraps the list
         self.available_rooms
-        for r in settings.WILL_ROOMS:
+        for r in settings.WILL_ROOMS + invited_rooms:
             if r != "":
                 if not hasattr(self, "default_room"):
                     self.default_room = r
@@ -32,6 +35,9 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                         u'"{0}" is not an available room, ask'
                         ' "@{1} what are the rooms?" for the full list.'
                         .format(r, settings.WILL_HANDLE))
+                    if r in invited_rooms:
+                        invited_rooms.remove(r)
+                        self.save("invited_rooms", invited_rooms)
 
         self.nick = settings.WILL_NAME
         self.handle = settings.WILL_HANDLE
@@ -44,6 +50,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
+        self.add_event_handler("groupchat_invite", self.groupchat_invite)
 
         self.register_plugin('xep_0045') # MUC
 
@@ -56,6 +63,18 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
         for r in self.rooms:
             self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+
+    def groupchat_invite(self, event):
+        """Join room when invited"""
+        # The invite comes "from" the room we're invited to
+        room_jid = event['from']
+        room = self.get_room_by_jid(room_jid)
+        self.plugin['xep_0045'].joinMUC(room_jid, self.nick, wait=True)
+        self.rooms.append(room)
+        invited_rooms = self.load("invited_rooms", [])
+        if room['name'] not in invited_rooms:
+            invited_rooms.append(room['name'])
+            self.save("invited_rooms", invited_rooms)
 
     def update_will_roster_and_rooms(self):
         internal_roster = self.load('will_roster', {})
