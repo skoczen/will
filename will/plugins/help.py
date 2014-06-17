@@ -5,6 +5,14 @@ from will.decorators import respond_to, periodic, hear, randomly, route,\
 
 class HelpPlugin(WillPlugin):
 
+    @respond_to("^help on (<?P=help_subject>.*)$"):
+    def help_on(self, message):
+        all_regexes = self.load("all_listener_regexes")
+        for r in all_regexes:
+            if re.search(help_subject, r):
+                help_text += "\n%s" % r
+        self.say(help_text, message=message)
+
     @respond_to("^help$")
     def help(self, message):
         help_data = self.load("help_files")
