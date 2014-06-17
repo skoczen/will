@@ -7,30 +7,22 @@ import re
 class HelpPlugin(WillPlugin):
 
     @respond_to("^help on (?P<help_subject>.*)")
-    def help_on(self, message, help_subject):
-        all_regexes = self.load("all_listener_regexes")
-        matches = ""
-        for r in all_regexes:
-            if re.search(help_subject, r):
-                matches += "\n%s" % r
-        if matches == "":
-            help_text = "I don't know anything about that."
-        else:
-            help_text = "Here's what I know about that:%s" % matches
-        self.say(help_text, message=message)
+    def help_on(self, message, help_term):
+        help(message, help_term)
 
     @respond_to("^help$")
-    def help(self, message):
+    def help(self, message, help_term=None):
         help_data = self.load("help_files")
-        self.say("Sure thing, %s." % message.sender.nick, message=message)
-        help_text = "Here's what I know how to do:"
+        help_text = ""
         for plugin_name, plugin_cmds in help_data.iteritems():
-            if filter(lambda x: x is not None, plugin_cmds):
-                help_text += "<br/>%s" % plugin_name
-            for line in plugin_cmds:
-                if line:
-                    if ":" in line:
-                        line = "<b>%s</b>%s" % (line[:line.find(":")], line[line.find(":"):])
-                    help_text += "<li>%s</li>" % line
-
+            help_text += "<br/>%s" % plugin_name
+            for cmd in plugin_cmds:
+                invocation = cmd["regex"]
+                if "invocation" in cmd:
+                    invocation = cmd["invocation"]
+                action = cmd["name"]
+                if "action" in cmd:
+                    action = cmd["action"]
+                help_text += "<li>%s: %s</li>" % (invocation, action)
         self.say(help_text, message=message, html=True)
+

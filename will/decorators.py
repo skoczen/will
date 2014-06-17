@@ -1,6 +1,23 @@
 from bottle import route as bottle_route
 from mixins import ScheduleMixin, StorageMixin
 
+def user_help_invocation(string):
+    '''describes the manner in which the command can be invoked'''
+    def wrap(f):
+        def wrapped_f(*args, **kwargs):
+            f(*args, **kwargs)
+        wrapped_f.user_help_invocation = string
+        return wrapped_f
+    return wrap
+
+def user_help_action(string):
+    '''describes the action a command will perform'''
+    def wrap(f):
+        def wrapped_f(*args, **kwargs):
+            f(*args, **kwargs)
+        wrapped_f.user_help_action = string
+        return wrapped_f
+    return wrap
 
 def respond_to(regex, include_me=False, case_sensitive=False, multiline=False):
     def wrap(f):
