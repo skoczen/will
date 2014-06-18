@@ -39,11 +39,11 @@ def main():
         with open(hello_file_path, 'w+') as f:
             f.write("""import datetime
 from will.plugin import WillPlugin
-from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
+from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, user_help
 
 
 class HelloPlugin(WillPlugin):
-
+    @user_help(invocation='hello', action='says a friendly greeting')
     @respond_to("^hello")
     def hello(self, message):
         self.reply(message, "hi!")

@@ -46,7 +46,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         logging.basicConfig(level=log_level,\
             format='%(levelname)-8s %(message)s')
 
-        self.plugins_dirs = [PLUGINS_ROOT, ]
+        self.plugins_dirs = [PLUGINS_ROOT, "/home/ubuntu/plugins"]
         for plugin_dir in plugins_dirs:
             p = os.path.abspath(plugin_dir)
             if p not in self.plugins_dirs:
@@ -148,7 +148,6 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         try:
             self.start_xmpp_client()
             self.save("help_files", self.help_files)
-            self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
             bootstrapped = True
         except Exception, e:
@@ -202,17 +201,16 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         self.periodic_tasks = []
         self.random_tasks = []
         self.bottle_routes = []
-        self.all_listener_regexes = []
-        self.help_files = {}
+        self.help_files = []
         self.some_listeners_include_me = False
 
         for plugin_info in self.plugins:
             try:
                 print "\n %s: (%s)" % (plugin_info["name"], plugin_info["class"].__doc__)
                 plugin_help = {}
-                self.help_files[plugin_info["name"]] = plugin_help
-                plugin_help["name"] = self.help_files[plugin_info["name"]]
+                plugin_help["name"] = plugin_info["name"]
                 plugin_help["commands"] = []
+                self.help_files.append(plugin_help)
                 for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
                     try:
                         if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
@@ -220,10 +218,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
                             regex = fn.listener_regex
                             if not fn.case_sensitive:
                                 regex = "(?i)%s" % regex
-                            help_regex = fn.listener_regex
-                            if fn.listens_only_to_direct_mentions:
-                                help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
-                            plugin_help["commands"].append(get_command_help(function_name, fn))
+                            plugin_help["commands"].append(self.get_command_help(function_name, fn))
                             if fn.multiline:
                                 compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                             else:
@@ -258,10 +253,13 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
 
     def get_command_help(self, function_name, fn):
         command_help = {}
+        if hasattr(fn, "user_help"):
+            command_help["user_help"] = fn.user_help.copy()
+
+        regex = fn.listener_regex
+        if fn.listens_only_to_direct_mentions:
+            regex = "@%s %s" % (settings.WILL_HANDLE, regex)
         command_help["function_name"] = function_name
-        command_help["regex"] = help_regex
-        if hasattr(fn, "user_help_invocation"):
-            command_help["invocation"] = fn.user_help_invocation
-        if hasattr(fn, "user_help_action"):
-            command_help["action"] = fn.user_help_action
-        command_help["doc"] == fn.__doc__
+        command_help["regex"] =  regex
+        command_help["doc"] = fn.__doc__
+        return command_help

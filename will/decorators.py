@@ -1,21 +1,16 @@
 from bottle import route as bottle_route
 from mixins import ScheduleMixin, StorageMixin
 
-def user_help_invocation(string):
-    '''describes the manner in which the command can be invoked'''
+def user_help(invocation=None, action=None, hidden=False):
     def wrap(f):
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
-        wrapped_f.user_help_invocation = string
-        return wrapped_f
-    return wrap
-
-def user_help_action(string):
-    '''describes the action a command will perform'''
-    def wrap(f):
-        def wrapped_f(*args, **kwargs):
-            f(*args, **kwargs)
-        wrapped_f.user_help_action = string
+        help = {}
+        help["invocation"] = invocation
+        help["action"] = action
+        help["hidden"] = hidden
+        wrapped_f.__dict__ = f.__dict__
+        wrapped_f.user_help = help
         return wrapped_f
     return wrap
 
@@ -25,6 +20,7 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False):
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
+        wrapped_f.__dict__ = f.__dict__
         wrapped_f.listener_regex = regex
         wrapped_f.case_sensitive = case_sensitive
         wrapped_f.multiline = multiline
@@ -43,6 +39,7 @@ def periodic(*sched_args, **sched_kwargs):
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
+        wrapped_f.__dict__ = f.__dict__
         wrapped_f.periodic_task = True
         wrapped_f.function_name = f.__name__
         wrapped_f.sched_args = sched_args
@@ -57,6 +54,7 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False):
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
+        wrapped_f.__dict__ = f.__dict__
         wrapped_f.listener_regex = regex
         wrapped_f.case_sensitive = case_sensitive
         wrapped_f.multiline = multiline
@@ -64,7 +62,6 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False):
         wrapped_f.listener_includes_me = include_me
         wrapped_f.listens_to_messages = True
         wrapped_f.listener_args = passed_args
-        wrapped_f.__doc__ = f.__doc__
         return wrapped_f
 
     return wrap
@@ -75,12 +72,12 @@ def randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
+        wrapped_f.__dict__ = f.__dict__
         wrapped_f.random_task = True
         wrapped_f.start_hour = int(start_hour)
         wrapped_f.end_hour = int(end_hour)
         wrapped_f.day_of_week = day_of_week
         wrapped_f.num_times_per_day = int(num_times_per_day)
-
         return wrapped_f
     return wrap
 
