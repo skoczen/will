@@ -15,7 +15,7 @@ class StorageMixin(object):
                 # redis://localhost:6379/7
                 # or
                 # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
-                url = urlparse.urlparse(settings.WILL_REDIS_URL)
+                url = urlparse.urlparse(settings.REDIS_URL)
 
                 if hasattr(url, "path"):
                     db = url.path[1:]

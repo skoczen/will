@@ -7,23 +7,23 @@ class RoomMixin(object):
     def update_available_rooms(self):
         self._available_rooms = {}
         # Use v1 token to grab a full room list if we can (good to avoid rate limiting)
-        if hasattr(settings, "WILL_TOKEN"):
-            url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.WILL_TOKEN,)
+        if hasattr(settings, "TOKEN"):
+            url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.TOKEN,)
             r = requests.get(url)
             if r.status_code == requests.codes.unauthorized:
-                raise Exception("WILL_TOKEN authentication failed with HipChat")
+                raise Exception("TOKEN authentication failed with HipChat")
             for room in r.json()["rooms"]:
                 self._available_rooms[room["name"]] = room
         # Otherwise, grab 'em one-by-one via the v2 api.
         else:                
-            url = "https://api.hipchat.com/v2/room?auth_token=%s" % (settings.WILL_V2_TOKEN,)
+            url = "https://api.hipchat.com/v2/room?auth_token=%s" % (settings.V2_TOKEN,)
             resp = requests.get(url)
             if resp.status_code == requests.codes.unauthorized:
-                raise Exception("WILL_V2_TOKEN authentication failed with HipChat")
+                raise Exception("V2_TOKEN authentication failed with HipChat")
             rooms = resp.json()
 
             for room in rooms["items"]:
-                url = room["links"]["self"] + "/?auth_token=%s;expand=xmpp_jid" % (settings.WILL_V2_TOKEN,)
+                url = room["links"]["self"] + "/?auth_token=%s;expand=xmpp_jid" % (settings.V2_TOKEN,)
                 room_details = requests.get(url).json()
                 # map missing hipchat API v1 data
                 for k, v in room_details.items():

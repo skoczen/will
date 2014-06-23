@@ -8,7 +8,7 @@ class KeepAlivePlugin(WillPlugin):
 
     @periodic(second=0)
     def ping_keep_alive(self):
-        requests.get("%s%s" % (settings.WILL_URL, keep_alive_url))
+        requests.get("%s%s" % (settings.PUBLIC_URL, keep_alive_url))
 
     @route(keep_alive_url)
     @rendered_template("keep_alive.html")

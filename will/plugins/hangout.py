@@ -6,4 +6,4 @@ class HangoutPlugin(WillPlugin):
 
     @respond_to("^hangout")
     def hangout(self, message):
-        self.say("Hangout: %s" % settings.WILL_HANGOUT_URL, message=message)
+        self.say("Hangout: %s" % settings.HANGOUT_URL, message=message)

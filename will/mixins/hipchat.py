@@ -18,7 +18,7 @@ class HipChatMixin(object):
     def send_direct_message(self, user_id, message_body):
         try:
             # https://www.hipchat.com/docs/apiv2/method/private_message_user
-            url = PRIVATE_MESSAGE_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
+            url = PRIVATE_MESSAGE_URL % {"user_id": user_id, "token": settings.V2_TOKEN}
             data = {"message": message_body}
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data))
@@ -41,7 +41,7 @@ class HipChatMixin(object):
 
         try:
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
-            url = ROOM_NOTIFICATION_URL % {"room_id": room_id, "token": settings.WILL_V2_TOKEN}
+            url = ROOM_NOTIFICATION_URL % {"room_id": room_id, "token": settings.V2_TOKEN}
             
             data = {
                 "message": message_body,
@@ -57,7 +57,7 @@ class HipChatMixin(object):
     def set_room_topic(self, room_id, topic):
         try:
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
-            url = ROOM_TOPIC_URL % {"room_id": room_id, "token": settings.WILL_V2_TOKEN}
+            url = ROOM_TOPIC_URL % {"room_id": room_id, "token": settings.V2_TOKEN}
             
             data = {
                 "topic": topic,
@@ -68,7 +68,7 @@ class HipChatMixin(object):
             logging.critical("Error in set_room_topic: \n%s" % traceback.format_exc())
 
     def get_hipchat_user(self, user_id):
-        url = USER_DETAILS_URL % {"user_id": user_id, "token": settings.WILL_V2_TOKEN}
+        url = USER_DETAILS_URL % {"user_id": user_id, "token": settings.V2_TOKEN}
         r = requests.get(url)
         return r.json()
 
@@ -78,14 +78,14 @@ class HipChatMixin(object):
             full_roster = {}
 
             # Grab the first roster page, and populate full_roster
-            params = {"token": settings.WILL_V2_TOKEN, "start_index": 0}
+            params = {"token": settings.V2_TOKEN, "start_index": 0}
             r = requests.get(ALL_USERS_URL % params)
             for user in r.json()['items']:
                 full_roster["%s" % (user['id'],)] = user
 
             # Keep going through the next pages until we're out of pages.
             while 'next' in r.json()['links']:
-                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.WILL_V2_TOKEN)
+                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.V2_TOKEN)
                 r = requests.get(url, params=params)
 
                 for user in r.json()['items']:

@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
+from clint.textui import puts, indent
+from clint.textui import colored
 from HTMLParser import HTMLParser
+
 
 class Bunch(dict):
     def __init__(self, **kw):
@@ -30,3 +34,15 @@ def html_to_text(html):
     s = HTMLStripper()
     s.feed(html)
     return s.get_data()
+
+
+def show_valid(valid_str):
+    puts(colored.green(u"✓ %s" % valid_str))
+
+
+def warn(warn_string):
+    puts(colored.yellow("! Warning: %s" % warn_string))
+
+
+def error(err_string):
+    puts(colored.red("ERROR: %s" % err_string))

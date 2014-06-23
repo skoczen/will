@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import logging
 import inspect
 import imp
@@ -5,8 +7,8 @@ import os
 import re
 import sys
 import time
-from clint.textui import puts, indent
 from clint.textui import colored
+from clint.textui import puts, indent
 from os.path import abspath, dirname
 from multiprocessing import Process
 
@@ -20,6 +22,7 @@ from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin
 from scheduler import Scheduler
 import settings
+from utils import show_valid, error, warn
 
 
 # Force UTF8
@@ -42,7 +45,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
     ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
 
     def __init__(self, plugins_dirs=[], template_dirs=[]):
-        log_level = getattr(settings, 'WILL_LOGLEVEL', logging.ERROR)
+        log_level = getattr(settings, 'LOGLEVEL', logging.ERROR)
         logging.basicConfig(level=log_level,\
             format='%(levelname)-8s %(message)s')
 
@@ -88,7 +91,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
 
             errors = self.get_startup_errors()
             if len(errors) > 0:
-                default_room = self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM)["room_id"]
+                default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
                 error_message = "FYI, I had some errors starting up:"
                 for err in errors:
                     error_message += "\n%s\n" % err
@@ -124,12 +127,12 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
 """)
 
     def verify_individual_setting(self, test_setting, quiet=False):
-        if hasattr(settings, test_setting["name"]):
+        if hasattr(settings, test_setting["name"][5:]):
             with indent(2):
-                puts(colored.green("%(name)s... valid" % test_setting))
+                show_valid(test_setting["name"])
             return True
         else:
-            puts(colored.red("%(name)s... missing!" % test_setting))
+            error("%(name)s... missing!" % test_setting)
             with indent(2):
                 puts("""To obtain a %(name)s: \n%(obtain_at)s
 
@@ -159,30 +162,25 @@ To set your %(name)s:
             }
         ]
 
-        print "Verifying settings..."
+        print "Verifying environment..."
 
         for r in required_settings:
             if not self.verify_individual_setting(r):
                 missing_settings = True
 
         if missing_settings:
-            puts(colored.red("Will was unable to start because some settings are missing.  Please fix them and try again!"))
+            error("Will was unable to start because some required environment variables are missing.  Please fix them and try again!")
             sys.exit(0)
         else:
             print ""
 
-        # export WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'  # Semicolon-separated, so you can have commas in names.
-        # export WILL_NAME='William T. Kahuna'  # Must be the *exact, case-sensitive* full name from hipchat.
-        # export WILL_HANDLE='will'  # Must be the exact handle from hipchat.
-        # export WILL_REDIS_URL="redis://localhost:6379/7"
-        pass
-
     def load_config(self):
         print "Loading configuration..."
+        with indent(2):
+            settings.import_settings(quiet=False)
+        print ""
 
-        # Load config
-
-        # Validate it, set defaults.
+        
 
         # Rooms
         # Default_Room
@@ -191,45 +189,46 @@ To set your %(name)s:
         # Admin handles
         # HTTPSERVER_PORT
 
-        # This is the list of rooms will should join.
-ROOMS = ['Testing, Will Kahuna', 'GreenKahuna']
-# Default: ALL_ROOMS
 
-# This is the room will will talk to if the trigger 
-# is a webhook and he isn't told a specific room. 
-# Defaults to the first of ROOMS.
-DEFAULT_ROOM = 'GreenKahuna'
+        #         # This is the list of rooms will should join.
+        # ROOMS = ['Testing, Will Kahuna', 'GreenKahuna']
+        # # Default: ALL_ROOMS
 
-# If will isn't accessible at localhost, you must set this for his keepalive to work.
-PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
+        # # This is the room will will talk to if the trigger 
+        # # is a webhook and he isn't told a specific room. 
+        # # Defaults to the first of ROOMS.
+        # DEFAULT_ROOM = 'GreenKahuna'
 
-
-# This is the list of plugins will should load. This list can contain:
-# 
-# Built-in core plugins:
-# ----------------------
-# All built-in modules:     will/core/plugins
-# Built-in modules:         will/core/plugins/module_name
-# Specific plugins:         will/core/plugins/module_name/plugin.py
-#
-# Plugins in your will:
-# ----------------------
-# All modules:              my_will/plugins
-# A specific module:        my_will/plugins/module_name
-# Specific plugins:         my_will/plugins/module_name/plugin.py
-
-PLUGINS = [
-    "will.core_plugins.admin",
-    "will.core_plugins.foo",
-    "my_will.plugins",
-]
+        # # If will isn't accessible at localhost, you must set this for his keepalive to work.
+        # PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
 
 
-# All plugins are enabled by default, unless in this list
-PLUGIN_BLACKLIST = [
-    # Who would deprive will of cookies??
-    # "will.friendly.cookies",
-]
+        # # This is the list of plugins will should load. This list can contain:
+        # # 
+        # # Built-in core plugins:
+        # # ----------------------
+        # # All built-in modules:     will/core/plugins
+        # # Built-in modules:         will/core/plugins/module_name
+        # # Specific plugins:         will/core/plugins/module_name/plugin.py
+        # #
+        # # Plugins in your will:
+        # # ----------------------
+        # # All modules:              my_will/plugins
+        # # A specific module:        my_will/plugins/module_name
+        # # Specific plugins:         my_will/plugins/module_name/plugin.py
+
+        # PLUGINS = [
+        #     "will.core_plugins.admin",
+        #     "will.core_plugins.foo",
+        #     "my_will.plugins",
+        # ]
+
+
+        # # All plugins are enabled by default, unless in this list
+        # PLUGIN_BLACKLIST = [
+        #     # Who would deprive will of cookies??
+        #     # "will.friendly.cookies",
+        # ]
 
 
 
@@ -286,7 +285,7 @@ PLUGIN_BLACKLIST = [
         except Exception, e:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
-            bottle.run(host='0.0.0.0', port=settings.WILL_HTTPSERVER_PORT, server='gevent')
+            bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='gevent')
 
     def bootstrap_xmpp(self):
         print "Bootstrapping xmpp..."
@@ -364,7 +363,7 @@ PLUGIN_BLACKLIST = [
                                 regex = "(?i)%s" % regex
                             help_regex = fn.listener_regex
                             if fn.listens_only_to_direct_mentions:
-                                help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
+                                help_regex = "@%s %s" % (settings.HANDLE, help_regex)
                             self.all_listener_regexes.append(help_regex)
                             self.help_files.append(fn.__doc__)
                             if fn.multiline:
