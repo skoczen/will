@@ -1,5 +1,6 @@
 apscheduler
 bottle
+clint
 dill>=0.2b1
 dnspython
 gevent

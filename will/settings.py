@@ -5,8 +5,10 @@ for k, v in os.environ.items():
 
 if "WILL_ROOMS" in os.environ:
     WILL_ROOMS = WILL_ROOMS.split(";")
+else:
+    WILL_ROOMS = []
 
-if not "WILL_DEFAULT_ROOM" in os.environ:
+if not "WILL_DEFAULT_ROOM" in os.environ and len(WILL_ROOMS) > 0:
     WILL_DEFAULT_ROOM = WILL_ROOMS[0]
 
 if not "WILL_HTTPSERVER_PORT" in os.environ:

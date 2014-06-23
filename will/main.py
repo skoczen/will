@@ -1,13 +1,13 @@
 import logging
 import inspect
-import importlib
 import imp
 import os
 import re
 import sys
 import time
-import traceback
-from os.path import abspath, curdir, dirname
+from clint.textui import puts, indent
+from clint.textui import colored
+from os.path import abspath, dirname
 from multiprocessing import Process
 
 from gevent import monkey
@@ -62,6 +62,9 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
             ";;".join(full_path_template_dirs)
 
     def bootstrap(self):
+        self.print_head()
+        self.verify_environment()
+        self.load_config()
         self.bootstrap_storage()
         self.bootstrap_plugins()
 
@@ -104,6 +107,149 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
                     sys.stdout.write(".")
                     sys.stdout.flush()
                     time.sleep(0.5)
+
+
+    def print_head(self):
+        puts("""
+       ___/-\___
+   ___|_________|___
+      |         |
+      |--O---O--|
+      |         |
+      |         |
+      |  \___/  |
+      |_________|      
+
+       Will: Hi!
+""")
+
+    def verify_individual_setting(self, test_setting, quiet=False):
+        if hasattr(settings, test_setting["name"]):
+            with indent(2):
+                puts(colored.green("%(name)s... valid" % test_setting))
+            return True
+        else:
+            puts(colored.red("%(name)s... missing!" % test_setting))
+            with indent(2):
+                puts("""To obtain a %(name)s: \n%(obtain_at)s
+
+To set your %(name)s:
+1. On your local machine, add this to your virtual environment's bin/postactivate file:
+   export %(name)s=YOUR_ACTUAL_%(name)s
+2. If you've deployed will on heroku, run
+   heroku config:set %(name)s=YOUR_ACTUAL_%(name)s
+""" % test_setting)
+            return False
+
+
+    def verify_environment(self):
+        missing_settings = False
+        required_settings = [
+            {
+                "name": "WILL_USERNAME",
+                "obtain_at": "1. Go to hipchat, and create a new user for will.\n2. Log into will, and go to Account settings>XMPP/Jabber Info.\n3. On that page, the 'Jabber ID' is the value you want to use."
+            },
+            {
+                "name": "WILL_PASSWORD",
+                "obtain_at": "1. Go to hipchat, and create a new user for will.  Note that password - this is the value you want.  It's used for signing in via XMPP."
+            },
+            {
+                "name": "WILL_V2_TOKEN",
+                "obtain_at": "1. Log into hipchat using will's user. 2. Go to https://your-org.hipchat.com/account/api 3. Create a token. 4. Copy the value - this is the WILL_V2 token."
+            }
+        ]
+
+        print "Verifying settings..."
+
+        for r in required_settings:
+            if not self.verify_individual_setting(r):
+                missing_settings = True
+
+        if missing_settings:
+            puts(colored.red("Will was unable to start because some settings are missing.  Please fix them and try again!"))
+            sys.exit(0)
+        else:
+            print ""
+
+        # export WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'  # Semicolon-separated, so you can have commas in names.
+        # export WILL_NAME='William T. Kahuna'  # Must be the *exact, case-sensitive* full name from hipchat.
+        # export WILL_HANDLE='will'  # Must be the exact handle from hipchat.
+        # export WILL_REDIS_URL="redis://localhost:6379/7"
+        pass
+
+    def load_config(self):
+        print "Loading configuration..."
+
+        # Load config
+
+        # Validate it, set defaults.
+
+        # Rooms
+        # Default_Room
+        # Public URL
+        # Plugins
+        # Admin handles
+        # HTTPSERVER_PORT
+
+        # This is the list of rooms will should join.
+ROOMS = ['Testing, Will Kahuna', 'GreenKahuna']
+# Default: ALL_ROOMS
+
+# This is the room will will talk to if the trigger 
+# is a webhook and he isn't told a specific room. 
+# Defaults to the first of ROOMS.
+DEFAULT_ROOM = 'GreenKahuna'
+
+# If will isn't accessible at localhost, you must set this for his keepalive to work.
+PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
+
+
+# This is the list of plugins will should load. This list can contain:
+# 
+# Built-in core plugins:
+# ----------------------
+# All built-in modules:     will/core/plugins
+# Built-in modules:         will/core/plugins/module_name
+# Specific plugins:         will/core/plugins/module_name/plugin.py
+#
+# Plugins in your will:
+# ----------------------
+# All modules:              my_will/plugins
+# A specific module:        my_will/plugins/module_name
+# Specific plugins:         my_will/plugins/module_name/plugin.py
+
+PLUGINS = [
+    "will.core_plugins.admin",
+    "will.core_plugins.foo",
+    "my_will.plugins",
+]
+
+
+# All plugins are enabled by default, unless in this list
+PLUGIN_BLACKLIST = [
+    # Who would deprive will of cookies??
+    # "will.friendly.cookies",
+]
+
+
+
+# ------------------------------------------------------------------------------------
+# Optional
+# ------------------------------------------------------------------------------------
+
+# User handles who are allowed to perform "admin" actions.  Defaults to everyone.
+# ADMIN_HANDLES = [
+#     "steven",
+#     "levi",
+# ]
+
+# Port to listen to (defaults to $PORT, then 80.) Set > 1024 to run without elevated permission.
+# HTTPSERVER_PORT = "80"  
+
+
+# Email address to send from, if your will sends emails.
+# WILL_DEFAULT_FROM_EMAIL = "will@example.com"
+
 
     def bootstrap_scheduler(self):
         print "Bootstrapping scheduler..."
