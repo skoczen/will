@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style type="text/css">
+    body {
+        font-family: Helvetica, Arial, Sans-serif;
+    }
+    .will_head {
+        text-align: center;
+        margin: 50px auto 0 auto;
+    }
+    .hello {
+        font-size: 50;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="will_head">
+    <img src="https://gk-will.s3.amazonaws.com/will-head.png" alt="">
+    <div class="hello">&nbsp; Hi!</div>
+</div>
+{% endblock %}

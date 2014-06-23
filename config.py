@@ -22,27 +22,32 @@ PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
 # 
 # Built-in core plugins:
 # ----------------------
-# All built-in modules:     will/core/plugins
-# Built-in modules:         will/core/plugins/module_name
-# Specific plugins:         will/core/plugins/module_name/plugin.py
+# All built-in modules:     will.core.plugins
+# Built-in modules:         will.core.plugins.module_name
+# Specific plugins:         will.core.plugins.module_name.plugin
 #
 # Plugins in your will:
 # ----------------------
-# All modules:              my_will/plugins
-# A specific module:        my_will/plugins/module_name
-# Specific plugins:         my_will/plugins/module_name/plugin.py
+# All modules:              my_will.plugins
+# A specific module:        my_will.plugins.module_name
+# Specific plugins:         my_will.plugins.module_name.plugin
 
 PLUGINS = [
-    "will.core_plugins.admin",
-    "will.core_plugins.foo",
+    "core.admin",
+    "core.devops",
+    "core.friendly",
+    "core.help",
+    "core.hipchat",
+    "core.productivity",
+    "core.web",
     "my_will.plugins",
 ]
 WILL_HANDLE="joe"
 
 # All plugins are enabled by default, unless in this list
 PLUGIN_BLACKLIST = [
-    # Who would deprive will of cookies??
-    # "will.friendly.cookies",
+    # But who would deprive will of cookies??
+    # "core.friendly.cookies",
 ]
 
 

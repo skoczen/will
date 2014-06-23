@@ -292,8 +292,8 @@ To set your %(name)s:
         bootstrapped = False
         try:
             self.start_xmpp_client()
-            self.help_files.sort()
-            self.save("help_files", self.help_files)
+            sorted_help = {k: sorted(v) for k,v in self.help_modules.items()}
+            self.save("help_modules", sorted_help)
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
             bootstrapped = True
@@ -304,12 +304,14 @@ To set your %(name)s:
 
     def bootstrap_plugins(self):
         print "Bootstrapping plugins..."
+        OTHER_HELP_HEADING = "Other"
         plugin_modules = {}
         plugin_modules_library = {}
 
         # NOTE: You can't access self.storage here, or it will deadlock when the threads try to access redis.
 
         # Sure does feel like this should be a solved problem somehow.
+        parent_help_text = None
         for plugin_root in self.plugins_dirs:
             for root, dirs, files in os.walk(plugin_root, topdown=False):
                 for f in files:
@@ -321,10 +323,17 @@ To set your %(name)s:
                             full_module_name = ".".join(path_components)
                             # Need to pass along module name, path all the way through
                             plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
+
+                            parent_mod = path_components[-2].split("/")[-1]
+                            parent_root = os.path.join(root, "__init__.py")
+                            parent = imp.load_source(parent_mod, parent_root)
+                            parent_help_text = getattr(parent, "MODULE_DESCRIPTION", None)
+
                             plugin_modules_library[full_module_name] = {
                                 "full_module_name": full_module_name,
                                 "file_path": module_path,
                                 "name": module_name,
+                                "parent_help_text": parent_help_text,
                             }
                         except Exception, e:
                             self.startup_error("Error loading %s" % (module_path,), e)
@@ -335,7 +344,13 @@ To set your %(name)s:
                     for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                         try:
                             if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
-                                self.plugins.append({"name": class_name, "class": cls, "module": module, "full_module_name": name})
+                                self.plugins.append({
+                                    "name": class_name,
+                                    "class": cls,
+                                    "module": module,
+                                    "full_module_name": name,
+                                    "parent_help_text": plugin_modules_library[name]["parent_help_text"]
+                                })
                         except Exception, e:
                             self.startup_error("Error bootstrapping %s" % (class_name,), e)
                 except Exception, e:
@@ -349,7 +364,8 @@ To set your %(name)s:
         self.random_tasks = []
         self.bottle_routes = []
         self.all_listener_regexes = []
-        self.help_files = []
+        self.help_modules = {}
+        self.help_modules[OTHER_HELP_HEADING] = []
         self.some_listeners_include_me = False
         for plugin_info in self.plugins:
             try:
@@ -365,7 +381,14 @@ To set your %(name)s:
                             if fn.listens_only_to_direct_mentions:
                                 help_regex = "@%s %s" % (settings.HANDLE, help_regex)
                             self.all_listener_regexes.append(help_regex)
-                            self.help_files.append(fn.__doc__)
+                            pht = plugin_info.get("parent_help_text", None)
+                            if pht:
+                                if pht in self.help_modules:
+                                    self.help_modules[pht].append(fn.__doc__)
+                                else:
+                                    self.help_modules[pht] = [fn.__doc__,]
+                            else:
+                                self.help_modules[OTHER_HELP_HEADING].append(fn.__doc__)
                             if fn.multiline:
                                 compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                             else:
