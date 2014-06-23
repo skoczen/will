@@ -3,12 +3,7 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 
 
-class FriendlyPlugin(WillPlugin):
-
-    @respond_to("^hi")
-    def hi(self, message):
-        """hi: I know how to say hello."""
-        self.reply(message, "hello!")
+class MorninEveninPlugin(WillPlugin):
 
     @hear("^(good )?(morning?)")
     def morning(self, message):
