@@ -6,13 +6,13 @@
 # The following four settings must be set for will to work.
 
 # This is the list of rooms will should join.
-ROOMS = ['Testing, Will Kahuna', 'GreenKahuna']
+ROOMS = ['Testing, Will Kahuna',]
 # Default: ALL_ROOMS
 
 # This is the room will will talk to if the trigger 
 # is a webhook and he isn't told a specific room. 
 # Defaults to the first of ROOMS.
-DEFAULT_ROOM = 'GreenKahuna'
+DEFAULT_ROOM = 'Testing, Will Kahuna'
 
 # If will isn't accessible at localhost, you must set this for his keepalive to work.
 PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
