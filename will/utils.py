@@ -2,6 +2,8 @@
 from clint.textui import puts, indent
 from clint.textui import colored
 from HTMLParser import HTMLParser
+from . import settings
+
 
 
 class Bunch(dict):
@@ -34,6 +36,10 @@ def html_to_text(html):
     s = HTMLStripper()
     s.feed(html)
     return s.get_data()
+
+
+def is_admin(nick):
+    return settings.ADMINS == '*' or nick.lower() in settings.ADMINS
 
 
 def show_valid(valid_str):

@@ -138,6 +138,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                     if (search_matches  # The search regex matches and
                         and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
                         and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body) or sent_directly_to_me)  # I'm mentioned, or this is an overheard, or we're in a 1-1
+                        and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only'])) # It's from admins only and sender is an admin, or it's not from admins only
                     ):
                         try:
                             thread_args = [msg,] + l["args"]

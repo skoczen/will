@@ -402,6 +402,7 @@ To set your %(name)s:
                                 "args": fn.listener_args,
                                 "include_me": fn.listener_includes_me,
                                 "direct_mentions_only": fn.listens_only_to_direct_mentions,
+                                "admin_only": fn.listens_only_to_admin,
                             })
                             if fn.listener_includes_me:
                                 self.some_listeners_include_me = True

@@ -62,7 +62,10 @@ def import_settings(quiet=True):
         warn("Warning: no public url specified in the environment or config.  Defaulting to '%s'" % default_public)
         settings["PUBLIC_URL"] = default_public
 
-
+    if not "ADMINS" in settings:
+        settings["ADMINS"] = "*"
+    else:
+        settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
     
     # Set them in the module namespace
     for k in sorted(settings, key=lambda x: x[0]):

@@ -2,7 +2,7 @@ from bottle import route as bottle_route
 from mixins import ScheduleMixin, StorageMixin
 
 
-def respond_to(regex, include_me=False, case_sensitive=False, multiline=False):
+def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False):
     def wrap(f):
         passed_args = []
 
@@ -12,6 +12,7 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False):
         wrapped_f.case_sensitive = case_sensitive
         wrapped_f.multiline = multiline
         wrapped_f.listens_only_to_direct_mentions = True
+        wrapped_f.listens_only_to_admin = admin_only
         wrapped_f.listener_includes_me = include_me
         wrapped_f.listens_to_messages = True
         wrapped_f.listener_args = passed_args
@@ -34,7 +35,7 @@ def periodic(*sched_args, **sched_kwargs):
     return wrap
 
 
-def hear(regex, include_me=False, case_sensitive=False, multiline=False):
+def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False):
     def wrap(f):
         passed_args = []
 
@@ -44,6 +45,7 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False):
         wrapped_f.case_sensitive = case_sensitive
         wrapped_f.multiline = multiline
         wrapped_f.listens_only_to_direct_mentions = False
+        wrapped_f.listens_only_to_admin = admin_only
         wrapped_f.listener_includes_me = include_me
         wrapped_f.listens_to_messages = True
         wrapped_f.listener_args = passed_args
