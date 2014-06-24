@@ -30,9 +30,8 @@ def import_settings(quiet=True):
         for k, v in config.__dict__.items():
             # Ignore private variables
             if "__" not in k:
-                if k in os.environ:
-                    if not quiet:
-                        warn("%s is set in the environment as '%s', but overridden in config.py as '%s'." % (k, os.environ[k], v))
+                if k in os.environ and v != os.environ[k] and not quiet:
+                    warn("%s is set in the environment as '%s', but overridden in config.py as '%s'." % (k, os.environ[k], v))
                 settings[k] = v
     except:
         # TODO: Check to see if there's a config.py.dist
