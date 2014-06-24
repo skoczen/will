@@ -62,7 +62,7 @@ PLUGIN_BLACKLIST = [
 # ------------------------------------------------------------------------------------
 
 # User handles who are allowed to perform "admin" actions.  Defaults to everyone.
-# ADMIN_HANDLES = [
+# ADMINS = [
 #     "steven",
 #     "levi",
 # ]
@@ -72,4 +72,4 @@ PLUGIN_BLACKLIST = [
 
 
 # Email address to send from, if your will sends emails.
-# WILL_DEFAULT_FROM_EMAIL = "will@example.com"
+# DEFAULT_FROM_EMAIL = "will@example.com"

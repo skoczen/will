@@ -2,8 +2,6 @@
 from clint.textui import puts, indent
 from clint.textui import colored
 from HTMLParser import HTMLParser
-from . import settings
-
 
 
 class Bunch(dict):
@@ -39,6 +37,7 @@ def html_to_text(html):
 
 
 def is_admin(nick):
+    from . import settings
     return settings.ADMINS == '*' or nick.lower() in settings.ADMINS
 
 
