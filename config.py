@@ -31,6 +31,11 @@ PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
 # All modules:              my_will.plugins
 # A specific module:        my_will.plugins.module_name
 # Specific plugins:         my_will.plugins.module_name.plugin
+# 
+# Plugins are automatically imported from one of three areas:
+# 1. The global python namespace
+# 2. Will's plugins folder
+# 3. Your will's plugins folder.
 
 PLUGINS = [
     "core.admin",
