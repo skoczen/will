@@ -1,5 +1,5 @@
-# Welcome to Will's settings.  You'll need to set a few settings below,
-# with some optional ones further down.
+# Welcome to Will's settings.  You can change the settings here, or re-run
+# setup_will_project on the command line to do it interactively.
 # ------------------------------------------------------------------------------------
 # Required
 # ------------------------------------------------------------------------------------
