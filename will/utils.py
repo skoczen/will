@@ -51,3 +51,8 @@ def warn(warn_string):
 
 def error(err_string):
     puts(colored.red("ERROR: %s" % err_string))
+
+
+def note(warn_string):
+    puts(colored.cyan("Note: %s" % warn_string))
+

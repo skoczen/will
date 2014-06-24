@@ -23,7 +23,7 @@ from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin
 from scheduler import Scheduler
 import settings
-from utils import show_valid, error, warn
+from utils import show_valid, error, warn, note
 
 
 # Force UTF8
@@ -263,73 +263,83 @@ To set your %(name)s:
         # NOTE: You can't access self.storage here, or it will deadlock when the threads try to access redis.
 
         # Sure does feel like this should be a solved problem somehow.
-        parent_help_text = None
-        for plugin_name, plugin_root in self.plugins_dirs.items():
-            for root, dirs, files in os.walk(plugin_root, topdown=False):
-                for f in files:
-                    if f[-3:] == ".py" and f != "__init__.py":
-                        try:
-                            module_path = os.path.join(root, f)
-                            path_components = os.path.split(module_path)
-                            module_name = path_components[-1][:-3]
-                            full_module_name = ".".join(path_components)
-                            # Need to pass along module name, path all the way through
-                            plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
-
-                            parent_mod = path_components[-2].split("/")[-1]
-                            parent_help_text = parent_mod.title()
-                            try:
-                                parent_root = os.path.join(root, "__init__.py")
-                                parent = imp.load_source(parent_mod, parent_root)
-                                parent_help_text = getattr(parent, "MODULE_DESCRIPTION", parent_help_text)
-                            except:
-                                pass
-
-                            plugin_modules_library[full_module_name] = {
-                                "full_module_name": full_module_name,
-                                "file_path": module_path,
-                                "name": module_name,
-                                "parent_name": plugin_name,
-                                "parent_module_name": parent_mod,
-                                "parent_help_text": parent_help_text,
-                            }
-                        except Exception, e:
-                            self.startup_error("Error loading %s" % (module_path,), e)
-
-            self.plugins = []
-            for name, module in plugin_modules.items():
-                try:
-                    for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
-                        try:
-                            if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
-                                self.plugins.append({
-                                    "name": class_name,
-                                    "class": cls,
-                                    "module": module,
-                                    "full_module_name": name,
-                                    "parent_name": plugin_modules_library[name]["parent_name"],
-                                    "parent_module_name": plugin_modules_library[name]["parent_module_name"],
-                                    "parent_help_text": plugin_modules_library[name]["parent_help_text"]
-                                })
-                        except Exception, e:
-                            self.startup_error("Error bootstrapping %s" % (class_name,), e)
-                except Exception, e:
-                    self.startup_error("Error bootstrapping %s" % (name,), e)
-
-        self._plugin_modules_library = plugin_modules_library
-
-        # Sift and Sort.
-        self.message_listeners = []
-        self.periodic_tasks = []
-        self.random_tasks = []
-        self.bottle_routes = []
-        self.all_listener_regexes = []
-        self.help_modules = {}
-        self.help_modules[OTHER_HELP_HEADING] = []
-        self.some_listeners_include_me = False
-        self.plugins.sort(key=operator.itemgetter("parent_name"))
-        last_parent_name = None
         with indent(2):
+            parent_help_text = None
+            for plugin_name, plugin_root in self.plugins_dirs.items():
+                for root, dirs, files in os.walk(plugin_root, topdown=False):
+                    for f in files:
+                        if f[-3:] == ".py" and f != "__init__.py":
+                            try:
+                                module_path = os.path.join(root, f)
+                                path_components = os.path.split(module_path)
+                                module_name = path_components[-1][:-3]
+                                full_module_name = ".".join(path_components)
+                                # Need to pass along module name, path all the way through
+
+                                combined_name = ".".join([plugin_name, module_name])
+
+                                # Check blacklist.
+                                blacklisted = False
+                                for b in settings.PLUGIN_BLACKLIST:
+                                    if b in combined_name:
+                                        blacklisted = True
+                                        note("%s was found but ignored, since it is on PLUGIN_BLACKLIST." % combined_name)
+                            
+                                if not blacklisted:
+                                    plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
+                                    parent_mod = path_components[-2].split("/")[-1]
+                                    parent_help_text = parent_mod.title()
+                                    try:
+                                        parent_root = os.path.join(root, "__init__.py")
+                                        parent = imp.load_source(parent_mod, parent_root)
+                                        parent_help_text = getattr(parent, "MODULE_DESCRIPTION", parent_help_text)
+                                    except:
+                                        pass
+
+                                    plugin_modules_library[full_module_name] = {
+                                        "full_module_name": full_module_name,
+                                        "file_path": module_path,
+                                        "name": module_name,
+                                        "parent_name": plugin_name,
+                                        "parent_module_name": parent_mod,
+                                        "parent_help_text": parent_help_text,
+                                    }
+                            except Exception, e:
+                                self.startup_error("Error loading %s" % (module_path,), e)
+
+                self.plugins = []
+                for name, module in plugin_modules.items():
+                    try:
+                        for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                            try:
+                                if hasattr(cls, "is_will_plugin") and cls.is_will_plugin and class_name != "WillPlugin":
+                                    self.plugins.append({
+                                        "name": class_name,
+                                        "class": cls,
+                                        "module": module,
+                                        "full_module_name": name,
+                                        "parent_name": plugin_modules_library[name]["parent_name"],
+                                        "parent_module_name": plugin_modules_library[name]["parent_module_name"],
+                                        "parent_help_text": plugin_modules_library[name]["parent_help_text"]
+                                    })
+                            except Exception, e:
+                                self.startup_error("Error bootstrapping %s" % (class_name,), e)
+                    except Exception, e:
+                        self.startup_error("Error bootstrapping %s" % (name,), e)
+
+            self._plugin_modules_library = plugin_modules_library
+
+            # Sift and Sort.
+            self.message_listeners = []
+            self.periodic_tasks = []
+            self.random_tasks = []
+            self.bottle_routes = []
+            self.all_listener_regexes = []
+            self.help_modules = {}
+            self.help_modules[OTHER_HELP_HEADING] = []
+            self.some_listeners_include_me = False
+            self.plugins.sort(key=operator.itemgetter("parent_name"))
+            last_parent_name = None
             for plugin_info in self.plugins:
                 try:
                     if last_parent_name != plugin_info["parent_help_text"]:
@@ -338,11 +348,16 @@ To set your %(name)s:
                         # Justify
                         friendly_name = friendly_name.ljust(50, '-')
                         module_name = module_name.rjust(40, '-')
+                        puts("")
                         puts("%s%s" % (friendly_name, module_name))
 
                         last_parent_name = plugin_info["parent_help_text"]
                     with indent(2):
-                        show_valid("%(name)s" % plugin_info)
+                        plugin_name = plugin_info["name"]
+                        # Just a little nicety
+                        if plugin_name[-6:] == "Plugin":
+                            plugin_name = plugin_name[:-6]
+                        show_valid(plugin_name)
                     for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
                         try:
                             with indent(2):

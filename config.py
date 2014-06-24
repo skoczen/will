@@ -56,7 +56,7 @@ PLUGINS = [
 # All plugins are enabled by default, unless in this list
 PLUGIN_BLACKLIST = [
     # But who would deprive will of cookies??
-    # "will.plugins.friendly.cookies",
+    "will.plugins.friendly.cookies",
 ]
 
 # Additional directories to look for templates, beyond the ones auto-included:
