@@ -4,11 +4,12 @@ import logging
 import inspect
 import imp
 import os
+import operator
 import re
 import sys
 import time
 from clint.textui import colored
-from clint.textui import puts, indent
+from clint.textui import puts, indent, columns
 from os.path import abspath, dirname
 from multiprocessing import Process
 
@@ -44,23 +45,42 @@ sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
     ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
 
-    def __init__(self, plugins_dirs=[], template_dirs=[]):
+    def __init__(self, **kwargs):
+        if "template_dirs" in kwargs:
+            warn("template_dirs is now depreciated")
+        if "plugin_dirs" in kwargs:
+            warn("plugin_dirs is now depreciated")
+
         log_level = getattr(settings, 'LOGLEVEL', logging.ERROR)
         logging.basicConfig(level=log_level,\
             format='%(levelname)-8s %(message)s')
 
-        self.plugins_dirs = [PLUGINS_ROOT, ]
-        for plugin_dir in plugins_dirs:
-            p = os.path.abspath(plugin_dir)
-            if p not in self.plugins_dirs:
-                self.plugins_dirs.append(p)
+        
+        # Find all the PLUGINS modules
+        plugins = settings.PLUGINS
+        self.plugins_dirs = {}
+
+        # Convert those to dirs
+        for plugin in plugins:
+            path_name = None
+            for mod in plugin.split('.'):
+                if path_name is not None:
+                    path_name=[path_name]
+                file_name, path_name, description = imp.find_module(mod, path_name)
+
+            # Add, uniquely.
+            self.plugins_dirs[os.path.abspath(path_name)] = plugin
+
+        # Key by module name
+        self.plugins_dirs = dict(zip(self.plugins_dirs.values(),self.plugins_dirs.keys()))
 
         full_path_template_dirs = []
-        for t in template_dirs:
+        for t in settings.TEMPLATE_DIRS:
             full_path_template_dirs.append(os.path.abspath(t))
         if not TEMPLATES_ROOT in full_path_template_dirs:
             full_path_template_dirs += [TEMPLATES_ROOT, ]
 
+        # Storing here because storage hasn't been bootstrapped yet.
         os.environ["WILL_TEMPLATE_DIRS_PICKLED"] =\
             ";;".join(full_path_template_dirs)
 
@@ -71,6 +91,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         self.bootstrap_storage()
         self.bootstrap_plugins()
 
+        puts("\nStarting core processes:\n")
         # Scheduler
         scheduler_thread = Process(target=self.bootstrap_scheduler)
         # scheduler_thread.daemon = True
@@ -179,76 +200,6 @@ To set your %(name)s:
             settings.import_settings(quiet=False)
         print ""
 
-        
-
-        # Rooms
-        # Default_Room
-        # Public URL
-        # Plugins
-        # Admin handles
-        # HTTPSERVER_PORT
-
-
-        #         # This is the list of rooms will should join.
-        # ROOMS = ['Testing, Will Kahuna', 'GreenKahuna']
-        # # Default: ALL_ROOMS
-
-        # # This is the room will will talk to if the trigger 
-        # # is a webhook and he isn't told a specific room. 
-        # # Defaults to the first of ROOMS.
-        # DEFAULT_ROOM = 'GreenKahuna'
-
-        # # If will isn't accessible at localhost, you must set this for his keepalive to work.
-        # PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
-
-
-        # # This is the list of plugins will should load. This list can contain:
-        # # 
-        # # Built-in core plugins:
-        # # ----------------------
-        # # All built-in modules:     will/core/plugins
-        # # Built-in modules:         will/core/plugins/module_name
-        # # Specific plugins:         will/core/plugins/module_name/plugin.py
-        # #
-        # # Plugins in your will:
-        # # ----------------------
-        # # All modules:              my_will/plugins
-        # # A specific module:        my_will/plugins/module_name
-        # # Specific plugins:         my_will/plugins/module_name/plugin.py
-
-        # PLUGINS = [
-        #     "will.core_plugins.admin",
-        #     "will.core_plugins.foo",
-        #     "my_will.plugins",
-        # ]
-
-
-        # # All plugins are enabled by default, unless in this list
-        # PLUGIN_BLACKLIST = [
-        #     # Who would deprive will of cookies??
-        #     # "will.friendly.cookies",
-        # ]
-
-
-
-# ------------------------------------------------------------------------------------
-# Optional
-# ------------------------------------------------------------------------------------
-
-# User handles who are allowed to perform "admin" actions.  Defaults to everyone.
-# ADMIN_HANDLES = [
-#     "steven",
-#     "levi",
-# ]
-
-# Port to listen to (defaults to $PORT, then 80.) Set > 1024 to run without elevated permission.
-# HTTPSERVER_PORT = "80"  
-
-
-# Email address to send from, if your will sends emails.
-# WILL_DEFAULT_FROM_EMAIL = "will@example.com"
-
-
     def bootstrap_scheduler(self):
         bootstrapped = False
         try:
@@ -265,7 +216,7 @@ To set your %(name)s:
         except Exception, e:
             self.startup_error("Error bootstrapping scheduler", e)
         if bootstrapped:
-            show_valid("Scheduler bootstrapped.")
+            show_valid("Scheduler started.")
             self.scheduler.start_loop(self)
 
     def bootstrap_bottle(self):
@@ -283,7 +234,7 @@ To set your %(name)s:
         except Exception, e:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
-            show_valid("Bottle bootstrapped.")
+            show_valid("Web server started.")
             bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='gevent',)
 
     def bootstrap_xmpp(self):
@@ -298,11 +249,13 @@ To set your %(name)s:
         except Exception, e:
             self.startup_error("Error bootstrapping xmpp", e)
         if bootstrapped:
-            show_valid("XMPP bootstrapped.")
+            show_valid("Chat client started.")
+            puts("")
+            show_valid("Will is running.")
             self.process(block=True)
 
     def bootstrap_plugins(self):
-        print "Bootstrapping plugins..."
+        puts("Bootstrapping plugins...")
         OTHER_HELP_HEADING = "Other"
         plugin_modules = {}
         plugin_modules_library = {}
@@ -311,7 +264,7 @@ To set your %(name)s:
 
         # Sure does feel like this should be a solved problem somehow.
         parent_help_text = None
-        for plugin_root in self.plugins_dirs:
+        for plugin_name, plugin_root in self.plugins_dirs.items():
             for root, dirs, files in os.walk(plugin_root, topdown=False):
                 for f in files:
                     if f[-3:] == ".py" and f != "__init__.py":
@@ -324,14 +277,20 @@ To set your %(name)s:
                             plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
 
                             parent_mod = path_components[-2].split("/")[-1]
-                            parent_root = os.path.join(root, "__init__.py")
-                            parent = imp.load_source(parent_mod, parent_root)
-                            parent_help_text = getattr(parent, "MODULE_DESCRIPTION", None)
+                            parent_help_text = parent_mod.title()
+                            try:
+                                parent_root = os.path.join(root, "__init__.py")
+                                parent = imp.load_source(parent_mod, parent_root)
+                                parent_help_text = getattr(parent, "MODULE_DESCRIPTION", parent_help_text)
+                            except:
+                                pass
 
                             plugin_modules_library[full_module_name] = {
                                 "full_module_name": full_module_name,
                                 "file_path": module_path,
                                 "name": module_name,
+                                "parent_name": plugin_name,
+                                "parent_module_name": parent_mod,
                                 "parent_help_text": parent_help_text,
                             }
                         except Exception, e:
@@ -348,6 +307,8 @@ To set your %(name)s:
                                     "class": cls,
                                     "module": module,
                                     "full_module_name": name,
+                                    "parent_name": plugin_modules_library[name]["parent_name"],
+                                    "parent_module_name": plugin_modules_library[name]["parent_module_name"],
                                     "parent_help_text": plugin_modules_library[name]["parent_help_text"]
                                 })
                         except Exception, e:
@@ -366,15 +327,27 @@ To set your %(name)s:
         self.help_modules = {}
         self.help_modules[OTHER_HELP_HEADING] = []
         self.some_listeners_include_me = False
+        self.plugins.sort(key=operator.itemgetter("parent_name"))
+        last_parent_name = None
         with indent(2):
             for plugin_info in self.plugins:
                 try:
-                    show_valid("%s:" % plugin_info["name"])
+                    if last_parent_name != plugin_info["parent_help_text"]:
+                        friendly_name = "%(parent_help_text)s " % plugin_info
+                        module_name = " %(parent_name)s" % plugin_info
+                        # Justify
+                        friendly_name = friendly_name.ljust(50, '-')
+                        module_name = module_name.rjust(40, '-')
+                        puts("%s%s" % (friendly_name, module_name))
+
+                        last_parent_name = plugin_info["parent_help_text"]
+                    with indent(2):
+                        show_valid("%(name)s" % plugin_info)
                     for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
                         try:
                             with indent(2):
                                 if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
-                                    puts("- %s" % function_name)
+                                    # puts("- %s" % function_name)
                                     regex = fn.listener_regex
                                     if not fn.case_sensitive:
                                         regex = "(?i)%s" % regex
@@ -382,14 +355,15 @@ To set your %(name)s:
                                     if fn.listens_only_to_direct_mentions:
                                         help_regex = "@%s %s" % (settings.HANDLE, help_regex)
                                     self.all_listener_regexes.append(help_regex)
-                                    pht = plugin_info.get("parent_help_text", None)
-                                    if pht:
-                                        if pht in self.help_modules:
-                                            self.help_modules[pht].append(fn.__doc__)
+                                    if fn.__doc__:
+                                        pht = plugin_info.get("parent_help_text", None)
+                                        if pht:
+                                            if pht in self.help_modules:
+                                                self.help_modules[pht].append(fn.__doc__)
+                                            else:
+                                                self.help_modules[pht] = [fn.__doc__,]
                                         else:
-                                            self.help_modules[pht] = [fn.__doc__,]
-                                    else:
-                                        self.help_modules[OTHER_HELP_HEADING].append(fn.__doc__)
+                                            self.help_modules[OTHER_HELP_HEADING].append(fn.__doc__)
                                     if fn.multiline:
                                         compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                                     else:
@@ -408,17 +382,16 @@ To set your %(name)s:
                                     if fn.listener_includes_me:
                                         self.some_listeners_include_me = True
                                 elif hasattr(fn, "periodic_task") and fn.periodic_task:
-                                    puts("- %s" % function_name)
+                                    # puts("- %s" % function_name)
                                     self.periodic_tasks.append((plugin_info, fn, function_name))
                                 elif hasattr(fn, "random_task") and fn.random_task:
-                                    puts("- %s" % function_name)
+                                    # puts("- %s" % function_name)
                                     self.random_tasks.append((plugin_info, fn, function_name))
                                 elif hasattr(fn, "bottle_route"):
-                                    puts("- %s" % function_name)
+                                    # puts("- %s" % function_name)
                                     self.bottle_routes.append((plugin_info["class"], function_name))
 
                         except Exception, e:
                             self.startup_error("Error bootstrapping %s.%s" % (plugin_info["class"], function_name,), e)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
-            show_valid("Done.\n")

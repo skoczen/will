@@ -22,40 +22,51 @@ PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
 # 
 # Built-in core plugins:
 # ----------------------
-# All built-in modules:     will.core.plugins
-# Built-in modules:         will.core.plugins.module_name
-# Specific plugins:         will.core.plugins.module_name.plugin
+# All built-in modules:     will.plugins
+# Built-in modules:         will.plugins.module_name
+# Specific plugins:         will.plugins.module_name.plugin
 #
 # Plugins in your will:
 # ----------------------
-# All modules:              my_will.plugins
-# A specific module:        my_will.plugins.module_name
-# Specific plugins:         my_will.plugins.module_name.plugin
+# All modules:              plugins
+# A specific module:        plugins.module_name
+# Specific plugins:         plugins.module_name.plugin
 # 
-# Plugins are automatically imported from one of three areas:
-# 1. The global python namespace
-# 2. Will's plugins folder
-# 3. Your will's plugins folder.
+# Two folders are automatically added to your PYTHONPATH
+# 1. Will's folder
+# 2. Your will's folder.
 
+# This is a list of python modules from which will will *recursively*
+# include all plugins contained inside it.
 PLUGINS = [
-    "core.admin",
-    "core.devops",
-    "core.friendly",
-    "core.help",
-    "core.hipchat",
-    "core.productivity",
-    "core.web",
-    "my_will.plugins",
+    # Includes all the core will plugin modules by default.
+    # Comment out or remove to disable modules.
+    "will.plugins.admin",
+    "will.plugins.chat_room",
+    "will.plugins.devops",
+    "will.plugins.friendly",
+    "will.plugins.help",
+    "will.plugins.productivity",
+    "will.plugins.web",
+
+    # Includes all plugins in the project's plugins module by default.
+    "plugins",
 ]
-WILL_HANDLE="joe"
 
 # All plugins are enabled by default, unless in this list
 PLUGIN_BLACKLIST = [
     # But who would deprive will of cookies??
-    # "core.friendly.cookies",
+    # "will.plugins.friendly.cookies",
 ]
 
+# Additional directories to look for templates, beyond the ones auto-included:
+# 1. will/templates
+# 2. my_will/templates
+TEMPLATE_DIRS = [
 
+]
+
+WILL_HANDLE="joe"
 
 # ------------------------------------------------------------------------------------
 # Optional
