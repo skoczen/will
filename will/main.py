@@ -9,10 +9,11 @@ import re
 import requests
 import sys
 import time
+import threading
 from clint.textui import colored
 from clint.textui import puts, indent, columns
 from os.path import abspath, dirname
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 from gevent import monkey
 # Monkeypatch has to come before bottle
@@ -195,28 +196,23 @@ To set your %(name)s:
         puts("Verifying credentials...")
         # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.  Yup.
         user_id = settings.USERNAME[0:settings.USERNAME.find("@")][settings.USERNAME.find("_")+1:]
-        print settings.V2_TOKEN
-        # user_data = self.get_hipchat_user(user_id)
-        
-        USER_DETAILS_URL = "https://api.hipchat.com/v2/user/%(user_id)s?auth_token=%(token)s"
-        url = USER_DETAILS_URL % {"user_id": user_id, "token": settings.V2_TOKEN}
-        # TODO 
-        # ...  It's this.
-        # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
-        # This is probably also what breaks storage so I can't use it. C'mon, OSX.
-        r = requests.get(url)
-        # print r.json()
 
-        os.environ["WILL_NAME"] = "William T. Kahuna"
-        os.environ["WILL_HANDLE"] = "will"
-        # if "error" in user_data:
-        #     error("We ran into trouble: '%(message)s'" % user_data["error"])
-        #     sys.exit(1)
-        # with indent(2):
-        #     show_valid("%s authenticated" % user_data["name"])
-        #     os.environ["WILL_NAME"] = user_data["name"]
-        #     show_valid("@%s verified as handle" % user_data["mention_name"])
-        #     os.environ["WILL_HANDLE"] = user_data["mention_name"]
+        # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
+        # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
+        q = Queue()
+        p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q":q,})
+        p.start()
+        user_data = q.get()
+        p.join()
+
+        if "error" in user_data:
+            error("We ran into trouble: '%(message)s'" % user_data["error"])
+            sys.exit(1)
+        with indent(2):
+            show_valid("%s authenticated" % user_data["name"])
+            os.environ["WILL_NAME"] = user_data["name"]
+            show_valid("@%s verified as handle" % user_data["mention_name"])
+            os.environ["WILL_HANDLE"] = user_data["mention_name"]
 
         puts("")
 

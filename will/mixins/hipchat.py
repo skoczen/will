@@ -67,10 +67,13 @@ class HipChatMixin(object):
         except:
             logging.critical("Error in set_room_topic: \n%s" % traceback.format_exc())
 
-    def get_hipchat_user(self, user_id):
+    def get_hipchat_user(self, user_id, q=None):
         url = USER_DETAILS_URL % {"user_id": user_id, "token": settings.V2_TOKEN}
         r = requests.get(url)
-        return r.json()
+        if q:
+            q.put(r.json())
+        else:
+            return r.json()
 
     @property
     def full_hipchat_user_list(self):
