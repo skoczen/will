@@ -9,7 +9,6 @@ from will.utils import show_valid, error, warn, note
 
 class StorageMixin(object):
     def bootstrap_storage(self):
-        print "bootstrap_storage"
         if not hasattr(self, "storage"):
             if hasattr(self, "bot") and hasattr(self.bot, "storage"):
                 self.storage = self.bot.storage
@@ -27,18 +26,11 @@ class StorageMixin(object):
                 self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
 
     def save(self, key, value):
-        print "preboot"
         if not hasattr(self, "storage"):
             self.bootstrap_storage()
 
-        print "boot"
         try:
-            print self.storage
-            print key
-            # print dir(self.storage)
-            print self.storage.info()
             ret = self.storage.set(key, pickle.dumps(value))
-            print ret
             return ret
         except:
             logging.critical("Unable to save %s: \n%s" % (key, traceback.format_exc()) )

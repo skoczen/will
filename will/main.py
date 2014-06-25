@@ -6,6 +6,7 @@ import imp
 import os
 import operator
 import re
+import requests
 import sys
 import time
 from clint.textui import colored
@@ -23,7 +24,7 @@ from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin
 from scheduler import Scheduler
 import settings
-from utils import show_valid, error, warn, note
+from utils import show_valid, error, warn, note, print_head
 
 
 # Force UTF8
@@ -85,10 +86,10 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
             ";;".join(full_path_template_dirs)
 
     def bootstrap(self):
-        self.print_head()
+        print_head()
         self.verify_environment()
         self.load_config()
-        self.bootstrap_storage()
+        self.bootstrap_storage_mixin()
         self.bootstrap_plugins()
 
         puts("\nStarting core processes:\n")
@@ -132,20 +133,6 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
                     sys.stdout.flush()
                     time.sleep(0.5)
 
-
-    def print_head(self):
-        puts("""
-      ___/-\___
-  ___|_________|___
-     |         |
-     |--O---O--|
-     |         |
-     |         |
-     |  \___/  |
-     |_________|      
-      Will: Hi!
-""")
-
     def verify_individual_setting(self, test_setting, quiet=False):
         if hasattr(settings, test_setting["name"][5:]):
             with indent(2):
@@ -170,19 +157,30 @@ To set your %(name)s:
         required_settings = [
             {
                 "name": "WILL_USERNAME",
-                "obtain_at": "1. Go to hipchat, and create a new user for will.\n2. Log into will, and go to Account settings>XMPP/Jabber Info.\n3. On that page, the 'Jabber ID' is the value you want to use."
+                "obtain_at": """1. Go to hipchat, and create a new user for will.
+2. Log into will, and go to Account settings>XMPP/Jabber Info.
+3. On that page, the 'Jabber ID' is the value you want to use.""",
             },
             {
                 "name": "WILL_PASSWORD",
-                "obtain_at": "1. Go to hipchat, and create a new user for will.  Note that password - this is the value you want.  It's used for signing in via XMPP."
+                "obtain_at": "1. Go to hipchat, and create a new user for will.  Note that password - this is the value you want.  It's used for signing in via XMPP.",
             },
             {
                 "name": "WILL_V2_TOKEN",
-                "obtain_at": "1. Log into hipchat using will's user. 2. Go to https://your-org.hipchat.com/account/api 3. Create a token. 4. Copy the value - this is the WILL_V2 token."
+                "obtain_at": """1. Log into hipchat using will's user.
+2. Go to https://your-org.hipchat.com/account/api
+3. Create a token.
+4. Copy the value - this is the WILL_V2_TOKEN.""",
+            },
+            {
+                "name": "WILL_REDIS_URL",
+                "obtain_at": """1. Set up an accessible redis host locally or in production
+2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
             }
         ]
 
-        print "Verifying environment..."
+        puts("")
+        puts("Verifying environment...")
 
         for r in required_settings:
             if not self.verify_individual_setting(r):
@@ -190,20 +188,59 @@ To set your %(name)s:
 
         if missing_settings:
             error("Will was unable to start because some required environment variables are missing.  Please fix them and try again!")
-            sys.exit(0)
+            sys.exit(1)
         else:
-            print ""
+            puts("")
+
+        puts("Verifying credentials...")
+        # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.  Yup.
+        user_id = settings.USERNAME[0:settings.USERNAME.find("@")][settings.USERNAME.find("_")+1:]
+        print settings.V2_TOKEN
+        # user_data = self.get_hipchat_user(user_id)
+        
+        USER_DETAILS_URL = "https://api.hipchat.com/v2/user/%(user_id)s?auth_token=%(token)s"
+        url = USER_DETAILS_URL % {"user_id": user_id, "token": settings.V2_TOKEN}
+        # TODO 
+        # ...  It's this.
+        # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
+        # This is probably also what breaks storage so I can't use it. C'mon, OSX.
+        r = requests.get(url)
+        # print r.json()
+
+        os.environ["WILL_NAME"] = "William T. Kahuna"
+        os.environ["WILL_HANDLE"] = "will"
+        # if "error" in user_data:
+        #     error("We ran into trouble: '%(message)s'" % user_data["error"])
+        #     sys.exit(1)
+        # with indent(2):
+        #     show_valid("%s authenticated" % user_data["name"])
+        #     os.environ["WILL_NAME"] = user_data["name"]
+        #     show_valid("@%s verified as handle" % user_data["mention_name"])
+        #     os.environ["WILL_HANDLE"] = user_data["mention_name"]
+
+        puts("")
 
     def load_config(self):
-        print "Loading configuration..."
+        puts("Loading configuration...")
         with indent(2):
             settings.import_settings(quiet=False)
-        print ""
+        puts("")
+
+    def bootstrap_storage_mixin(self):
+        puts("Bootstrapping storage...")
+        try:
+            self.bootstrap_storage()
+            with indent(2):
+                show_valid("Connection to %s successful." % settings.REDIS_URL)
+            puts("")
+        except:
+            error("Unable to connect to %s" % settings.REDIS_URL)
+            sys.exit(1)
+        
 
     def bootstrap_scheduler(self):
         bootstrapped = False
         try:
-
             self.save("plugin_modules_library", self._plugin_modules_library)
             Scheduler.clear_locks(self)
             self.scheduler = Scheduler()
@@ -283,27 +320,38 @@ To set your %(name)s:
                                 for b in settings.PLUGIN_BLACKLIST:
                                     if b in combined_name:
                                         blacklisted = True
-                                        note("%s was found but ignored, since it is on PLUGIN_BLACKLIST." % combined_name)
                             
-                                if not blacklisted:
+                                try:
                                     plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
-                                    parent_mod = path_components[-2].split("/")[-1]
-                                    parent_help_text = parent_mod.title()
-                                    try:
-                                        parent_root = os.path.join(root, "__init__.py")
-                                        parent = imp.load_source(parent_mod, parent_root)
-                                        parent_help_text = getattr(parent, "MODULE_DESCRIPTION", parent_help_text)
-                                    except:
+                                except:
+                                    # If it's blacklisted, don't worry if this blows up.
+                                    if blacklisted:
                                         pass
+                                    else:
+                                        raise
 
-                                    plugin_modules_library[full_module_name] = {
-                                        "full_module_name": full_module_name,
-                                        "file_path": module_path,
-                                        "name": module_name,
-                                        "parent_name": plugin_name,
-                                        "parent_module_name": parent_mod,
-                                        "parent_help_text": parent_help_text,
-                                    }
+                                parent_mod = path_components[-2].split("/")[-1]
+                                parent_help_text = parent_mod.title()
+                                try:
+                                    parent_root = os.path.join(root, "__init__.py")
+                                    parent = imp.load_source(parent_mod, parent_root)
+                                    parent_help_text = getattr(parent, "MODULE_DESCRIPTION", parent_help_text)
+                                except:
+                                    # If it's blacklisted, don't worry if this blows up.
+                                    if blacklisted:
+                                        pass
+                                    else:
+                                        raise
+
+                                plugin_modules_library[full_module_name] = {
+                                    "full_module_name": full_module_name,
+                                    "file_path": module_path,
+                                    "name": module_name,
+                                    "parent_name": plugin_name,
+                                    "parent_module_name": parent_mod,
+                                    "parent_help_text": parent_help_text,
+                                    "blacklisted": blacklisted,
+                                }
                             except Exception, e:
                                 self.startup_error("Error loading %s" % (module_path,), e)
 
@@ -320,7 +368,8 @@ To set your %(name)s:
                                         "full_module_name": name,
                                         "parent_name": plugin_modules_library[name]["parent_name"],
                                         "parent_module_name": plugin_modules_library[name]["parent_module_name"],
-                                        "parent_help_text": plugin_modules_library[name]["parent_help_text"]
+                                        "parent_help_text": plugin_modules_library[name]["parent_help_text"],
+                                        "blacklisted": plugin_modules_library[name]["blacklisted"],
                                     })
                             except Exception, e:
                                 self.startup_error("Error bootstrapping %s" % (class_name,), e)
@@ -357,56 +406,59 @@ To set your %(name)s:
                         # Just a little nicety
                         if plugin_name[-6:] == "Plugin":
                             plugin_name = plugin_name[:-6]
-                        show_valid(plugin_name)
-                    for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
-                        try:
-                            with indent(2):
-                                if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
-                                    # puts("- %s" % function_name)
-                                    regex = fn.listener_regex
-                                    if not fn.case_sensitive:
-                                        regex = "(?i)%s" % regex
-                                    help_regex = fn.listener_regex
-                                    if fn.listens_only_to_direct_mentions:
-                                        help_regex = "@%s %s" % (settings.HANDLE, help_regex)
-                                    self.all_listener_regexes.append(help_regex)
-                                    if fn.__doc__:
-                                        pht = plugin_info.get("parent_help_text", None)
-                                        if pht:
-                                            if pht in self.help_modules:
-                                                self.help_modules[pht].append(fn.__doc__)
+                        if plugin_info["blacklisted"]:
+                            puts("✗ %s (blacklisted)" % plugin_name)
+                        else:
+                            for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
+                                try:
+                                    with indent(2):
+                                        if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
+                                            # puts("- %s" % function_name)
+                                            regex = fn.listener_regex
+                                            if not fn.case_sensitive:
+                                                regex = "(?i)%s" % regex
+                                            help_regex = fn.listener_regex
+                                            if fn.listens_only_to_direct_mentions:
+                                                help_regex = "@%s %s" % (settings.HANDLE, help_regex)
+                                            self.all_listener_regexes.append(help_regex)
+                                            if fn.__doc__:
+                                                pht = plugin_info.get("parent_help_text", None)
+                                                if pht:
+                                                    if pht in self.help_modules:
+                                                        self.help_modules[pht].append(fn.__doc__)
+                                                    else:
+                                                        self.help_modules[pht] = [fn.__doc__,]
+                                                else:
+                                                    self.help_modules[OTHER_HELP_HEADING].append(fn.__doc__)
+                                            if fn.multiline:
+                                                compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                                             else:
-                                                self.help_modules[pht] = [fn.__doc__,]
-                                        else:
-                                            self.help_modules[OTHER_HELP_HEADING].append(fn.__doc__)
-                                    if fn.multiline:
-                                        compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
-                                    else:
-                                        compiled_regex = re.compile(regex)
-                                    self.message_listeners.append({
-                                        "function_name": function_name,
-                                        "class_name": plugin_info["name"],
-                                        "regex_pattern": fn.listener_regex,
-                                        "regex": compiled_regex,
-                                        "fn": getattr(plugin_info["class"](), function_name),
-                                        "args": fn.listener_args,
-                                        "include_me": fn.listener_includes_me,
-                                        "direct_mentions_only": fn.listens_only_to_direct_mentions,
-                                        "admin_only": fn.listens_only_to_admin,
-                                    })
-                                    if fn.listener_includes_me:
-                                        self.some_listeners_include_me = True
-                                elif hasattr(fn, "periodic_task") and fn.periodic_task:
-                                    # puts("- %s" % function_name)
-                                    self.periodic_tasks.append((plugin_info, fn, function_name))
-                                elif hasattr(fn, "random_task") and fn.random_task:
-                                    # puts("- %s" % function_name)
-                                    self.random_tasks.append((plugin_info, fn, function_name))
-                                elif hasattr(fn, "bottle_route"):
-                                    # puts("- %s" % function_name)
-                                    self.bottle_routes.append((plugin_info["class"], function_name))
-
-                        except Exception, e:
-                            self.startup_error("Error bootstrapping %s.%s" % (plugin_info["class"], function_name,), e)
+                                                compiled_regex = re.compile(regex)
+                                            self.message_listeners.append({
+                                                "function_name": function_name,
+                                                "class_name": plugin_info["name"],
+                                                "regex_pattern": fn.listener_regex,
+                                                "regex": compiled_regex,
+                                                "fn": getattr(plugin_info["class"](), function_name),
+                                                "args": fn.listener_args,
+                                                "include_me": fn.listener_includes_me,
+                                                "direct_mentions_only": fn.listens_only_to_direct_mentions,
+                                                "admin_only": fn.listens_only_to_admin,
+                                            })
+                                            if fn.listener_includes_me:
+                                                self.some_listeners_include_me = True
+                                        elif hasattr(fn, "periodic_task") and fn.periodic_task:
+                                            # puts("- %s" % function_name)
+                                            self.periodic_tasks.append((plugin_info, fn, function_name))
+                                        elif hasattr(fn, "random_task") and fn.random_task:
+                                            # puts("- %s" % function_name)
+                                            self.random_tasks.append((plugin_info, fn, function_name))
+                                        elif hasattr(fn, "bottle_route"):
+                                            # puts("- %s" % function_name)
+                                            self.bottle_routes.append((plugin_info["class"], function_name))
+                                except Exception, e:
+                                    error(plugin_name)
+                                    self.startup_error("Error bootstrapping %s.%s" % (plugin_info["class"], function_name,), e)
+                            show_valid(plugin_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
