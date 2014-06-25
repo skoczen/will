@@ -54,5 +54,18 @@ def error(err_string):
 
 
 def note(warn_string):
-    puts(colored.cyan("Note: %s" % warn_string))
+    puts(colored.cyan("- Note: %s" % warn_string))
 
+def print_head():
+        puts("""
+      ___/-\___
+  ___|_________|___
+     |         |
+     |--O---O--|
+     |         |
+     |         |
+     |  \___/  |
+     |_________|
+           
+      Will: Hi!
+""")

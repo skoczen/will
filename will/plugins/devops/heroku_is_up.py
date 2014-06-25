@@ -4,7 +4,7 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 
 
-class ServicesPlugin(WillPlugin):
+class HerokuIsUpPlugin(WillPlugin):
 
     @periodic(second='46')
     def heroku_is_up(self):

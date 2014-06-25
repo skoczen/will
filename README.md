@@ -348,8 +348,6 @@ Programmer help lists the regexes for all listen/reply methods.  It's significan
     export WILL_PASSWORD='asj2498q89dsf89a8df'
     export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
     export WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'  # Semicolon-separated, so you can have commas in names.
-    export WILL_NAME='William T. Kahuna'  # Must be the *exact, case-sensitive* full name from hipchat.
-    export WILL_HANDLE='will'  # Must be the exact handle from hipchat.
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
     # Optional
@@ -412,8 +410,6 @@ Programmer help lists the regexes for all listen/reply methods.  It's significan
     WILL_TOKEN='kjadfj89a34878adf78789a4fae3' \
     WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
     WILL_ROOMS='Testing, Will Kahuna;GreenKahuna' \
-    WILL_NAME='William T. Kahuna' \
-    WILL_HANDLE='will' \
     WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`" \
     WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com' \
     WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...' \

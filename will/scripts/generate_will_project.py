@@ -1,59 +1,18 @@
 #!/usr/bin/env python
 import os
 import stat
+import sys
 
-# Big refactor for this coming.
-# 
-# - Add config.py file
-# - Add circle.yml
-# - Add travis.yml
-# - Ask for will's hipchat username
-# - Ask for will's hipchat password
-# - Ask for will's hipchat v2 token
-# - Ask for rooms (default all, verify each added as a real room.)
-# - Ask for default room (default first room)
-# - Ask set up heroku?
-#   - Ask for heroku app name
-#   - Add procfile
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.append(PROJECT_ROOT)
+sys.path.append(os.getcwd())
 
+from clint.textui import colored
+from clint.textui import puts, indent, columns
+from will.utils import show_valid, error, warn, note, print_head
 
-# Big ugly notes:
-
-# - TODO: bot.bootstrap checks env, outputs
-# - add @requires decorator to make sure all tokens are set.'
-# - automatically get: WILL_NAME = 'William T. Kahuna'  # Must be the *exact, case-sensitive* full name from hipchat.
-# - automatically get: WILL_HANDLE = 'will'  # Must be the exact handle from hipchat.
-# - change WILL_DEFAULT_ROOM to a normal string
-# - can I pass message along?
-# - todo: backwards compatable config.py - raise deprecation, but import via env.
-# - probably not:
-#     # 
-#     # External repositories on github:
-#     # --------------------------------
-#     # Entire external repos:    github:greenkahuna/gk-will/plugins
-#     # Modules:                  github:greenkahuna/gk-will/plugins/deployment
-#     # Specific plugins:         github:greenkahuna/gk-will/plugins/search/image_me.py
-# - levi doesn't have big concept looking at docs (how do all the pieces fit together?)
-# - suggestion on contribution doc: best practices for making plugins
-#     config.py -> generate or .dist
-#     admin_handles -> default everyone
-#     gk/will-plugins.git
-#     reccomended setup doc'd (CD, add circle.yml, travis.yml, etc)
-#     /cloned-plugin-repos (ignored)
-#     will install ___ (CLI)
-#     plugins:
-#         core
-#         fun
-#         deployment
-#         (can group in help, and exclude)
-
-#     modules?
-#         - github url
-#         - group of plugins
-#         - does a specific job
-#         - grouped in help, enable/disableable easily
-
-
+class EmptyObj(object):
+    pass
 
 def main():
     """
@@ -69,6 +28,11 @@ def main():
     Procfile
     README.md
     """
+
+    print_head()
+    puts("Welcome to the will project generator.")
+    puts("")
+
     print "\nGenerating will scaffold..."
 
     current_dir = os.getcwd()
@@ -170,3 +134,7 @@ This is our bot, a [https://github.com/greenkahuna/will](will) bot.
 """)
 
     print "\nDone."
+
+
+if __name__ == '__main__':
+    main()

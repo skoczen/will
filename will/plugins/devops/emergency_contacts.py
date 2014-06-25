@@ -2,7 +2,7 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
 from will import settings
 
-class ContactsPlugin(WillPlugin):
+class EmergencyContactsPlugin(WillPlugin):
 
     @respond_to("^set my contact info to (?P<contact_info>.*)", multiline=True)
     def set_my_info(self, message, contact_info=""):
