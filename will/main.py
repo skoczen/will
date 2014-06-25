@@ -40,6 +40,7 @@ else:
 PROJECT_ROOT = abspath(os.path.join(dirname(__file__)))
 PLUGINS_ROOT = abspath(os.path.join(PROJECT_ROOT, "plugins"))
 TEMPLATES_ROOT = abspath(os.path.join(PROJECT_ROOT, "templates"))
+PROJECT_TEMPLATE_ROOT = abspath(os.path.join(os.getcwd(), "templates"))
 sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
@@ -79,8 +80,14 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         full_path_template_dirs = []
         for t in settings.TEMPLATE_DIRS:
             full_path_template_dirs.append(os.path.abspath(t))
+        
+        # Add will's templates_root
         if not TEMPLATES_ROOT in full_path_template_dirs:
             full_path_template_dirs += [TEMPLATES_ROOT, ]
+
+        # Add this project's templates_root
+        if not PROJECT_TEMPLATE_ROOT in full_path_template_dirs:
+            full_path_template_dirs += [PROJECT_TEMPLATE_ROOT, ]
 
         # Storing here because storage hasn't been bootstrapped yet.
         os.environ["WILL_TEMPLATE_DIRS_PICKLED"] =\

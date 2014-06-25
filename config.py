@@ -86,10 +86,12 @@ ROOMS = ['Testing, Will Kahuna',]
 # DEFAULT_ROOM = 'Testing, Will Kahuna'
 
 
-# Additional directories to look for templates, beyond the ones auto-included:
-# - Core will's /templates
-# - Your project's /templates
-# TEMPLATE_DIRS = []
+# Fully-qualified folders to look for templates in, beyond the two that 
+# are always included: core will's templates folder, and your project's templates folder.
+# 
+# TEMPLATE_DIRS = [
+#   os.path.abspath("other_folder/templates")
+# ]
 
 # User handles who are allowed to perform `admin_only` plugins.  Defaults to everyone.
 # ADMINS = [
