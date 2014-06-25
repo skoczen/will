@@ -347,22 +347,12 @@ Programmer help lists the regexes for all listen/reply methods.  It's significan
     export WILL_USERNAME='12345_123456@chat.hipchat.com'
     export WILL_PASSWORD='asj2498q89dsf89a8df'
     export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
-    export WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'  # Semicolon-separated, so you can have commas in names.
     export WILL_REDIS_URL="redis://localhost:6379/7"
    
     # Optional
+    export WILL_ROOMS='Testing, Will Kahuna;GreenKahuna'  # Semicolon-separated, defaults to all rooms if not set.
     export WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3' # for v1 API. Must be an 'admin' token, not just notification. Optional, unless you have > ~30 rooms.
-    export WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com'  # Default room: (otherwise defaults to the first of WILL_ROOMS)
-    export WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...'  # For google hangouts:
-    export WILL_DEFAULT_FROM_EMAIL="will@example.com"
-    export WILL_MAILGUN_API_KEY="key-12398912329381"
-    export WILL_MAILGUN_API_URL="example.com"
-    export WILL_LOGLEVEL="DEBUG"
-    export WILL_ADMINS="GreenKahuna; AnotherAdmin" # Semicolon-separated @mention names of will admins, used by the admin_only option of the respond_to and hear decorators.
-
-    # For Production:
-    export WILL_HTTPSERVER_PORT="80"  # Port to listen to (defaults to $PORT, then 80.) Set > 1024 to run without elevated permission.
-    export WILL_URL="http://my-will.herokuapp.com" # If will isn't accessible at localhost (heroku, etc). No trailing slash.:
+    export WILL_PUBLIC_URL="http://my-will.herokuapp.com" # If will isn't accessible at localhost (heroku, etc). No trailing slash.:
     ```
 
 4. Run `generate_will_project`.  This will create the following structure (you can also create it by hand):
@@ -404,17 +394,12 @@ Programmer help lists the regexes for all listen/reply methods.  It's significan
 
     ```bash
     heroku config:set \
-    WILL_URL="http://our-will-name.herokuapp.com" \
+    WILL_PUBLIC_URL="http://our-will-name.herokuapp.com" \
     WILL_USERNAME='12345_123456@chat.hipchat.com' \
     WILL_PASSWORD='asj2498q89dsf89a8df' \
     WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3' \
     WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
-    WILL_ROOMS='Testing, Will Kahuna;GreenKahuna' \
-    WILL_REDIS_URL="`heroku config:get REDISCLOUD_URL`" \
-    WILL_DEFAULT_ROOM='12345_room1@conf.hipchat.com' \
-    WILL_HANGOUT_URL='https://plus.google.com/hangouts/_/event/ceggfjm3q3jn8ktan7k861hal9o...' \
-    TZ="America/Los_Angeles"
-    # Or whatever your time zone is.
+    TZ="America/Los_Angeles"  # Or whatever your time zone is.
     ```
 
 4. `git push heroku`

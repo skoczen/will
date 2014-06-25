@@ -104,7 +104,8 @@ def import_settings(quiet=True):
         if not "ADMINS" in settings:
             settings["ADMINS"] = "*"
         else:
-            settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
+            if "WILL_ADMINS" in os.environ:
+                settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
         
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):

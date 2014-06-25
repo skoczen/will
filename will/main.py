@@ -224,15 +224,22 @@ To set your %(name)s:
             settings.import_settings(quiet=False)
         puts("")
 
-        # If we're missing rooms, handle it.
-        if settings.ROOMS == None:
-            # Yup. Thanks, BSDs.
-            q = Queue()
-            p = Process(target=self.update_available_rooms, args=(), kwargs={"q":q,})
-            p.start()
-            os.environ["WILL_ROOMS"] = ";".join(q.get())
-            p.join()
-            settings.import_settings()
+        puts("Verifying rooms...")
+        # If we're missing ROOMS, join all of them.
+        with indent(2):
+            if settings.ROOMS == None:
+                # Yup. Thanks, BSDs.
+                q = Queue()
+                p = Process(target=self.update_available_rooms, args=(), kwargs={"q":q,})
+                p.start()
+                rooms_list = q.get()
+                show_valid("Joining all %s known rooms." % len(rooms_list))
+                os.environ["WILL_ROOMS"] = ";".join(rooms_list)
+                p.join()
+                settings.import_settings()
+            else:
+                show_valid("Joining the %s room%s specified." % (len(settings.ROOMS), "s" if len(settings.ROOMS)>1 else ""))
+        puts("")
             
 
     def verify_plugin_settings(self):

@@ -1,7 +1,3 @@
-from bottle import route as bottle_route
-from mixins import ScheduleMixin, StorageMixin
-
-
 def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False):
     def wrap(f):
         passed_args = []
