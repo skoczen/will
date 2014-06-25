@@ -8,17 +8,18 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, a
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
-        wrapped_f.listener_regex = regex
-        wrapped_f.case_sensitive = case_sensitive
-        wrapped_f.multiline = multiline
-        wrapped_f.listens_only_to_direct_mentions = True
-        wrapped_f.listens_only_to_admin = admin_only
-        wrapped_f.listener_includes_me = include_me
-        wrapped_f.listens_to_messages = True
-        wrapped_f.listener_args = passed_args
-        wrapped_f.__doc__ = f.__doc__
-        return wrapped_f
+        wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
 
+        wrapped_f.will_fn_metadata["listener_regex"] = regex
+        wrapped_f.will_fn_metadata["case_sensitive"] = case_sensitive
+        wrapped_f.will_fn_metadata["multiline"] = multiline
+        wrapped_f.will_fn_metadata["listens_only_to_direct_mentions"] = True
+        wrapped_f.will_fn_metadata["listens_only_to_admin"] = admin_only
+        wrapped_f.will_fn_metadata["listener_includes_me"] = include_me
+        wrapped_f.will_fn_metadata["listens_to_messages"] = True
+        wrapped_f.will_fn_metadata["listener_args"] = passed_args
+        wrapped_f.will_fn_metadata["__doc__"] = f.__doc__
+        return wrapped_f
     return wrap
 
 
@@ -27,10 +28,11 @@ def periodic(*sched_args, **sched_kwargs):
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
-        wrapped_f.periodic_task = True
-        wrapped_f.function_name = f.__name__
-        wrapped_f.sched_args = sched_args
-        wrapped_f.sched_kwargs = sched_kwargs
+        wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
+        wrapped_f.will_fn_metadata["periodic_task"] = True
+        wrapped_f.will_fn_metadata["function_name"] = f.__name__
+        wrapped_f.will_fn_metadata["sched_args"] = sched_args
+        wrapped_f.will_fn_metadata["sched_kwargs"] = sched_kwargs
         return wrapped_f
     return wrap
 
@@ -41,15 +43,16 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_o
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
-        wrapped_f.listener_regex = regex
-        wrapped_f.case_sensitive = case_sensitive
-        wrapped_f.multiline = multiline
-        wrapped_f.listens_only_to_direct_mentions = False
-        wrapped_f.listens_only_to_admin = admin_only
-        wrapped_f.listener_includes_me = include_me
-        wrapped_f.listens_to_messages = True
-        wrapped_f.listener_args = passed_args
-        wrapped_f.__doc__ = f.__doc__
+        wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
+        wrapped_f.will_fn_metadata["listener_regex"] = regex
+        wrapped_f.will_fn_metadata["case_sensitive"] = case_sensitive
+        wrapped_f.will_fn_metadata["multiline"] = multiline
+        wrapped_f.will_fn_metadata["listens_only_to_direct_mentions"] = False
+        wrapped_f.will_fn_metadata["listens_only_to_admin"] = admin_only
+        wrapped_f.will_fn_metadata["listener_includes_me"] = include_me
+        wrapped_f.will_fn_metadata["listens_to_messages"] = True
+        wrapped_f.will_fn_metadata["listener_args"] = passed_args
+        wrapped_f.will_fn_metadata["__doc__"] = f.__doc__
         return wrapped_f
 
     return wrap
@@ -60,11 +63,12 @@ def randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
-        wrapped_f.random_task = True
-        wrapped_f.start_hour = int(start_hour)
-        wrapped_f.end_hour = int(end_hour)
-        wrapped_f.day_of_week = day_of_week
-        wrapped_f.num_times_per_day = int(num_times_per_day)
+        wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
+        wrapped_f.will_fn_metadata["random_task"] = True
+        wrapped_f.will_fn_metadata["start_hour"] = int(start_hour)
+        wrapped_f.will_fn_metadata["end_hour"] = int(end_hour)
+        wrapped_f.will_fn_metadata["day_of_week"] = day_of_week
+        wrapped_f.will_fn_metadata["num_times_per_day"] = int(num_times_per_day)
 
         return wrapped_f
     return wrap
@@ -90,8 +94,19 @@ def rendered_template(template_name, context=None):
                     return template.render(**context)
                 else:
                     return context
+            wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
             return wrapped_f
         return wrap
+
+
+def require_settings(*setting_names):
+    def wrap(f):
+        def wrapped_f(*args, **kwargs):
+            f(*args, **kwargs)
+        wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
+        wrapped_f.will_fn_metadata["required_settings"] = setting_names
+        return wrapped_f
+    return wrap
 
 
 def route(path, *args, **kwargs):

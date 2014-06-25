@@ -92,6 +92,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         self.load_config()
         self.bootstrap_storage_mixin()
         self.bootstrap_plugins()
+        self.verify_plugin_settings()
 
         puts("\nStarting core processes:\n")
         # Scheduler
@@ -117,7 +118,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
                 error_message = "FYI, I had some errors starting up:"
                 for err in errors:
                     error_message += "\n%s\n" % err
-                self.send_room_message(default_room, error_message)
+                self.send_room_message(default_room, error_message, color="red")
                 puts(colored.red(error_message))
 
             while True:
@@ -222,6 +223,28 @@ To set your %(name)s:
             settings.import_settings(quiet=False)
         puts("")
 
+    def verify_plugin_settings(self):
+        puts("Verifying settings required by plugins...")
+
+        missing_settings = False
+        missing_setting_error_messages = []
+        with indent(2):
+            for name, meta in self.required_settings_from_plugins.items():
+                if not hasattr(settings, name):
+                    error_message = "%(setting_name)s is missing. It's required by the %(plugin_name)s plugin's '%(function_name)s' method." % meta
+                    puts(colored.red("✗ %(setting_name)s" % meta))
+                    missing_setting_error_messages.append(error_message)
+                    missing_settings = True
+                else:
+                    show_valid("%(setting_name)s" % meta)
+
+            if missing_settings:
+                puts("")
+                warn("Will is missing settings required by some plugins. He's starting up anyway, but you will run into errors if you try to use those plugins!")
+                self.add_startup_error("\n".join(missing_setting_error_messages))
+            else:
+                puts("")
+
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")
         try:
@@ -242,9 +265,11 @@ To set your %(name)s:
             self.scheduler = Scheduler()
 
             for plugin_info, fn, function_name in self.periodic_tasks:
-                self.add_periodic_task(plugin_info["full_module_name"], plugin_info["name"], function_name, fn.sched_args, fn.sched_kwargs, fn.function_name,)
+                meta = fn.will_fn_metadata
+                self.add_periodic_task(plugin_info["full_module_name"], plugin_info["name"], function_name, meta["sched_args"], meta["sched_kwargs"], meta["function_name"],)
             for plugin_info, fn, function_name in self.random_tasks:
-                self.add_random_tasks(plugin_info["full_module_name"], plugin_info["name"], function_name, fn.start_hour, fn.end_hour, fn.day_of_week, fn.num_times_per_day)
+                meta = fn.will_fn_metadata
+                self.add_random_tasks(plugin_info["full_module_name"], plugin_info["name"], function_name, meta["start_hour"], meta["end_hour"], meta["day_of_week"], meta["num_times_per_day"])
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping scheduler", e)
@@ -384,6 +409,7 @@ To set your %(name)s:
             self.help_modules[OTHER_HELP_HEADING] = []
             self.some_listeners_include_me = False
             self.plugins.sort(key=operator.itemgetter("parent_name"))
+            self.required_settings_from_plugins = {}
             last_parent_name = None
             for plugin_info in self.plugins:
                 try:
@@ -407,54 +433,67 @@ To set your %(name)s:
                         else:
                             for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
                                 try:
+                                    # Check for required_settings
                                     with indent(2):
-                                        if hasattr(fn, "listens_to_messages") and fn.listens_to_messages and hasattr(fn, "listener_regex"):
-                                            # puts("- %s" % function_name)
-                                            regex = fn.listener_regex
-                                            if not fn.case_sensitive:
-                                                regex = "(?i)%s" % regex
-                                            help_regex = fn.listener_regex
-                                            if fn.listens_only_to_direct_mentions:
-                                                help_regex = "@%s %s" % (settings.HANDLE, help_regex)
-                                            self.all_listener_regexes.append(help_regex)
-                                            if fn.__doc__:
-                                                pht = plugin_info.get("parent_help_text", None)
-                                                if pht:
-                                                    if pht in self.help_modules:
-                                                        self.help_modules[pht].append(fn.__doc__)
+                                        if hasattr(fn, "will_fn_metadata"):
+                                            meta = fn.will_fn_metadata
+                                            if "required_settings" in meta:
+                                                for s in meta["required_settings"]:
+                                                    self.required_settings_from_plugins[s] = {
+                                                        "plugin_name": plugin_name,
+                                                        "function_name": function_name,
+                                                        "setting_name": s,
+                                                    }
+                                                    puts("%s REQUIRED!!" % s)
+                                                    puts(s)
+                                            if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
+                                                # puts("- %s" % function_name)
+                                                regex = meta["listener_regex"]
+                                                if not meta["case_sensitive"]:
+                                                    regex = "(?i)%s" % regex
+                                                help_regex = meta["listener_regex"]
+                                                if meta["listens_only_to_direct_mentions"]:
+                                                    help_regex = "@%s %s" % (settings.HANDLE, help_regex)
+                                                self.all_listener_regexes.append(help_regex)
+                                                if meta["__doc__"]:
+                                                    pht = plugin_info.get("parent_help_text", None)
+                                                    if pht:
+                                                        if pht in self.help_modules:
+                                                            self.help_modules[pht].append(meta["__doc__"])
+                                                        else:
+                                                            self.help_modules[pht] = [meta["__doc__"],]
                                                     else:
-                                                        self.help_modules[pht] = [fn.__doc__,]
+                                                        self.help_modules[OTHER_HELP_HEADING].append(meta["__doc__"])
+                                                if meta["multiline"]:
+                                                    compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                                                 else:
-                                                    self.help_modules[OTHER_HELP_HEADING].append(fn.__doc__)
-                                            if fn.multiline:
-                                                compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
-                                            else:
-                                                compiled_regex = re.compile(regex)
-                                            self.message_listeners.append({
-                                                "function_name": function_name,
-                                                "class_name": plugin_info["name"],
-                                                "regex_pattern": fn.listener_regex,
-                                                "regex": compiled_regex,
-                                                "fn": getattr(plugin_info["class"](), function_name),
-                                                "args": fn.listener_args,
-                                                "include_me": fn.listener_includes_me,
-                                                "direct_mentions_only": fn.listens_only_to_direct_mentions,
-                                                "admin_only": fn.listens_only_to_admin,
-                                            })
-                                            if fn.listener_includes_me:
-                                                self.some_listeners_include_me = True
-                                        elif hasattr(fn, "periodic_task") and fn.periodic_task:
-                                            # puts("- %s" % function_name)
-                                            self.periodic_tasks.append((plugin_info, fn, function_name))
-                                        elif hasattr(fn, "random_task") and fn.random_task:
-                                            # puts("- %s" % function_name)
-                                            self.random_tasks.append((plugin_info, fn, function_name))
-                                        elif hasattr(fn, "bottle_route"):
-                                            # puts("- %s" % function_name)
-                                            self.bottle_routes.append((plugin_info["class"], function_name))
+                                                    compiled_regex = re.compile(regex)
+                                                self.message_listeners.append({
+                                                    "function_name": function_name,
+                                                    "class_name": plugin_info["name"],
+                                                    "regex_pattern": meta["listener_regex"],
+                                                    "regex": compiled_regex,
+                                                    "fn": getattr(plugin_info["class"](), function_name),
+                                                    "args": meta["listener_args"],
+                                                    "include_me": meta["listener_includes_me"],
+                                                    "direct_mentions_only": meta["listens_only_to_direct_mentions"],
+                                                    "admin_only": meta["listens_only_to_admin"],
+                                                })
+                                                if meta["listener_includes_me"]:
+                                                    self.some_listeners_include_me = True
+                                            elif "periodic_task" in meta and meta["periodic_task"]:
+                                                # puts("- %s" % function_name)
+                                                self.periodic_tasks.append((plugin_info, fn, function_name))
+                                            elif "random_task" in meta and meta["random_task"]:
+                                                # puts("- %s" % function_name)
+                                                self.random_tasks.append((plugin_info, fn, function_name))
+                                            elif "bottle_route" in meta:
+                                                # puts("- %s" % function_name)
+                                                self.bottle_routes.append((plugin_info["class"], function_name))
                                 except Exception, e:
                                     error(plugin_name)
                                     self.startup_error("Error bootstrapping %s.%s" % (plugin_info["class"], function_name,), e)
                             show_valid(plugin_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
+        puts("")
