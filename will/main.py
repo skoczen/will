@@ -224,6 +224,17 @@ To set your %(name)s:
             settings.import_settings(quiet=False)
         puts("")
 
+        # If we're missing rooms, handle it.
+        if settings.ROOMS == None:
+            # Yup. Thanks, BSDs.
+            q = Queue()
+            p = Process(target=self.update_available_rooms, args=(), kwargs={"q":q,})
+            p.start()
+            os.environ["WILL_ROOMS"] = ";".join(q.get())
+            p.join()
+            settings.import_settings()
+            
+
     def verify_plugin_settings(self):
         puts("Verifying settings requested by plugins...")
 

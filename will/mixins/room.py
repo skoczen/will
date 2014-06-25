@@ -4,14 +4,14 @@ from will import settings
 
 
 class RoomMixin(object):
-    def update_available_rooms(self):
+    def update_available_rooms(self, q=None):
         self._available_rooms = {}
         # Use v1 token to grab a full room list if we can (good to avoid rate limiting)
-        if hasattr(settings, "TOKEN"):
-            url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.TOKEN,)
+        if hasattr(settings, "V1_TOKEN"):
+            url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.V1_TOKEN,)
             r = requests.get(url)
             if r.status_code == requests.codes.unauthorized:
-                raise Exception("TOKEN authentication failed with HipChat")
+                raise Exception("V1_TOKEN authentication failed with HipChat")
             for room in r.json()["rooms"]:
                 self._available_rooms[room["name"]] = room
         # Otherwise, grab 'em one-by-one via the v2 api.
@@ -33,6 +33,8 @@ class RoomMixin(object):
                 self._available_rooms[room["name"]] = room
 
         self.save("hipchat_rooms", self._available_rooms)
+        if q:
+            q.put(self._available_rooms)
 
     @property
     def available_rooms(self):

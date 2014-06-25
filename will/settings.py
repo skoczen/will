@@ -54,10 +54,10 @@ def import_settings(quiet=True):
         # Set defaults
         if "ROOMS" not in settings:
             if not quiet:
-                warn("no ROOMS found in the environment or config.  Will will still run his webserver, but won't join any chat rooms.")
-            settings["ROOMS"] = []
+                warn("no ROOMS list found in the environment or config.  This is ok - Will will just join all available rooms.")
+                settings["ROOMS"] = None
 
-        if not "DEFAULT_ROOM" in settings and len(settings["ROOMS"]) > 0:
+        if not "DEFAULT_ROOM" in settings and "ROOMS" in settings and settings["ROOMS"] and len(settings["ROOMS"]) > 0:
             if not quiet:
                 warn("no DEFAULT_ROOM found in the environment or config.  Defaulting to '%s', the first one." % settings["ROOMS"][0])
             settings["DEFAULT_ROOM"] = settings["ROOMS"][0]
@@ -68,7 +68,7 @@ def import_settings(quiet=True):
                 settings["HTTPSERVER_PORT"] = os.environ["PORT"]
             else:
                 if not quiet:
-                    warn("no http server port specified in the environment or config.  Defaulting to ':80'.")
+                    warn("no HTTPSERVER_PORT found in the environment or config.  Defaulting to ':80'.")
                 settings["HTTPSERVER_PORT"] = "80"
 
         if not "REDIS_URL" in settings:
@@ -95,6 +95,11 @@ def import_settings(quiet=True):
             settings["PUBLIC_URL"] = default_public
             if not quiet:
                 warn("no PUBLIC_URL found in the environment or config.  Defaulting to '%s'." % default_public)
+
+
+        if not "V1_TOKEN" in settings:
+            if not quiet:
+                warn("no V1_TOKEN found in the environment or config. This is generally ok, but if you have more than 30 rooms, you may recieve rate-limit errors without one.")
 
         if not "ADMINS" in settings:
             settings["ADMINS"] = "*"

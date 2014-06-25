@@ -86,7 +86,7 @@ WILL_HANDLE="joe"
 # ]
 
 # Port to listen to (defaults to $PORT, then 80.) Set > 1024 to run without elevated permission.
-# HTTPSERVER_PORT = "80"  
+HTTPSERVER_PORT = "9000"  
 
 
 # Email address to send from, if your will sends emails.
