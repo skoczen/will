@@ -94,7 +94,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         self.bootstrap_plugins()
         self.verify_plugin_settings()
 
-        puts("\nStarting core processes:\n")
+        puts("Bootstrapping complete.")
+        puts("\nStarting core processes:")
         # Scheduler
         scheduler_thread = Process(target=self.bootstrap_scheduler)
         # scheduler_thread.daemon = True
@@ -224,7 +225,7 @@ To set your %(name)s:
         puts("")
 
     def verify_plugin_settings(self):
-        puts("Verifying settings required by plugins...")
+        puts("Verifying settings requested by plugins...")
 
         missing_settings = False
         missing_setting_error_messages = []
