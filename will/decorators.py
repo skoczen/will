@@ -107,8 +107,9 @@ def require_settings(*setting_names):
 
 def route(path, *args, **kwargs):
     def wrap(f):
-        f.bottle_route = path
+        f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
+        f.will_fn_metadata["bottle_route"] = path
         for k, v in kwargs.items():
-            setattr(f, "bottle_%s" % k, v)
+            f.will_fn_metadata["bottle_%s" % k] = v
         return f
     return wrap

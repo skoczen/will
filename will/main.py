@@ -108,33 +108,34 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
         xmpp_thread = Process(target=self.bootstrap_xmpp)
         # xmpp_thread.daemon = True
 
-        try:
-            # Start up threads.
-            xmpp_thread.start()
-            scheduler_thread.start()
-            bottle_thread.start()
-            errors = self.get_startup_errors()
-            if len(errors) > 0:
-                default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
-                error_message = "FYI, I had some errors starting up:"
-                for err in errors:
-                    error_message += "\n%s\n" % err
-                self.send_room_message(default_room, error_message, color="red")
-                puts(colored.red(error_message))
+        with indent(2):
+            try:
+                # Start up threads.
+                xmpp_thread.start()
+                scheduler_thread.start()
+                bottle_thread.start()
+                errors = self.get_startup_errors()
+                if len(errors) > 0:
+                    default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
+                    error_message = "FYI, I had some errors starting up:"
+                    for err in errors:
+                        error_message += "\n%s\n" % err
+                    self.send_room_message(default_room, error_message, color="red")
+                    puts(colored.red(error_message))
 
-            while True:
-                time.sleep(100)
-        except (KeyboardInterrupt, SystemExit):
-            scheduler_thread.terminate()
-            bottle_thread.terminate()
-            xmpp_thread.terminate()
-            print '\n\nReceived keyboard interrupt, quitting threads.',
-            while scheduler_thread.is_alive() or\
-                  bottle_thread.is_alive() or\
-                  xmpp_thread.is_alive():
-                    sys.stdout.write(".")
-                    sys.stdout.flush()
-                    time.sleep(0.5)
+                while True:
+                    time.sleep(100)
+            except (KeyboardInterrupt, SystemExit):
+                scheduler_thread.terminate()
+                bottle_thread.terminate()
+                xmpp_thread.terminate()
+                print '\n\nReceived keyboard interrupt, quitting threads.',
+                while scheduler_thread.is_alive() or\
+                      bottle_thread.is_alive() or\
+                      xmpp_thread.is_alive():
+                        sys.stdout.write(".")
+                        sys.stdout.flush()
+                        time.sleep(0.5)
 
     def verify_individual_setting(self, test_setting, quiet=False):
         if hasattr(settings, test_setting["name"][5:]):
@@ -303,16 +304,16 @@ To set your %(name)s:
                 instantiated_cls = cls()
                 instantiated_fn = getattr(instantiated_cls, function_name)
                 bottle_route_args = {}
-                for k, v in instantiated_fn.__dict__.items():
+                for k, v in instantiated_fn.will_fn_metadata.items():
                     if "bottle_" in k and k != "bottle_route":
                         bottle_route_args[k[len("bottle_"):]] = v
-                bottle.route(instantiated_fn.bottle_route, **bottle_route_args)(instantiated_fn)
+                bottle.route(instantiated_fn.will_fn_metadata["bottle_route"], **bottle_route_args)(instantiated_fn)
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
             show_valid("Web server started.")
-            bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='gevent',)
+            bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='gevent', quiet=True)
 
     def bootstrap_xmpp(self):
         bootstrapped = False
@@ -327,7 +328,6 @@ To set your %(name)s:
             self.startup_error("Error bootstrapping xmpp", e)
         if bootstrapped:
             show_valid("Chat client started.")
-            puts("")
             show_valid("Will is running.")
             self.process(block=True)
 

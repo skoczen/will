@@ -9,6 +9,8 @@
 # Required
 # ------------------------------------------------------------------------------------
 
+
+
 # The list of plugin modules will should load. 
 # Will recursively loads all plugins contained in each module.
 
@@ -53,9 +55,9 @@ PLUGINS = [
 
 # Don't load any of the plugins in this list.  Same options as above.
 PLUGIN_BLACKLIST = [
-    # "will.plugins.friendly.cookies",  # But who would deprive will of cookies??
-    "will.plugins.productivity.hangout",  # Requires a HANGOUT_URL
-    "will.plugins.productivity.world_time",  # Requires a WORLD_WEATHER_ONLINE key
+    # "will.plugins.friendly.cookies",      # But who would deprive will of cookies??
+    "will.plugins.productivity.hangout",    # Because it requires a HANGOUT_URL
+    "will.plugins.productivity.world_time", # Because it requires a WORLD_WEATHER_ONLINE key
 ]
 
 
@@ -69,7 +71,7 @@ PLUGIN_BLACKLIST = [
 
 # Port to bind the web server to (defaults to $PORT, then 80.)
 # Set > 1024 to run without elevated permission.
-# HTTPSERVER_PORT = "9000"
+HTTPSERVER_PORT = "9000"
 
 
 # ------------------------------------------------------------------------------------
@@ -77,7 +79,7 @@ PLUGIN_BLACKLIST = [
 # ------------------------------------------------------------------------------------
 
 # The list of rooms will should join.  Default is all rooms.
-# ROOMS = ['Testing, Will Kahuna',]
+ROOMS = ['Testing, Will Kahuna',]
 
 # The room will will talk to if the trigger is a webhook and he isn't told a specific room. 
 # Default is the first of ROOMS.

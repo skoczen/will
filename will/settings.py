@@ -101,6 +101,13 @@ def import_settings(quiet=True):
             if not quiet:
                 warn("no V1_TOKEN found in the environment or config. This is generally ok, but if you have more than 30 rooms, you may recieve rate-limit errors without one.")
 
+        if not "TEMPLATE_DIRS" in settings:
+            if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:
+                # All good
+                pass
+            else:
+                settings["TEMPLATE_DIRS"] = []
+
         if not "ADMINS" in settings:
             settings["ADMINS"] = "*"
         else:
