@@ -408,7 +408,7 @@ To set your %(name)s:
             self.help_modules = {}
             self.help_modules[OTHER_HELP_HEADING] = []
             self.some_listeners_include_me = False
-            self.plugins.sort(key=operator.itemgetter("parent_name"))
+            self.plugins.sort(key=operator.itemgetter("parent_module_name"))
             self.required_settings_from_plugins = {}
             last_parent_name = None
             for plugin_info in self.plugins:
@@ -444,8 +444,6 @@ To set your %(name)s:
                                                         "function_name": function_name,
                                                         "setting_name": s,
                                                     }
-                                                    puts("%s REQUIRED!!" % s)
-                                                    puts(s)
                                             if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
                                                 # puts("- %s" % function_name)
                                                 regex = meta["listener_regex"]

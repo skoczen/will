@@ -1,13 +1,14 @@
 import datetime
 import requests
 from will.plugin import WillPlugin
-from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
+from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 from will import settings
 
 class TimePlugin(WillPlugin):
 
 
     @respond_to("what time is it in (?P<place>.*)")
+    @require_settings("WORLD_WEATHER_ONLINE_KEY",)
     def what_time_is_it_in(self, message, place):
         """what time is it in ___: Say the time in almost any city on earth."""
         if not hasattr(settings, "WORLD_WEATHER_ONLINE_KEY"):

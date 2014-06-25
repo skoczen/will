@@ -57,6 +57,7 @@ PLUGINS = [
 PLUGIN_BLACKLIST = [
     # But who would deprive will of cookies??
     # "will.plugins.friendly.cookies",
+    "will.plugins.productivity.world_time",  # Requires a WORLD_WEATHER_ONLINE key
 ]
 
 # Additional directories to look for templates, beyond the ones auto-included:

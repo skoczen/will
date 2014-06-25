@@ -1,5 +1,6 @@
 import os
 from utils import show_valid, warn, error, note
+from clint.textui import puts, indent, columns
 
 def import_settings(quiet=True):
     """This method takes care of importing settings from the environment, and config.py file.
@@ -25,74 +26,85 @@ def import_settings(quiet=True):
 
 
     # Import from config
-    try:
-        import config
-        for k, v in config.__dict__.items():
-            # Ignore private variables
-            if "__" not in k:
-                if k in os.environ and v != os.environ[k] and not quiet:
-                    warn("%s is set in the environment as '%s', but overridden in config.py as '%s'." % (k, os.environ[k], v))
-                settings[k] = v
-    except:
-        # TODO: Check to see if there's a config.py.dist
-        if not quiet:
-            warn("no config.py found.  This might be ok, but more likely, you haven't copied config.py.dist over to config.py")
+    if not quiet:
+        puts("Importing config.py... ")
+    with indent(2):
+        try:
+            had_warning = False
+            import config
+            for k, v in config.__dict__.items():
+                # Ignore private variables
+                if "__" not in k:
+                    if k in os.environ and v != os.environ[k] and not quiet:
+                        warn("%s is set in the environment as '%s', but overridden in config.py as '%s'." % (k, os.environ[k], v))
+                        had_warning = True
+                    settings[k] = v
 
+            if not had_warning and not quiet:
+                show_valid("Valid.")
+        except:
+            # TODO: Check to see if there's a config.py.dist
+            if not quiet:
+                warn("no config.py found.  This might be ok, but more likely, you haven't copied config.py.dist over to config.py")
 
-    # Set defaults
-    if "ROOMS" not in settings:
-        if not quiet:
-            warn("Warning: no rooms specified in the environment or config.  Will will still run his webserver, but won't join any chat rooms.")
-        settings["ROOMS"] = []
+    if not quiet:
+        puts("Verifying settings... ")
 
-    if not "DEFAULT_ROOM" in settings and len(settings["ROOMS"]) > 0:
-        if not quiet:
-            warn("Warning: no default room specified in the environment or config.  Defaulting to '%s', the first one." % settings["ROOMS"][0])
-        settings["ROOMS"] = settings["ROOMS"][0]
+    with indent(2):
+        # Set defaults
+        if "ROOMS" not in settings:
+            if not quiet:
+                warn("Warning: no rooms specified in the environment or config.  Will will still run his webserver, but won't join any chat rooms.")
+            settings["ROOMS"] = []
 
-    if not "HTTPSERVER_PORT" in settings:
-        # For heroku
-        if "PORT" in os.environ:
-            settings["HTTPSERVER_PORT"] = os.environ["PORT"]
+        if not "DEFAULT_ROOM" in settings and len(settings["ROOMS"]) > 0:
+            if not quiet:
+                warn("Warning: no default room specified in the environment or config.  Defaulting to '%s', the first one." % settings["ROOMS"][0])
+            settings["ROOMS"] = settings["ROOMS"][0]
+
+        if not "HTTPSERVER_PORT" in settings:
+            # For heroku
+            if "PORT" in os.environ:
+                settings["HTTPSERVER_PORT"] = os.environ["PORT"]
+            else:
+                if not quiet:
+                    warn("Warning: no http server port specified in the environment or config.  Defaulting to ':80'.")
+                settings["HTTPSERVER_PORT"] = "80"
+
+        if not "REDIS_URL" in settings:
+            # For heroku
+            if "REDISCLOUD_URL" in os.environ:
+                settings["REDIS_URL"] = os.environ["REDISCLOUD_URL"]
+                if not quiet:
+                    note("WILL_REDIS_URL not set, but it appears you're using RedisCloud. If so, all good.")
+            elif "REDISTOGO_URL" in os.environ:
+                settings["REDIS_URL"] = os.environ["REDISTOGO_URL"]
+                if not quiet:
+                    note("WILL_REDIS_URL not set, but it appears you're using RedisToGo. If so, all good.")
+            elif "OPENREDIS_URL" in os.environ:
+                settings["REDIS_URL"] = os.environ["OPENREDIS_URL"]
+                if not quiet:
+                    note("WILL_REDIS_URL not set, but it appears you're using OpenRedis. If so, all good.")
+            else:
+                settings["REDIS_URL"] = "redis://localhost:6379/7"
+                if not quiet:
+                    note("WILL_REDIS_URL not set.  Defaulting to redis://localhost:6379/7.")
+
+        if not "PUBLIC_URL" in settings:
+            default_public = "http://localhost:%s" % settings["HTTPSERVER_PORT"]
+            settings["PUBLIC_URL"] = default_public
+            if not quiet:
+                warn("Warning: no public url specified in the environment or config.  Defaulting to '%s'" % default_public)
+
+        if not "ADMINS" in settings:
+            settings["ADMINS"] = "*"
         else:
+            settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
+        
+        # Set them in the module namespace
+        for k in sorted(settings, key=lambda x: x[0]):
             if not quiet:
-                warn("Warning: no http server port specified in the environment or config.  Defaulting to ':80'.")
-            settings["HTTPSERVER_PORT"] = "80"
-
-    if not "REDIS_URL" in settings:
-        # For heroku
-        if "REDISCLOUD_URL" in os.environ:
-            settings["REDIS_URL"] = os.environ["REDISCLOUD_URL"]
-            if not quiet:
-                note("WILL_REDIS_URL not set, but it appears you're using RedisCloud. If so, all good.")
-        elif "REDISTOGO_URL" in os.environ:
-            settings["REDIS_URL"] = os.environ["REDISTOGO_URL"]
-            if not quiet:
-                note("WILL_REDIS_URL not set, but it appears you're using RedisToGo. If so, all good.")
-        elif "OPENREDIS_URL" in os.environ:
-            settings["REDIS_URL"] = os.environ["OPENREDIS_URL"]
-            if not quiet:
-                note("WILL_REDIS_URL not set, but it appears you're using OpenRedis. If so, all good.")
-        else:
-            settings["REDIS_URL"] = "redis://localhost:6379/7"
-            if not quiet:
-                note("WILL_REDIS_URL not set.  Defaulting to redis://localhost:6379/7.")
-
-    if not "PUBLIC_URL" in settings:
-        default_public = "http://localhost:%s" % settings["HTTPSERVER_PORT"]
-        settings["PUBLIC_URL"] = default_public
-        if not quiet:
-            warn("Warning: no public url specified in the environment or config.  Defaulting to '%s'" % default_public)
-
-    if not "ADMINS" in settings:
-        settings["ADMINS"] = "*"
-    else:
-        settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
-    
-    # Set them in the module namespace
-    for k in sorted(settings, key=lambda x: x[0]):
-        if not quiet:
-            show_valid(k)
-        globals()[k] = settings[k]
+                show_valid(k)
+            globals()[k] = settings[k]
 
 import_settings()

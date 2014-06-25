@@ -56,7 +56,7 @@ def main():
         with open(hello_file_path, 'w+') as f:
             f.write("""import datetime
 from will.plugin import WillPlugin
-from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template
+from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 
 
 class HelloPlugin(WillPlugin):
