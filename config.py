@@ -22,6 +22,7 @@
 # PUBLIC_URL = "http://my-will.herokuapp.com"  # Note no trailing slash.
 
 
+
 # This is the list of plugins will should load. This list can contain:
 # 
 # Built-in core plugins:
@@ -63,6 +64,7 @@ PLUGIN_BLACKLIST = [
     # "will.plugins.friendly.cookies",
     "will.plugins.productivity.world_time",  # Requires a WORLD_WEATHER_ONLINE key
 ]
+
 
 # Additional directories to look for templates, beyond the ones auto-included:
 # 1. will/templates

@@ -54,13 +54,13 @@ def import_settings(quiet=True):
         # Set defaults
         if "ROOMS" not in settings:
             if not quiet:
-                warn("Warning: no rooms specified in the environment or config.  Will will still run his webserver, but won't join any chat rooms.")
+                warn("no ROOMS found in the environment or config.  Will will still run his webserver, but won't join any chat rooms.")
             settings["ROOMS"] = []
 
         if not "DEFAULT_ROOM" in settings and len(settings["ROOMS"]) > 0:
             if not quiet:
-                warn("Warning: no default room specified in the environment or config.  Defaulting to '%s', the first one." % settings["ROOMS"][0])
-            settings["ROOMS"] = settings["ROOMS"][0]
+                warn("no DEFAULT_ROOM found in the environment or config.  Defaulting to '%s', the first one." % settings["ROOMS"][0])
+            settings["DEFAULT_ROOM"] = settings["ROOMS"][0]
 
         if not "HTTPSERVER_PORT" in settings:
             # For heroku
@@ -68,7 +68,7 @@ def import_settings(quiet=True):
                 settings["HTTPSERVER_PORT"] = os.environ["PORT"]
             else:
                 if not quiet:
-                    warn("Warning: no http server port specified in the environment or config.  Defaulting to ':80'.")
+                    warn("no http server port specified in the environment or config.  Defaulting to ':80'.")
                 settings["HTTPSERVER_PORT"] = "80"
 
         if not "REDIS_URL" in settings:
@@ -94,7 +94,7 @@ def import_settings(quiet=True):
             default_public = "http://localhost:%s" % settings["HTTPSERVER_PORT"]
             settings["PUBLIC_URL"] = default_public
             if not quiet:
-                warn("Warning: no public url specified in the environment or config.  Defaulting to '%s'" % default_public)
+                warn("no PUBLIC_URL found in the environment or config.  Defaulting to '%s'." % default_public)
 
         if not "ADMINS" in settings:
             settings["ADMINS"] = "*"
