@@ -16,3 +16,4 @@ sleekxmpp>=1.2
 
 # Dev only
 pyandoc
+mkdocs

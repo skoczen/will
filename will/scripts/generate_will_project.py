@@ -54,8 +54,7 @@ def main():
     hello_file_path = os.path.join(plugins_dir, "hello.py")
     if not os.path.exists(hello_file_path):
         with open(hello_file_path, 'w+') as f:
-            f.write("""import datetime
-from will.plugin import WillPlugin
+            f.write("""from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 
 
@@ -103,7 +102,7 @@ shelf.db
 from will.main import WillBot
 
 if __name__ == '__main__':
-    bot = WillBot(plugins_dirs=["plugins",], template_dirs=["templates",])
+    bot = WillBot()
     bot.bootstrap()
     """)
     # And make it executable
