@@ -1,15 +1,22 @@
 # Welcome to Will's settings.
 # 
-# All of the settings here can also be specified in the environment, and should be for
-# keys and the like.  In case of conflict, you will see a warning message, and the 
-# value in this file will win.
+
+# Config and the environment:
+# ---------------------------
+# Will can use settings from the environment or this file, and sets reasonable defaults.
+# 
+# Best practices: set keys and the like in the environment, and anything you'd be ok 
+# with other people knowing in this file.
+# 
+# To specify in the environment, just prefix with WILL_ 
+# (i.e. WILL_DEFAULT_ROOM becomes DEFAULT_ROOM).  
+# In case of conflict, you will see a warning message, and the value in this file will win.
+
 
 
 # ------------------------------------------------------------------------------------
-# Required
+# Required settings
 # ------------------------------------------------------------------------------------
-
-
 
 # The list of plugin modules will should load. 
 # Will recursively loads all plugins contained in each module.
@@ -62,7 +69,7 @@ PLUGIN_BLACKLIST = [
 
 
 # ------------------------------------------------------------------------------------
-# Potentially Required
+# Potentially required settings
 # ------------------------------------------------------------------------------------
 
 # If will isn't accessible at localhost, you must set this for his keepalive to work.
@@ -75,11 +82,12 @@ HTTPSERVER_PORT = "9000"
 
 
 # ------------------------------------------------------------------------------------
-# Optional
+# Optional settings
 # ------------------------------------------------------------------------------------
 
 # The list of rooms will should join.  Default is all rooms.
-ROOMS = ['Testing, Will Kahuna',]
+# ROOMS = ['Testing, Will Kahuna',]
+
 
 # The room will will talk to if the trigger is a webhook and he isn't told a specific room. 
 # Default is the first of ROOMS.
@@ -93,14 +101,15 @@ ROOMS = ['Testing, Will Kahuna',]
 #   os.path.abspath("other_folder/templates")
 # ]
 
+
 # User handles who are allowed to perform `admin_only` plugins.  Defaults to everyone.
 # ADMINS = [
 #     "steven",
 #     "levi",
 # ]
 
-# Mailgun config, if you'd like will to send emails.
 
+# Mailgun config, if you'd like will to send emails.
 # DEFAULT_FROM_EMAIL="will@example.com"
 # Set in your environment:
 # export WILL_MAILGUN_API_KEY="key-12398912329381"
