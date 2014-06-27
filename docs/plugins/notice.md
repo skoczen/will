@@ -7,23 +7,31 @@ Will can notice a variety of things, and this list keeps growing.  When you want
 
 Simple enough - if you directly @will mention him in a message, he'll see these.  It's exactly what we used in the hello, world example.
 
-```
+```python
 @respond_to("bonjour")
 def say_bonjour_will(self, message):
     # Awesome stuff
 ```
 
+You can also use named matches in the regex:
+
+```python
+@respond_to("award (?P<num_stars>\d)+ gold stars? to (?P<mention_name>.*)")
+def gold_stars(self, message, num_stars=1, mention_name=None):
+    # Fantastic gold-starness
+```
+
 `@respond_to` takes a number of options:
 
-```
+```python
 @respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
 ```
 
-- **regex**: a regular expression to match.
-- **include_me**: whether will should include the things he says as possible matches
-- **case_sensitive**: should the regex be case sensitive?
-- **multiline**: should the regex allow multiline matches?
-- **admin_only**: only runs the command if the sender is specified as an administrator.
+- **`regex`**: a regular expression to match.  Any named matches are passed along as keyword arguments.
+- **`include_me`**: whether will should include the things he says as possible matches
+- **`case_sensitive`**: should the regex be case sensitive?
+- **`multiline`**: should the regex allow multiline matches?
+- **`admin_only`**: only runs the command if the sender is specified as an administrator.
 
 &nbsp; 
 
@@ -31,7 +39,7 @@ def say_bonjour_will(self, message):
 
 Sometimes, you want will to take actions when he sees things in everyday conversation, even if it wasn't directly addressed to him.  That's what `@hear()` is for.
 
-```
+```python
 @hear("(?:ran into )?a bug")
 def log_all_bugs(self, message):
     # Awesome stuff
@@ -39,15 +47,15 @@ def log_all_bugs(self, message):
 
 `@hear` takes a the same options as `respond_to`:
 
-```
+```python
 @hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
 ```
 
-- **regex**: a regular expression to match.
-- **include_me**: whether will should include the things he says as possible matches
-- **case_sensitive**: should the regex be case sensitive?
-- **multiline**: should the regex allow multiline matches?
-- **admin_only**: only runs the command if the sender is specified as an administrator.
+- **`regex`**: a regular expression to match.  Any named matches are passed along as keyword arguments.
+- **`include_me`**: whether will should include the things he says as possible matches
+- **`case_sensitive`**: should the regex be case sensitive?
+- **`multiline`**: should the regex allow multiline matches?
+- **`admin_only`**: only runs the command if the sender is specified as an administrator.
 
 &nbsp; 
 
@@ -63,26 +71,26 @@ def standup(self):
 
 Under the hood, `@periodic` uses [apscheduler](http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields) to provide its options, so you can use any of the following as keyword arguments:
 
-- **year**: 4-digit year number
-- **month**: month number (1-12)
-- **day**: day of the month (1-31)
-- **week**: ISO week number (1-53)
-- **day_of_week**: number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)
-- **hour**: hour (0-23)
-- **minute**: minute (0-59)
-- **second**: second (0-59)
+- **`year`**: 4-digit year number
+- **`month`**: month number (1-12)
+- **`day`**: day of the month (1-31)
+- **`week`**: ISO week number (1-53)
+- **`day_of_week`**: number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)
+- **`hour`**: hour (0-23)
+- **`minute`**: minute (0-59)
+- **`second`**: second (0-59)
 
 
 For each of those keys, any of the following expressions are valid values:
 
-- ***** (any): Fire on every value
-- ***/a** (any): Fire every a values, starting from the minimum
-- **a-b** (any): Fire on any value within the a-b range (a must be smaller than b)
-- **a-b/c** (any): Fire every c values within the a-b range
-- **xth y** (day): Fire on the x -th occurrence of weekday y within the month
-- **last x** (day): Fire on the last occurrence of weekday x within the month
-- **last** (day): Fire on the last day within the month
-- **x,y,z** (any): Fire on any matching expression; can combine any number of any of the above expressions
+- **`*`** (any): Fire on every value
+- **`*/a`** (any): Fire every a values, starting from the minimum
+- **`a-b`** (any): Fire on any value within the a-b range (a must be smaller than b)
+- **`a-b/c`** (any): Fire every c values within the a-b range
+- **`xth y`** (day): Fire on the x -th occurrence of weekday y within the month
+- **`last` x** (day): Fire on the last occurrence of weekday x within the month
+- **`last`** (day): Fire on the last day within the month
+- **`x,y,z`** (any): Fire on any matching expression; can combine any number of any of the above expressions
 
 
 Awesome, right?
@@ -131,11 +139,14 @@ def walkmaster(self):
 
 `@randomly` accepts a few arguments:
 
-```
+```python
 @randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
 ```
 
-- **start_hour**:  When to start the random window.
-- **end_hour**:  When to end the random window.
-- **day_of_week**:  What days of the week is the window available? Parsed with [apscheduler](http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields).
-- **num_times_per_day**:  How many times per day within the window, should actions happen?
+- **`start_hour`**:  When to start the random window.
+- **`end_hour`**:  When to end the random window.
+- **`day_of_week`**:  What days of the week is the window available? Parsed with [apscheduler](http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields).
+- **`num_times_per_day`**:  How many times per day within the window, should actions happen?
+
+
+Now that you've got a handle on the things will can notice, let's take a look at [the ways he can respond](reply.md).

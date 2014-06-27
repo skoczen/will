@@ -1,39 +1,134 @@
 # How will can respond
 
-Will can notice a variety of things, and this list keeps growing.  When you want your will to pay attention to a particular thing, you'll use one of will's decorators - an example of each is below.
+Will can respond in a variety of ways, and since he's pure python, your imagination is the limit.
 
 
 ## Talk to the room
 
-Filler - Simple enough - if you directly @will mention him in a message, he'll see these.  It's exactly what we used in the hello, world example.
+Like any normal person, will can talk to the chat room, or in 1-1 chats.  To talk to the room in your plugins, you'll want to use the `self.say()` method.
 
-```
+```python
 @respond_to("bonjour")
 def say_bonjour_will(self, message):
     # Awesome stuff
+    self.say("Bonjour!", message=message)
 ```
 
-`@respond_to` takes a number of options:
+![Bonjour!](/img/only_bonjour.gif)
 
+Note that we pass `messsage` along.  This allows will to route his reply to the correct room.  Without it, he'll just speak to the `DEFAULT_ROOM`.
+
+`say()` comes with a number of options, including color, html, and ping notify. 
+
+```python
+self.say(content, message=None, room=None, html=False, color="green", notify=False)
 ```
-@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+
+- **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
+- **`message`**: (optional) The incoming message object
+- **`room`**: (optional) The room object (from self.available_rooms) to send the message to.
+- **`html`**: if the message is HTML. `True` or `False`.
+- **`color`**: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
+
+## Reply with a mention
+
+Sometimes you want will to ping you - that's where @name mentions are great.  To do those in will, you'll want to use `self.reply()`
+
+```python
+@respond_to("^hi")   # Basic
+def hi(self, message):
+    self.reply(message, "hello, %s!" % message.sender.nick)
 ```
 
-- **regex**: a regular expression to match.
-- **include_me**: whether will should include the things he says as possible matches
-- **case_sensitive**: should the regex be case sensitive?
-- **multiline**: should the regex allow multiline matches?
-- **admin_only**: only runs the command if the sender is specified as an administrator.
+![Hi, Hello, username!](/img/hi_hello.gif)
 
-&nbsp; 
+Note the order of arguments is different here, and `messsage` is required. Also note that because of limitations in hipchat, html is stripped for 1-1 messages.  All the options: 
 
-- How will can respond
-    - Talk to the room
-    - Reply to a person
-    - Say something in the future
-    - Talk to the room from a webhook
-    - Send an email
-    - Do any python thing
-        - API endpoint
-        - etc
-    - PRs welcome (sms, etc)
+```python
+self.reply(message, content, html=False, color="green", notify=False)
+```
+
+- **`message`**: The incoming message object.  Required
+- **`content`**: the content you want to send to the room. HTML or plain text.
+- **`html`**: if the message is HTML. `True` or `False`.
+- **`color`**: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
+
+
+
+## Talk to the room from a webhook
+
+When will recieves messages from webhooks and HTTP requests, he's still connected to chat, and you can use `.say()`. By default, he'll speak to `DEFAULT_ROOM`.
+
+```python
+@route("/ping")
+def ping(self):
+    self.say("PONG!")
+```
+
+If you want to talk to a different room, you can pass in the `room` argument with one of the rooms from `self.available_rooms`.
+
+
+## Send an email
+
+Will has one email backend at the moment, via [mailgun](http://www.mailgun.com).  If you've set `DEFAULT_FROM_EMAIL`, `MAILGUN_API_URL`, and `MAILGUN_API_KEY`, you can use `self.send_email()`
+
+```python
+@respond_to("status report")
+def send_status_report(self):
+    self.send_email(email_list=['jill@example.com'], subject="Here's the latest report", message=rendered_template("report.html", {}))
+```
+
+Here's all the options:
+
+```python
+self.send_email(from_email=None, email_list=[], subject="", message="")
+```
+
+- **`from_email`**: (Optional) The email address the message should come from. Defaults to `DEFAULT_FROM_EMAIL`.
+- **`email_list`**: The list of addresses to send to.
+- **`subject`**: (Optional) The email subject.
+- **`message`**: (Optional) The email body.
+
+
+## Set the topic
+
+Sometimes, it's good to give the conversation some direction.  Will can set the topic in hipchat using `self.set_topic()`
+
+```python
+import requests
+
+@respond_to("new topic")
+def give_us_somethin_to_talk_about(self, message):
+    r = requests.get("http://chatoms.com/chatom.json?Normal=1&Fun=2&Philosophy=3&Out+There=4")
+    data = r.json()
+    self.set_topic(data["text"], message=message)
+```
+
+Note: you can't set the topic of a 1-1 chat. Will will complain politely.  All options:
+
+```python
+self.set_topic(topic, message=None, room=None) 
+```
+
+- `topic`: The string you want to set the topic to
+- `message`: (optional) The incoming message object
+- `room`: (optional) The room object (from self.available_rooms) to send the message to.
+
+
+
+## Do any python thing
+
+Will is Just Python.  Because of that, your imagination is the limit of what he can do to respond to requests.
+
+Here's a few things our will does, every day:
+
+- Spins up and tears down staging stacks,
+- Monitors uptime on our production sites, and contacts the on-call developer if things go down,
+- Keeps track of code reviews on pending branches,
+- Add new signups to our CRM,
+- Starts our daily standup video chat,
+- And the list goes on.
+
+Will is open-source, and PRs are very welcome.  If someone wants to write `self.send_sms()`, or anything else, it's all yours!

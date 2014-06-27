@@ -7,4 +7,6 @@
 - The shoulders of giants
 
 - Changelog
+    - backwards incompatable v1token
+    
 - Make sure nothing from the readme is missed.

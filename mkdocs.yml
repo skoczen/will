@@ -15,7 +15,6 @@ pages:
 # theme: readthedocs
 site_name: Will
 
-
 repo_url: https://github.com/greenkahuna/will/
-copyright: Copyright &copy; 2014, <a href="https://greenkahuna.com/">Greenkahuna</a>.
+copyright: Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.
 # google_analytics: ['UA-1234567-8', 'will.greenkahuna.com']

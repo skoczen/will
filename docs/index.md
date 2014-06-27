@@ -13,7 +13,10 @@ def say_hello(self, message):
     self.say("oh, hello!")
 ```
 
-Lots of batteries are included, and you can get up and running in a couple of minutes.
+Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  
+
+Will was built by [Steven Skoczen](http://stevenskoczen.com) in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](hack.md#shoulders).
+
 
 Check out the quickstart below!
 
