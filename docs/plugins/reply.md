@@ -92,6 +92,36 @@ self.send_email(from_email=None, email_list=[], subject="", message="")
 - **`message`**: (Optional) The email body.
 
 
+## Schedule a reply for the future
+
+Sometimes, you want will to make plans for the future.  That's where `self.schedule_say()` comes in handy.
+
+
+```python
+@randomly(start_hour='10', end_hour='17', day_of_week="mon-fri", num_times_per_day=1)
+def walkmaster(self):
+    now = datetime.datetime.now()
+    in_5_minutes = now + datetime.timedelta(minutes=5)
+
+    self.say("@all Walk happening in 5 minutes!")
+    self.schedule_say("@all It's walk time!", in_5_minutes)
+```
+
+The options are pretty much the same as `self.say`, with the addition of the `when` parameter.
+
+```python
+self.schedule_say(content, when, message=None, room=None, html=False, color="green", notify=False)
+```
+
+- **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
+- **`when`**: when you want the message to be said. Python `datetime` object.
+- **`message`**: (optional) The incoming message object
+- **`room`**: (optional) The room object (from self.available_rooms) to send the message to.
+- **`html`**: if the message is HTML. `True` or `False`.
+- **`color`**: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
+
+
 ## Set the topic
 
 Sometimes, it's good to give the conversation some direction.  Will can set the topic in hipchat using `self.set_topic()`
@@ -132,3 +162,5 @@ Here's a few things our will does, every day:
 - And the list goes on.
 
 Will is open-source, and PRs are very welcome.  If someone wants to write `self.send_sms()`, or anything else, it's all yours!
+
+Ready to make some plugins?  Check out [best practices for plugin creation](create.md), and the [included helpers](create.md).

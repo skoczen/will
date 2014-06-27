@@ -124,10 +124,10 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
                 errors = self.get_startup_errors()
                 if len(errors) > 0:
                     default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
-                    error_message = "FYI, I had some errors starting up:"
+                    error_message = "FYI, I ran into some problems while starting up:"
                     for err in errors:
                         error_message += "\n%s\n" % err
-                    self.send_room_message(default_room, error_message, color="red")
+                    self.send_room_message(default_room, error_message, color="yellow")
                     puts(colored.red(error_message))
 
                 while True:
