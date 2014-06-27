@@ -5,7 +5,7 @@
 
 Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.
 
-He makes chat bots this easy:
+He makes teaching your chat bot this simple:
 
 ```
 @respond_to("hi")
@@ -13,7 +13,9 @@ def say_hello(self, message):
     self.say("oh, hello!")
 ```
 
-Batteries included, and you can get up and running in minutes.  Check out the quickstart below!
+Lots of batteries are included, and you can get up and running in a couple of minutes.
+
+Check out the quickstart below!
 
 <div style="width:100%;clear:both;"></div>
 

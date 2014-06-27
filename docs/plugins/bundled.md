@@ -1,0 +1,30 @@
+- Use the included plugins
+    - Admin
+        - Keepalive
+        - Ping
+        - Say
+        - Storage
+    - Chat rooms
+        - rooms
+        - roster
+        - set_topic
+    - Devops
+        - emergency contacts
+        - github status
+        - heroku status
+    - Friendly
+        - Cookies
+        - Hello
+        - Love
+        - Mornin'
+        - Thanks
+    - Help
+        - Help
+        - Programmer help
+    - Productivity
+        - Hangout
+        - Image me
+        - Remind me
+        - World time
+    - Web
+        - Home

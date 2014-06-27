@@ -1,5 +1,33 @@
+# How will can respond
 
-- How will can reply
+Will can notice a variety of things, and this list keeps growing.  When you want your will to pay attention to a particular thing, you'll use one of will's decorators - an example of each is below.
+
+
+## Talk to the room
+
+Filler - Simple enough - if you directly @will mention him in a message, he'll see these.  It's exactly what we used in the hello, world example.
+
+```
+@respond_to("bonjour")
+def say_bonjour_will(self, message):
+    # Awesome stuff
+```
+
+`@respond_to` takes a number of options:
+
+```
+@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+```
+
+- **regex**: a regular expression to match.
+- **include_me**: whether will should include the things he says as possible matches
+- **case_sensitive**: should the regex be case sensitive?
+- **multiline**: should the regex allow multiline matches?
+- **admin_only**: only runs the command if the sender is specified as an administrator.
+
+&nbsp; 
+
+- How will can respond
     - Talk to the room
     - Reply to a person
     - Say something in the future
@@ -9,64 +37,3 @@
         - API endpoint
         - etc
     - PRs welcome (sms, etc)
-
-- Creating a plugin
-    - File, Class, inhertiance
-    - Documentation
-    - decorators
-    - stacking
-
-- Organize your plugins
-    - Modules
-    
-    - Help text
-    - Config of external libs
-
-- Use the included batteries
-    - Template rendering
-    - Storage
-        self.save()
-        self.load()
-    - Settings and require_settings
-    - Natural time parsing
-    - self.Rooms
-    - self.users
-    - Decorators are chainable
-
-- Use the included plugins
-    - Admin
-        - Keepalive
-        - Ping
-        - Say
-        - Storage
-    - Chat rooms
-        - rooms
-        - roster
-        - set_topic
-    - Devops
-        - emergency contacts
-        - github status
-        - heroku status
-    - Friendly
-        - Cookies
-        - Hello
-        - Love
-        - Mornin'
-        - Thanks
-    - Help
-        - Help
-        - Programmer help
-    - Productivity
-        - Hangout
-        - Image me
-        - Remind me
-        - World time
-    - Web
-        - Home
-
-- Configure will
-    - Which rooms to join
-    - Admins
-    - Default room
-    - Environment and config.py
-    - python run_will is helpful
