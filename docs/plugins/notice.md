@@ -5,7 +5,7 @@ Will can notice a variety of things, and this list keeps growing.  When you want
 
 ## Respond to direct mentions
 
-Simple enough - if you directly @will mention him in a message, he'll see these.  It's exactly what we used in the hello, world example.
+Simple enough - if you directly @will mention him in a message *or* send him a message in a 1-1 channel, he'll see these.  It's exactly what we used in the hello, world example.
 
 ```python
 @respond_to("bonjour")
