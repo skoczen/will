@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+from clint.textui import puts, indent
+from clint.textui import colored
 from HTMLParser import HTMLParser
-from . import settings
 
 
 class Bunch(dict):
@@ -34,4 +36,35 @@ def html_to_text(html):
     return s.get_data()
 
 def is_admin(nick):
-    return settings.WILL_ADMINS == '*' or nick.lower() in settings.WILL_ADMINS
+    from . import settings
+    return settings.ADMINS == '*' or nick.lower() in settings.ADMINS
+
+
+def show_valid(valid_str):
+    puts(colored.green(u"✓ %s" % valid_str))
+
+
+def warn(warn_string):
+    puts(colored.yellow("! Warning: %s" % warn_string))
+
+
+def error(err_string):
+    puts(colored.red("ERROR: %s" % err_string))
+
+
+def note(warn_string):
+    puts(colored.cyan("- Note: %s" % warn_string))
+
+def print_head():
+        puts("""
+      ___/-\___
+  ___|_________|___
+     |         |
+     |--O---O--|
+     |         |
+     |         |
+     |  \___/  |
+     |_________|
+           
+      Will: Hi!
+""")

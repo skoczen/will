@@ -1,5 +1,6 @@
 apscheduler
 bottle
+clint
 dill>=0.2b1
 dnspython
 gevent
@@ -15,3 +16,4 @@ sleekxmpp>=1.2
 
 # Dev only
 pyandoc
+mkdocs

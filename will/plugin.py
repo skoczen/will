@@ -22,7 +22,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             if message:
                 rooms = [self.get_room_from_message(message),]
             else:
-                rooms = [self.get_room_from_name_or_id(settings.WILL_DEFAULT_ROOM), ]
+                rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
         return rooms
 
     def _prepared_content(self, content, message, kwargs):

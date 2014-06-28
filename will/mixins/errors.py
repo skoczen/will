@@ -7,14 +7,17 @@ class ErrorMixin(object):
             return self._startup_errors
         return []
 
+    def add_startup_error(self, error_message):
+        if not hasattr(self, "_startup_errors"):
+            self._startup_errors = []
+        self._startup_errors.append(error_message)
+
     def startup_error(self, error_message, exception_instance):
         error_message = "%s%s" % (
             error_message,
             ":\n\n%s\nContinuing...\n" % traceback.format_exc(exception_instance)
         )
-        if not hasattr(self, "_startup_errors"):
-            self._startup_errors = []
-        self._startup_errors.append(error_message)
+        self.add_startup_error(error_message)
         logging.critical(error_message)
 
     def runtime_error(self, error_message):

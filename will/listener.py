@@ -13,14 +13,14 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
         logger = logging.getLogger(__name__)
-        ClientXMPP.__init__(self, "%s/bot" % settings.WILL_USERNAME, settings.WILL_PASSWORD)
+        ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
         self.rooms = []
 
-        self.default_room = settings.WILL_DEFAULT_ROOM
+        self.default_room = settings.DEFAULT_ROOM
 
         # Property boostraps the list
         self.available_rooms
-        for r in settings.WILL_ROOMS:
+        for r in settings.ROOMS:
             if r != "":
                 if not hasattr(self, "default_room"):
                     self.default_room = r
@@ -31,10 +31,10 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                     logger.error(
                         u'"{0}" is not an available room, ask'
                         ' "@{1} what are the rooms?" for the full list.'
-                        .format(r, settings.WILL_HANDLE))
+                        .format(r, settings.HANDLE))
 
-        self.nick = settings.WILL_NAME
-        self.handle = settings.WILL_HANDLE
+        self.nick = settings.NAME
+        self.handle = settings.HANDLE
         self.handle_regex = re.compile("@%s" % self.handle)
 
         self.whitespace_keepalive = True

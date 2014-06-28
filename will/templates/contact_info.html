@@ -1,0 +1,9 @@
+{% if contacts %}
+Here's everyone I know:
+{% for nick, contact_dict in contacts.items() %}
+{{contact_dict.name}}:
+{{contact_dict.info|indent(4, true)}} 
+{% endfor %}
+{% else %}
+Nobody's told me anything.
+{% endif %}

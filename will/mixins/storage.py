@@ -4,6 +4,7 @@ import traceback
 import urlparse
 import dill as pickle
 from will import settings
+from will.utils import show_valid, error, warn, note
 
 
 class StorageMixin(object):
@@ -15,7 +16,7 @@ class StorageMixin(object):
                 # redis://localhost:6379/7
                 # or
                 # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
-                url = urlparse.urlparse(settings.WILL_REDIS_URL)
+                url = urlparse.urlparse(settings.REDIS_URL)
 
                 if hasattr(url, "path"):
                     db = url.path[1:]
@@ -29,7 +30,8 @@ class StorageMixin(object):
             self.bootstrap_storage()
 
         try:
-            return self.storage.set(key, pickle.dumps(value))
+            ret = self.storage.set(key, pickle.dumps(value))
+            return ret
         except:
             logging.critical("Unable to save %s: \n%s" % (key, traceback.format_exc()) )
 

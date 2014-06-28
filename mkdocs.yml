@@ -1,0 +1,20 @@
+site_name: Will's Docs
+site_url: http://will.greenkahuna.com/
+site_description: "Will is a simple, beautiful-to-code python hipchat bot"
+pages:
+- ["index.md", "Get Started"]
+- ["plugins/basics.md", "Teach Your Will", "The Basics"]
+- ["plugins/notice.md", "Teach Your Will", "What Will Can Notice"]
+- ["plugins/reply.md", "Teach Your Will", "How Will Can Respond"]
+- ["plugins/create.md", "Teach Your Will", "Creating and Organizing Plugins"]
+- ["plugins/builtins.md", "Teach Your Will", "Plugin Builtins"]
+- ["plugins/bundled.md", "Teach Your Will", "Bundled Plugins"]
+- ["config.md", "Configure"]
+- ["deploy.md", "Deploy"]
+- ["improve.md", "Improve"]
+# theme: readthedocs
+site_name: Will
+
+repo_url: https://github.com/greenkahuna/will/
+copyright: Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.
+# google_analytics: ['UA-1234567-8', 'will.greenkahuna.com']
