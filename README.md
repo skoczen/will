@@ -12,8 +12,6 @@ def say_hello(self, message):
     self.say("oh, hello!")
 ```
 
-Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  
-
 Will was built by [Steven Skoczen](http://stevenskoczen.com) in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](http://greenkahuna.github.io/will/improve/#the-shoulders-of-giants).
 
 Will has docs, including a quickstart and lots of screenshots at:

@@ -35,7 +35,6 @@ def html_to_text(html):
     s.feed(html)
     return s.get_data()
 
-
 def is_admin(nick):
     from . import settings
     return settings.ADMINS == '*' or nick.lower() in settings.ADMINS

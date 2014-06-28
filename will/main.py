@@ -345,8 +345,6 @@ To set your %(name)s:
         plugin_modules_library = {}
 
         # NOTE: You can't access self.storage here, or it will deadlock when the threads try to access redis.
-
-        # Sure does feel like this should be a solved problem somehow.
         with indent(2):
             parent_help_text = None
             for plugin_name, plugin_root in self.plugins_dirs.items():
@@ -359,7 +357,6 @@ To set your %(name)s:
                                 module_name = path_components[-1][:-3]
                                 full_module_name = ".".join(path_components)
                                 # Need to pass along module name, path all the way through
-
                                 combined_name = ".".join([plugin_name, module_name])
 
                                 # Check blacklist.

@@ -49,6 +49,7 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_o
         wrapped_f.will_fn_metadata["listens_to_messages"] = True
         wrapped_f.will_fn_metadata["listener_args"] = passed_args
         wrapped_f.will_fn_metadata["__doc__"] = f.__doc__
+
         return wrapped_f
 
     return wrap
