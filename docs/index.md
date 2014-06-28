@@ -1,4 +1,4 @@
-<img align="right" src="/img/will-head.png" alt="Will's smiling face" title="Will's smiling face" style="border:0;" />
+<img align="right" src="img/will-head.png" alt="Will's smiling face" title="Will's smiling face" style="border:0;" />
 
 
 # Meet Will
