@@ -20,7 +20,7 @@ A note on rediscloud: you can also use redistogo, openredis, or anyone else.  We
 
 #### Step 2: Add all the needed environment variables:
 
-You'll want to take all the variables that live in your virtualenv's `postactivate` file, that feed into your will environment, and provide them to your heroku app.
+You'll want to take all the variables that live in your virtualenv's `postactivate` file that feed into your will environment, and provide them to your heroku app.
 
 At minimum, that's
 ```bash
@@ -97,20 +97,20 @@ export WILL_HTTPSERVER_PORT='80'
 
 If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:
 ```bash
-heroku config:set WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
+export WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
 ```
 
 You'll also need to set any environment variables for your plugins.
 
 
-#### Call run_will with something that handles restarts crashes.
+#### Call run_will with something that handles restarts and crashes.
 
 The command to kick off will is just:
 ```
 python run_will.py
 ```
 
-You can run that with whatever supervisory process you'd like, and will's very, very stable, but having something that handles crashes is a pretty good idea.
+You can run that with whatever supervisory process you'd like. Will's very, very stable, but having something that handles crashes is still a pretty good idea.
 
 
 #### Alternate approach
@@ -131,7 +131,7 @@ and you're good.
 
 ## Best Practices
 
-In this section, we'll describe how we deploy and host will, in the hopes that others come forward and share what's working for them, too.  The more good practices, the better.
+In this section, we describe how we deploy and host will, in the hopes that others come forward and share what's working for them, too.  The more good practices, the better.
 
 #### Our Stack
 
@@ -143,7 +143,7 @@ Our stack is set up so that any pushes on will's master branch have tests run on
 
 Continuous Deployment has dramatically changed how we build and use will - instead of talking about "what if will did...", generally, people just implement it, push it, and play with it for real.  It's been a great place to be.  It might be for you too.
 
-That's it in getting your will up and running!   But maybe you're one of those people who wants to pitch in and make will even better. Learn [how to improve will](improve.md).
+That's it in getting your will up and running!   But maybe you're one of those people who wants to pitch in and make will even better. Awesome. Learn [how to improve will](improve.md).
 
 
 

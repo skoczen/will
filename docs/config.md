@@ -1,4 +1,4 @@
-# Configuring will
+# Configuring Will
 
 Most of will's configuration is done interactively, using `run_will.py`, or specifying via the plugins.  There are, however a few built-in settings and config worth covering.  We'll aim to address all of them here.
 

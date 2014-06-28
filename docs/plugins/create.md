@@ -59,7 +59,7 @@ PLUGIN_BLACKLIST = [
 
 ## What exactly is a plugin?
 
-A plugin is just a python files with at least one class that subclasses `WillPlugin`, and at least one method that's decorated with [one of will's listen decorators](notice.md).
+A plugin is just a python file with at least one class that subclasses `WillPlugin`, and at least one method that's decorated with [one of will's listen decorators](notice.md).
 
 For example:
 

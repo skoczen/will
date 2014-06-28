@@ -2,7 +2,7 @@
 
 Will is built entirely on the shoulders of giants, and has a great community of developers that move it forward. He wouldn't exist without all of them.
 
-We also welcome new contributions no matter how big or small.  Interested in contributing to will? Check out the details below!
+We also welcome new contributions no matter how big or small.  Interested in contributing to will? We'd love to have you. Details below.
 
 
 ## Our Culture
@@ -20,9 +20,9 @@ This doesn't mean we don't have honest, spirited discussions about the direction
 
 ## Improve will's core
 
-For big core features, you're probably best off opening an issue, and discussing it with one of the core developers, before you hack your nights and weekends away.
+For big core features, you're probably best off opening an issue, and discussing it with one of the core developers *before* you hack your nights and weekends away.
 
-Core changes to will are very much welcome.  In many cases, proposed changes have already been thought through, and there may be gotchas or sticking points we couldn't get past.  In other cases, it might be a direction we've purposely decided not to take will.  In most cases, we simply haven't thought of it, and would love the improvement! 
+Core changes to will are very much welcome.  In some cases, proposed changes have already been thought through, and there may be gotchas or sticking points we couldn't get past.  In other cases, it might be a direction we've purposely decided not to take will.  In most cases, we simply haven't thought of it, and would love the improvement! 
 
 It's always great to get a heads up of what's coming down the pipe, and have an open dialog.  Thanks for reaching out and starting one!
 

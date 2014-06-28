@@ -71,7 +71,7 @@ If you've [organized your plugins in a module](create.md#what-about-that-awesome
 
 ## Access settings and config
 
-Will takes care of passing in environment variables and settings in the `settings` module.  To use it:
+Will takes care of passing in environment variables and config via the `settings` module.  To use it:
 
 config.py:
 

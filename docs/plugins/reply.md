@@ -163,4 +163,4 @@ Here's a few things our will does, every day:
 
 Will is open-source, and PRs are very welcome.  If someone wants to write `self.send_sms()`, or anything else, it's all yours!
 
-Ready to make some plugins?  Check out [best practices for plugin creation](create.md), and the [included helpers](create.md).
+Ready to make some plugins?  Check out [how to create and organize plugins](create.md).

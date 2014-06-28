@@ -43,7 +43,7 @@ Provides a couple of methods for listing and updating will's internal chat room 
 
 ## Devops
 
-Will is our devops team at GreenKahuna, and in the long term, we plan to include our stack deployer as a plugin.  For the moment, he just includes a couple basics:
+Will is our devops team at GreenKahuna, and in the long term, we plan to abstract and include our stack deployer as a plugin.  For the moment, he just includes a couple basics:
 
 #### Emergency Contacts
 
@@ -54,14 +54,14 @@ Saves a set of emergency contacts for team members, and provides a way for anyon
 
 #### Github status
 
-Github is a critical piece of infrastructure for most dev shops.  When it's having troubles, it's good to know.  This plugin checks github's [status api](https://status.github.com/api/), and alerts chat if they go down, and when they're back up.
+Github is a critical piece of infrastructure for most dev shops.  When it's having troubles, it's good to know.  This plugin checks github's [status api](https://status.github.com/api/), and alerts chat with the problem when they go down, and again when they're back up.
 
 
 #### Heroku status
 
-Heroku is also really widely used, and if you use it, when it's having troubles, it's good to know.  This plugin checks heroku's [status api](http://status.heroku.com), and alerts chat if they go down, and when they're back up.
+Heroku is also really widely used, and if you use it, when it's having troubles, it's good to know.  This plugin checks heroku's [status api](http://status.heroku.com), and alerts chat with the problem when they go down, and again they're back up.
 
-If you don't use heroku, remember you can always disable this plugin in `config.py`:
+Note: if you don't use heroku, remember you can always disable this plugin in `config.py`:
 
 ```python
 PLUGIN_BLACKLIST = [
@@ -150,7 +150,7 @@ Or, more practically,
 
 We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you,
 
-1. Get a free `WORLD_WEATHER_ONLINE_KEY` from [world weather online](http://developer.worldweatheronline.com)
+1. Get a free `WORLD_WEATHER_ONLINE_KEY` from [world weather online](http://developer.worldweatheronline.com).
 2. Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.
 
 ![World time](/img/world_time.gif)
@@ -163,3 +163,6 @@ This module's all about web-facing content.
 Will also includes a home page, so you can fire him, up, browse to his URL, and see his smiling face.
 
 ![Home page](/img/home.png)
+
+
+You now know everything about plugins.  Maybe you're wondering about the [finer points of config](../config.md)?  Or perhaps, you're ready to [deploy your will](../deploy.md)?
