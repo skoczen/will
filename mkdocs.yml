@@ -11,7 +11,7 @@ pages:
 - ["plugins/bundled.md", "Teach Your Will", "Included Plugins"]
 - ["config.md", "Configure"]
 - ["deploy.md", "Deploy"]
-- ["hack.md", "Improve"]
+- ["improve.md", "Improve"]
 # theme: readthedocs
 site_name: Will
 

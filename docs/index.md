@@ -15,7 +15,7 @@ def say_hello(self, message):
 
 Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  
 
-Will was built by [Steven Skoczen](http://stevenskoczen.com) in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](hack.md#shoulders).
+Will was built by [Steven Skoczen](http://stevenskoczen.com) in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](improve.md#shoulders).
 
 
 Check out the quickstart below!
