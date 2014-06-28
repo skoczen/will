@@ -61,7 +61,7 @@ That should be it - head over to [http://our-will-name.herokuapp.com](http://our
 
 If so, pop into chat, and give a:
 
-![Hi, Hello, username!](/img/hi_hello.gif)
+![Hi, Hello, username!](img/hi_hello.gif)
 
 
 #### Deploying future updates

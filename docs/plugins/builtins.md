@@ -62,11 +62,11 @@ class BonjourPlugin(WillPlugin):
         self.reply(message, "bonjour!")
 ```
 
-![Bonjour help](/img/bonjour_help.gif)
+![Bonjour help](../../img/bonjour_help.gif)
 
 If you've [organized your plugins in a module](create.md#what-about-that-awesome-help-text), your plugin's help text will be grouped by module.
 
-![Help, will](/img/help.gif)
+![Help, will](../../img/help.gif)
 
 
 ## Access settings and config
@@ -113,7 +113,7 @@ class BonjourPlugin(WillPlugin):
 
 When will starts up, he'll make sure they've been set:
 
-![Verify settings](/img/verify_settings.gif)
+![Verify settings](../../img/verify_settings.gif)
 
 
 
@@ -131,7 +131,7 @@ def remind_me_at(self, message, remind_time=None):
     parsed_time = self.parse_natural_time(remind_time)
 ```
 
-![Parse natural time](/img/remind_trash.gif)
+![Parse natural time](../../img/remind_trash.gif)
 
 
 ### to_natural_day_and_time

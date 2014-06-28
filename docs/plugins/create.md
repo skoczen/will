@@ -84,7 +84,7 @@ Modules are a way to group similar plugins.
 
 Structurally, a will module is just a python module: a folder with an `__init__.py`.
 
-![Plugins folder with bonjour.py](/img/plugins_bonjour.gif)
+![Plugins folder with bonjour.py](../../img/plugins_bonjour.gif)
 
 That's it.
 
@@ -101,7 +101,7 @@ MODULE_DESCRIPTION = "Old-fashioned friendliness"
 
 When help runs, plugins are grouped according to their `MODULE_DESCRIPTION`, which means you can have physically distinct modules that share the same help grouping.
 
-![Both core and our will plugins, grouped](/img/core_vs_ours.gif)
+![Both core and our will plugins, grouped](../../img/core_vs_ours.gif)
 
 
 

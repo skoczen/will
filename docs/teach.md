@@ -14,7 +14,7 @@ Let's start as simple as they come - a plugin for will to say hello.  Since he a
 
 This file can be called anything, but given the functionality, bonjour seems like a fair name.  Create the file in your plugins folder:
 
-![Plugins folder with bonjour.py](/img/plugins_bonjour.gif)
+![Plugins folder with bonjour.py](img/plugins_bonjour.gif)
 
 In the `bonjour.py` file, add this:
 
@@ -35,7 +35,7 @@ class BonjourPlugin(WillPlugin):
 
 Now, restart your will to load the new plugin, and you should be able to do this:
 
-![Plugins folder with bonjour.py](/img/bonjour_chat.gif)
+![Plugins folder with bonjour.py](img/bonjour_chat.gif)
 
 Easy, right?  Well, now that your mind is swimming with ideas, it's a good time to go through the ways will knows how to notice, and how he knows to respond.
 

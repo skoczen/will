@@ -117,12 +117,12 @@ That's it!
 
 Note that the first time you run, you'll probably be missing some configuration. That's OK - `run_will` will check your environment, and walk you through getting and setting any necessary config.  We'll go through the nitty-gritty later, but if you have any odd setup problems, look in `config.py` - that's where all of the non-sensitive data is stored.
 
-![Uninitialized Environment output](/img/uninitialized_env.gif)
+![Uninitialized Environment output](img/uninitialized_env.gif)
 This is totally normal output.
 
 Eventually, you'll reach this screen of joy.  Now, it's time to play!
 
-![Screen of Joy](/img/screen_of_joy.gif)
+![Screen of Joy](img/screen_of_joy.gif)
 
 #### Testing will out
 
@@ -130,10 +130,10 @@ Once your will is up and running, hop into any of your hipchat rooms, and say he
 
 `@will hi`
 
-![Hi, Will](/img/hi.gif)
+![Hi, Will](img/hi.gif)
 
 `@will help`
 
-![Help, will](/img/help.gif)
+![Help, will](img/help.gif)
 
 You're up and running - now it's time to [teach your will a few things](plugins/basics.md)!
