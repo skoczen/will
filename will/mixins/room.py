@@ -8,7 +8,7 @@ class RoomMixin(object):
         self._available_rooms = {}
         # Use v1 token to grab a full room list if we can (good to avoid rate limiting)
         if hasattr(settings, "V1_TOKEN"):
-            url = "https://api.hipchat.com/v1/rooms/list?auth_token=%s" % (settings.V1_TOKEN,)
+            url = "https://" + settings.HIPCHAT_SERVER + "/v1/rooms/list?auth_token=%s" % (settings.V1_TOKEN,)
             r = requests.get(url)
             if r.status_code == requests.codes.unauthorized:
                 raise Exception("V1_TOKEN authentication failed with HipChat")
@@ -16,7 +16,7 @@ class RoomMixin(object):
                 self._available_rooms[room["name"]] = room
         # Otherwise, grab 'em one-by-one via the v2 api.
         else:                
-            url = "https://api.hipchat.com/v2/room?auth_token=%s" % (settings.V2_TOKEN,)
+            url = "https://" + settings.HIPCHAT_SERVER + "/v2/room?auth_token=%s" % (settings.V2_TOKEN,)
             resp = requests.get(url)
             if resp.status_code == requests.codes.unauthorized:
                 raise Exception("V2_TOKEN authentication failed with HipChat")
