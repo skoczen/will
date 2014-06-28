@@ -6,7 +6,7 @@ Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hip
 
 He makes teaching your chat bot this simple:
 
-```
+```python
 @respond_to("hi")
 def say_hello(self, message):
     self.say("oh, hello!")
@@ -14,6 +14,9 @@ def say_hello(self, message):
 
 Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  
 
-Will was built by [Steven Skoczen](http://stevenskoczen.com) in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](http://greenkahuna.github.io/will/improve/#shoulders).
+Will was built by [Steven Skoczen](http://stevenskoczen.com) in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](http://greenkahuna.github.io/will/improve/#the-shoulders-of-giants).
 
-Will has docs, including a quickstart and lots of screenshots at [http://greenkahuna.github.io/will/](http://greenkahuna.github.io/will/). Check them out!
+Will has docs, including a quickstart and lots of screenshots at:
+**[http://greenkahuna.github.io/will/](http://greenkahuna.github.io/will/)** 
+
+Check them out!
