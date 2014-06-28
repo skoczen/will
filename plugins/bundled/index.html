@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://will.greenkahuna.com/plugins/bundled/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+        <title>Bundled Plugins - Will</title>
+
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../../css/prettify-1.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link href="../../css/docs.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">Will</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Get Started</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            <li >
+                                <a href="../basics/">The Basics</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../notice/">What Will Can Notice</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../reply/">How Will Can Respond</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../create/">Creating and Organizing Plugins</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../builtins/">Plugin Builtins</a>
+                            </li>
+                        
+                            <li class="active">
+                                <a href="./">Bundled Plugins</a>
+                            </li>
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../config/">Configure</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../deploy/">Deploy</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../improve/">Improve</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                
+                <li >
+                    <a rel="next" href="../builtins/">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li >
+                    <a rel="prev" href="../../config/">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a href="https://github.com/greenkahuna/will/">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+            
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#included-plugins">Included Plugins</a></li>
+        
+            <li><a href="#administration">Administration</a></li>
+        
+            <li><a href="#chat-rooms">Chat rooms</a></li>
+        
+            <li><a href="#devops">Devops</a></li>
+        
+            <li><a href="#friendly">Friendly</a></li>
+        
+            <li><a href="#help">Help</a></li>
+        
+            <li><a href="#productivity">Productivity</a></li>
+        
+            <li><a href="#web">Web</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h1 id="included-plugins">Included Plugins</h1>
+<p>Will comes with batteries included, and already does a number of useful things - more are welcome via PR!  Note that not all of these commands are listed in <code>@will help</code> - some are rare enough that they didn't make sense to add.</p>
+<p>Here's what he does out of the box:</p>
+<h2 id="administration">Administration</h2>
+<h4 id="keepalive">Keepalive</h4>
+<p>This plugin pings will once a minute at <code>PUBLIC_URL</code>, making sure his processes aren't idled in installations like heroku.</p>
+<h4 id="ping">Ping</h4>
+<p>He's a robot. He should respond to ping. :)</p>
+<p><img alt="Ping" src="/img/ping.gif" /></p>
+<h4 id="say">Say</h4>
+<p>This provides a web endpoint at <code>/say/some-phrase</code> that will will speak into <code>DEFAULT_ROOM</code>.  Helpful for pay-no-attention-to-the-hand-behind-the-curtain demos.</p>
+<p><img alt="Say" src="/img/say.gif" /></p>
+<h4 id="storage">Storage</h4>
+<p>Provides several <strong>admin-only</strong> commands for manipulating will's underlying storage.  These methods are also case-sensitive, because they can do Bad Things.</p>
+<ul>
+<li><strong>@will How big is the db?</strong>: Lists the db size in human-friendly units.</li>
+<li><strong>@will SERIOUSLY. Clear ____</strong>: Clears a key from the storage</li>
+<li><strong>@will SERIOUSLY. REALLY. Clear all keys.</strong>: Clears <em>everything</em> from storage.  Will will definitely not work after this without a restart, and will tell you so.</li>
+<li><strong>@will Show me the storage for ____</strong>: Shows the raw storage value for a given key.</li>
+</ul>
+<h2 id="chat-rooms">Chat rooms</h2>
+<p>Provides a couple of methods for listing and updating will's internal chat room knowledge, and manipulating the current room.</p>
+<ul>
+<li><strong>@will what are the rooms?</strong>:  List the rooms he knows about, including their hipchat IDs.</li>
+<li><strong>@will update the room list</strong>:  Get a new list of rooms from the chat server.</li>
+<li><strong>@will new topic ____</strong>:   Set the room topic.</li>
+</ul>
+<h2 id="devops">Devops</h2>
+<p>Will is our devops team at GreenKahuna, and in the long term, we plan to abstract and include our stack deployer as a plugin.  For the moment, he just includes a couple basics:</p>
+<h4 id="emergency-contacts">Emergency Contacts</h4>
+<p>Saves a set of emergency contacts for team members, and provides a way for anyone on the team to get them in, well, emergencies.</p>
+<ul>
+<li><strong>@will set my contact info to ____</strong>: Accepts a multi-line string with whatever contact info you want to provide.</li>
+<li><strong>@will contact info</strong>: Lists contact info for all the team members who have provided it.</li>
+</ul>
+<h4 id="github-status">Github status</h4>
+<p>Github is a critical piece of infrastructure for most dev shops.  When it's having troubles, it's good to know.  This plugin checks github's <a href="https://status.github.com/api/">status api</a>, and alerts chat with the problem when they go down, and again when they're back up.</p>
+<h4 id="heroku-status">Heroku status</h4>
+<p>Heroku is also really widely used, and if you use it, when it's having troubles, it's good to know.  This plugin checks heroku's <a href="http://status.heroku.com">status api</a>, and alerts chat with the problem when they go down, and again they're back up.</p>
+<p>Note: if you don't use heroku, remember you can always disable this plugin in <code>config.py</code>:</p>
+<pre class="prettyprint well"><code class="python">PLUGIN_BLACKLIST = [
+    &quot;will.plugins.devops.heroku_is_up&quot;,
+]
+</code></pre>
+
+<h2 id="friendly">Friendly</h2>
+<p>Will has personality, and we love that about him.  The friendly module includes some nice, silly, and appreciative aspects to will that really rounds out his personality.</p>
+<h4 id="good-morning-good-night">Good morning / Good night</h4>
+<p>Will responds to "good morning", and "good night" appropriately, if he hears it.  If it's Friday, he'll even tell you to have a good weekend!</p>
+<h4 id="hello">Hello</h4>
+<p>Saying hello is important.</p>
+<p><img alt="Hello" src="/img/hi_hello.gif" /></p>
+<h4 id="thanks">Thanks</h4>
+<p>A little politeness goes a long way.</p>
+<p><img alt="Thanks" src="/img/thanks.gif" /></p>
+<h4 id="cookies">Cookies</h4>
+<p>We promised silly.</p>
+<p><img alt="Cookies" src="/img/cookies.gif" /></p>
+<h4 id="love">Love</h4>
+<p>One day, you'll find yourself saying this.  The response will make your week.</p>
+<p><img alt="Love" src="/img/love.gif" /></p>
+<h2 id="help">Help</h2>
+<h4 id="help_1">Help</h4>
+<p>Lists all the plugin commands with docstrings, bundled by module.</p>
+<p><img alt="Help, will" src="/img/help.gif" /></p>
+<h4 id="programmer-help">Programmer help</h4>
+<p>List all regexes for registered <code>@hear</code> and <code>@respond_to</code> decorators.  This is what help used to be, and may be pulled in the near future.</p>
+<p><img alt="Programmer help" src="/img/programmer_help.gif" /></p>
+<h2 id="productivity">Productivity</h2>
+<h4 id="hangout">Hangout</h4>
+<p>If you've set a <code>HANGOUT_URL</code>, will will toss it in chat for you:</p>
+<p><img alt="Hangout" src="/img/hangout.gif" /></p>
+<h4 id="image-me">Image me</h4>
+<p>Sometimes, a picture is worth a thousand words.</p>
+<p><img alt="Image me a crazy squirrel" src="/img/image_me.gif" /></p>
+<h4 id="remind-me">Remind me</h4>
+<p>This saves our bacon every day. Timeboxes meetings, helps people remember appointments, and enforces self-control.</p>
+<p><img alt="Remind me" src="/img/remind_food.gif" /></p>
+<p>Then, when it's 3pm, and I still haven't stopped coding to eat:</p>
+<p><img alt="Remind me" src="/img/remind_then.gif" /></p>
+<p>Or, more practically,</p>
+<p><img alt="Remind me" src="/img/remind_client.gif" /></p>
+<h4 id="world-time">World time</h4>
+<p>We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you,</p>
+<ol>
+<li>Get a free <code>WORLD_WEATHER_ONLINE_KEY</code> from <a href="http://developer.worldweatheronline.com">world weather online</a>.</li>
+<li>Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.</li>
+</ol>
+<p><img alt="World time" src="/img/world_time.gif" /></p>
+<h2 id="web">Web</h2>
+<p>This module's all about web-facing content.</p>
+<h4 id="home-page">Home page</h4>
+<p>Will also includes a home page, so you can fire him, up, browse to his URL, and see his smiling face.</p>
+<p><img alt="Home page" src="/img/home.png" /></p>
+<p>You now know everything about plugins.  Maybe you're wondering about the <a href="../../config/">finer points of config</a>?  Or perhaps, you're ready to <a href="../../deploy/">deploy your will</a>?</p>
+</div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.</p>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/prettify-1.0.min.js"></script>
+        <script src="../../js/base.js"></script>
+        
+    </body>
+</html>

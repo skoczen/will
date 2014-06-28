@@ -1,4 +1,0 @@
-test:
-  override:
-    - /home/ubuntu/will/will/scripts/test_run.sh
-    # - nose test

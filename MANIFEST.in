@@ -1,5 +1,0 @@
-include README.md AUTHORS LICENSE
-include *.txt
-include *.md
-include *.py
-recursive-include will/templates *

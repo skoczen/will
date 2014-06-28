@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://will.greenkahuna.com/plugins/notice/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+        <title>What Will Can Notice - Will</title>
+
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../../css/prettify-1.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link href="../../css/docs.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">Will</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Get Started</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            <li >
+                                <a href="../basics/">The Basics</a>
+                            </li>
+                        
+                            <li class="active">
+                                <a href="./">What Will Can Notice</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../reply/">How Will Can Respond</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../create/">Creating and Organizing Plugins</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../builtins/">Plugin Builtins</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../bundled/">Bundled Plugins</a>
+                            </li>
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../config/">Configure</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../deploy/">Deploy</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../improve/">Improve</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                
+                <li >
+                    <a rel="next" href="../basics/">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li >
+                    <a rel="prev" href="../reply/">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a href="https://github.com/greenkahuna/will/">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+            
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#what-will-can-notice">What will can notice</a></li>
+        
+            <li><a href="#respond-to-direct-mentions">Respond to direct mentions</a></li>
+        
+            <li><a href="#hear-in-any-message">Hear in any message</a></li>
+        
+            <li><a href="#take-an-action-on-a-schedule">Take an action on a schedule</a></li>
+        
+            <li><a href="#handle-webhooks-and-web-pages">Handle webhooks and web pages</a></li>
+        
+            <li><a href="#do-things-randomly">Do things randomly</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h1 id="what-will-can-notice">What will can notice</h1>
+<p>Will can notice a variety of things, and this list keeps growing.  When you want your will to pay attention to a particular thing, you'll use one of will's decorators - an example of each is below.</p>
+<h2 id="respond-to-direct-mentions">Respond to direct mentions</h2>
+<p>Simple enough - if you directly @will mention him in a message <em>or</em> send him a message in a 1-1 channel, he'll see these.  It's exactly what we used in the hello, world example.</p>
+<pre class="prettyprint well"><code class="python">@respond_to(&quot;bonjour&quot;)
+def say_bonjour_will(self, message):
+    # Awesome stuff
+</code></pre>
+
+<p>You can also use named matches in the regex:</p>
+<pre class="prettyprint well"><code class="python">@respond_to(&quot;award (?P&lt;num_stars&gt;\d)+ gold stars? to (?P&lt;mention_name&gt;.*)&quot;)
+def gold_stars(self, message, num_stars=1, mention_name=None):
+    # Fantastic gold-starness
+</code></pre>
+
+<p><code>@respond_to</code> takes a number of options:</p>
+<pre class="prettyprint well"><code class="python">@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+</code></pre>
+
+<ul>
+<li><strong><code>regex</code></strong>: a regular expression to match.  Any named matches are passed along as keyword arguments.</li>
+<li><strong><code>include_me</code></strong>: whether will should include the things he says as possible matches</li>
+<li><strong><code>case_sensitive</code></strong>: should the regex be case sensitive?</li>
+<li><strong><code>multiline</code></strong>: should the regex allow multiline matches?</li>
+<li><strong><code>admin_only</code></strong>: only runs the command if the sender is specified as an administrator.</li>
+</ul>
+<p>&nbsp; </p>
+<h2 id="hear-in-any-message">Hear in any message</h2>
+<p>Sometimes, you want will to take actions when he sees things in everyday conversation, even if it wasn't directly addressed to him.  That's what <code>@hear()</code> is for.</p>
+<pre class="prettyprint well"><code class="python">@hear(&quot;(?:ran into )?a bug&quot;)
+def log_all_bugs(self, message):
+    # Awesome stuff
+</code></pre>
+
+<p><code>@hear</code> takes a the same options as <code>respond_to</code>:</p>
+<pre class="prettyprint well"><code class="python">@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+</code></pre>
+
+<ul>
+<li><strong><code>regex</code></strong>: a regular expression to match.  Any named matches are passed along as keyword arguments.</li>
+<li><strong><code>include_me</code></strong>: whether will should include the things he says as possible matches</li>
+<li><strong><code>case_sensitive</code></strong>: should the regex be case sensitive?</li>
+<li><strong><code>multiline</code></strong>: should the regex allow multiline matches?</li>
+<li><strong><code>admin_only</code></strong>: only runs the command if the sender is specified as an administrator.</li>
+</ul>
+<p>&nbsp; </p>
+<h2 id="take-an-action-on-a-schedule">Take an action on a schedule</h2>
+<p>It's one of the best things about robots - they never, ever forget.  Will's no exception.  The <code>@periodic</code> decorator makes scheduled tasks simple.</p>
+<pre class="prettyprint well"><code class="python">@periodic(hour='10', minute='0', day_of_week=&quot;mon-fri&quot;)
+def standup(self):
+    self.say(&quot;@all Standup! %s&quot; % settings.WILL_HANGOUT_URL)
+</code></pre>
+
+<p>Under the hood, <code>@periodic</code> uses <a href="http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields">apscheduler</a> to provide its options, so you can use any of the following as keyword arguments:</p>
+<ul>
+<li><strong><code>year</code></strong>: 4-digit year number</li>
+<li><strong><code>month</code></strong>: month number (1-12)</li>
+<li><strong><code>day</code></strong>: day of the month (1-31)</li>
+<li><strong><code>week</code></strong>: ISO week number (1-53)</li>
+<li><strong><code>day_of_week</code></strong>: number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)</li>
+<li><strong><code>hour</code></strong>: hour (0-23)</li>
+<li><strong><code>minute</code></strong>: minute (0-59)</li>
+<li><strong><code>second</code></strong>: second (0-59)</li>
+</ul>
+<p>For each of those keys, any of the following expressions are valid values:</p>
+<ul>
+<li><strong><code>*</code></strong> (any): Fire on every value</li>
+<li><strong><code>*/a</code></strong> (any): Fire every a values, starting from the minimum</li>
+<li><strong><code>a-b</code></strong> (any): Fire on any value within the a-b range (a must be smaller than b)</li>
+<li><strong><code>a-b/c</code></strong> (any): Fire every c values within the a-b range</li>
+<li><strong><code>xth y</code></strong> (day): Fire on the x -th occurrence of weekday y within the month</li>
+<li><strong><code>last</code> x</strong> (day): Fire on the last occurrence of weekday x within the month</li>
+<li><strong><code>last</code></strong> (day): Fire on the last day within the month</li>
+<li><strong><code>x,y,z</code></strong> (any): Fire on any matching expression; can combine any number of any of the above expressions</li>
+</ul>
+<p>Awesome, right?</p>
+<h2 id="handle-webhooks-and-web-pages">Handle webhooks and web pages</h2>
+<p>That's right. Will's also a full-fledged webserver under the hood, thanks to <a href="http://bottlepy.org">bottle</a>.  Using <code>@route</code>, he can handle webhooks, talk to chat, and render full HTML pages.</p>
+<pre class="prettyprint well"><code class="python"># Simple
+@route(&quot;/ping&quot;)
+def ping(self):
+    return &quot;PONG&quot;
+
+# Render a template with jinja
+@route(&quot;/keep-alive&quot;)
+@rendered_template(&quot;keep_alive.html&quot;)
+def keep_alive(self):
+    return {}
+
+# With full control, multiple templates, still connected to chat.
+@route(&quot;/complex_page/&lt;page_id:int&gt;&quot;, method=POST)
+def complex_page(self, page_id):
+    # Talk to chat
+    self.say(&quot;Hey, somebody's loading the complex page.&quot;)
+    # Get JSON post data:
+    post_data = self.request.json
+
+    # Render templates
+    header = rendered_template(&quot;header.html&quot;, post_data)
+    some_other_context = {&quot;page_id&quot;: page_id}
+    some_other_context[&quot;header&quot;] = header
+    return rendered_template(&quot;complex_page.html&quot;, some_other_context)
+</code></pre>
+
+<h2 id="do-things-randomly">Do things randomly</h2>
+<p>Variety is the spice of life, and nobody wants a robot without at least a <em>little</em> personality.  So, will's <code>@randomly</code> decorator allows you to specify actions that happen randomly, within a given window.</p>
+<pre class="prettyprint well"><code class="python">@randomly(start_hour='10', end_hour='17', day_of_week=&quot;mon-fri&quot;, num_times_per_day=1)
+def walkmaster(self):
+    self.say(&quot;@all time for a walk!&quot;)
+</code></pre>
+
+<p><code>@randomly</code> accepts a few arguments:</p>
+<pre class="prettyprint well"><code class="python">@randomly(start_hour=0, end_hour=23, day_of_week=&quot;*&quot;, num_times_per_day=1):
+</code></pre>
+
+<ul>
+<li><strong><code>start_hour</code></strong>:  When to start the random window.</li>
+<li><strong><code>end_hour</code></strong>:  When to end the random window.</li>
+<li><strong><code>day_of_week</code></strong>:  What days of the week is the window available? Parsed with <a href="http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields">apscheduler</a>.</li>
+<li><strong><code>num_times_per_day</code></strong>:  How many times per day within the window, should actions happen?</li>
+</ul>
+<p>Now that you've got a handle on the things will can notice, let's take a look at <a href="../reply/">the ways he can respond</a>.</p>
+</div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.</p>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/prettify-1.0.min.js"></script>
+        <script src="../../js/base.js"></script>
+        
+    </body>
+</html>

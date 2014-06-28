@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://will.greenkahuna.com/plugins/basics/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+        <title>The Basics - Will</title>
+
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../../css/prettify-1.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link href="../../css/docs.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">Will</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Get Started</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            <li class="active">
+                                <a href="./">The Basics</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../notice/">What Will Can Notice</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../reply/">How Will Can Respond</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../create/">Creating and Organizing Plugins</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../builtins/">Plugin Builtins</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../bundled/">Bundled Plugins</a>
+                            </li>
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../config/">Configure</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../deploy/">Deploy</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../improve/">Improve</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                
+                <li >
+                    <a rel="next" href="../..">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li >
+                    <a rel="prev" href="../notice/">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a href="https://github.com/greenkahuna/will/">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+            
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#teach-your-will-awesome-stuff">Teach your will awesome stuff</a></li>
+        
+            <li><a href="#plugin-basics">Plugin basics</a></li>
+        
+            <li><a href="#hello-world">Hello, world</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h1 id="teach-your-will-awesome-stuff">Teach your will awesome stuff</h1>
+<p>Your will is all yours.  He'll come with all the great functions of the will library, but the power to teach him the things that are really useful to you is completely in your hands.</p>
+<p>We've designed will to be the friendliest, easiest-to-teach bot anywhere, where even non-coders can hop in and add new functionality in a matter of minutes.  We hope you'll find him as friendly as we do!</p>
+<hr />
+<h2 id="plugin-basics">Plugin basics</h2>
+<p>Plugins are just normal python files with at least one class that subclasses <code>WillPlugin</code>, and at least one method that's decorated. They can live anywhere normal python modules live, and will has some niceties to make organizing them simple.</p>
+<p>But sometimes, the best way to learn is to dive right in - so let's make one!</p>
+<h2 id="hello-world">Hello, world</h2>
+<p>Let's start as simple as they come - a plugin for will to say hello.  Since he already comes with "hello", and "hi", in this example, we'll go with "bonjour!"</p>
+<h4 id="step-1-create-a-bonjourpy">Step 1: Create a bonjour.py</h4>
+<p>This file can be called anything, but given the functionality, bonjour seems like a fair name.  Create the file in your plugins folder:</p>
+<p><img alt="Plugins folder with bonjour.py" src="/img/plugins_bonjour.gif" /></p>
+<h4 id="step-2-add-the-plugin-python-code">Step 2: Add the plugin python code</h4>
+<p>In the <code>bonjour.py</code> file, add this:</p>
+<pre class="prettyprint well"><code class="python">from will.plugin import WillPlugin
+from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
+
+
+class BonjourPlugin(WillPlugin):
+
+    @respond_to(&quot;bonjour&quot;)
+    def say_bonjour_will(self, message):
+        &quot;&quot;&quot;bonjour: I know how to say bonjour! In French!&quot;&quot;&quot;
+        self.reply(message, &quot;bonjour!&quot;)
+
+
+</code></pre>
+
+<h4 id="step-3-restart-your-will">Step 3: Restart your will</h4>
+<p>Finally, <code>ctrl+c</code> then restart your will to load the new plugin, and you should be able to do this:</p>
+<p><img alt="Plugins folder with bonjour.py" src="/img/bonjour_chat.gif" /></p>
+<p>Easy, right?  Well, now that you've got your feet wet, let's see  <a href="/plugins/notice">what else will knows how to notice</a>.</p>
+</div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.</p>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/prettify-1.0.min.js"></script>
+        <script src="../../js/base.js"></script>
+        
+    </body>
+</html>
