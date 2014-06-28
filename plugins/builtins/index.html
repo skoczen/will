@@ -209,9 +209,9 @@ def homepage_listener(self):
         self.reply(message, &quot;bonjour!&quot;)
 </code></pre>
 
-<p><img alt="Bonjour help" src="/img/bonjour_help.gif" /></p>
+<p><img alt="Bonjour help" src="../../img/bonjour_help.gif" /></p>
 <p>If you've <a href="../create/#what-about-that-awesome-help-text">organized your plugins in a module</a>, your plugin's help text will be grouped by module.</p>
-<p><img alt="Help, will" src="/img/help.gif" /></p>
+<p><img alt="Help, will" src="../../img/help.gif" /></p>
 <h2 id="access-settings-and-config">Access settings and config</h2>
 <p>Will takes care of passing in environment variables and config via the <code>settings</code> module.  To use it:</p>
 <p>config.py:</p>
@@ -245,7 +245,7 @@ class BonjourPlugin(WillPlugin):
 </code></pre>
 
 <p>When will starts up, he'll make sure they've been set:</p>
-<p><img alt="Verify settings" src="/img/verify_settings.gif" /></p>
+<p><img alt="Verify settings" src="../../img/verify_settings.gif" /></p>
 <h2 id="parse-natural-time">Parse natural time</h2>
 <p>Often, it's useful to be able to talk to will about time in natural language.  To make that easy, will includes the helper functions built on <a href="https://github.com/bear/parsedatetime">parsedatetime</a> and <a href="https://github.com/tehmaze/natural">natural</a>: <code>self.parse_natural_time</code> and <code>self.to_natural_day_and_time</code>.</p>
 <h3 id="parse_natural_time">parse_natural_time</h3>
@@ -255,7 +255,7 @@ def remind_me_at(self, message, remind_time=None):
     parsed_time = self.parse_natural_time(remind_time)
 </code></pre>
 
-<p><img alt="Parse natural time" src="/img/remind_trash.gif" /></p>
+<p><img alt="Parse natural time" src="../../img/remind_trash.gif" /></p>
 <h3 id="to_natural_day_and_time">to_natural_day_and_time</h3>
 <p><code>self.to_natural_day_and_time(my_datetime)</code> converts a python <code>datetime</code> into a human-friendly string.</p>
 <pre class="prettyprint well"><code class="python">@respond_to(&quot;show_reminders&quot;)

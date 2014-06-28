@@ -180,7 +180,7 @@ def say_bonjour_will(self, message):
     self.say(&quot;Bonjour!&quot;, message=message)
 </code></pre>
 
-<p><img alt="Bonjour!" src="/img/only_bonjour.gif" /></p>
+<p><img alt="Bonjour!" src="../../img/only_bonjour.gif" /></p>
 <p>Note that we pass <code>messsage</code> along.  This allows will to route his reply to the correct room.  Without it, he'll just speak to the <code>DEFAULT_ROOM</code>.</p>
 <p><code>say()</code> comes with a number of options, including color, html, and ping notify. </p>
 <pre class="prettyprint well"><code class="python">self.say(content, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
@@ -201,7 +201,7 @@ def hi(self, message):
     self.reply(message, &quot;hello, %s!&quot; % message.sender.nick)
 </code></pre>
 
-<p><img alt="Hi, Hello, username!" src="/img/hi_hello.gif" /></p>
+<p><img alt="Hi, Hello, username!" src="../../img/hi_hello.gif" /></p>
 <p>Note the order of arguments is different here, and <code>messsage</code> is required. Also note that because of limitations in hipchat, html is stripped for 1-1 messages.  All the options: </p>
 <pre class="prettyprint well"><code class="python">self.reply(message, content, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
