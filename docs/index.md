@@ -1,4 +1,4 @@
-<img align="right" src="img/will-head.png" alt="Will's smiling face" title="Will's smiling face" style="border:0;" />
+<img align="right" src="img/will-head.png" alt="Will's smiling face" title="Will's smiling face" class="will_head" />
 
 
 # Meet Will
@@ -80,34 +80,7 @@ From your virtualenv and the folder you want to set up your will in,
 # ... output from a bunch of pip libraries installing
 
 (my_will) $ generate_will_project
-
-      ___/-\___
-  ___|_________|___
-     |         |
-     |--O---O--|
-     |         |
-     |         |
-     |  \___/  |
-     |_________|
-           
-      Will: Hi!
-
-Welcome to the will project generator.
-
-
-Generating will scaffold...
-  /plugins
-     __init__.py
-     hello.py
-  /templates
-     blank.html
-  .gitignore
-  run_will.py
-  requirements.txt
-  Procfile
-  README.md
-
-Done.
+# ... output from will making your new project
 
 (my_will) $ ./run_will.py
 # .. the magic begins

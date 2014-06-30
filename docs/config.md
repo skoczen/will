@@ -49,7 +49,7 @@ The rules for combining are fairly straightforward:
 1. All environment variables that start with `WILL_` are imported, and `WILL_` is stripped off their name. (i.e. `WILL_PORT` becomes `PORT`)
 2. All variables from `config.py` are imported.  If there is a conflict, `config.py` wins, and a message is displayed:
 
-    ![Config Conflict](img/config_conflict.gif)
+    ![Config Conflict](../img/config_conflict.gif)
 
 3. Some smart defaulting happens inside settings.py for important variables.  For the moment, I'm going to leave that out of the docs, and refer you to `settings.py` as I *believe* things should Just Work, and most people should never need to care.  If this decision's wrong, please open an issue, and these docs will be improved!
 

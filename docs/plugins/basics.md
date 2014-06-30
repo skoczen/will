@@ -48,4 +48,4 @@ Finally, `ctrl+c` then restart your will to load the new plugin, and you should 
 
 ![Plugins folder with bonjour.py](../../img/bonjour_chat.gif)
 
-Easy, right?  Well, now that you've got your feet wet, let's see  [what else will knows how to notice](/plugins/notice).
+Easy, right?  Well, now that you've got your feet wet, let's see  [what else will knows how to notice](notice.md).
