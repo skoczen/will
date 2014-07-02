@@ -13,7 +13,6 @@ def import_settings(quiet=True):
     This method takes a quiet kwarg, that when False, prints helpful output. Called that way during bootstrapping.
     """
 
-
     settings = {}
 
     # Import from environment, handle environment-specific parsing.
@@ -24,6 +23,14 @@ def import_settings(quiet=True):
     if "ROOMS" in settings:
         settings["ROOMS"] = settings["ROOMS"].split(";")
 
+    # If HIPCHAT_SERVER is set, we need to change the USERNAME slightly
+    # for XMPP to work.
+    if "HIPCHAT_SERVER" in settings:
+        settings["USERNAME"] = "{user}@{host}".\
+            format(user=settings["USERNAME"].split("@")[0],
+                   host=settings["HIPCHAT_SERVER"])
+    else:
+        settings["HIPCHAT_SERVER"] = "api.hipchat.com"
 
     # Import from config
     if not quiet:
