@@ -15,7 +15,7 @@
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link href="../css/prettify-1.0.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link href="../css/docs.css" rel="stylesheet">
+        <link href="../css/style.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -33,7 +33,6 @@
 
         <!-- Collapsed navigation -->
         <div class="navbar-header">
-            
             <!-- Expander button -->
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -41,7 +40,6 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            
 
             <!-- Main title -->
             <a class="navbar-brand" href="..">Will</a>
@@ -49,74 +47,70 @@
 
         <!-- Expanded navigation -->
         <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
             
-                <!-- Main navigation -->
-                <ul class="nav navbar-nav">
-                
-                
-                    <li >
-                        <a href="..">Get Started</a>
-                    </li>
-                
-                
-                
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            <li >
-                                <a href="../plugins/basics/">The Basics</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/notice/">What Will Can Notice</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/reply/">How Will Can Respond</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/create/">Creating and Organizing Plugins</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/builtins/">Plugin Builtins</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/bundled/">Bundled Plugins</a>
-                            </li>
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                    <li class="active">
-                        <a href="./">Configure</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="../deploy/">Deploy</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="../improve/">Improve</a>
-                    </li>
-                
-                
-                </ul>
             
+                <li >
+                    <a href="..">Get Started</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../plugins/basics/">The Basics</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/notice/">What Will Can Notice</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/reply/">How Will Can Respond</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/create/">Creating and Organizing Plugins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/builtins/">Plugin Builtins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/bundled/">Bundled Plugins</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li class="active">
+                    <a href="./">Configure</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../deploy/">Deploy</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../improve/">Improve</a>
+                </li>
+            
+            
+            </ul>
 
-            
             <!-- Search, Navigation and Repo links -->
             <ul class="nav navbar-nav navbar-right">
-                
                 
                 <li >
                     <a rel="next" href="../plugins/bundled/">
@@ -129,7 +123,6 @@
                     </a>
                 </li>
                 
-                
                 <li>
                     <a href="https://github.com/greenkahuna/will/">
                         
@@ -140,7 +133,6 @@
                 </li>
                 
             </ul>
-            
         </div>
     </div>
 </div>
@@ -181,13 +173,14 @@
 <ul>
 <li><code>PLUGINS</code>: The list of plugins to run,</li>
 <li><code>PLUGIN_BLACKLIST</code>: The list of plugins to ignore, even if they're in <code>PLUGINS</code>,</li>
-<li><code>PUBLIC_URL</code>: The publicly accessible URL will can reach himself at (used for <a href="../plugins/bundled/#administration">keepalive</a>,</li>
+<li><code>PUBLIC_URL</code>: The publicly accessible URL will can reach himself at (used for <a href="../plugins/bundled/#administration">keepalive</a>),</li>
 <li><code>HTTPSERVER_PORT</code>: The port will should handle HTTP requests on.  Defaults to 80, set to &gt; 1024 if you don't have sudo,</li>
 <li><code>ROOMS</code>: The list of rooms to join,</li>
 <li><code>DEFAULT_ROOM</code>: The room to send messages that come from web requests to,</li>
 <li><code>TEMPLATE_DIRS</code>: Extra directories to look for templates,</li>
 <li><code>ADMINS</code>: The mention names of all the admins,</li>
 <li><code>LOGLEVEL</code>: What logging level to use,</li>
+<li><code>HIPCHAT_SERVER</code>: if you're using the <a href="https://www.hipchat.com/server">HipChat server beta</a>, the hostname of the server,</li>
 <li>and all of your non-sensitive plugin settings.</li>
 </ul>
 <p>More expansive documenation on all of those settings is in <code>config.py</code>, right where you need it.</p>
@@ -209,17 +202,9 @@ print settings.MY_SETTING_NAME
 <p>Some smart defaulting happens inside settings.py for important variables.  For the moment, I'm going to leave that out of the docs, and refer you to <code>settings.py</code> as I <em>believe</em> things should Just Work, and most people should never need to care.  If this decision's wrong, please open an issue, and these docs will be improved!</p>
 </li>
 </ol>
-<p>Thats's it for config.  Now, let's get your will <a href="../deploy/">deployed</a>.</p>
+<p>Thats's it for config.  Now, let's get your will <a href="../deploy/">deployed</a>!</p>
 </div>
         </div>
-
-        <footer class="col-md-12">
-            <hr>
-            
-            <p>Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.</p>
-            
-            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
 
         
 
@@ -227,6 +212,5 @@ print settings.MY_SETTING_NAME
         <script src="../js/bootstrap-3.0.3.min.js"></script>
         <script src="../js/prettify-1.0.min.js"></script>
         <script src="../js/base.js"></script>
-        
     </body>
 </html>

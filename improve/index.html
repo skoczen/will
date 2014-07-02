@@ -15,7 +15,7 @@
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link href="../css/prettify-1.0.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link href="../css/docs.css" rel="stylesheet">
+        <link href="../css/style.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -33,7 +33,6 @@
 
         <!-- Collapsed navigation -->
         <div class="navbar-header">
-            
             <!-- Expander button -->
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -41,7 +40,6 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            
 
             <!-- Main title -->
             <a class="navbar-brand" href="..">Will</a>
@@ -49,74 +47,70 @@
 
         <!-- Expanded navigation -->
         <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
             
-                <!-- Main navigation -->
-                <ul class="nav navbar-nav">
-                
-                
-                    <li >
-                        <a href="..">Get Started</a>
-                    </li>
-                
-                
-                
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            <li >
-                                <a href="../plugins/basics/">The Basics</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/notice/">What Will Can Notice</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/reply/">How Will Can Respond</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/create/">Creating and Organizing Plugins</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/builtins/">Plugin Builtins</a>
-                            </li>
-                        
-                            <li >
-                                <a href="../plugins/bundled/">Bundled Plugins</a>
-                            </li>
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="../config/">Configure</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="../deploy/">Deploy</a>
-                    </li>
-                
-                
-                
-                    <li class="active">
-                        <a href="./">Improve</a>
-                    </li>
-                
-                
-                </ul>
             
+                <li >
+                    <a href="..">Get Started</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../plugins/basics/">The Basics</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/notice/">What Will Can Notice</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/reply/">How Will Can Respond</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/create/">Creating and Organizing Plugins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/builtins/">Plugin Builtins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/bundled/">Bundled Plugins</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../config/">Configure</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../deploy/">Deploy</a>
+                </li>
+            
+            
+            
+                <li class="active">
+                    <a href="./">Improve</a>
+                </li>
+            
+            
+            </ul>
 
-            
             <!-- Search, Navigation and Repo links -->
             <ul class="nav navbar-nav navbar-right">
-                
                 
                 <li >
                     <a rel="next" href="../deploy/">
@@ -129,7 +123,6 @@
                     </a>
                 </li>
                 
-                
                 <li>
                     <a href="https://github.com/greenkahuna/will/">
                         
@@ -140,7 +133,6 @@
                 </li>
                 
             </ul>
-            
         </div>
     </div>
 </div>
@@ -225,6 +217,7 @@
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
+<li><a href="https://github.com/mrgrue">mrgrue</a> added support for the hipchat server beta.</li>
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
 <li><a href="https://github.com/rbp">rbp</a> added the <code>admin_only</code> argument, and fixed a bug with <code>room</code> not being passed along properly to messages.</li>
 </ul>
@@ -235,6 +228,10 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="051-july-2-2014">0.5.1 - July 2, 2014</h4>
+<ul>
+<li>New <code>HIPCHAT_SERVER</code> setting to support <a href="https://www.hipchat.com/server">beta HipChat Server</a>, thanks to <a href="https://github.com/mrgrue">mrgrue</a>.</li>
+</ul>
 <h4 id="05-omnibus-june-27-2014">0.5 Omnibus - June 27, 2014</h4>
 <ul>
 <li>Big, big release, with backwards-incompatble changes.  Please read all the notes on this one!</li>
@@ -299,20 +296,11 @@
 </div>
         </div>
 
-        <footer class="col-md-12">
-            <hr>
-            
-            <p>Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.</p>
-            
-            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-
         
 
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="../js/bootstrap-3.0.3.min.js"></script>
         <script src="../js/prettify-1.0.min.js"></script>
         <script src="../js/base.js"></script>
-        
     </body>
 </html>

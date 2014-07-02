@@ -1,0 +1,11 @@
+img, div.col-md-9 img {
+  margin: 20px 0 30px 0;
+  background: transparent;
+  padding: 0;
+}
+
+.will_head, div.col-md-9 img.will_head {
+    background: #FFF;
+    border:0;
+    height: 300px;
+}
