@@ -30,6 +30,7 @@ Config.py is where all of your non-sensitive settings should go.   This includes
 - `TEMPLATE_DIRS`: Extra directories to look for templates,
 - `ADMINS`: The mention names of all the admins,
 - `LOGLEVEL`: What logging level to use,
+- 'HIPCHAT_SERVER': if you're using a personal HipChat server, the hostname of the server,
 - and all of your non-sensitive plugin settings.
 
 More expansive documenation on all of those settings is in `config.py`, right where you need it.

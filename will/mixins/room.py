@@ -2,23 +2,25 @@ import requests
 
 from will import settings
 
+V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
+V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s"
 
 class RoomMixin(object):
     def update_available_rooms(self, q=None):
         self._available_rooms = {}
         # Use v1 token to grab a full room list if we can (good to avoid rate limiting)
         if hasattr(settings, "V1_TOKEN"):
-            url = "https://{server}/v1/rooms/list?auth_token={auth_token}".format(server=settings.HIPCHAT_SERVER,
-                                                                                  auth_token=settings.V1_TOKEN)
+            url = V1_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
+                                  "token": settings.V1_TOKEN}
             r = requests.get(url)
             if r.status_code == requests.codes.unauthorized:
                 raise Exception("V1_TOKEN authentication failed with HipChat")
             for room in r.json()["rooms"]:
                 self._available_rooms[room["name"]] = room
         # Otherwise, grab 'em one-by-one via the v2 api.
-        else:                
-            url = "https://{server}/v2/room?auth_token={auth_token}".format(server=settings.HIPCHAT_SERVER,
-                                                                            auth_token=settings.V2_TOKEN)
+        else:
+            url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
+                                  "token": settings.V2_TOKEN}
             resp = requests.get(url)
             if resp.status_code == requests.codes.unauthorized:
                 raise Exception("V2_TOKEN authentication failed with HipChat")

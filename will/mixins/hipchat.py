@@ -5,15 +5,21 @@ import traceback
 
 from will import settings
 
+ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
+ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
+PRIVATE_MESSAGE_URL = "https://%(server)s/v2/user/%(user_id)s/message?auth_token=%(token)s"
+SET_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
+USER_DETAILS_URL = "https://%(server)s/v2/user/%(user_id)s?auth_token=%(token)s"
+ALL_USERS_URL = "https://%(server)s/v2/user?auth_token=%(token)s&start-index=%(start_index)s"
+
 class HipChatMixin(object):
 
     def send_direct_message(self, user_id, message_body):
         try:
             # https://www.hipchat.com/docs/apiv2/method/private_message_user
-            url = "https://{server}/v2/user/{user_id}/message?auth_token={token}".\
-                  format(server=settings.HIPCHAT_SERVER,
-                         user_id=user_id,
-                         token=settings.V2_TOKEN)
+            url = PRIVATE_MESSAGE_URL % {"server": settings.HIPCHAT_SERVER,
+                                         "user_id": user_id,
+                                         "token": settings.V2_TOKEN}
             data = {"message": message_body}
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data))
@@ -36,10 +42,9 @@ class HipChatMixin(object):
 
         try:
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
-            url = "https://{server}/v2/room/{room_id}/notification?auth_token={token}".\
-                  format(server=settings.HIPCHAT_SERVER,
-                         room_id=room_id,
-                         token=settings.V2_TOKEN)
+            url = ROOM_NOTIFICATION_URL % {"server": settings.HIPCHAT_SERVER,
+                                           "room_id": room_id,
+                                           "token": settings.V2_TOKEN}
             data = {
                 "message": message_body,
                 "message_format": format,
@@ -54,10 +59,9 @@ class HipChatMixin(object):
     def set_room_topic(self, room_id, topic):
         try:
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
-            url = "https://{server}/v2/room/{room_id}/topic?auth_token={token}".\
-                  format(server=settings.HIPCHAT_SERVER,
-                         room_id=room_id,
-                         token=settings.V2_TOKEN)
+            url = ROOM_TOPIC_URL % {"server": settings.HIPCHAT_SERVER,
+                                    "room_id": room_id,
+                                    "token": settings.V2_TOKEN}
             data = {
                 "topic": topic,
             }
@@ -67,10 +71,9 @@ class HipChatMixin(object):
             logging.critical("Error in set_room_topic: \n%s" % traceback.format_exc())
 
     def get_hipchat_user(self, user_id, q=None):
-        url = "https://{server}/v2/user/{user_id}?auth_token={token}".\
-              format(server=settings.HIPCHAT_SERVER,
-                     user_id=user_id,
-                     token=settings.V2_TOKEN)
+        url = USER_DETAILS_URL % {"server": settings.HIPCHAT_SERVER,
+                                  "user_id": user_id,
+                                  "token": settings.V2_TOKEN}
         r = requests.get(url)
         if q:
             q.put(r.json())
@@ -83,10 +86,9 @@ class HipChatMixin(object):
             full_roster = {}
 
             # Grab the first roster page, and populate full_roster
-            url = "https://{server}/v2/user?auth_token={token}&start-index={start_index}".\
-                  format(server=settings.HIPCHAT_SERVER,
-                         token=settings.V2_TOKEN,
-                         start_index=0)
+            url = ALL_USERS_URL % {"server": settings.HIPCHAT_SERVER,
+                                   "token": settings.V2_TOKEN,
+                                   "start_index": 0}
             r = requests.get(url)
             for user in r.json()['items']:
                 full_roster["%s" % (user['id'],)] = user
