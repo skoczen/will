@@ -77,6 +77,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
+- [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 
@@ -89,6 +90,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.5.1 - July 2, 2014
+
+* New `HIPCHAT_SERVER` setting to support [beta HipChat Server](https://www.hipchat.com/server), thanks to [mrgrue](https://github.com/mrgrue).
+
 
 #### 0.5 Omnibus - June 27, 2014
 

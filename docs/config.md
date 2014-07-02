@@ -23,14 +23,14 @@ Config.py is where all of your non-sensitive settings should go.   This includes
 
 - `PLUGINS`: The list of plugins to run,
 - `PLUGIN_BLACKLIST`: The list of plugins to ignore, even if they're in `PLUGINS`,
-- `PUBLIC_URL`: The publicly accessible URL will can reach himself at (used for [keepalive](plugins/bundled.md#administration),
+- `PUBLIC_URL`: The publicly accessible URL will can reach himself at (used for [keepalive](plugins/bundled.md#administration)),
 - `HTTPSERVER_PORT`: The port will should handle HTTP requests on.  Defaults to 80, set to > 1024 if you don't have sudo,
 - `ROOMS`: The list of rooms to join,
 - `DEFAULT_ROOM`: The room to send messages that come from web requests to,
 - `TEMPLATE_DIRS`: Extra directories to look for templates,
 - `ADMINS`: The mention names of all the admins,
 - `LOGLEVEL`: What logging level to use,
-- 'HIPCHAT_SERVER': if you're using a personal HipChat server, the hostname of the server,
+- `HIPCHAT_SERVER`: if you're using the [HipChat server beta](https://www.hipchat.com/server), the hostname of the server,
 - and all of your non-sensitive plugin settings.
 
 More expansive documenation on all of those settings is in `config.py`, right where you need it.
@@ -54,7 +54,7 @@ The rules for combining are fairly straightforward:
 
 3. Some smart defaulting happens inside settings.py for important variables.  For the moment, I'm going to leave that out of the docs, and refer you to `settings.py` as I *believe* things should Just Work, and most people should never need to care.  If this decision's wrong, please open an issue, and these docs will be improved!
 
-Thats's it for config.  Now, let's get your will [deployed](deploy.md).
+Thats's it for config.  Now, let's get your will [deployed](deploy.md)!
 
 
 
