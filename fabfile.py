@@ -46,7 +46,13 @@ def deploy_docs():
                 os.rmdir(os.path.join(root, name))
     
     local("cp -rv %s/* ." % tempdir)
-    local("git add -A .")
-    local("git commit -m 'Auto-update of docs: %s'" % last_commit)
-    local("git push")
+    with settings(warn_only=True):
+        result = local("git diff --exit-code")
+
+    if result.return_code != 0:
+        local("git add -A .")
+        local("git commit -m 'Auto-update of docs: %s'" % last_commit)
+        local("git push")
+    else:
+        print "No changes to the docs."
     local("git checkout %s" % current_branch)
