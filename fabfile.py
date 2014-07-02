@@ -25,6 +25,7 @@ def deploy_docs():
     local("mv %s/* %s" % (SITE_DIR, tempdir))
     
     current_branch = local("git rev-parse --abbrev-ref HEAD", capture=True)
+    last_commit = local("git log -1 --pretty=\%B", capture=True)
 
     # Add the new site to build
     local("git checkout gh-pages")
@@ -46,6 +47,6 @@ def deploy_docs():
     
     local("cp -rv %s/* ." % tempdir)
     local("git add -A .")
-    local("git commit -m 'auto-update of docs'")
+    local("git commit -m 'Auto-update of docs: %s'" % last_commit)
     local("git push")
     local("git checkout %s" % current_branch)
