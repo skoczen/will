@@ -72,14 +72,17 @@ Will was originally written and is maintained by [Steven Skoczen](https://github
 Will's also has had help from lots of coders. Alphabetically:
 
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
+- [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
+- [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
+- [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 
 ## Other Wills
 
@@ -90,6 +93,14 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+
+#### 0.5.2 - July 11, 2014
+
+* `@randomly` functions now can run on the 59th monute, thanks to [https://github.com/tomokas](tomokas).
+* Bad merge that duplicated `help.py` fixed by [https://github.com/netjunki](netjunki).
+* "global name 'params' is not defined" bug fixed by [https://github.com/amckinley](amckinley).
+
 
 #### 0.5.1 - July 2, 2014
 
