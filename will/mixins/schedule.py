@@ -135,7 +135,7 @@ class ScheduleMixin(object):
             # and that seems more useful.
             possible_times = []
             for i in range(start_hour, end_hour):
-                for j in range(0, 60):
+                for j in range(60):
                     possible_times.append((i,j))
 
             times = random.sample(possible_times, num_times_per_day)
