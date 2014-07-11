@@ -212,14 +212,17 @@
 <p>Will's also has had help from lots of coders. Alphabetically:</p>
 <ul>
 <li><a href="https://github.com/adamgilman">adamgilman</a> gave you the friendly error messages when the hipchat key was invalid.</li>
+<li><a href="https://github.com/amckinley">amckinley</a> fixed a bug in the hipchat user list from missing params.</li>
 <li><a href="https://github.com/bfhenderson">bfhenderson</a> removed dependence on the v1 token, and made help more friendly.</li>
 <li><a href="https://github.com/crccheck">crccheck</a> gave you friendly error messages if your <code>WILL_ROOMS</code> was wrong.</li>
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
 <li><a href="https://github.com/mrgrue">mrgrue</a> added support for the hipchat server beta.</li>
+<li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module.</li>
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
 <li><a href="https://github.com/rbp">rbp</a> added the <code>admin_only</code> argument, and fixed a bug with <code>room</code> not being passed along properly to messages.</li>
+<li><a href="https://github.com/tomokas">tomokas</a> fixed a bug in the <code>@randomly</code> decorator.</li>
 </ul>
 <h2 id="other-wills">Other Wills</h2>
 <p>If you're looking for plugin inspiration, here are some wills that are open-sourced:</p>
@@ -228,6 +231,12 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="052-july-11-2014">0.5.2 - July 11, 2014</h4>
+<ul>
+<li><code>@randomly</code> functions now can run on the 59th monute, thanks to <a href="tomokas">https://github.com/tomokas</a>.</li>
+<li>Bad merge that duplicated <code>help.py</code> fixed by <a href="netjunki">https://github.com/netjunki</a>.</li>
+<li>"global name 'params' is not defined" bug fixed by <a href="amckinley">https://github.com/amckinley</a>.</li>
+</ul>
 <h4 id="051-july-2-2014">0.5.1 - July 2, 2014</h4>
 <ul>
 <li>New <code>HIPCHAT_SERVER</code> setting to support <a href="https://www.hipchat.com/server">beta HipChat Server</a>, thanks to <a href="https://github.com/mrgrue">mrgrue</a>.</li>
