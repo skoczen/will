@@ -35,7 +35,7 @@ class HipChatMixin(object):
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
         if kwargs:
             logging.warn("Unknown keyword args for send_room_message: %s" % kwargs)
-        
+
         format = "text"
         if html:
             format = "html"
@@ -96,7 +96,7 @@ class HipChatMixin(object):
             # Keep going through the next pages until we're out of pages.
             while 'next' in r.json()['links']:
                 url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.V2_TOKEN)
-                r = requests.get(url, params=params)
+                r = requests.get(url)
 
                 for user in r.json()['items']:
                     full_roster["%s" % (user['id'],)] = user
