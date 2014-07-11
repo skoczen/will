@@ -95,7 +95,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 ## Releases
 
 
-#### 0.5.2 - July 11, 2014
+#### 0.5.3 - July 11, 2014
 
 * `@randomly` functions now can run on the 59th monute, thanks to [https://github.com/tomokas](tomokas).
 * Bad merge that duplicated `help.py` fixed by [https://github.com/netjunki](netjunki).
