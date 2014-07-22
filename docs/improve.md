@@ -94,6 +94,10 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.5.4 - July 22, 2014
+
+* Upgrades bottle to 0.12.6 to fix [security bug][http://osvdb.org/show/osvdb/106526].
+
 
 #### 0.5.3 - July 11, 2014
 

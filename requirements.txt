@@ -2,7 +2,7 @@ APScheduler==2.1.2
 Jinja2==2.7.2
 MarkupSafe==0.21
 args==0.1.0
-bottle==0.12.5
+bottle==0.12.6
 clint==0.3.7
 dill==0.2b1
 dnspython==1.11.1

@@ -1,5 +1,5 @@
 apscheduler
-bottle
+bottle>=0.12.6
 clint
 dill>=0.2b1
 dnspython
