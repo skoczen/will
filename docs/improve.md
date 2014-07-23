@@ -101,9 +101,9 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 0.5.3 - July 11, 2014
 
-* `@randomly` functions now can run on the 59th minute, thanks to [https://github.com/tomokas](tomokas).
-* Bad merge that duplicated `help.py` fixed by [https://github.com/netjunki](netjunki).
-* "global name 'params' is not defined" bug fixed by [https://github.com/amckinley](amckinley).
+* `@randomly` functions now can run on the 59th minute, thanks to [tomokas](https://github.com/tomokas).
+* Bad merge that duplicated `help.py` fixed by [netjunki](https://github.com/netjunki).
+* "global name 'params' is not defined" bug fixed by [amckinley](https://github.com/amckinley).
 
 
 #### 0.5.1 - July 2, 2014
