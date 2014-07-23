@@ -96,12 +96,12 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 0.5.4 - July 22, 2014
 
-* Upgrades bottle to 0.12.6 to fix [security bug][http://osvdb.org/show/osvdb/106526].
+* Upgrades bottle to 0.12.6 to fix [security bug](http://osvdb.org/show/osvdb/106526).
 
 
 #### 0.5.3 - July 11, 2014
 
-* `@randomly` functions now can run on the 59th monute, thanks to [https://github.com/tomokas](tomokas).
+* `@randomly` functions now can run on the 59th minute, thanks to [https://github.com/tomokas](tomokas).
 * Bad merge that duplicated `help.py` fixed by [https://github.com/netjunki](netjunki).
 * "global name 'params' is not defined" bug fixed by [https://github.com/amckinley](amckinley).
 
