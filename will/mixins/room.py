@@ -26,6 +26,9 @@ class RoomMixin(object):
                 raise Exception("V2_TOKEN authentication failed with HipChat")
             rooms = resp.json()
 
+            if len(rooms) > 30:
+                raise Exception("You have more than 30 rooms, an no V1 token has been set. At present, this will hit hipchat rate-limits, and will won't work. Please set a V1 token.")
+
             for room in rooms["items"]:
                 url = room["links"]["self"] + "/?auth_token=%s;expand=xmpp_jid" % (settings.V2_TOKEN,)
                 room_details = requests.get(url).json()

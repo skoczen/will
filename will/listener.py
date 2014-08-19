@@ -44,6 +44,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
+        self.add_event_handler("groupchat_presence", self.presence_changed)
 
         self.register_plugin('xep_0045') # MUC
 
@@ -95,6 +96,10 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def room_message(self, msg):
         self._handle_message_listeners(msg)
+
+
+    def presence_changed(self, msg):
+        print msg
 
 
     def message_recieved(self, msg):

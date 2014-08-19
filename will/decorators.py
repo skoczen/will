@@ -114,3 +114,10 @@ def route(path, *args, **kwargs):
             f.will_fn_metadata["bottle_%s" % k] = v
         return f
     return wrap
+
+
+def joined_room(rooms=None):
+    pass
+
+def left_room(rooms=None):
+    pass
