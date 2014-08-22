@@ -1,4 +1,4 @@
-![Circle Badge](https://circleci.com/gh/greenkahuna/will.png?circle-token=da92149684f6e2642fe4ddfd34ef371e264b7133) ![Pypi Badge](https://badge.fury.io/py/will.png)   ![Downloads Badge](https://pypip.in/d/will/badge.png)
+![Circle Badge](https://circleci.com/gh/skoczen/will.png?circle-token=da92149684f6e2642fe4ddfd34ef371e264b7133) ![Pypi Badge](https://badge.fury.io/py/will.png)   ![Downloads Badge](https://pypip.in/d/will/badge.png)
 
 <img  align="right" src="https://gk-will.s3.amazonaws.com/will-head.png?v2" alt="Will's smilling face" title="Will's smilling face"/>
 
