@@ -76,7 +76,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         elif message['type'] in ('chat', 'normal'):
             # Reply to the user (1-1 chat)
 
-            self.send_direct_message(message.sender["hipchat_id"], content)
+            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
 
     def set_topic(self, topic, message=None, room=None):
 
