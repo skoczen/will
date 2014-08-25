@@ -58,7 +58,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             for r in rooms:
                 self.send_room_message(r["room_id"], content, **kwargs)
         else:
-            self.send_direct_message(message.sender["hipchat_id"], content)
+            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
        
     def reply(self, message, content, **kwargs):
         # Valid kwargs:
