@@ -17,7 +17,6 @@ Lots of batteries are included, and you can get your own will up and running in 
 
 Will started by [Steven Skoczen](http://stevenskoczen.com) while he was in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](improve.md#shoulders).
 
-
 Check out the quickstart below!
 
 <div style="width:100%;clear:both;"></div>
