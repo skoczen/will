@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://will.greenkahuna.com/plugins/reply/">
+        <link rel="canonical" href="http://skoczen.github.io/will/plugins/reply/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
         <title>How Will Can Respond - Will</title>
@@ -124,7 +124,7 @@
                 </li>
                 
                 <li>
-                    <a href="https://github.com/greenkahuna/will/">
+                    <a href="https://github.com/skoczen/will/">
                         
                             <i class="fa fa-github"></i>
                         
@@ -183,7 +183,7 @@ def say_bonjour_will(self, message):
 <li><strong><code>message</code></strong>: (optional) The incoming message object</li>
 <li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms) to send the message to.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
-<li><strong><code>color</code></strong>: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
+<li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". </li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
 </ul>
 <h2 id="reply-with-a-mention">Reply with a mention</h2>
@@ -194,7 +194,7 @@ def hi(self, message):
 </code></pre>
 
 <p><img alt="Hi, Hello, username!" src="../../img/hi_hello.gif" /></p>
-<p>Note the order of arguments is different here, and <code>messsage</code> is required. Also note that because of limitations in hipchat, html is stripped for 1-1 messages.  All the options: </p>
+<p>Note the order of arguments is different here, and <code>messsage</code> is required. All the options: </p>
 <pre class="prettyprint well"><code class="python">self.reply(message, content, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
 
@@ -202,7 +202,7 @@ def hi(self, message):
 <li><strong><code>message</code></strong>: The incoming message object.  Required</li>
 <li><strong><code>content</code></strong>: the content you want to send to the room. HTML or plain text.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
-<li><strong><code>color</code></strong>: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
+<li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
 </ul>
 <h2 id="talk-to-the-room-from-a-webhook">Talk to the room from a webhook</h2>
@@ -251,7 +251,7 @@ def walkmaster(self):
 <li><strong><code>message</code></strong>: (optional) The incoming message object</li>
 <li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms) to send the message to.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
-<li><strong><code>color</code></strong>: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
+<li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
 </ul>
 <h2 id="set-the-topic">Set the topic</h2>
