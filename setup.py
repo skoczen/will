@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
-VERSION = "0.5.4"
+VERSION = "0.5.5"
 
 reqs = []
 with open("requirements.txt", "r+") as f:
@@ -22,10 +22,10 @@ setup(
     description="A friendly python hipchat bot",
     long_description=long_description,
     author="Steven Skoczen",
-    author_email="steven@greenkahuna.com",
-    url="https://github.com/greenkahuna/will",
+    author_email="skoczen@gmail.com",
+    url="https://github.com/skoczen/will",
     version=VERSION,
-    download_url = ['https://github.com/greenkahuna/will/tarball/%s' % VERSION, ],
+    download_url = ['https://github.com/skoczen/will/tarball/%s' % VERSION, ],
     install_requires=reqs,
     packages=find_packages(),
     include_package_data=True,

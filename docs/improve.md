@@ -71,6 +71,7 @@ Will was originally written and is maintained by [Steven Skoczen](https://github
 
 Will's also has had help from lots of coders. Alphabetically:
 
+- [adamcin](https://github.com/adamcin) gave you html support in 1-1 chats, using the new v2 API.
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
@@ -93,6 +94,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.5.5 - August 25, 2014
+
+* Full html support in 1-1 chats, thanks to [adamcin](https://github.com/adamcin).
+
 
 #### 0.5.4 - July 22, 2014
 
