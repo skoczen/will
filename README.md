@@ -14,7 +14,7 @@ def say_hello(self, message):
     self.say("oh, hello!")
 ```
 
-Will was first built by [Steven Skoczen](http://stevenskoczen.com) while in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](http://greenkahuna.github.io/will/improve/#the-shoulders-of-giants).
+Will was first built by [Steven Skoczen](http://stevenskoczen.com) while in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](http://skoczen.github.io/will/improve/#the-shoulders-of-giants).
 
 Will has docs, including a quickstart and lots of screenshots at:
 **[http://skoczen.github.io/will/](http://skoczen.github.io/will)** 

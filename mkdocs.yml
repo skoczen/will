@@ -1,5 +1,5 @@
 site_name: Will's Docs
-site_url: http://will.greenkahuna.com/
+site_url: http://skoczen.github.io/will
 site_description: "Will is a simple, beautiful-to-code python hipchat bot"
 pages:
 - ["index.md", "Get Started"]
@@ -15,6 +15,6 @@ pages:
 theme: will
 site_name: Will
 theme_dir: "docs/themes/will/"
-repo_url: https://github.com/greenkahuna/will/
-copyright: Copyright &copy; 2014, <a href="https://greenkahuna.com/">GreenKahuna</a>.
-# google_analytics: ['UA-1234567-8', 'will.greenkahuna.com']
+repo_url: https://github.com/skoczen/will/
+copyright: Copyright &copy; 2014, GreenKahuna, Steven Skoczen and the individual contributors.
+# google_analytics: ['UA-1234567-8', 'skoczen.github.io/will']
