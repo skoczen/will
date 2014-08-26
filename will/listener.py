@@ -55,7 +55,8 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.update_will_roster_and_rooms()
 
         for r in self.rooms:
-            self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+            if "xmpp_jid" in r:
+                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
 
     def update_will_roster_and_rooms(self):
         internal_roster = self.load('will_roster', {})
