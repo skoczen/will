@@ -28,7 +28,7 @@ self.say(content, message=None, room=None, html=False, color="green", notify=Fal
 - **`message`**: (optional) The incoming message object
 - **`room`**: (optional) The room object (from self.available_rooms) to send the message to.
 - **`html`**: if the message is HTML. `True` or `False`.
-- **`color`**: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". 
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
 
 ## Reply with a mention
@@ -43,7 +43,7 @@ def hi(self, message):
 
 ![Hi, Hello, username!](../../img/hi_hello.gif)
 
-Note the order of arguments is different here, and `messsage` is required. Also note that because of limitations in hipchat, html is stripped for 1-1 messages.  All the options: 
+Note the order of arguments is different here, and `messsage` is required. All the options: 
 
 ```python
 self.reply(message, content, html=False, color="green", notify=False)
@@ -52,7 +52,7 @@ self.reply(message, content, html=False, color="green", notify=False)
 - **`message`**: The incoming message object.  Required
 - **`content`**: the content you want to send to the room. HTML or plain text.
 - **`html`**: if the message is HTML. `True` or `False`.
-- **`color`**: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
 
 
@@ -118,7 +118,7 @@ self.schedule_say(content, when, message=None, room=None, html=False, color="gre
 - **`message`**: (optional) The incoming message object
 - **`room`**: (optional) The room object (from self.available_rooms) to send the message to.
 - **`html`**: if the message is HTML. `True` or `False`.
-- **`color`**: the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
+- **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
 
 

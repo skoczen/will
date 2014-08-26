@@ -14,13 +14,24 @@ ALL_USERS_URL = "https://%(server)s/v2/user?auth_token=%(token)s&start-index=%(s
 
 class HipChatMixin(object):
 
-    def send_direct_message(self, user_id, message_body):
+    def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
+        if kwargs:
+            logging.warn("Unknown keyword args for send_direct_message: %s" % kwargs)
+
+        format = "text"
+        if html:
+            format = "html"
+
         try:
             # https://www.hipchat.com/docs/apiv2/method/private_message_user
             url = PRIVATE_MESSAGE_URL % {"server": settings.HIPCHAT_SERVER,
                                          "user_id": user_id,
                                          "token": settings.V2_TOKEN}
-            data = {"message": message_body}
+            data = {
+                "message": message_body,
+                "message_format": format,
+                "notify": notify,
+            }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data))
         except:
