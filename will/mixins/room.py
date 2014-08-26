@@ -51,7 +51,7 @@ class RoomMixin(object):
 
     def get_room_by_jid(self, jid):
         for name, room in self.available_rooms.items():
-            if room["xmpp_jid"] == jid:
+            if "xmpp_jid" in room and room["xmpp_jid"] == jid:
                 return room
         return None
 
@@ -62,9 +62,9 @@ class RoomMixin(object):
         for name, room in self.available_rooms.items():
             if name_or_id == name:
                 return room
-            if name_or_id == room["xmpp_jid"]:
+            if "xmpp_jid" in room and name_or_id == room["xmpp_jid"]:
                 return room
-            if name_or_id == room["room_id"]:
+            if "room_id" in room and name_or_id == room["room_id"]:
                 return room
         return None
 
