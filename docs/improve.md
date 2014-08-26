@@ -60,11 +60,11 @@ This one's hopefully straightforward:
 
 Will leverages some fantastic libraries.  He wouldn't exist without them.
 
-- [Bottle](http://bottlepy.org/docs/dev/) for http handling
-- [Jinja](http://jinja.pocoo.org/) for templating
-- [Sleekxmpp](http://sleekxmpp.com/) for listening to xmpp
-- [natural](https://github.com/tehmaze/natural) and [parsedatetime](https://github.com/bear/parsedatetime) for natural date parsing
-- [apscheduler](http://apscheduler.readthedocs.org/en/latest/) for scheduled task parsing
+- [Bottle](http://bottlepy.org/docs/dev/) for http handling,
+- [Jinja](http://jinja.pocoo.org/) for templating,
+- [Sleekxmpp](http://sleekxmpp.com/) for listening to xmpp,
+- [natural](https://github.com/tehmaze/natural) and [parsedatetime](https://github.com/bear/parsedatetime) for natural date parsing,
+- [apscheduler](http://apscheduler.readthedocs.org/en/latest/) for scheduled task parsing,
 - [Requests](http://requests.readthedocs.org/en/latest/) to make http sane.
 
 Will was originally written and is maintained by [Steven Skoczen](https://github.com/skoczen) at [GreenKahuna](https://www.greenkahuna.com).  The rest of the GK team has also pitched in, including [ckcollab](http://github.com/ckcollab), and [levithomason](http://github.com/levithomason).
