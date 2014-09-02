@@ -41,6 +41,21 @@ If you're on Mac OS X, and using [homebrew](http://brew.sh/), you can simply:
 brew install redis
 ```
 
+On a Redhat (RHEL, Centos, Fedora) machine you can:
+
+```bash
+sudo yum install redis
+sudo service redis enable
+sudo service redis start
+```
+
+On a Debian (Ubuntu, Mint, KNOPPIX) machine to properly install follow the [Redis Quickstart](http://redis.io/topics/quickstart). But you can start more quickly with:
+
+```bash
+sudo apt-get install redis
+redis-server
+```
+
 #### Install python > 2.6
 
 Most modern operating systems (Mac OS X, Linux, BSDs, etc) ship with python installed, but if you don't have it, all the info is at [python.org](https://www.python.org/).
@@ -53,10 +68,10 @@ The python guide has [a great tutorial on virtualenv](http://docs.python-guide.o
 
 #### Set up a virtualenv for will
 
-Should be as simple as:
+If you are using virtualenv wrapper:
 
 ```bash
-$ mkvirtualenv my_will
+$ mkproject my_will
 # ... some output, setting up the virtualenv
 $ workon my_will
 (my_will) $ 
