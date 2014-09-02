@@ -16,7 +16,7 @@ with open("requirements.txt", "r+") as f:
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError, OSError):
+except (IOError, ImportError, OSError, RuntimeError):
     try:
         import os
         long_description = unicode(open(os.path.join(os.path.dirname(__file__), 'README.md')).read())
