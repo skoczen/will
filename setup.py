@@ -19,9 +19,9 @@ try:
 except (IOError, ImportError, OSError, RuntimeError):
     try:
         import os
-        long_description = unicode(open(os.path.join(os.path.dirname(__file__), 'README.md')).read())
+        long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
     except:
-        long_description = PACKAGE_NAME + '\n---\n\n' + DESCRIPTION + '\n'
+        long_description = DESCRIPTION + '\n'
 
 setup(
     name=PACKAGE_NAME,
