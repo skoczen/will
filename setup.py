@@ -1,7 +1,9 @@
 #/usr/bin/env python
 import os
 from setuptools import setup, find_packages
+from will import __name__ as PACKAGE_NAME
 
+DESCRIPTION = "A friendly python hipchat bot"
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
 VERSION = "0.5.6"
@@ -12,14 +14,18 @@ with open("requirements.txt", "r+") as f:
         reqs.append(line.strip())
 
 try:
-   import pypandoc
-   long_description = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
-    long_description = ''   
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError, OSError):
+    try:
+        import os
+        long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
+    except:
+        long_description = PACKAGE_NAME + '\n---\n\n' + DESCRIPTION + '\n'
 
 setup(
-    name="will",
-    description="A friendly python hipchat bot",
+    name=PACKAGE_NAME,
+    description=DESCRIPTION,
     long_description=long_description,
     author="Steven Skoczen",
     author_email="skoczen@gmail.com",
