@@ -19,7 +19,7 @@ try:
 except (IOError, ImportError, OSError):
     try:
         import os
-        long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
+        long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read().replace('\n', '\n\n'),
     except:
         long_description = PACKAGE_NAME + '\n---\n\n' + DESCRIPTION + '\n'
 
