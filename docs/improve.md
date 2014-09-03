@@ -78,6 +78,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
+- [hobson](http://github.com/hobson) made setup.py more robust across operating systems.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
@@ -94,6 +95,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.5.7 - September 3, 2014
+
+* Improvements to setup.py to be robust a variety of linux/unixes by [hobson](https://github.com/hobson).
+
 
 #### 0.5.6 - August 26, 2014
 
