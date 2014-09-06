@@ -1,6 +1,6 @@
 # Deploying your Will
 
-Will's happy to run on your machine all day, every day.  But he really shines out in production where he can run independently of anything you do with your local machine.  Here are some best practices on how to get him deployed.
+Will's happy to run on your machine all day, every day.  But he really shines out in production where he can run independently of anything you do with your local machine.  Here are some best practices for deploying will.
 
 ## Deploy on Heroku
 
