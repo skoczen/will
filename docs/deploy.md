@@ -4,7 +4,7 @@ Will's happy to run on your machine all day, every day.  But he really shines ou
 
 ## Deploy on Heroku
 
-Heroku is our recommended platform for deployment, because it's simple, easy, and free. That's a tough combination to beat.  You're in no way locked in to running will on heroku, though - run him wherever you want!
+Heroku is our recommended platform for deployment because it's simple, easy, and free. That's a tough combination to beat.  You're in no way locked in to running will on heroku, though - run him wherever you want!
 
 #### Step 1: Set up your heroku app, and a redis addon.
 
