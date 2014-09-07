@@ -338,6 +338,32 @@ To set your %(name)s:
             show_valid("Will is running.")
             self.process(block=True)
 
+    def compile_listener_regex(self, meta):
+        """Compile a regular expression according to the configurations flags in a function meta dict (decorated_function)"""
+        if isinstance(meta['listener_regex'], (tuple, list)):
+            return [self.compile_listener_regex(regex) for regex in meta['listener_regex']]
+        # puts("- %s" % function_name)
+        regex = meta["listener_regex"]
+        if not meta["case_sensitive"]:
+            regex = "(?i)%s" % regex
+        help_regex = meta["listener_regex"]
+        if meta["listens_only_to_direct_mentions"]:
+            help_regex = "@%s %s" % (settings.HANDLE, help_regex)
+        self.all_listener_regexes.append(help_regex)
+        if meta["__doc__"]:
+            pht = plugin_info.get("parent_help_text", None)
+            if pht:
+                if pht in self.help_modules:
+                    self.help_modules[pht].append(meta["__doc__"])
+                else:
+                    self.help_modules[pht] = [meta["__doc__"],]
+            else:
+                self.help_modules[OTHER_HELP_HEADING].append(meta["__doc__"])
+        if meta["multiline"]:
+            return re.compile(regex, re.MULTILINE | re.DOTALL)
+        else:
+            return re.compile(regex)
+
     def bootstrap_plugins(self):
         puts("Bootstrapping plugins...")
         OTHER_HELP_HEADING = "Other"
@@ -468,32 +494,15 @@ To set your %(name)s:
                                                         "setting_name": s,
                                                     }
                                             if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
-                                                # puts("- %s" % function_name)
-                                                regex = meta["listener_regex"]
-                                                if not meta["case_sensitive"]:
-                                                    regex = "(?i)%s" % regex
-                                                help_regex = meta["listener_regex"]
-                                                if meta["listens_only_to_direct_mentions"]:
-                                                    help_regex = "@%s %s" % (settings.HANDLE, help_regex)
-                                                self.all_listener_regexes.append(help_regex)
-                                                if meta["__doc__"]:
-                                                    pht = plugin_info.get("parent_help_text", None)
-                                                    if pht:
-                                                        if pht in self.help_modules:
-                                                            self.help_modules[pht].append(meta["__doc__"])
-                                                        else:
-                                                            self.help_modules[pht] = [meta["__doc__"],]
-                                                    else:
-                                                        self.help_modules[OTHER_HELP_HEADING].append(meta["__doc__"])
-                                                if meta["multiline"]:
-                                                    compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
-                                                else:
-                                                    compiled_regex = re.compile(regex)
+                                                compiled_regex = compile_regex(meta)
+
+
                                                 self.message_listeners.append({
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
                                                     "regex_pattern": meta["listener_regex"],
                                                     "regex": compiled_regex,
+                                                    "fuzzy_regexes": fuzzy_regexes,
                                                     "fn": getattr(plugin_info["class"](), function_name),
                                                     "args": meta["listener_args"],
                                                     "include_me": meta["listener_includes_me"],

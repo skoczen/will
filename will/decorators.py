@@ -1,4 +1,4 @@
-def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False):
+def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, allowed_typos=0):
     def wrap(f):
         passed_args = []
 
@@ -7,6 +7,7 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, a
         wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
 
         wrapped_f.will_fn_metadata["listener_regex"] = regex
+        wrapped_f.will_fn_metadata["allowed_typos"] = allowed_typos
         wrapped_f.will_fn_metadata["case_sensitive"] = case_sensitive
         wrapped_f.will_fn_metadata["multiline"] = multiline
         wrapped_f.will_fn_metadata["listens_only_to_direct_mentions"] = True
