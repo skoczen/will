@@ -42,6 +42,20 @@ class BonjourPlugin(WillPlugin):
 
 ```
 
+Unlike most bots will can decypher typos, but only if you tell him to. For your will to understand amateur French spellings (like "bonjor", "bonjur" or even "onjur"), enable fuzzy matching by setting `allowed_typos` attribute of your BonjourPlugin class to an integer indicating the maximum number of character substitutions, deletions, or insertions you want to allow:
+
+```python
+# ...
+
+class BonjourPlugin(WillPlugin):
+
+    # ...
+    allowed_typos = 2
+    # ...
+
+
+```
+
 #### Step 3: Restart your will
 
 Finally, `ctrl+c` then restart your will to load the new plugin, and you should be able to do this:
