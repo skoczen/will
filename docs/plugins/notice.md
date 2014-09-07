@@ -32,6 +32,7 @@ def gold_stars(self, message, num_stars=1, mention_name=None):
 - **`case_sensitive`**: should the regex be case sensitive?
 - **`multiline`**: should the regex allow multiline matches?
 - **`admin_only`**: only runs the command if the sender is specified as an administrator.
+- **`allowed_typos`**: maximum number of permissible typos (insertions, deletions, substitutions) in match.
 
 &nbsp; 
 
