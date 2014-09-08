@@ -367,6 +367,9 @@ To set your %(name)s:
     def compile_listener_regex(self, meta):
         """Compile a regular expression according to the configuration flags in meta (listener_function.meta dict))
 
+        returns a compiled regular expression that matches the trigger text for 
+        the indicated meta from a listener function
+
         side-effects:
             * adds help regexes to self.all_listener_regexes
         """
