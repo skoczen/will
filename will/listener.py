@@ -135,7 +135,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 msg.sender = self.get_user_from_message(msg)
 
                 skipped_regexes = 0
-                for fuzziness_index in range(settings.MAX_ALLOWED_TYPOS):
+                for fuzziness_index in range(int(settings.MAX_ALLOWED_TYPOS*3)):
                     if skipped_regexes >= len(self.message_listeners):
                         break;
                     skipped_regexes = 0
