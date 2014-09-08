@@ -371,6 +371,7 @@ To set your %(name)s:
                         fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
                 increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)), meta, plugin_info, add_help_regex=(not i))]
         puts('!'*100)
+        puts('%r' % increasingly_fuzzy_regexes)
         return increasingly_fuzzy_regexes
 
     def compile_listener_regex(self, regex, meta, plugin_info, add_help_regex=True):
