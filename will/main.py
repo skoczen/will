@@ -360,7 +360,7 @@ To set your %(name)s:
         else:
             allowed_typos = meta.get('allowed_typos', settings.DEFAULT_ALLOWED_TYPOS)
             puts("allowed_typos = %r" % allowed_typos)
-            for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS)*3)):
+            for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3) + 1):
                 fuzzy_suffixes = []
                 e = int(i / 3)
                 if e:
