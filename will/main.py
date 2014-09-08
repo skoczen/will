@@ -326,7 +326,7 @@ To set your %(name)s:
         bootstrapped = False
         try:
             self.start_xmpp_client()
-            sorted_help = {k: sorted(v) for k,v in self.help_modules.items()}
+            sorted_help = dict((k, sorted(v)) for (k, v) in self.help_modules.items())
             self.save("help_modules", sorted_help)
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()

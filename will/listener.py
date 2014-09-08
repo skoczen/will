@@ -8,6 +8,8 @@ import settings
 from utils import Bunch
 from mixins import RosterMixin, RoomMixin, HipChatMixin
 
+from clint.textui import puts
+
 
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
@@ -143,6 +145,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                         if fuzziness_index >= len(l["regex"]):
                             skipped_regexes += 1
                             continue
+                        puts("%r, %r" % (fuzziness_index, l["regex"][fuzziness_index]))
                         search_matches = l["regex"][fuzziness_index].search(body)
                         if (search_matches  # The search regex matches and
                             and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
