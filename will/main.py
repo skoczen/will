@@ -5,7 +5,7 @@ import inspect
 import imp
 import os
 import operator
-import re
+import regex as re
 import requests
 import sys
 import time

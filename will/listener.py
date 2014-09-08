@@ -1,5 +1,5 @@
 import logging
-import re
+import regex as re
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
