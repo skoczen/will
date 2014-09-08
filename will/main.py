@@ -355,7 +355,9 @@ To set your %(name)s:
                 increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info, add_help_regex=(not i))]
         # if the listener has only a single regex, then we need to increasingly fuzzify it
         else:
-            for i in range(int(min(meta['allowed_typos'], settings.MAX_ALLOWED_TYPOS)*3)):
+            allowed_typos = meta.get('allowed_typos', settings.DEFAULT_ALLOWED_TYPOS)
+            puts 'allowed_typos = %r' % allowed_typos
+            for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS)*3)):
                 fuzzy_suffixes = []
                 e = int(i / 3)
                 if e:
@@ -385,8 +387,6 @@ To set your %(name)s:
                 help_regex = "@%s %s" % (settings.HANDLE, help_regex)
             self.all_listener_regexes.append(help_regex)
 
-        if not meta["case_sensitive"]:
-            regex = "(?i)%s" % regex
         if meta["__doc__"]:
             pht = plugin_info.get("parent_help_text", None)
             if pht:
@@ -396,6 +396,10 @@ To set your %(name)s:
                     self.help_modules[pht] = [meta["__doc__"],]
             else:
                 self.help_modules[OTHER_HELP_HEADING].append(meta["__doc__"])
+
+        # TODO: why is this not a re.CASE_INSENSITIVE ?
+        if not meta["case_sensitive"]:
+            regex = "(?i)%s" % regex
         if meta["multiline"]:
             return re.compile(regex, re.MULTILINE | re.DOTALL)
         else:
