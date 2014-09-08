@@ -352,7 +352,7 @@ To set your %(name)s:
             return [self.compile_listener_regex(regex) for regex in meta['listener_regex']]
         else:
             increasingly_fuzzy_regexes = []
-            for i in range(int(min(meta['allowed_typos'], settings.MAX_NUM_TYPOS)*3)):
+            for i in range(int(min(meta['allowed_typos'], settings.MAX_ALLOWED_TYPOS)*3)):
                 fuzzy_suffixes = []
                 e = int(i / 3)
                 if e:
@@ -525,7 +525,7 @@ To set your %(name)s:
                                                         "setting_name": s,
                                                     }
                                             if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
-                                                compiled_regex = compile_listener_regex(meta)
+                                                compiled_regex = self.compile_listener_regex(meta)
 
                                                 self.message_listeners.append({
                                                     "function_name": function_name,
