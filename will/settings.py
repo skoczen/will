@@ -121,6 +121,12 @@ def import_settings(quiet=True):
             if "WILL_ADMINS" in os.environ:
                 settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
         
+        if not "MAX_ALLOWED_TYPOS" in settings:
+            settings["MAX_ALLOWED_TYPOS"] = 1.6
+
+        if not "DEFAULT_ALLOWED_TYPOS" in settings:
+            settings["DEFAULT_ALLOWED_TYPOS"] = 0
+
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):
             if not quiet:
