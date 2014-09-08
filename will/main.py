@@ -351,8 +351,8 @@ To set your %(name)s:
         increasingly_fuzzy_regexes = []
         # if the developer has already specified a list of increasingly fuzzy regex strings, then just compile them
         if isinstance(meta['listener_regex'], (tuple, list)):
-            for regex in meta['listener_regex']:
-                increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info)]
+            for i, regex in enumerate(meta['listener_regex']):
+                increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info, add_help_regex=(not i))]
         # if the listener has only a single regex, then we need to increasingly fuzzify it
         else:
             for i in range(int(min(meta['allowed_typos'], settings.MAX_ALLOWED_TYPOS)*3)):
