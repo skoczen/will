@@ -338,10 +338,30 @@ To set your %(name)s:
             show_valid("Will is running.")
             self.process(block=True)
 
-    def compile_listener_regex(self, meta):
-        """Compile a regular expression according to the configurations flags in a function meta dict (decorated_function)"""
+
+    def list_increasingly_fuzzy_regexes(self, meta):
+        """Compile meta['listener_regex'] with increasing fuzziness up to the indicated maximum in meta
+
+        allowed_typos is a real-valued indication of maximum fuzziness:
+            0.3 = allow only 1 insertion, corresponding to regex.compile(str(regex)+'{i<=1}')
+            0.6 = allow only 1 insertion or deletion, corresponding to regex.compile(str(regex)+'{i<=1,d<=1}')
+            1.0 = allow only 1 insertion, deletion, or substitution corresponding to regex.compile('{e<=1}')
+        The fuzziness for the increasingly fuzzy regex list is incremented according to:
+            [0, 0.3, 0.6, 1.0, 1.3, 1.6, 2.0, ..., allowed_typos]
+        The resulting fuzzy regexes are returned in a list in order of increasing fuzziness"""
         if isinstance(meta['listener_regex'], (tuple, list)):
             return [self.compile_listener_regex(regex) for regex in meta['listener_regex']]
+        else:
+            increasingly_fuzzy_regexes = []
+             
+            return list_increasingly_fuzzy_regexes(meta['listener_regex'], max_fuzziness=meta['allowed_typos'])
+
+    def compile_listener_regex(self, meta):
+        """Compile a regular expression according to the configuration flags in meta (listener_function.meta dict))
+
+        side-effects:
+            * adds help regexes to self.all_listener_regexes
+        """
         # puts("- %s" % function_name)
         regex = meta["listener_regex"]
         if not meta["case_sensitive"]:
@@ -494,15 +514,13 @@ To set your %(name)s:
                                                         "setting_name": s,
                                                     }
                                             if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
-                                                compiled_regex = compile_regex(meta)
-
+                                                compiled_regex = compile_listener_regex(meta)
 
                                                 self.message_listeners.append({
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
                                                     "regex_pattern": meta["listener_regex"],
                                                     "regex": compiled_regex,
-                                                    "fuzzy_regexes": fuzzy_regexes,
                                                     "fn": getattr(plugin_info["class"](), function_name),
                                                     "args": meta["listener_args"],
                                                     "include_me": meta["listener_includes_me"],
