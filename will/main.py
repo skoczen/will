@@ -338,7 +338,6 @@ To set your %(name)s:
             show_valid("Will is running.")
             self.process(block=True)
 
-
     def list_increasingly_fuzzy_regexes(self, meta):
         """Compile meta['listener_regex'] with increasing fuzziness up to the indicated maximum in meta
 
@@ -353,7 +352,16 @@ To set your %(name)s:
             return [self.compile_listener_regex(regex) for regex in meta['listener_regex']]
         else:
             increasingly_fuzzy_regexes = []
-             
+            for i in range(int(min(meta['allowed_typos'], settings.MAX_NUM_TYPOS)*3)):
+                fuzzy_suffixes = []
+                e = int(i / 3)
+                if e:
+                    fuzzy_suffixes += ['e<=%d' % int(i / 3)]
+                if i % 3:
+                    fuzzy_suffixes += ['i<=%d' % (int(i / 3) + 1)]
+                    if not (i + 1) % 3:
+                        fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
+                increasingly_fuzzy_regexes += ['%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes))]
             return list_increasingly_fuzzy_regexes(meta['listener_regex'], max_fuzziness=meta['allowed_typos'])
 
     def compile_listener_regex(self, meta):
@@ -520,7 +528,7 @@ To set your %(name)s:
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
                                                     "regex_pattern": meta["listener_regex"],
-                                                    "regex": compiled_regex,
+                                                    "regex": self.list_increasingly_fuzzy_regexes(meta),
                                                     "fn": getattr(plugin_info["class"](), function_name),
                                                     "args": meta["listener_args"],
                                                     "include_me": meta["listener_includes_me"],
