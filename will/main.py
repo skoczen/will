@@ -365,7 +365,7 @@ To set your %(name)s:
                 increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)))]
         return increasingly_fuzzy_regexes
 
-    def compile_listener_regex(self, meta):
+    def compile_listener_regex(self, meta, plugin_info):
         """Compile a regular expression according to the configuration flags in meta (listener_function.meta dict))
 
         returns a compiled regular expression that matches the trigger text for 
@@ -532,7 +532,7 @@ To set your %(name)s:
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
                                                     "regex_pattern": meta["listener_regex"],
-                                                    "regex": self.list_increasingly_fuzzy_regexes(meta),
+                                                    "regex": self.list_increasingly_fuzzy_regexes(meta, plugin_info),
                                                     "fn": getattr(plugin_info["class"](), function_name),
                                                     "args": meta["listener_args"],
                                                     "include_me": meta["listener_includes_me"],
