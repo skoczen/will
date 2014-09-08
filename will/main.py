@@ -370,7 +370,8 @@ To set your %(name)s:
                     if not (i + 1) % 3:
                         fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
                 if fuzzy_suffixes:
-                    increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)), meta, plugin_info, add_help_regex=False)]
+                    regex_str = '(%s){%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes))
+                    increasingly_fuzzy_regexes += [self.compile_listener_regex(regex_str, meta, plugin_info, add_help_regex=False)]
 
         return increasingly_fuzzy_regexes
 
