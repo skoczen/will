@@ -351,16 +351,16 @@ To set your %(name)s:
         The fuzziness for the increasingly fuzzy regex list is incremented according to:
             [0, 0.3, 0.6, 1.0, 1.3, 1.6, 2.0, ..., allowed_typos]
         The resulting fuzzy regexes are returned in a list in order of increasing fuzziness"""
-        increasingly_fuzzy_regexes = []
         # if the developer has already specified a list of increasingly fuzzy regex strings, then just compile them
+        increasingly_fuzzy_regexes = []
         if isinstance(meta['listener_regex'], (tuple, list)):
             for i, regex in enumerate(meta['listener_regex']):
                 increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info, add_help_regex=(not i))]
         # if the listener has only a single regex, then we need to increasingly fuzzify it
         else:
+            increasingly_fuzzy_regexes += [self.compile_listener_regex(meta['listener_regex'], meta, plugin_info, add_help_regex=True)]
             allowed_typos = meta.get('allowed_typos', settings.DEFAULT_ALLOWED_TYPOS)
-            puts("allowed_typos = %r" % allowed_typos)
-            for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3) + 1):
+            for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3)):
                 fuzzy_suffixes = []
                 e = int(i / 3)
                 if e:
@@ -369,7 +369,8 @@ To set your %(name)s:
                     fuzzy_suffixes += ['i<=%d' % (int(i / 3) + 1)]
                     if not (i + 1) % 3:
                         fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
-                increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)), meta, plugin_info, add_help_regex=(not i))]
+                if fuzzy_suffixes:
+                    increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)), meta, plugin_info, add_help_regex=False)]
 
         return increasingly_fuzzy_regexes
 
