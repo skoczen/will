@@ -137,7 +137,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 msg.sender = self.get_user_from_message(msg)
 
                 skipped_regexes = 0
-                for fuzziness_index in range(int(settings.MAX_ALLOWED_TYPOS*3)):
+                for fuzziness_index in range(int(settings.MAX_ALLOWED_TYPOS*3) + 1):
                     if skipped_regexes >= len(self.message_listeners):
                         break;
                     skipped_regexes = 0
@@ -145,15 +145,12 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                         if fuzziness_index >= len(l["regex"]):
                             skipped_regexes += 1
                             continue
-                        puts("%r, %r" % (fuzziness_index, l["regex"][fuzziness_index].pattern))
                         search_matches = l["regex"][fuzziness_index].search(body)
-                        puts("search_matches = %r for body=%r" % (search_matches, body))
                         if (search_matches  # The search regex matches and
                             and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
                             and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body) or sent_directly_to_me)  # I'm mentioned, or this is an overheard, or we're in a 1-1
                             and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only'])) # It's from admins only and sender is an admin, or it's not from admins only
                         ):
-                            puts('Y'*100)
                             try:
                                 thread_args = [msg,] + l["args"]
                                 def fn(listener, args, kwargs):
@@ -170,5 +167,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
                                 thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
                                 thread.start()
+                                # Hack to break out of the outer loop, but not the inner loop
+                                skipped_regexes = len(self.message_listeners)
                             except:
                                 logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))
