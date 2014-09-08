@@ -338,7 +338,7 @@ To set your %(name)s:
             show_valid("Will is running.")
             self.process(block=True)
 
-    def list_increasingly_fuzzy_regexes(self, meta):
+    def list_increasingly_fuzzy_regexes(self, meta, plugin_info):
         """Compile meta['listener_regex'] with increasing fuzziness up to the indicated maximum in meta
 
         allowed_typos is a real-valued indication of maximum fuzziness:
@@ -348,10 +348,13 @@ To set your %(name)s:
         The fuzziness for the increasingly fuzzy regex list is incremented according to:
             [0, 0.3, 0.6, 1.0, 1.3, 1.6, 2.0, ..., allowed_typos]
         The resulting fuzzy regexes are returned in a list in order of increasing fuzziness"""
+        increasingly_fuzzy_regexes = []
+        # if the developer has already specified a list of increasingly fuzzy regex strings, then just compile them
         if isinstance(meta['listener_regex'], (tuple, list)):
-            return [self.compile_listener_regex(regex) for regex in meta['listener_regex']]
+            for regex in meta['listener_regex']:
+                increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info)]
+        # if the listener has only a single regex, then we need to increasingly fuzzify it
         else:
-            increasingly_fuzzy_regexes = []
             for i in range(int(min(meta['allowed_typos'], settings.MAX_ALLOWED_TYPOS)*3)):
                 fuzzy_suffixes = []
                 e = int(i / 3)
@@ -361,11 +364,10 @@ To set your %(name)s:
                     fuzzy_suffixes += ['i<=%d' % (int(i / 3) + 1)]
                     if not (i + 1) % 3:
                         fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
-                # FIXME: this may add additional fuzzy help regexes as well!!!
-                increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)))]
+                increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)), meta, plugin_info, add_help_regex=(not i))]
         return increasingly_fuzzy_regexes
 
-    def compile_listener_regex(self, meta, plugin_info):
+    def compile_listener_regex(self, regex, meta, plugin_info, add_help_regex=True):
         """Compile a regular expression according to the configuration flags in meta (listener_function.meta dict))
 
         returns a compiled regular expression that matches the trigger text for 
@@ -374,14 +376,17 @@ To set your %(name)s:
         side-effects:
             * adds help regexes to self.all_listener_regexes
         """
-        # puts("- %s" % function_name)
-        regex = meta["listener_regex"]
+        puts("- %s" % function_name)
+
+        if add_help_regex:
+            # don't apply case-sensitivity setting to the help_text regex
+            help_regex = regex
+            if meta["listens_only_to_direct_mentions"]:
+                help_regex = "@%s %s" % (settings.HANDLE, help_regex)
+            self.all_listener_regexes.append(help_regex)
+
         if not meta["case_sensitive"]:
             regex = "(?i)%s" % regex
-        help_regex = meta["listener_regex"]
-        if meta["listens_only_to_direct_mentions"]:
-            help_regex = "@%s %s" % (settings.HANDLE, help_regex)
-        self.all_listener_regexes.append(help_regex)
         if meta["__doc__"]:
             pht = plugin_info.get("parent_help_text", None)
             if pht:
@@ -526,8 +531,6 @@ To set your %(name)s:
                                                         "setting_name": s,
                                                     }
                                             if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
-                                                compiled_regex = self.compile_listener_regex(meta)
-
                                                 self.message_listeners.append({
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
