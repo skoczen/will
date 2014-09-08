@@ -140,7 +140,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                         break;
                     skipped_regexes = 0
                     for l in self.message_listeners:
-                        if fuzziness_index > len(l["regex"]):
+                        if fuzziness_index >= len(l["regex"]):
                             skipped_regexes += 1
                             continue
                         search_matches = l["regex"][fuzziness_index].search(body)
