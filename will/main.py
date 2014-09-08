@@ -361,8 +361,9 @@ To set your %(name)s:
                     fuzzy_suffixes += ['i<=%d' % (int(i / 3) + 1)]
                     if not (i + 1) % 3:
                         fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
-                increasingly_fuzzy_regexes += ['%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes))]
-            return list_increasingly_fuzzy_regexes(meta['listener_regex'], max_fuzziness=meta['allowed_typos'])
+                # FIXME: this may add additional fuzzy help regexes as well!!!
+                increasingly_fuzzy_regexes += [self.compile_listener_regex('%s{%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes)))]
+        return increasingly_fuzzy_regexes
 
     def compile_listener_regex(self, meta):
         """Compile a regular expression according to the configuration flags in meta (listener_function.meta dict))
