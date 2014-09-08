@@ -45,10 +45,13 @@ sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
+
 class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
     ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin, FuzzyMixin):
 
     def __init__(self, **kwargs):
+        self.OTHER_HELP_HEADING = "Other"
+
         if "template_dirs" in kwargs:
             warn("template_dirs is now depreciated")
         if "plugin_dirs" in kwargs:
@@ -378,7 +381,7 @@ To set your %(name)s:
         side-effects:
             * adds help regexes to self.all_listener_regexes
         """
-        puts("- %s" % function_name)
+        # puts("- %s" % function_name)
 
         if add_help_regex:
             # don't apply case-sensitivity setting to the help_text regex
@@ -395,7 +398,7 @@ To set your %(name)s:
                 else:
                     self.help_modules[pht] = [meta["__doc__"],]
             else:
-                self.help_modules[OTHER_HELP_HEADING].append(meta["__doc__"])
+                self.help_modules[self.OTHER_HELP_HEADING].append(meta["__doc__"])
 
         # TODO: why is this not a re.CASE_INSENSITIVE ?
         if not meta["case_sensitive"]:
@@ -407,7 +410,6 @@ To set your %(name)s:
 
     def bootstrap_plugins(self):
         puts("Bootstrapping plugins...")
-        OTHER_HELP_HEADING = "Other"
         plugin_modules = {}
         plugin_modules_library = {}
 
@@ -496,7 +498,7 @@ To set your %(name)s:
             self.bottle_routes = []
             self.all_listener_regexes = []
             self.help_modules = {}
-            self.help_modules[OTHER_HELP_HEADING] = []
+            self.help_modules[self.OTHER_HELP_HEADING] = []
             self.some_listeners_include_me = False
             self.plugins.sort(key=operator.itemgetter("parent_module_name"))
             self.required_settings_from_plugins = {}
