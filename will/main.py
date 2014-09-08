@@ -22,7 +22,7 @@ import bottle
 
 from listener import WillXMPPClientMixin
 from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
-    RoomMixin, PluginModulesLibraryMixin, EmailMixin
+    RoomMixin, PluginModulesLibraryMixin, EmailMixin, FuzzyMixin
 from scheduler import Scheduler
 import settings
 from utils import show_valid, error, warn, note, print_head
@@ -46,7 +46,7 @@ sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
 class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
-    ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
+    ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin, FuzzyMixin):
 
     def __init__(self, **kwargs):
         if "template_dirs" in kwargs:
