@@ -146,7 +146,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                             skipped_regexes += 1
                             continue
                         search_matches = l["regex"][fuzziness_index].search(body)
-                        puts("fuzziness_index = %d\nregex = %s\nsearch_matches = %r\nbody = %r\n" % (fuzziness_index, l["regex"][fuzziness_index].pattern, search_matches, body))
+                        puts("fuzziness_index = %d/%d\nregex = %s\nsearch_matches = %r\nbody = %r\n" % (fuzziness_index, len(l["regex"]), l["regex"][fuzziness_index].pattern, search_matches, body))
                         if (search_matches  # The search regex matches and
                             and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
                             and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body) or sent_directly_to_me)  # I'm mentioned, or this is an overheard, or we're in a 1-1
