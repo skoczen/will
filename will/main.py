@@ -359,7 +359,7 @@ To set your %(name)s:
         else:
             increasingly_fuzzy_regexes += [self.compile_listener_regex(meta['listener_regex'], meta, plugin_info, add_help=True)]
             allowed_typos = meta.get('allowed_typos', settings.DEFAULT_ALLOWED_TYPOS)
-            for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3)):
+            for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3) + 1):
                 fs = fuzzy_suffix(i)
                 if fs:
                     regex_str = '(?:%s)%s' % (meta['listener_regex'], fs)
