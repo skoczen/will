@@ -25,7 +25,7 @@ from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin, FuzzyMixin
 from scheduler import Scheduler
 import settings
-from utils import show_valid, error, warn, note, print_head
+from utils import show_valid, error, warn, note, print_head, fuzzy_suffix
 
 
 # Force UTF8
@@ -43,7 +43,6 @@ TEMPLATES_ROOT = abspath(os.path.join(PROJECT_ROOT, "templates"))
 PROJECT_TEMPLATE_ROOT = abspath(os.path.join(os.getcwd(), "templates"))
 sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
-
 
 
 class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
@@ -361,16 +360,9 @@ To set your %(name)s:
             increasingly_fuzzy_regexes += [self.compile_listener_regex(meta['listener_regex'], meta, plugin_info, add_help=True)]
             allowed_typos = meta.get('allowed_typos', settings.DEFAULT_ALLOWED_TYPOS)
             for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3)):
-                fuzzy_suffixes = []
-                e = int(i / 3)
-                if e:
-                    fuzzy_suffixes += ['e<=%d' % int(i / 3)]
-                if i % 3:
-                    fuzzy_suffixes += ['i<=%d' % (int(i / 3) + 1)]
-                    if not (i + 1) % 3:
-                        fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
-                if fuzzy_suffixes:
-                    regex_str = '(%s){%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes))
+                fs = fuzzy_suffix(i)
+                if fs:
+                    regex_str = '(?:%s)' % (meta['listener_regex'], fs)
                     increasingly_fuzzy_regexes += [self.compile_listener_regex(regex_str, meta, plugin_info, add_help=False)]
 
         return increasingly_fuzzy_regexes
