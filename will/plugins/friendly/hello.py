@@ -9,6 +9,6 @@ class HelloPlugin(WillPlugin):
         """hi: I know how to say hello!"""
         self.reply(message, "hello!")
 
-    @respond_to("^hello$", allowed_typos=2)
+    @respond_to("^hello$", allowed_typos=1.3)
     def hello(self, message):
         self.reply(message, "hi!")

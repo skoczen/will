@@ -355,10 +355,10 @@ To set your %(name)s:
         increasingly_fuzzy_regexes = []
         if isinstance(meta['listener_regex'], (tuple, list)):
             for i, regex in enumerate(meta['listener_regex']):
-                increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info, add_help_regex=(not i))]
+                increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info, add_help=(not i))]
         # if the listener has only a single regex, then we need to increasingly fuzzify it
         else:
-            increasingly_fuzzy_regexes += [self.compile_listener_regex(meta['listener_regex'], meta, plugin_info, add_help_regex=True)]
+            increasingly_fuzzy_regexes += [self.compile_listener_regex(meta['listener_regex'], meta, plugin_info, add_help=True)]
             allowed_typos = meta.get('allowed_typos', settings.DEFAULT_ALLOWED_TYPOS)
             for i in range(int(min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3)):
                 fuzzy_suffixes = []
@@ -371,11 +371,11 @@ To set your %(name)s:
                         fuzzy_suffixes= ['d<=%d' % (int(i / 3) + 1)]
                 if fuzzy_suffixes:
                     regex_str = '(%s){%s}' % (meta['listener_regex'], ','.join(fuzzy_suffixes))
-                    increasingly_fuzzy_regexes += [self.compile_listener_regex(regex_str, meta, plugin_info, add_help_regex=False)]
+                    increasingly_fuzzy_regexes += [self.compile_listener_regex(regex_str, meta, plugin_info, add_help=False)]
 
         return increasingly_fuzzy_regexes
 
-    def compile_listener_regex(self, regex, meta, plugin_info, add_help_regex=True):
+    def compile_listener_regex(self, regex, meta, plugin_info, add_help=True):
         """Compile a regular expression according to the configuration flags in meta (listener_function.meta dict))
 
         returns a compiled regular expression that matches the trigger text for 
@@ -386,22 +386,22 @@ To set your %(name)s:
         """
         # puts("- %s" % function_name)
 
-        if add_help_regex:
+        if add_help:
             # don't apply case-sensitivity setting to the help_text regex
             help_regex = regex
             if meta["listens_only_to_direct_mentions"]:
                 help_regex = "@%s %s" % (settings.HANDLE, help_regex)
             self.all_listener_regexes.append(help_regex)
 
-        if meta["__doc__"]:
-            pht = plugin_info.get("parent_help_text", None)
-            if pht:
-                if pht in self.help_modules:
-                    self.help_modules[pht].append(meta["__doc__"])
+            if meta["__doc__"]:
+                pht = plugin_info.get("parent_help_text", None)
+                if pht:
+                    if pht in self.help_modules:
+                        self.help_modules[pht].append(meta["__doc__"])
+                    else:
+                        self.help_modules[pht] = [meta["__doc__"],]
                 else:
-                    self.help_modules[pht] = [meta["__doc__"],]
-            else:
-                self.help_modules[self.OTHER_HELP_HEADING].append(meta["__doc__"])
+                    self.help_modules[self.OTHER_HELP_HEADING].append(meta["__doc__"])
 
         # TODO: why is this not a re.CASE_INSENSITIVE ?
         if not meta["case_sensitive"]:
