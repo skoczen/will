@@ -1,5 +1,5 @@
 import datetime
-import re
+import regex as re
 
 from natural.date import day
 import parsedatetime.parsedatetime as pdt

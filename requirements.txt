@@ -15,6 +15,7 @@ pyandoc==0.0.1
 pyasn1==0.1.7
 pyasn1-modules==0.0.5
 redis==2.9.1
+regex==2014.08.28
 requests==2.2.1
 sleekxmpp==1.2.5
 wsgiref==0.1.2

@@ -118,3 +118,12 @@ PLUGIN_BLACKLIST = [
 
 # Logging level
 # LOGLEVEL = "DEBUG"
+
+# Maximum allowed typos, reduce this to reduce will processing/thinking time
+# The quanta of fuzziness (typo levels) are [0, 0.3, 0.6, 1.0, 1.3, 1.6, 2.0, 2.3 ...]
+# MAX_ALLOWED_TYPOS = 1.6
+
+# If the developer that taught will a phrase did not specify the `allowed_typos` argument 
+# to in the respond_to decorator, this the default value indicated here will be used.
+# DEFAULT_ALLOWED_TYPOS = 0
+

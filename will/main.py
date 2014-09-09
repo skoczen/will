@@ -5,7 +5,7 @@ import inspect
 import imp
 import os
 import operator
-import re
+import regex as re
 import requests
 import sys
 import time
@@ -22,10 +22,10 @@ import bottle
 
 from listener import WillXMPPClientMixin
 from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
-    RoomMixin, PluginModulesLibraryMixin, EmailMixin
+    RoomMixin, PluginModulesLibraryMixin, EmailMixin, FuzzyMixin
 from scheduler import Scheduler
 import settings
-from utils import show_valid, error, warn, note, print_head
+from utils import show_valid, error, warn, note, print_head, fuzzy_suffix
 
 
 # Force UTF8
@@ -46,9 +46,11 @@ sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
 class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,\
-    ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
+    ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin, FuzzyMixin):
 
     def __init__(self, **kwargs):
+        self.OTHER_HELP_HEADING = "Other"
+
         if "template_dirs" in kwargs:
             warn("template_dirs is now depreciated")
         if "plugin_dirs" in kwargs:
@@ -326,7 +328,7 @@ To set your %(name)s:
         bootstrapped = False
         try:
             self.start_xmpp_client()
-            sorted_help = {k: sorted(v) for k,v in self.help_modules.items()}
+            sorted_help = dict((k, sorted(v)) for (k, v) in self.help_modules.items())
             self.save("help_modules", sorted_help)
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
@@ -338,9 +340,71 @@ To set your %(name)s:
             show_valid("Will is running.")
             self.process(block=True)
 
+    def list_increasingly_fuzzy_regexes(self, meta, plugin_info):
+        """Compile meta['listener_regex'] with increasing fuzziness up to the indicated maximum in meta
+
+        allowed_typos is a real-valued indication of maximum fuzziness:
+            0.3 = allow only 1 insertion, corresponding to regex.compile(str(regex)+'{i<=1}')
+            0.6 = allow only 1 insertion or deletion, corresponding to regex.compile(str(regex)+'{i<=1,d<=1}')
+            1.0 = allow only 1 insertion, deletion, or substitution corresponding to regex.compile('{e<=1}')
+        The fuzziness for the increasingly fuzzy regex list is incremented according to:
+            [0, 0.3, 0.6, 1.0, 1.3, 1.6, 2.0, ..., allowed_typos]
+        The resulting fuzzy regexes are returned in a list in order of increasing fuzziness"""
+        # if the developer has already specified a list of increasingly fuzzy regex strings, then just compile them
+        increasingly_fuzzy_regexes = []
+        if isinstance(meta['listener_regex'], (tuple, list)):
+            for i, regex in enumerate(meta['listener_regex']):
+                increasingly_fuzzy_regexes += [self.compile_listener_regex(regex, meta, plugin_info, add_help=(not i))]
+        # if the listener has only a single regex, then we need to increasingly fuzzify it
+        else:
+            increasingly_fuzzy_regexes += [self.compile_listener_regex(meta['listener_regex'], meta, plugin_info, add_help=True)]
+            allowed_typos = meta.get('allowed_typos', settings.DEFAULT_ALLOWED_TYPOS)
+            for i in range(int((min(allowed_typos, settings.MAX_ALLOWED_TYPOS) * 3) + .4) + 1):
+                fs = fuzzy_suffix(i)
+                if fs:
+                    regex_str = '(?:%s)%s' % (meta['listener_regex'], fs)
+                    increasingly_fuzzy_regexes += [self.compile_listener_regex(regex_str, meta, plugin_info, add_help=False)]
+
+        return increasingly_fuzzy_regexes
+
+    def compile_listener_regex(self, regex, meta, plugin_info, add_help=True):
+        """Compile a regular expression according to the configuration flags in meta (listener_function.meta dict))
+
+        returns a compiled regular expression that matches the trigger text for 
+        the indicated meta from a listener function
+
+        side-effects:
+            * adds help regexes to self.all_listener_regexes
+        """
+        # puts("- %s" % function_name)
+
+        if add_help:
+            # don't apply case-sensitivity setting to the help_text regex
+            help_regex = regex
+            if meta["listens_only_to_direct_mentions"]:
+                help_regex = "@%s %s" % (settings.HANDLE, help_regex)
+            self.all_listener_regexes.append(help_regex)
+
+            if meta["__doc__"]:
+                pht = plugin_info.get("parent_help_text", None)
+                if pht:
+                    if pht in self.help_modules:
+                        self.help_modules[pht].append(meta["__doc__"])
+                    else:
+                        self.help_modules[pht] = [meta["__doc__"],]
+                else:
+                    self.help_modules[self.OTHER_HELP_HEADING].append(meta["__doc__"])
+
+        # TODO: why is this not a re.CASE_INSENSITIVE ?
+        if not meta["case_sensitive"]:
+            regex = "(?i)%s" % regex
+        if meta["multiline"]:
+            return re.compile(regex, re.MULTILINE | re.DOTALL)
+        else:
+            return re.compile(regex)
+
     def bootstrap_plugins(self):
         puts("Bootstrapping plugins...")
-        OTHER_HELP_HEADING = "Other"
         plugin_modules = {}
         plugin_modules_library = {}
 
@@ -429,7 +493,7 @@ To set your %(name)s:
             self.bottle_routes = []
             self.all_listener_regexes = []
             self.help_modules = {}
-            self.help_modules[OTHER_HELP_HEADING] = []
+            self.help_modules[self.OTHER_HELP_HEADING] = []
             self.some_listeners_include_me = False
             self.plugins.sort(key=operator.itemgetter("parent_module_name"))
             self.required_settings_from_plugins = {}
@@ -468,32 +532,11 @@ To set your %(name)s:
                                                         "setting_name": s,
                                                     }
                                             if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
-                                                # puts("- %s" % function_name)
-                                                regex = meta["listener_regex"]
-                                                if not meta["case_sensitive"]:
-                                                    regex = "(?i)%s" % regex
-                                                help_regex = meta["listener_regex"]
-                                                if meta["listens_only_to_direct_mentions"]:
-                                                    help_regex = "@%s %s" % (settings.HANDLE, help_regex)
-                                                self.all_listener_regexes.append(help_regex)
-                                                if meta["__doc__"]:
-                                                    pht = plugin_info.get("parent_help_text", None)
-                                                    if pht:
-                                                        if pht in self.help_modules:
-                                                            self.help_modules[pht].append(meta["__doc__"])
-                                                        else:
-                                                            self.help_modules[pht] = [meta["__doc__"],]
-                                                    else:
-                                                        self.help_modules[OTHER_HELP_HEADING].append(meta["__doc__"])
-                                                if meta["multiline"]:
-                                                    compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
-                                                else:
-                                                    compiled_regex = re.compile(regex)
                                                 self.message_listeners.append({
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
                                                     "regex_pattern": meta["listener_regex"],
-                                                    "regex": compiled_regex,
+                                                    "regex": self.list_increasingly_fuzzy_regexes(meta, plugin_info),
                                                     "fn": getattr(plugin_info["class"](), function_name),
                                                     "args": meta["listener_args"],
                                                     "include_me": meta["listener_includes_me"],

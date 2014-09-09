@@ -1,10 +1,10 @@
 # Deploying your Will
 
-Will's happy to run on your machine all day, every day.  But he really shines out in production, when he can run 24/7.  Here's the best practices on how to get him deployed.
+Will's happy to run on your machine all day, every day.  But he really shines out in production where he can run independently of anything you do with your local machine.  Here are some best practices for deploying will.
 
 ## Deploy on Heroku
 
-Heroku is our recommended platform for deploy, because it's simple, easy, and free. That's a tough combination to beat.  You're in no way locked in to running will on heroku, though - run him wherever you want!
+Heroku is our recommended platform for deployment because it's simple, easy, and free. That's a tough combination to beat.  You're in no way locked in to running will on heroku, though - run him wherever you want!
 
 #### Step 1: Set up your heroku app, and a redis addon.
 

@@ -35,6 +35,40 @@ def html_to_text(html):
     s.feed(html)
     return s.get_data()
 
+def fuzzy_suffix(fuzziness):
+    """Compose `regex` fuzziness control string, e.g. "{i<=1,d<=2} for one insertion and 2 deletions
+
+    TODO: This scale may not be the most intuitive, consider somthing more natural
+    >>> fuzzy_suffix(0)  
+    ''
+    >>> fuzzy_suffix(1)  # corresponds to allowed_typos = 0.3
+    '{d<=1}'
+    >>> fuzzy_suffix(2)  # allowed_typos = 0.6
+    '{i<=1,d<=1}'
+    >>> fuzzy_suffix(3)  # allowed_typos = 1
+    '{e<=1}'
+    >>> fuzzy_suffix(5)  # allowed_typos = 1.3
+    '{i<=2,d<=2}'
+    >>> fuzzy_suffix(6)  # allowed_typos = 1.6
+    '{e<=2}'
+    >>> fuzzy_suffix(7)  # allowed_typos = 2
+    '{e<=3,d<=3}'
+    >>> import regex
+    >>> bool(regex.match('(hello)'+fuzzy_suffix(4), 'heo'))
+    True
+    """
+    fuzzy_suffixes = []
+    e = int((fuzziness + 1) / 3)
+    if e:
+        fuzzy_suffixes += ['e<=%d' % (int((fuzziness - 1) / 3) + 1)]
+    if fuzziness % 3:
+        fuzzy_suffixes +=  ['d<=%d' % (int(fuzziness / 3) + 1)]
+        if not (fuzziness + 1) % 3:
+            fuzzy_suffixes= ['i<=%d' % (int(fuzziness / 3) + 1)] + ['d<=%d' % (int(fuzziness / 3) + 1)]
+    if fuzzy_suffixes:
+        return '{%s}' % (','.join(fuzzy_suffixes))
+    return ''
+
 def is_admin(nick):
     from . import settings
     return settings.ADMINS == '*' or nick.lower() in settings.ADMINS

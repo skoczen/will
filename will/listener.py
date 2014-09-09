@@ -1,5 +1,5 @@
 import logging
-import re
+import regex as re
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
@@ -7,6 +7,8 @@ from sleekxmpp import ClientXMPP
 import settings
 from utils import Bunch
 from mixins import RosterMixin, RoomMixin, HipChatMixin
+
+from clint.textui import puts
 
 
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
@@ -134,28 +136,39 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 msg.room = self.get_room_from_message(msg)
                 msg.sender = self.get_user_from_message(msg)
 
-                for l in self.message_listeners:
-                    search_matches = l["regex"].search(body)
-                    if (search_matches  # The search regex matches and
-                        and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
-                        and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body) or sent_directly_to_me)  # I'm mentioned, or this is an overheard, or we're in a 1-1
-                        and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only'])) # It's from admins only and sender is an admin, or it's not from admins only
-                    ):
-                        try:
-                            thread_args = [msg,] + l["args"]
-                            def fn(listener, args, kwargs):
-                                try:
-                                    listener["fn"](*args, **kwargs)
-                                except:
-                                    content = "I ran into trouble running %s.%s:\n\n%s" % (listener["class_name"], listener["function_name"], traceback.format_exc(),)
+                skipped_regexes = 0
+                for fuzziness_index in range(int(settings.MAX_ALLOWED_TYPOS*3) + 1):
+                    if skipped_regexes >= len(self.message_listeners):
+                        break;
+                    skipped_regexes = 0
+                    for l in self.message_listeners:
+                        if fuzziness_index >= len(l["regex"]):
+                            skipped_regexes += 1
+                            continue
+                        search_matches = l["regex"][fuzziness_index].search(body)
+                        puts("fuzziness_index = %d/%d\nregex = %s\nsearch_matches = %r\nbody = %r\n" % (fuzziness_index, len(l["regex"]), l["regex"][fuzziness_index].pattern, search_matches, body))
+                        if (search_matches  # The search regex matches and
+                            and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
+                            and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body) or sent_directly_to_me)  # I'm mentioned, or this is an overheard, or we're in a 1-1
+                            and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only'])) # It's from admins only and sender is an admin, or it's not from admins only
+                        ):
+                            try:
+                                thread_args = [msg,] + l["args"]
+                                def fn(listener, args, kwargs):
+                                    try:
+                                        listener["fn"](*args, **kwargs)
+                                    except:
+                                        content = "I ran into trouble running %s.%s:\n\n%s" % (listener["class_name"], listener["function_name"], traceback.format_exc(),)
 
-                                    if msg is None or msg["type"] == "groupchat":
-                                        content = "@%s %s" % (msg.sender["nick"], content)
-                                        self.send_room_message(msg.room["room_id"], content, color="red")
-                                    elif msg['type'] in ('chat', 'normal'):
-                                        self.send_direct_message(msg.sender["hipchat_id"], content)
+                                        if msg is None or msg["type"] == "groupchat":
+                                            content = "@%s %s" % (msg.sender["nick"], content)
+                                            self.send_room_message(msg.room["room_id"], content, color="red")
+                                        elif msg['type'] in ('chat', 'normal'):
+                                            self.send_direct_message(msg.sender["hipchat_id"], content)
 
-                            thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
-                            thread.start()
-                        except:
-                            logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))
+                                thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
+                                thread.start()
+                                # Hack to break out of the outer loop, but not the inner loop
+                                skipped_regexes = len(self.message_listeners)
+                            except:
+                                logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))
