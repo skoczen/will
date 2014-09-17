@@ -25,6 +25,7 @@ Config.py is where all of your non-sensitive settings should go.   This includes
 - `PLUGIN_BLACKLIST`: The list of plugins to ignore, even if they're in `PLUGINS`,
 - `PUBLIC_URL`: The publicly accessible URL will can reach himself at (used for [keepalive](plugins/bundled.md#administration)),
 - `HTTPSERVER_PORT`: The port will should handle HTTP requests on.  Defaults to 80, set to > 1024 if you don't have sudo,
+- `REDIS_MAX_CONNECTIONS`: The maximum number of connections to make to redis, for connection pooling.
 - `ROOMS`: The list of rooms to join,
 - `DEFAULT_ROOM`: The room to send messages that come from web requests to,
 - `TEMPLATE_DIRS`: Extra directories to look for templates,
