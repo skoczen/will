@@ -211,16 +211,19 @@
 <p>Will was originally written and is maintained by <a href="https://github.com/skoczen">Steven Skoczen</a> at <a href="https://www.greenkahuna.com">GreenKahuna</a>.  The rest of the GK team has also pitched in, including <a href="http://github.com/ckcollab">ckcollab</a>, and <a href="http://github.com/levithomason">levithomason</a>.</p>
 <p>Will's also has had help from lots of coders. Alphabetically:</p>
 <ul>
-<li><a href="https://github.com/adamcin">adamcin</a> gave you html support in 1-1 chats, using the new v2 API.</li>
+<li><a href="https://github.com/adamcin">adamcin</a> gave you html support in 1-1 chats, using the new v2 API, and made bootstrapping more reliable.</li>
 <li><a href="https://github.com/adamgilman">adamgilman</a> gave you the friendly error messages when the hipchat key was invalid.</li>
 <li><a href="https://github.com/amckinley">amckinley</a> fixed a bug in the hipchat user list from missing params.</li>
 <li><a href="https://github.com/bfhenderson">bfhenderson</a> removed dependence on the v1 token, and made help more friendly.</li>
+<li><a href="https://github.com/carsongee">carsongee</a> pooled your redis connections.</li>
 <li><a href="https://github.com/crccheck">crccheck</a> gave you friendly error messages if your <code>WILL_ROOMS</code> was wrong.</li>
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
+<li><a href="http://github.com/hobson">hobson</a> made setup.py more robust across operating systems, and improved the docs.</li>
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
 <li><a href="https://github.com/mrgrue">mrgrue</a> added support for the hipchat server beta.</li>
 <li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module.</li>
+<li><a href="https://github.com/pcurry">pcurry</a> added travis support.</li>
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
 <li><a href="https://github.com/rbp">rbp</a> added the <code>admin_only</code> argument, and fixed a bug with <code>room</code> not being passed along properly to messages.</li>
 <li><a href="https://github.com/tomokas">tomokas</a> fixed a bug in the <code>@randomly</code> decorator.</li>
@@ -232,6 +235,21 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="060-september-17-2014">0.6.0 - September 17, 2014</h4>
+<ul>
+<li>Methods in a single class now share a common class, thanks to <a href="https://github.com/amckinley">amckinley</a>.</li>
+<li>Redis connections are now pooled (which should help with "max clients exceeded" errors), thanks to <a href="https://github.com/carsongee">carsongee</a>.</li>
+<li>Preliminary travis ci support, thanks to <a href="https://github.com/pcurry">pcurry</a>.</li>
+<li>More gramatically correct documentation by <a href="https://github.com/hobson">hobson</a>.</li>
+</ul>
+<h4 id="057-september-3-2014">0.5.7 - September 3, 2014</h4>
+<ul>
+<li>Improvements to setup.py to be robust a variety of linux/unixes by <a href="https://github.com/hobson">hobson</a>.</li>
+</ul>
+<h4 id="056-august-26-2014">0.5.6 - August 26, 2014</h4>
+<ul>
+<li>Fix for 1-1 bootstrapping bug, thanks to <a href="https://github.com/adamcin">adamcin</a>.</li>
+</ul>
 <h4 id="055-august-25-2014">0.5.5 - August 25, 2014</h4>
 <ul>
 <li>Full html support in 1-1 chats, thanks to <a href="https://github.com/adamcin">adamcin</a>.</li>

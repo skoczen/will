@@ -180,14 +180,25 @@ def say_hello(self, message):
 <pre class="prettyprint well"><code class="bash">brew install redis
 </code></pre>
 
+<p>On a Redhat (RHEL, Centos, Fedora) machine you can:</p>
+<pre class="prettyprint well"><code class="bash">sudo yum install redis
+sudo service redis enable
+sudo service redis start
+</code></pre>
+
+<p>On a Debian (Ubuntu, Mint, KNOPPIX) machine to properly install follow the <a href="http://redis.io/topics/quickstart">Redis Quickstart</a>. But you can start more quickly with:</p>
+<pre class="prettyprint well"><code class="bash">sudo apt-get install redis
+redis-server
+</code></pre>
+
 <h4 id="install-python-26">Install python &gt; 2.6</h4>
 <p>Most modern operating systems (Mac OS X, Linux, BSDs, etc) ship with python installed, but if you don't have it, all the info is at <a href="https://www.python.org/">python.org</a>.</p>
 <h4 id="install-virtualenv">Install virtualenv</h4>
 <p>Virtualenv is a tool that lets you keep different python projects separate. It is highly recommended for will (and all other python development!)</p>
 <p>The python guide has <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">a great tutorial on virtualenv</a>, if you don't already have it running.  I'd recommend installing the excellent <code>virtualenvwrapper</code> library it mentions as well.</p>
 <h4 id="set-up-a-virtualenv-for-will">Set up a virtualenv for will</h4>
-<p>Should be as simple as:</p>
-<pre class="prettyprint well"><code class="bash">$ mkvirtualenv my_will
+<p>If you are using virtualenv wrapper:</p>
+<pre class="prettyprint well"><code class="bash">$ mkproject my_will
 # ... some output, setting up the virtualenv
 $ workon my_will
 (my_will) $ 
