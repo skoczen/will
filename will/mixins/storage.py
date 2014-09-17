@@ -22,8 +22,12 @@ class StorageMixin(object):
                     db = url.path[1:]
                 else:
                     db = 0
-
-                self.storage = redis.Redis(host=url.hostname, port=url.port, db=db, password=url.password)
+                max_connections = getattr(settings, 'REDIS_MAX_CONNECTIONS', None)
+                connection_pool = redis.ConnectionPool(
+                    max_connections=max_connections, host=url.hostname,
+                    port=url.port, db=db, password=url.password
+                )
+                self.storage = redis.Redis(connection_pool=connection_pool)
 
     def save(self, key, value):
         if not hasattr(self, "storage"):
