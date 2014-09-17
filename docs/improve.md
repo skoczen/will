@@ -75,13 +75,15 @@ Will's also has had help from lots of coders. Alphabetically:
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
+- [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
-- [hobson](http://github.com/hobson) made setup.py more robust across operating systems.
+- [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
+- [pcurry](https://github.com/pcurry) added travis support.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
@@ -95,6 +97,14 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.6.0 - September 17, 2014
+
+* Methods in a single class now share a common class, thanks to [amckinley](https://github.com/amckinley).
+* Redis connections are now pooled (which should help with "max clients exceeded" errors), thanks to [carsongee](https://github.com/carsongee).
+* Preliminary travis ci support, thanks to [pcurry](https://github.com/pcurry).
+* More gramatically correct documentation by [hobson](https://github.com/hobson).
+
 
 #### 0.5.7 - September 3, 2014
 

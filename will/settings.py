@@ -108,6 +108,11 @@ def import_settings(quiet=True):
             if not quiet:
                 warn("no V1_TOKEN found in the environment or config. This is generally ok, but if you have more than 30 rooms, you may recieve rate-limit errors without one.")
 
+        if not "REDIS_MAX_CONNECTIONS" in settings:
+            settings["REDIS_MAX_CONNECTIONS"] = 4
+            if not quiet:
+                note("REDIS_MAX_CONNECTIONS not set. Defaulting to 4.")
+
         if not "TEMPLATE_DIRS" in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:
                 # All good
