@@ -98,9 +98,15 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+
+#### 0.6.1 - September 23, 2014
+
+* Freezes apscheduler to < 3.0, since its API was backwards incompatibile.
+
+
 #### 0.6.0 - September 17, 2014
 
-* Methods in a single class now share a common class, thanks to [amckinley](https://github.com/amckinley).
+* Methods in a single class now share a common instance, thanks to [amckinley](https://github.com/amckinley).
 * Redis connections are now pooled (which should help with "max clients exceeded" errors), thanks to [carsongee](https://github.com/carsongee).
 * Preliminary travis ci support, thanks to [pcurry](https://github.com/pcurry).
 * More gramatically correct documentation by [hobson](https://github.com/hobson).
