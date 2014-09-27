@@ -1,6 +1,6 @@
 APScheduler==2.1.2
 Fabric==1.10.0
-Jinja2==2.7.3
+Jinja2==2.7.1
 Markdown==2.3.1
 MarkupSafe==0.23
 PyYAML==3.10

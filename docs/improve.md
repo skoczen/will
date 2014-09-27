@@ -99,6 +99,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 ## Releases
 
 
+#### 0.6.2 - September 23, 2014
+
+* Bugfix on `generate_will_project`, thanks to the report by [MattyDub](https://github.com/MattyDub).
+
+
 #### 0.6.1 - September 23, 2014
 
 * Freezes apscheduler to < 3.0, since its API was backwards incompatibile.
