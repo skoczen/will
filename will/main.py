@@ -454,7 +454,6 @@ To set your %(name)s:
                         if plugin_info["blacklisted"]:
                             puts("✗ %s (blacklisted)" % plugin_name)
                         else:
-                            plugin_instances = {}
                             for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
                                 try:
                                     # Check for required_settings
@@ -491,18 +490,12 @@ To set your %(name)s:
                                                 else:
                                                     compiled_regex = re.compile(regex)
 
-                                                if plugin_info["class"] in plugin_instances:
-                                                    instance = plugin_instances[plugin_info["class"]]
-                                                else:
-                                                    instance = plugin_info["class"]()
-                                                    plugin_instances[plugin_info["class"]] = instance
-
                                                 self.message_listeners.append({
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
                                                     "regex_pattern": meta["listener_regex"],
                                                     "regex": compiled_regex,
-                                                    "fn": getattr(instance, function_name),
+                                                    "fn": getattr(plugin_info["class"](), function_name),
                                                     "args": meta["listener_args"],
                                                     "include_me": meta["listener_includes_me"],
                                                     "direct_mentions_only": meta["listens_only_to_direct_mentions"],
