@@ -92,11 +92,16 @@ Will's also has had help from lots of coders. Alphabetically:
 
 If you're looking for plugin inspiration, here are some wills that are open-sourced:
 
+- [BuddyUp's will](https://github.com/buddyup/our-will)
 - [GreenKahuna's will](https://github.com/greenkahuna/our-will)
 
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.6.3 - December 30, 2014
+
+* Better error handling for weirdly formatted messages. 
 
 
 #### 0.6.2 - September 23, 2014
