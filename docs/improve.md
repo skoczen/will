@@ -75,6 +75,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
+- [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
@@ -92,11 +93,17 @@ Will's also has had help from lots of coders. Alphabetically:
 
 If you're looking for plugin inspiration, here are some wills that are open-sourced:
 
+- [BuddyUp's will](https://github.com/buddyup/our-will)
 - [GreenKahuna's will](https://github.com/greenkahuna/our-will)
 
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.6.3 - December 30, 2014
+
+* Better error handling for weirdly formatted messages. 
+* Better generated README, thanks to [bsvetchine](https://github.com/bsvetchine).
 
 
 #### 0.6.2 - September 23, 2014
