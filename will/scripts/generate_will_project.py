@@ -257,7 +257,7 @@ PLUGIN_BLACKLIST = [
     if not os.path.exists(readme_path):
         with open(readme_path, 'w+') as f:
             f.write("""
-This is our bot, a [https://github.com/skoczen/will](will) bot.
+This is our bot, a [will](https://github.com/skoczen/will) bot.
 """)
 
     print "\nDone."
