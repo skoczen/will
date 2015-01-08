@@ -5,6 +5,12 @@ from will import settings
 V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
 V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s"
 
+REQUEST_OPTIONS={}
+
+if settings.HIPCHAT_SERVER_VERIFY == "NO":
+    REQUEST_OPTIONS['verify'] = False
+
+
 class RoomMixin(object):
     def update_available_rooms(self, q=None):
         self._available_rooms = {}
@@ -12,7 +18,7 @@ class RoomMixin(object):
         if hasattr(settings, "V1_TOKEN"):
             url = V1_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
                                   "token": settings.V1_TOKEN}
-            r = requests.get(url)
+            r = requests.get(url, **REQUEST_OPTIONS)
             if r.status_code == requests.codes.unauthorized:
                 raise Exception("V1_TOKEN authentication failed with HipChat")
             for room in r.json()["rooms"]:
@@ -21,14 +27,14 @@ class RoomMixin(object):
         else:
             url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
                                   "token": settings.V2_TOKEN}
-            resp = requests.get(url)
+            resp = requests.get(url, **REQUEST_OPTIONS)
             if resp.status_code == requests.codes.unauthorized:
                 raise Exception("V2_TOKEN authentication failed with HipChat")
             rooms = resp.json()
 
             for room in rooms["items"]:
                 url = room["links"]["self"] + "/?auth_token=%s;expand=xmpp_jid" % (settings.V2_TOKEN,)
-                room_details = requests.get(url).json()
+                room_details = requests.get(url, **REQUEST_OPTIONS).json()
                 # map missing hipchat API v1 data
                 for k, v in room_details.items():
                     if k not in room:
