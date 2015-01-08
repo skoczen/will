@@ -14,6 +14,10 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
     def start_xmpp_client(self):
         logger = logging.getLogger(__name__)
         ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
+
+        if settings.HIPCHAT_SERVER_VERIFY == 'NO':
+            self.add_event_handler('ssl_invalid_cert', lambda cert: True)
+
         self.rooms = []
 
         self.default_room = settings.DEFAULT_ROOM
