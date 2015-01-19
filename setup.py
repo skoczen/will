@@ -6,7 +6,7 @@ from will import __name__ as PACKAGE_NAME
 DESCRIPTION = "A friendly python hipchat bot"
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
-VERSION = "0.6.3"
+VERSION = "0.6.4"
 
 reqs = []
 with open("requirements.txt", "r+") as f:
