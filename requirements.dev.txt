@@ -1,9 +1,9 @@
 apscheduler<3.0
 bottle>=0.12.6
+cherrypy
 clint
 dill>=0.2b1
 dnspython
-gevent
 jinja2
 hiredis
 natural

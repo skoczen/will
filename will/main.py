@@ -15,9 +15,6 @@ from clint.textui import puts, indent, columns
 from os.path import abspath, dirname
 from multiprocessing import Process, Queue
 
-from gevent import monkey
-# Monkeypatch has to come before bottle
-monkey.patch_all()
 import bottle
 
 from listener import WillXMPPClientMixin
@@ -320,7 +317,7 @@ To set your %(name)s:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
             show_valid("Web server started.")
-            bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='gevent', quiet=True)
+            bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='cherrypy', quiet=True)
 
     def bootstrap_xmpp(self):
         bootstrapped = False

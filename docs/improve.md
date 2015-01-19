@@ -81,6 +81,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
+- [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case.
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
@@ -88,6 +89,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
+- [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
 
 ## Other Wills
 
@@ -99,6 +101,13 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+
+#### 0.6.4 - Januar 19, 2015
+
+* Switches to bottle to cherrypy over gevent, which should solve lingering gevent DNS threading issues, thanks to [wohali](https://github.com/wohali).
+* Support for @will, @WILL, @wIll, thanks to [neronmoon](https://github.com/neronmoon)
+
 
 #### 0.6.3 - December 30, 2014
 
