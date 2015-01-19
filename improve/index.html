@@ -221,6 +221,7 @@
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
 <li><a href="http://github.com/hobson">hobson</a> made setup.py more robust across operating systems, and improved the docs.</li>
+<li><a href="https://github.com/neronmoon">neronmoon</a> made it easier to mention will with non-standard case.</li>
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
 <li><a href="https://github.com/mrgrue">mrgrue</a> added support for the hipchat server beta.</li>
 <li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module.</li>
@@ -228,6 +229,7 @@
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
 <li><a href="https://github.com/rbp">rbp</a> added the <code>admin_only</code> argument, and fixed a bug with <code>room</code> not being passed along properly to messages.</li>
 <li><a href="https://github.com/tomokas">tomokas</a> fixed a bug in the <code>@randomly</code> decorator.</li>
+<li><a href="https://github.com/wohali">wohali</a> tracked down the annoying DNS thread issue, and got will on the right path.</li>
 </ul>
 <h2 id="other-wills">Other Wills</h2>
 <p>If you're looking for plugin inspiration, here are some wills that are open-sourced:</p>
@@ -237,6 +239,11 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="064-januar-19-2015">0.6.4 - Januar 19, 2015</h4>
+<ul>
+<li>Switches to bottle to cherrypy over gevent, which should solve lingering gevent DNS threading issues, thanks to <a href="https://github.com/wohali">wohali</a>.</li>
+<li>Support for @will, @WILL, @wIll, thanks to <a href="https://github.com/neronmoon">neronmoon</a></li>
+</ul>
 <h4 id="063-december-30-2014">0.6.3 - December 30, 2014</h4>
 <ul>
 <li>Better error handling for weirdly formatted messages. </li>
