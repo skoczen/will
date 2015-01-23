@@ -102,8 +102,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.6.5 - January 23, 2015
 
-#### 0.6.4 - Januar 19, 2015
+* Removes mkdocs from the production requirements.txt to fix a Jinja version problem.  Thanks to the report from [PrideRage](https://github.com/PrideRage).
+
+#### 0.6.4 - January 19, 2015
 
 * Switches to bottle to cherrypy over gevent, which should solve lingering gevent DNS threading issues, thanks to [wohali](https://github.com/wohali).
 * Support for @will, @WILL, @wIll, thanks to [neronmoon](https://github.com/neronmoon)
