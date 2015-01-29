@@ -108,7 +108,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 * New `room.history` attribute with a room's history, thanks to [PrideRage](https://github.com/PrideRage)
 * New setting: `ALLOW_INSECURE_HIPCHAT_SERVER`, which will disable SSL checks (you're on your own), thanks to [sivy](https://github.com/sivy).
-* Adds support for V2 of the WorldWeatherOnline API (for times, weather) thanks to [woohgit](https://github.com/woohgit).
+* Adds support for V2 of the WorldWeatherOnline API (used for world times, weather) thanks to [woohgit](https://github.com/woohgit).
 * Adds new release and doc deploy scripts, so the github [releases](https://github.com/skoczen/will/releases) are kept up to date.  Thanks to [crccheck](https://github.com/crccheck) for noticing and reporting they were stale!
 
 
