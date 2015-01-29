@@ -64,7 +64,7 @@ PLUGINS = [
 PLUGIN_BLACKLIST = [
     # "will.plugins.friendly.cookies",      # But who would deprive will of cookies??
     "will.plugins.productivity.hangout",    # Because it requires a HANGOUT_URL
-    "will.plugins.productivity.world_time", # Because it requires a WORLD_WEATHER_ONLINE key
+    "will.plugins.productivity.world_time", # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
 ]
 
 
