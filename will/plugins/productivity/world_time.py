@@ -4,8 +4,8 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 from will import settings
 
-class TimePlugin(WillPlugin):
 
+class TimePlugin(WillPlugin):
 
     @respond_to("what time is it in (?P<place>.*)")
     def what_time_is_it_in(self, message, place):
@@ -13,10 +13,10 @@ class TimePlugin(WillPlugin):
         if not hasattr(settings, "WORLD_WEATHER_ONLINE_KEY") and not hasattr(settings, "WORLD_WEATHER_ONLINE_V2_KEY"):
             self.say("I need a world weather online key to do that.\n You can get one at http://developer.worldweatheronline.com, and then set the key as WORLD_WEATHER_ONLINE_V2_KEY", message=message)
         else:
-            if hasattr(settings, "WORLD_WEATHER_ONLINE_KEY"):
-                r = requests.get("http://api.worldweatheronline.com/free/v1/tz.ashx?q=%s&format=json&key=%s" % (place, settings.WORLD_WEATHER_ONLINE_KEY))
-            elif hasattr(settings, "WORLD_WEATHER_ONLINE_V2_KEY"):
+            if hasattr(settings, "WORLD_WEATHER_ONLINE_V2_KEY"):
                 r = requests.get("http://api.worldweatheronline.com/free/v2/tz.ashx?q=%s&format=json&key=%s" % (place, settings.WORLD_WEATHER_ONLINE_V2_KEY))
+            elif hasattr(settings, "WORLD_WEATHER_ONLINE_KEY"):
+                r = requests.get("http://api.worldweatheronline.com/free/v1/tz.ashx?q=%s&format=json&key=%s" % (place, settings.WORLD_WEATHER_ONLINE_KEY))
             resp = r.json()
             if "request" in resp["data"] and len(resp["data"]["request"]) > 0:
                 place = resp["data"]["request"][0]["query"]
