@@ -119,7 +119,8 @@ def import_settings(quiet=True):
                 pass
             else:
                 settings["TEMPLATE_DIRS"] = []
-        if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and str(settings["ALLOW_INSECURE_HIPCHAT_SERVER"]).lower() == "true":
+        if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and\
+                (settings["ALLOW_INSECURE_HIPCHAT_SERVER"] == True or settings["ALLOW_INSECURE_HIPCHAT_SERVER"].lower() == "true"):
             warn("You are choosing to run will with SSL disabled. This is INSECURE and should NEVER be deployed outside a development environment.")
             settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = True
             settings["REQUESTS_OPTIONS"] = {

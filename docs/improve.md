@@ -89,6 +89,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
+- [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
 - [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API.
@@ -103,6 +104,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.6.7 - January 29, 2015
+
+* Addition of `.get_user_by_nick()` method, to look up users by nick, thanks to , thanks to [sivy](https://github.com/sivy).
+* Bugfix to `ALLOW_INSECURE_HIPCHAT_SERVER` when specified in `config.py`, thanks to [sivy](https://github.com/sivy).
 
 #### 0.6.6 - January 29, 2015
 
