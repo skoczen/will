@@ -15,6 +15,12 @@ class RosterMixin(object):
                 return info
         return None
 
+    def get_user_by_nick(self, nick):
+        for jid, info in self.internal_roster.items():
+            if info["nick"] == nick:
+                return info
+        return None
+
     def get_user_by_jid(self, jid):
         if jid in self.internal_roster:
             return self.internal_roster[jid]
