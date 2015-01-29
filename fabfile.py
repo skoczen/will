@@ -1,5 +1,6 @@
 import os
 import tempfile
+from will import VERSION
 from fabric.api import *
 
 SITE_DIR = "site"
@@ -15,7 +16,6 @@ def _splitpath(path):
 
 def tag_release():
     # Tag the release:
-    from setup import VERSION
     local("git tag %s" % VERSION)
     local("git push --tags")
 

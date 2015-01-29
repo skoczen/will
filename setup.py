@@ -2,11 +2,11 @@
 import os
 from setuptools import setup, find_packages
 from will import __name__ as PACKAGE_NAME
+from will import VERSION
 
 DESCRIPTION = "A friendly python hipchat bot"
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
-VERSION = "0.6.6"
 
 reqs = []
 with open("requirements.txt", "r+") as f:
