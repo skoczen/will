@@ -107,7 +107,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 0.6.7 - January 29, 2015
 
-* Addition of `.get_user_by_nick()` method, to look up users by nick, thanks to , thanks to [sivy](https://github.com/sivy).
+* Addition of `.get_user_by_nick()` method, to look up users by nick, thanks to [sivy](https://github.com/sivy).
 * Bugfix to `ALLOW_INSECURE_HIPCHAT_SERVER` when specified in `config.py`, thanks to [sivy](https://github.com/sivy).
 
 #### 0.6.6 - January 29, 2015
