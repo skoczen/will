@@ -161,7 +161,7 @@ Here is some sample data of a history:
 
 This sample shows you the sender of a message in `from`, the date it was sent in datetime format
 as well as the message and who was mentioned in it. 
-
+For more information see the [HipChat documentation](https://www.hipchat.com/docs/apiv2/method/view_room_history).
 
 ## Parse natural time
 
