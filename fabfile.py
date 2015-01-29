@@ -18,7 +18,15 @@ def tag_release():
     from setup import VERSION
     local("git tag %s" % VERSION)
     local("git push --tags")
-    
+
+def upload_release():
+    local("python setup.py sdist upload")
+
+def release():
+    deploy_docs()
+    upload_release()
+    tag_release()
+
 def deploy_docs():
     # Sanity check dir.
     root_dir = os.getcwd()
@@ -62,5 +70,3 @@ def deploy_docs():
     else:
         print "No changes to the docs."
     local("git checkout %s" % current_branch)
-
-    tag_release()
