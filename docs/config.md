@@ -32,6 +32,7 @@ Config.py is where all of your non-sensitive settings should go.   This includes
 - `ADMINS`: The mention names of all the admins,
 - `LOGLEVEL`: What logging level to use,
 - `HIPCHAT_SERVER`: if you're using the [HipChat server beta](https://www.hipchat.com/server), the hostname of the server,
+- `ALLOW_INSECURE_HIPCHAT_SERVER`: the option to disable SSL checks (seriously, don't),
 - and all of your non-sensitive plugin settings.
 
 More expansive documenation on all of those settings is in `config.py`, right where you need it.
