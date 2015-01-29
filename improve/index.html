@@ -229,6 +229,7 @@
 <li><a href="https://github.com/PrideRage">PrideRage</a> gave you access to a room's entire history.</li>
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
 <li><a href="https://github.com/rbp">rbp</a> added the <code>admin_only</code> argument, and fixed a bug with <code>room</code> not being passed along properly to messages.</li>
+<li><a href="https://github.com/sivy">sivy</a> added a config flag for disabling SSL, and the ability to look up a user by nickname.</li>
 <li><a href="https://github.com/tomokas">tomokas</a> fixed a bug in the <code>@randomly</code> decorator.</li>
 <li><a href="https://github.com/wohali">wohali</a> tracked down the annoying DNS thread issue, and got will on the right path.</li>
 <li><a href="https://github.com/woohgit">woohgit</a> added support for the v2 WorldWeatherOnline API.</li>
@@ -241,6 +242,11 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="067-january-29-2015">0.6.7 - January 29, 2015</h4>
+<ul>
+<li>Addition of <code>.get_user_by_nick()</code> method, to look up users by nick, thanks to <a href="https://github.com/sivy">sivy</a>.</li>
+<li>Bugfix to <code>ALLOW_INSECURE_HIPCHAT_SERVER</code> when specified in <code>config.py</code>, thanks to <a href="https://github.com/sivy">sivy</a>.</li>
+</ul>
 <h4 id="066-january-29-2015">0.6.6 - January 29, 2015</h4>
 <ul>
 <li>New <code>room.history</code> attribute with a room's history, thanks to <a href="https://github.com/PrideRage">PrideRage</a></li>
