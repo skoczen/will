@@ -221,15 +221,17 @@
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
 <li><a href="http://github.com/hobson">hobson</a> made setup.py more robust across operating systems, and improved the docs.</li>
-<li><a href="https://github.com/neronmoon">neronmoon</a> made it easier to mention will with non-standard case.</li>
+<li><a href="https://github.com/neronmoon">neronmoon</a> made it easier to mention will with non-standard case</li>
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
 <li><a href="https://github.com/mrgrue">mrgrue</a> added support for the hipchat server beta.</li>
 <li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module.</li>
 <li><a href="https://github.com/pcurry">pcurry</a> added travis support.</li>
+<li><a href="https://github.com/PrideRage">PrideRage</a> gave you access to a room's entire history.</li>
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
 <li><a href="https://github.com/rbp">rbp</a> added the <code>admin_only</code> argument, and fixed a bug with <code>room</code> not being passed along properly to messages.</li>
 <li><a href="https://github.com/tomokas">tomokas</a> fixed a bug in the <code>@randomly</code> decorator.</li>
 <li><a href="https://github.com/wohali">wohali</a> tracked down the annoying DNS thread issue, and got will on the right path.</li>
+<li><a href="https://github.com/woohgit">woohgit</a> added support for the v2 WorldWeatherOnline API.</li>
 </ul>
 <h2 id="other-wills">Other Wills</h2>
 <p>If you're looking for plugin inspiration, here are some wills that are open-sourced:</p>
@@ -239,6 +241,13 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="066-january-29-2015">0.6.6 - January 29, 2015</h4>
+<ul>
+<li>New <code>room.history</code> attribute with a room's history, thanks to <a href="https://github.com/PrideRage">PrideRage</a></li>
+<li>New setting: <code>ALLOW_INSECURE_HIPCHAT_SERVER</code>, which will disable SSL checks (you're on your own), thanks to <a href="https://github.com/sivy">sivy</a>.</li>
+<li>Adds support for V2 of the WorldWeatherOnline API (used for world times, weather) thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Adds new release and doc deploy scripts, so the github <a href="https://github.com/skoczen/will/releases">releases</a> are kept up to date.  Thanks to <a href="https://github.com/crccheck">crccheck</a> for noticing and reporting they were stale!</li>
+</ul>
 <h4 id="065-january-23-2015">0.6.5 - January 23, 2015</h4>
 <ul>
 <li>Removes mkdocs from the production requirements.txt to fix a Jinja version problem.  Thanks to the report from <a href="https://github.com/PrideRage">PrideRage</a>.</li>
