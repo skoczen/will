@@ -13,6 +13,12 @@ def _splitpath(path):
     path = os.path.normpath(path)
     return path.split(os.sep)
 
+def tag_release():
+    # Tag the release:
+    from setup import VERSION
+    local("git tag %s" % VERSION)
+    local("git push --tags")
+    
 def deploy_docs():
     # Sanity check dir.
     root_dir = os.getcwd()
@@ -56,3 +62,5 @@ def deploy_docs():
     else:
         print "No changes to the docs."
     local("git checkout %s" % current_branch)
+
+    tag_release()
