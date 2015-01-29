@@ -15,11 +15,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         logger = logging.getLogger(__name__)
         ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
 
-        if settings.ALLOW_INSECURE_HIPCHAT_SERVER == True:
-            self.add_event_handler('ssl_invalid_cert', lambda cert: True)
-
         self.rooms = []
-
         self.default_room = settings.DEFAULT_ROOM
 
         # Property boostraps the list
@@ -43,6 +39,9 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
+
+        if settings.ALLOW_INSECURE_HIPCHAT_SERVER == True:
+            self.add_event_handler('ssl_invalid_cert', lambda cert: True)
 
         self.add_event_handler("roster_update", self.join_rooms)
         self.add_event_handler("session_start", self.session_start)

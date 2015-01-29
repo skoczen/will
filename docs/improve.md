@@ -81,7 +81,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
-- [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case.
+- [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
@@ -91,6 +91,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API.
 
 ## Other Wills
 
@@ -107,6 +108,8 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 * New `room.history` attribute with a room's history, thanks to [PrideRage](https://github.com/PrideRage)
 * New setting: `ALLOW_INSECURE_HIPCHAT_SERVER`, which will disable SSL checks (you're on your own), thanks to [sivy](https://github.com/sivy).
+* Adds support for V2 of the WorldWeatherOnline API (for times, weather) thanks to [woohgit](https://github.com/woohgit).
+* Adds new release and doc deploy scripts, so the github [releases](https://github.com/skoczen/will/releases) are kept up to date.  Thanks to [crccheck](https://github.com/crccheck) for noticing and reporting they were stale!
 
 
 #### 0.6.5 - January 23, 2015
