@@ -127,7 +127,7 @@ class HistoryPlugin(WillPlugin):
     @respond_to("^get last message")
     def get_history(self, message):
         room = self.get_room_from_message(message)
-        self.reply(message, room.history[0]["message"])  
+        self.reply(message, room.history[-1]["message"])
 ```
 
 `.history` is pretty much what's returned from the [HipChat room history API](https://www.hipchat.com/docs/apiv2/method/view_room_history) - the lone exception is that the date has been converted to a python datetime.

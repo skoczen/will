@@ -106,7 +106,8 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 #### 0.6.6 - January 29, 2015
 
 * New `room.history` attribute with a room's history, thanks to [PrideRage](https://github.com/PrideRage)
-* 
+* New setting: `ALLOW_INSECURE_HIPCHAT_SERVER`, which will disable SSL checks (you're on your own), thanks to [sivy](https://github.com/sivy).
+
 
 #### 0.6.5 - January 23, 2015
 
