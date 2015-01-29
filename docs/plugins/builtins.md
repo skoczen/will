@@ -117,6 +117,52 @@ When will starts up, he'll make sure they've been set:
 
 
 
+## Getting a room's history
+
+Sometimes you'll need to retrieve a room's history. This can be done by appending `.history` to any room.  
+
+```python  
+class HistoryPlugin(WillPlugin):
+
+    @respond_to("^get history")
+    def get_history(self, message):
+        room = self.get_room_from_message(message)
+        self.reply(message, room.history)  
+```
+
+Here is some sample data of a history:
+
+```python
+    {
+        u'from':{
+            u'mention_name':u'First Last',
+            u'id':xxxx,
+            u'links':{
+                u'self':                u'https://api.hipchat.com/v2/user/xxxx'
+            },
+            u'name':u'First Last'
+        },
+        u'date':datetime.datetime(2015, 1, 26, 15, 26, 52),
+        u'mentions':[
+            {
+                u'mention_name':u'FirstLast',
+                u'id':xyxy,
+                u'links':{
+                    u'self':                    u'https://api.hipchat.com/v2/user/xyxy'
+                },
+                u'name':u'First Last'
+            }
+        ],
+        u'message':u'Hi there!',
+        u'type':u'message',
+        u'id':u'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+    }
+```
+
+This sample shows you the sender of a message in `from`, the date it was sent in datetime format
+as well as the message and who was mentioned in it. 
+For more information see the [HipChat documentation](https://www.hipchat.com/docs/apiv2/method/view_room_history).
+
 ## Parse natural time
 
 Often, it's useful to be able to talk to will about time in natural language.  To make that easy, will includes the helper functions built on [parsedatetime](https://github.com/bear/parsedatetime) and [natural](https://github.com/tehmaze/natural): `self.parse_natural_time` and `self.to_natural_day_and_time`.

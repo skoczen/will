@@ -1,9 +1,28 @@
+from datetime import datetime
+import json
 import requests
 
 from will import settings
+from will.utils import Bunch
 
 V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
 V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s"
+
+
+class Room(Bunch):
+
+    @property
+    def history(self):
+        payload = {"auth_token": settings.V2_TOKEN}
+        room_id = int(self['id'])
+        response = requests.get("https://{1}/v2/room/{0}/history".format(str(room_id),
+                                                                         settings.HIPCHAT_SERVER),
+                                params=payload)
+        data = json.loads(response.text)['items']
+        for item in data:
+            item['date'] = datetime.strptime(item['date'][:-13], "%Y-%m-%dT%H:%M:%S")
+        return data
+
 
 class RoomMixin(object):
     def update_available_rooms(self, q=None):
@@ -34,7 +53,7 @@ class RoomMixin(object):
                     if k not in room:
                         room[k] = room_details[k]
                 room["room_id"] = room["id"]
-                self._available_rooms[room["name"]] = room
+                self._available_rooms[room["name"]] = Room(**room)
 
         self.save("hipchat_rooms", self._available_rooms)
         if q:

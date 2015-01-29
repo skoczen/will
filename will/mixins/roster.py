@@ -33,3 +33,9 @@ class RosterMixin(object):
     def message_is_from_admin(self, message):
         nick = self.get_user_from_message(message)['nick']
         return is_admin(nick)
+
+    def get_user_by_hipchat_id(self, id):
+        for jid, info in self.internal_roster.items():
+            if info["hipchat_id"] == id:
+                return info
+        return None
