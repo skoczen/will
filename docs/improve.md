@@ -86,6 +86,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
 - [pcurry](https://github.com/pcurry) added travis support.
+- [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
@@ -101,6 +102,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.6.6 - January 29, 2015
+
+* New `room.history` attribute with a room's history, thanks to [PrideRage](https://github.com/PrideRage)
+* 
 
 #### 0.6.5 - January 23, 2015
 

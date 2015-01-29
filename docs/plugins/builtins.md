@@ -119,18 +119,18 @@ When will starts up, he'll make sure they've been set:
 
 ## Getting a room's history
 
-Sometimes you'll need to retrieve a room's history. This can be done by appending `.history` to any room.  
+Sometimes you'll want to retrieve a room's history. No problem - get the room's object, and the last 75 messages are sitting on `.history`.
 
 ```python  
 class HistoryPlugin(WillPlugin):
 
-    @respond_to("^get history")
+    @respond_to("^get last message")
     def get_history(self, message):
         room = self.get_room_from_message(message)
-        self.reply(message, room.history)  
+        self.reply(message, room.history[0]["message"])  
 ```
 
-Here is some sample data of a history:
+`.history` is pretty much what's returned from the [HipChat room history API](https://www.hipchat.com/docs/apiv2/method/view_room_history) - the lone exception is that the date has been converted to a python datetime.
 
 ```python
     {
@@ -138,7 +138,7 @@ Here is some sample data of a history:
             u'mention_name':u'First Last',
             u'id':xxxx,
             u'links':{
-                u'self':                u'https://api.hipchat.com/v2/user/xxxx'
+                u'self': u'https://api.hipchat.com/v2/user/xxxx'
             },
             u'name':u'First Last'
         },
@@ -148,7 +148,7 @@ Here is some sample data of a history:
                 u'mention_name':u'FirstLast',
                 u'id':xyxy,
                 u'links':{
-                    u'self':                    u'https://api.hipchat.com/v2/user/xyxy'
+                    u'self': u'https://api.hipchat.com/v2/user/xyxy'
                 },
                 u'name':u'First Last'
             }
@@ -158,10 +158,6 @@ Here is some sample data of a history:
         u'id':u'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
     }
 ```
-
-This sample shows you the sender of a message in `from`, the date it was sent in datetime format
-as well as the message and who was mentioned in it. 
-For more information see the [HipChat documentation](https://www.hipchat.com/docs/apiv2/method/view_room_history).
 
 ## Parse natural time
 
