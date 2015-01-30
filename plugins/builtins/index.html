@@ -193,6 +193,12 @@ def homepage_listener(self):
     return {}
 </code></pre>
 
+<p>A note on <code>TEMPLATE_DIRS</code> - Will automatically includes the following:</p>
+<ul>
+<li>Core Will's <code>templates</code> directory,</li>
+<li>Your Will's <code>templates</code> directory,</li>
+<li>All <code>templates</code> directories in the root of modules specified in <code>settings.PLUGINS</code>.</li>
+</ul>
 <h2 id="help-and-documentation">Help and documentation</h2>
 <p>Just include a docstring, and your command will be included in @will help:</p>
 <pre class="prettyprint well"><code class="python">class BonjourPlugin(WillPlugin):
