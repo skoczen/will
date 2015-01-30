@@ -105,6 +105,10 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.6.9 - January 30, 2015
+
+* Fixed copypasta error caught by the keen eye of [dpoirier](https://github.com/dpoirier).
+
 #### 0.6.8 - January 30, 2015
 
 * Will now supports templates directories within plugins.  Just put a `templates` directory in the plugin's module, and it will be detected.  Thanks to [sivy](https://github.com/sivy) for the idea and willingness to get it done!

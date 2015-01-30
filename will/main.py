@@ -89,12 +89,9 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                 full_path_template_dirs.append(
                     os.path.join(os.path.abspath(path_name), "templates")
                 )
-                print os.path.join(os.path.abspath(path_name), "templates")
 
         # Key by module name
         self.plugins_dirs = dict(zip(self.plugins_dirs.values(), self.plugins_dirs.keys()))
-
-        self.plugins_dirs[os.path.abspath(path_name)] = plugin
 
         # Storing here because storage hasn't been bootstrapped yet.
         os.environ["WILL_TEMPLATE_DIRS_PICKLED"] =\
