@@ -107,7 +107,8 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 0.6.8 - January 30, 2015
 
-* Will now supports templates directories within plugins.  Just put a `templates` directory in the plugin's module, and it will be detected.
+* Will now supports templates directories within plugins.  Just put a `templates` directory in the plugin's module, and it will be detected.  Thanks to [sivy](https://github.com/sivy) for the idea and willingness to get it done!
+
 
 #### 0.6.7 - January 29, 2015
 
