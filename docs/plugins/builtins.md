@@ -47,6 +47,12 @@ def homepage_listener(self):
     return {}
 ```
 
+A note on `TEMPLATE_DIRS` - Will automatically includes the following:
+
+- Core Will's `templates` directory,
+- Your Will's `templates` directory,
+- All `templates` directories in the root of modules specified in `settings.PLUGINS`.
+
 
 ## Help and documentation
 

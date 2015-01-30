@@ -95,7 +95,8 @@ PLUGIN_BLACKLIST = [
 
 
 # Fully-qualified folders to look for templates in, beyond the two that 
-# are always included: core will's templates folder, and your project's templates folder.
+# are always included: core will's templates folder, your project's templates folder, and
+# all templates folders in included plugins, if they exist.
 # 
 # TEMPLATE_DIRS = [
 #   os.path.abspath("other_folder/templates")
