@@ -95,12 +95,17 @@ We promised silly.
 
 ![Cookies](../../img/cookies.gif)
 
+#### That's what she said.
+
+Because seriously, bro. Read some awesome thought-provoking quotes, instead.
+
+![She Said](../../img/shesaid.gif)
+
 #### Love
 
 One day, you'll find yourself saying this.  The response will make your week.
 
 ![Love](../../img/love.gif)
-
 
 
 ## Help

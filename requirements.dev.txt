@@ -18,3 +18,5 @@ sleekxmpp>=1.2
 pyandoc
 mkdocs
 fabric
+mock
+nose
