@@ -41,8 +41,9 @@ To submit a plugin that's running in your will,
 
 1. Fork this repo.
 2. Clone down a copy, set up redis and the env, as before.
-3. Copy your plugin and docs over to the core will repo,
-4. Run `./start_dev_will.py` to start up just core will, and test it out!
+3. `pip install -r requirements.dev.txt`
+4. Copy your plugin and docs over to the core will repo,
+5. Run `./start_dev_will.py` to start up just core will, and test it out!
 
 
 ## Code standards and PRs
@@ -54,6 +55,16 @@ This one's hopefully straightforward:
 - Please add your name and attribution to the AUTHORS file.
 - Know you have our thanks for helping to make will even better!
 
+
+## Tests
+
+Shamefully, tests are just getting rolling, and a proper, well-architected test harness is in the works.. However, there are *some* tests you can run by running:
+
+```bash
+coverage run -m nose
+```
+
+More soon!
 
 
 ## The Shoulders of Giants
