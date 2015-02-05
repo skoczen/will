@@ -33,7 +33,7 @@ class TalkBackPlugin(WillPlugin):
             )
         return quote
 
-    @hear("that's what she said")
+    @hear("that'?s what she said")
     def talk_back(self, message):
         """that's what she said: Tells you some things she actually said. :)"""
         quote = self.get_quote()

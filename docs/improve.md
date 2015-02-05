@@ -100,7 +100,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
 - [pcurry](https://github.com/pcurry) added travis support.
-- [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history.
+- [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history, and suggested a better talkback regex.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
@@ -118,6 +118,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.7.1 - February 5, 2015
+
+* Improved talkbackbot regex, suggested by [PrideRage](https://github.com/PrideRage).
+
 
 #### 0.7.0 - February 4, 2015
 
