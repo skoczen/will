@@ -151,6 +151,8 @@
         
             <li><a href="#code-standards-and-prs">Code standards and PRs</a></li>
         
+            <li><a href="#tests">Tests</a></li>
+        
             <li><a href="#the-shoulders-of-giants">The Shoulders of Giants</a></li>
         
             <li><a href="#other-wills">Other Wills</a></li>
@@ -187,6 +189,7 @@
 <ol>
 <li>Fork this repo.</li>
 <li>Clone down a copy, set up redis and the env, as before.</li>
+<li><code>pip install -r requirements.dev.txt</code></li>
 <li>Copy your plugin and docs over to the core will repo,</li>
 <li>Run <code>./start_dev_will.py</code> to start up just core will, and test it out!</li>
 </ol>
@@ -198,6 +201,12 @@
 <li>Please add your name and attribution to the AUTHORS file.</li>
 <li>Know you have our thanks for helping to make will even better!</li>
 </ul>
+<h2 id="tests">Tests</h2>
+<p>Shamefully, tests are just getting rolling, and a proper, well-architected test harness is in the works.. However, there are <em>some</em> tests you can run by running:</p>
+<pre class="prettyprint well"><code class="bash">coverage run -m nose
+</code></pre>
+
+<p>More soon!</p>
 <h2 id="the-shoulders-of-giants">The Shoulders of Giants</h2>
 <p>Will leverages some fantastic libraries.  He wouldn't exist without them.</p>
 <ul>
@@ -220,6 +229,7 @@
 <li><a href="https://github.com/crccheck">crccheck</a> gave you friendly error messages if your <code>WILL_ROOMS</code> was wrong.</li>
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
+<li><a href="jessamynsmith">jessamynsmith</a> was kind enough to port <a href="https://github.com/jessamynsmith">talkbackbot</a> over, at my request.</li>
 <li><a href="http://github.com/hobson">hobson</a> made setup.py more robust across operating systems, and improved the docs.</li>
 <li><a href="https://github.com/neronmoon">neronmoon</a> made it easier to mention will with non-standard case</li>
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
@@ -242,6 +252,11 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="070-february-4-2015">0.7.0 - February 4, 2015</h4>
+<ul>
+<li>Adds a port of the awesome <a href="https://github.com/jessamynsmith">talkbackbot</a>, thanks to <a href="jessamynsmith">jessamynsmith</a>, who super-kindly ported it at my request!</li>
+<li>Oh, yeah. That port also includes the first proper tests in will, and a pretty solid pattern for testing plugins.  Woo!  More huge thanks to <a href="https://github.com/jessamynsmith">jessamynsmith</a>.</li>
+</ul>
 <h4 id="069-january-30-2015">0.6.9 - January 30, 2015</h4>
 <ul>
 <li>Fixed copypasta error caught by the keen eye of <a href="https://github.com/dpoirier">dpoirier</a>.</li>
