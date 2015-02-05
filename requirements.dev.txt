@@ -1,6 +1,7 @@
 apscheduler<3.0
 bottle>=0.12.6
 cherrypy
+coverage
 clint
 dill>=0.2b1
 dnspython
@@ -18,3 +19,5 @@ sleekxmpp>=1.2
 pyandoc
 mkdocs
 fabric
+mock
+nose
