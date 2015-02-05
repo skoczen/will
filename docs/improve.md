@@ -58,7 +58,7 @@ This one's hopefully straightforward:
 
 ## Tests
 
-Shamefully, tests are just getting rolling, and a proper, well-architected test harness is in the works.. However, there are *some* tests you can run by running:
+Shamefully, tests are just getting rolling, and a proper, well-architected test harness is in the works. However, there are *some* tests you can run by running:
 
 ```bash
 coverage run -m nose
@@ -78,7 +78,7 @@ Will leverages some fantastic libraries.  He wouldn't exist without them.
 - [apscheduler](http://apscheduler.readthedocs.org/en/latest/) for scheduled task parsing,
 - [Requests](http://requests.readthedocs.org/en/latest/) to make http sane.
 
-Will was originally written and is maintained by [Steven Skoczen](https://github.com/skoczen) at [GreenKahuna](https://www.greenkahuna.com).  The rest of the GK team has also pitched in, including [ckcollab](http://github.com/ckcollab), and [levithomason](http://github.com/levithomason).
+Will was originally written and is maintained by [Steven Skoczen](http://stevenskoczen.com).  Credit to GreenKahuna (now defunct) and [BuddyUp](http://www.buddyup.org) for supporting those efforts with on-the-job time.
 
 Will's also has had help from lots of coders. Alphabetically:
 
@@ -88,10 +88,12 @@ Will's also has had help from lots of coders. Alphabetically:
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
+- [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [jessamynsmith](jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request.
+- [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
