@@ -10,7 +10,7 @@ class HerokuIsUpPlugin(WillPlugin):
     def heroku_is_up(self):
         r = requests.get("https://status.heroku.com/api/v3/current-status")
         last_status = self.load("last_heroku_status")
-        if r.json()["status"] != last_status:
+        if last_status and r.json()["status"] != last_status:
             if r.json()["status"]["Production"] != "green":
                 self.say("FYI everyone, heroku is having trouble: %s. \n http://status.heroku.com" % r.json()["issues"][0]["title"])
             else:

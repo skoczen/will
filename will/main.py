@@ -141,9 +141,9 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                 bottle_thread.terminate()
                 xmpp_thread.terminate()
                 print '\n\nReceived keyboard interrupt, quitting threads.',
-                while scheduler_thread.is_alive() or\
-                      bottle_thread.is_alive() or\
-                      xmpp_thread.is_alive():
+                while (scheduler_thread.is_alive() or
+                       bottle_thread.is_alive() or
+                       xmpp_thread.is_alive()):
                         sys.stdout.write(".")
                         sys.stdout.flush()
                         time.sleep(0.5)
@@ -165,7 +165,6 @@ To set your %(name)s:
    heroku config:set %(name)s=YOUR_ACTUAL_%(name)s
 """ % test_setting)
             return False
-
 
     def verify_environment(self):
         missing_settings = False
@@ -328,7 +327,10 @@ To set your %(name)s:
         bootstrapped = False
         try:
             self.start_xmpp_client()
-            sorted_help = {k: sorted(v) for k,v in self.help_modules.items()}
+            sorted_help = {}
+            for k,v in self.help_modules.items():
+                sorted_help[k] = sorted(v)
+
             self.save("help_modules", sorted_help)
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
@@ -366,7 +368,7 @@ To set your %(name)s:
                                 for b in settings.PLUGIN_BLACKLIST:
                                     if b in combined_name:
                                         blacklisted = True
-                            
+
                                 try:
                                     plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
                                 except:

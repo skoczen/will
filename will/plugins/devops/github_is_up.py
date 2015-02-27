@@ -10,7 +10,7 @@ class GithubIsUpPlugin(WillPlugin):
     def github_is_up(self):
         r = requests.get("https://status.github.com/api/last-message.json")
         last_status = self.load("last_github_status")
-        if r.json()["status"] != last_status:
+        if last_status and r.json()["status"] != last_status:
             if r.json()["status"] != "good":
                 self.say("FYI everyone, github is having trouble: %s" % r.json()["body"])
             else:

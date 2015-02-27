@@ -119,6 +119,14 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.8 - February 27, 2015
+
+* Big upgrade!  Now only `WILL_USERNAME` and `WILL_PASSWORD` are needed.  This solves the impending one-year V2 token expiry, and the need for a V1 token at all.
+* Improved handling when `.reply()` is called incorrectly, thanks to a report by [dothak](https://github.com/dothak)
+* Fixed the [annoying](https://github.com/skoczen/will/issues/78) "github's ok" on first launch.
+* Restored Python 2.6 compatability thanks to the report and patience of [JPerkster](https://github.com/JPerkster).
+* Lots of code cleanup toward pep8.
+
 #### 0.7.1 - February 5, 2015
 
 * Improved talkbackbot regex, suggested by [PrideRage](https://github.com/PrideRage).
@@ -126,7 +134,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 0.7.0 - February 4, 2015
 
-* Adds a port of the awesome [talkbackbot](https://github.com/jessamynsmith), thanks to [jessamynsmith](jessamynsmith), who super-kindly ported it at my request!
+* Adds a port of the awesome [talkbackbot](https://github.com/jessamynsmith), thanks to [jessamynsmith](https://github.com/jessamynsmith), who super-kindly ported it at my request!
 * Oh, yeah. That port also includes the first proper tests in will, and a pretty solid pattern for testing plugins.  Woo!  More huge thanks to [jessamynsmith](https://github.com/jessamynsmith).
 
 
