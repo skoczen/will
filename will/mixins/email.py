@@ -3,6 +3,7 @@ import requests
 from will import settings
 from will.decorators import require_settings
 
+
 class EmailMixin(object):
 
     def send_email(self, from_email=None, email_list=[], subject="", message=""):

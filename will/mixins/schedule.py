@@ -5,18 +5,17 @@ import time
 import traceback
 from apscheduler.triggers.cron import CronTrigger
 
+
 class ScheduleMixin(object):
 
     def times_key(self, periodic_list=False):
         if periodic_list:
             return "will_periodic_times_list"
-        
         return "will_schedule_times_list"
-    
+
     def schedule_key(self, periodic_list=False):
         if periodic_list:
             return "will_periodic_list"
-        
         return "will_schedule_list"
 
     def get_schedule_list(self, periodic_list=False):
@@ -54,7 +53,10 @@ class ScheduleMixin(object):
 
     def add_to_schedule(self, when, item, periodic_list=False, ignore_scheduler_lock=False):
         try:
-            while (ignore_scheduler_lock == False and self.load("scheduler_lock", False)) or self.load("scheduler_add_lock", False):
+            while (
+                (ignore_scheduler_lock is False and self.load("scheduler_lock", False)) or
+                self.load("scheduler_add_lock", False)
+            ):
                 import sys
                 sys.stdout.write("waiting for lock to clear\n")
                 time.sleep(random.random())
@@ -69,9 +71,12 @@ class ScheduleMixin(object):
             times_list[item_hash] = when
             self.save_schedule_list(sched_list, periodic_list=periodic_list)
             self.save_times_list(times_list, periodic_list=periodic_list)
-           
+
         except:
-            logging.critical("Error adding to schedule at %s.  \n\n%s\nContinuing...\n" % (when, traceback.format_exc() ))
+            logging.critical(
+                "Error adding to schedule at %s.  \n\n%s\nContinuing...\n" %
+                (when, traceback.format_exc())
+            )
         self.save("scheduler_add_lock", False)
 
     def remove_from_schedule(self, item_hash, periodic_list=False):
@@ -83,7 +88,8 @@ class ScheduleMixin(object):
         self.save_schedule_list(sched_list, periodic_list=periodic_list)
         self.save_times_list(times_list, periodic_list=periodic_list)
 
-    def add_periodic_task(self, module_name, cls_name, function_name, sched_args, sched_kwargs, ignore_scheduler_lock=False):
+    def add_periodic_task(self, module_name, cls_name, function_name, sched_args,
+                          sched_kwargs, ignore_scheduler_lock=False):
         now = datetime.datetime.now()
         ct = CronTrigger(*sched_args, **sched_kwargs)
         when = ct.get_next_fire_time(now)
@@ -97,7 +103,8 @@ class ScheduleMixin(object):
         }
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
-    def add_single_random_task(self, when, module_name, cls_name, function_name, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
+    def add_single_random_task(self, when, module_name, cls_name, function_name, start_hour, end_hour,
+                               day_of_week, num_times_per_day, ignore_scheduler_lock=False):
         item = {
             "type": "random_task",
             "module_name": module_name,
@@ -111,7 +118,8 @@ class ScheduleMixin(object):
 
         self.add_to_schedule(when, item, periodic_list=True, ignore_scheduler_lock=ignore_scheduler_lock)
 
-    def add_random_tasks(self, module_name, cls_name, function_name, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=False):
+    def add_random_tasks(self, module_name, cls_name, function_name, start_hour, end_hour, day_of_week,
+                         num_times_per_day, ignore_scheduler_lock=False):
         # This function is fired at startup, and every day at midnight.
         if end_hour < start_hour:
             raise Exception("start_hour is after end_hour!")
@@ -122,7 +130,7 @@ class ScheduleMixin(object):
         # Work around crontab bug where if the hour has started, it's skipped.
         adjusted_start_hour = start_hour
         if adjusted_start_hour != 23:
-            adjusted_start_hour += 1    
+            adjusted_start_hour += 1
         adjusted_start_hour = "%s" % adjusted_start_hour
 
         ct = CronTrigger(hour=adjusted_start_hour, day_of_week=day_of_week)
@@ -136,7 +144,7 @@ class ScheduleMixin(object):
             possible_times = []
             for i in range(start_hour, end_hour):
                 for j in range(60):
-                    possible_times.append((i,j))
+                    possible_times.append((i, j))
 
             times = random.sample(possible_times, num_times_per_day)
             for hour, minute in times:
@@ -144,4 +152,8 @@ class ScheduleMixin(object):
 
                 # If we're starting up mid-day, this may not be true.
                 if when >= now:
-                    self.add_single_random_task(when, module_name, cls_name, function_name, start_hour, end_hour, day_of_week, num_times_per_day, ignore_scheduler_lock=ignore_scheduler_lock)
+                    self.add_single_random_task(
+                        when, module_name, cls_name, function_name,
+                        start_hour, end_hour, day_of_week, num_times_per_day,
+                        ignore_scheduler_lock=ignore_scheduler_lock
+                    )

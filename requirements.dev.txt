@@ -19,5 +19,6 @@ sleekxmpp>=1.2
 pyandoc
 mkdocs
 fabric
+flake8
 mock
 nose
