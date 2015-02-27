@@ -180,13 +180,6 @@ To set your %(name)s:
                 "obtain_at": "1. Go to hipchat, and create a new user for will.  Note that password - this is the value you want.  It's used for signing in via XMPP.",
             },
             {
-                "name": "WILL_V2_TOKEN",
-                "obtain_at": """1. Log into hipchat using will's user.
-2. Go to https://your-org.hipchat.com/account/api
-3. Create a token.
-4. Copy the value - this is the WILL_V2_TOKEN.""",
-            },
-            {
                 "name": "WILL_REDIS_URL",
                 "obtain_at": """1. Set up an accessible redis host locally or in production
 2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
@@ -212,20 +205,20 @@ To set your %(name)s:
 
         # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
         # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
-        q = Queue()
-        p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q":q,})
-        p.start()
-        user_data = q.get()
-        p.join()
+        # q = Queue()
+        # p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q":q,})
+        # p.start()
+        # user_data = q.get()
+        # p.join()
 
-        if "error" in user_data:
-            error("We ran into trouble: '%(message)s'" % user_data["error"])
-            sys.exit(1)
-        with indent(2):
-            show_valid("%s authenticated" % user_data["name"])
-            os.environ["WILL_NAME"] = user_data["name"]
-            show_valid("@%s verified as handle" % user_data["mention_name"])
-            os.environ["WILL_HANDLE"] = user_data["mention_name"]
+        # if "error" in user_data:
+        #     error("We ran into trouble: '%(message)s'" % user_data["error"])
+        #     sys.exit(1)
+        # with indent(2):
+        #     show_valid("%s authenticated" % user_data["name"])
+        #     os.environ["WILL_NAME"] = user_data["name"]
+        #     show_valid("@%s verified as handle" % user_data["mention_name"])
+        #     os.environ["WILL_HANDLE"] = user_data["mention_name"]
 
         puts("")
 

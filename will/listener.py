@@ -7,13 +7,20 @@ from sleekxmpp import ClientXMPP
 import settings
 from utils import Bunch
 from mixins import RosterMixin, RoomMixin, HipChatMixin
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
         logger = logging.getLogger(__name__)
-        ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
+        print settings.USERNAME
+        print settings.PASSWORD
+        c = ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
+        print c
+        print self
+        self.credentials['oauth2_token'] = True
 
         self.rooms = []
         self.default_room = settings.DEFAULT_ROOM
@@ -48,9 +55,11 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
 
+        self.register_plugin('xep_0235') # Oauth
         self.register_plugin('xep_0045') # MUC
 
     def session_start(self, event):
+        print event
         self.send_presence()
         self.get_roster()
 
