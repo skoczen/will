@@ -10,8 +10,8 @@ class TimePlugin(WillPlugin):
     @respond_to("what time is it in (?P<place>.*)")
     def what_time_is_it_in(self, message, place):
         """what time is it in ___: Say the time in almost any city on earth."""
-        if not (
-                hasattr(settings, "WORLD_WEATHER_ONLINE_KEY") and
+        if (
+                not hasattr(settings, "WORLD_WEATHER_ONLINE_KEY") and
                 not hasattr(settings, "WORLD_WEATHER_ONLINE_V2_KEY")
         ):
             self.say(
