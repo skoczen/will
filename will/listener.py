@@ -7,6 +7,7 @@ from sleekxmpp import ClientXMPP
 import settings
 from utils import Bunch
 from mixins import RosterMixin, RoomMixin, HipChatMixin
+from .xmpp_plugins import HipChatAuthPlugin
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -127,12 +128,12 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def _handle_message_listeners(self, msg):
         if (
-            # I've been asked to listen to my own messages
-            self.some_listeners_include_me
-            # or we're in a 1 on 1 chat and I didn't send it
-            or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)
+            # I've been asked to listen to my own messages, or
+            self.some_listeners_include_me or
+            # we're in a 1 on 1 chat and I didn't send it, or
+            (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid) or
             # we're in group chat and I didn't send it
-            or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
+            (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
         ):
                 body = msg["body"]
 
