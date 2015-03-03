@@ -3,16 +3,17 @@ import os
 import stat
 import sys
 
+from clint.textui import puts
+from will.utils import print_head
+
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.append(PROJECT_ROOT)
 sys.path.append(os.getcwd())
 
-from clint.textui import colored
-from clint.textui import puts, indent, columns
-from will.utils import show_valid, error, warn, note, print_head
 
 class EmptyObj(object):
     pass
+
 
 def main():
     """
@@ -43,7 +44,7 @@ def main():
     # Set up the directories
     if not os.path.exists(plugins_dir):
         os.makedirs(plugins_dir)
-    
+
     print "     __init__.py"
     # Create the plugins __init__.py
     with open(os.path.join(plugins_dir, "__init__.py"), 'w+') as f:
@@ -68,7 +69,7 @@ class HelloPlugin(WillPlugin):
     print "  /templates"
     if not os.path.exists(templates_dir):
         os.makedirs(templates_dir)
-    
+
     print "     blank.html"
     # Create the plugins __init__.py
     with open(os.path.join(templates_dir, "blank.html"), 'w+') as f:
@@ -86,12 +87,11 @@ shelf.db
     else:
         append_ignore = False
         with open(gitignore_path, "r+") as f:
-            if not "shelf.db" in f.read():
+            if "shelf.db" not in f.read():
                 append_ignore = True
         if append_ignore:
             with open(gitignore_path, "a") as f:
                 f.write("\nshelf.db\n")
-
 
     # Create run_will.py
     print "  run_will.py"
@@ -115,17 +115,17 @@ if __name__ == '__main__':
     if not os.path.exists(config_path):
         with open(config_path, 'w+') as f:
             f.write("""# Welcome to Will's settings.
-# 
+#
 
 # Config and the environment:
 # ---------------------------
 # Will can use settings from the environment or this file, and sets reasonable defaults.
-# 
-# Best practices: set keys and the like in the environment, and anything you'd be ok 
+#
+# Best practices: set keys and the like in the environment, and anything you'd be ok
 # with other people knowing in this file.
-# 
-# To specify in the environment, just prefix with WILL_ 
-# (i.e. WILL_DEFAULT_ROOM becomes DEFAULT_ROOM).  
+#
+# To specify in the environment, just prefix with WILL_
+# (i.e. WILL_DEFAULT_ROOM becomes DEFAULT_ROOM).
 # In case of conflict, you will see a warning message, and the value in this file will win.
 
 
@@ -134,12 +134,12 @@ if __name__ == '__main__':
 # Required settings
 # ------------------------------------------------------------------------------------
 
-# The list of plugin modules will should load. 
+# The list of plugin modules will should load.
 # Will recursively loads all plugins contained in each module.
 
 
 # This list can contain:
-# 
+#
 # Built-in core plugins:
 # ----------------------
 # All built-in modules:     will.plugins
@@ -151,7 +151,7 @@ if __name__ == '__main__':
 # All modules:              plugins
 # A specific module:        plugins.module_name
 # Specific plugins:         plugins.module_name.plugin
-# 
+#
 # Plugins anywhere else on your PYTHONPATH:
 # -----------------------------------------
 # All modules:              someapp
@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
 
 # By default, the list below includes all the core will plugins and
-# all your project's plugins.  
+# all your project's plugins.
 
 PLUGINS = [
     # Built-ins
@@ -205,15 +205,15 @@ PLUGIN_BLACKLIST = [
 # ROOMS = ['Testing, Will Kahuna',]
 
 
-# The room will will talk to if the trigger is a webhook and he isn't told a specific room. 
+# The room will will talk to if the trigger is a webhook and he isn't told a specific room.
 # Default is the first of ROOMS.
 # DEFAULT_ROOM = 'Testing, Will Kahuna'
 
 
-# Fully-qualified folders to look for templates in, beyond the two that 
+# Fully-qualified folders to look for templates in, beyond the two that
 # are always included: core will's templates folder, your project's templates folder, and
 # all templates folders in included plugins, if they exist.
-# 
+#
 # TEMPLATE_DIRS = [
 #   os.path.abspath("other_folder/templates")
 # ]

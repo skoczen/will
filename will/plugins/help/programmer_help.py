@@ -13,4 +13,3 @@ class ProgrammerHelpPlugin(WillPlugin):
             help_text += "\n%s" % r
 
         self.say(help_text, message=message)
-

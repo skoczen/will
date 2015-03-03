@@ -7,7 +7,8 @@ from sleekxmpp import ClientXMPP
 import settings
 from utils import Bunch
 from mixins import RosterMixin, RoomMixin, HipChatMixin
-import logging
+
+
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -47,7 +48,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
 
-        if settings.ALLOW_INSECURE_HIPCHAT_SERVER == True:
+        if settings.ALLOW_INSECURE_HIPCHAT_SERVER is True:
             self.add_event_handler('ssl_invalid_cert', lambda cert: True)
 
         self.add_event_handler("roster_update", self.join_rooms)
@@ -55,8 +56,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
 
-        self.register_plugin('xep_0235') # Oauth
-        self.register_plugin('xep_0045') # MUC
+        self.register_plugin('xep_0045')  # MUC
 
     def session_start(self, event):
         print event
@@ -109,11 +109,9 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
     def room_message(self, msg):
         self._handle_message_listeners(msg)
 
-
     def message_recieved(self, msg):
         if msg['type'] in ('chat', 'normal'):
             self._handle_message_listeners(msg)
-
 
     def real_sender_jid(self, msg):
         # There's a bug in sleekXMPP where it doesn't set the "from_jid" properly.
@@ -127,17 +125,21 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
         return msg["from"]
 
-
     def _handle_message_listeners(self, msg):
-        if (self.some_listeners_include_me  # I've been asked to listen to my own messages
-            or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)  # or we're in a 1 on 1 chat and I didn't send it
-            or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick) ):   # we're in group chat and I didn't send it
+        if (
+            # I've been asked to listen to my own messages
+            self.some_listeners_include_me
+            # or we're in a 1 on 1 chat and I didn't send it
+            or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)
+            # we're in group chat and I didn't send it
+            or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
+        ):
                 body = msg["body"]
 
                 sent_directly_to_me = False
                 # If it's sent directly to me, strip off "@will" from the start.
                 if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
-                    body = body[len(self.handle)+1:].strip()
+                    body = body[len(self.handle) + 1:].strip()
                     msg["body"] = body
 
                     sent_directly_to_me = True
@@ -148,18 +150,31 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
                 for l in self.message_listeners:
                     search_matches = l["regex"].search(body)
-                    if (search_matches  # The search regex matches and
-                        and (msg['mucnick'] != self.nick or l["include_me"])  # It's not from me, or this search includes me, and
-                        and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or self.handle_regex.search(body) or sent_directly_to_me)  # I'm mentioned, or this is an overheard, or we're in a 1-1
-                        and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only'])) # It's from admins only and sender is an admin, or it's not from admins only
+                    if (
+                        # The search regex matches and
+                        search_matches and
+                        # It's not from me, or this search includes me, and
+                        (msg['mucnick'] != self.nick or l["include_me"]) and
+                        # I'm mentioned, or this is an overheard, or we're in a 1-1
+                        (
+                            msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or
+                            self.handle_regex.search(body) or sent_directly_to_me
+                        ) and
+                        # It's from admins only and sender is an admin, or it's not from admins only
+                        ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
                     ):
                         try:
-                            thread_args = [msg,] + l["args"]
+                            thread_args = [msg, ] + l["args"]
+
                             def fn(listener, args, kwargs):
                                 try:
                                     listener["fn"](*args, **kwargs)
                                 except:
-                                    content = "I ran into trouble running %s.%s:\n\n%s" % (listener["class_name"], listener["function_name"], traceback.format_exc(),)
+                                    content = "I ran into trouble running %s.%s:\n\n%s" % (
+                                        listener["class_name"],
+                                        listener["function_name"],
+                                        traceback.format_exc(),
+                                    )
 
                                     if msg is None or msg["type"] == "groupchat":
                                         if msg.sender and "nick" in msg.sender:
@@ -171,4 +186,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                             thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
                             thread.start()
                         except:
-                            logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))
+                            logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (
+                                l["function_name"],
+                                traceback.format_exc())
+                            )

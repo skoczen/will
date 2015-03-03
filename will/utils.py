@@ -22,10 +22,13 @@ class HTMLStripper(HTMLParser):
     def __init__(self):
         self.reset()
         self.fed = []
+
     def handle_data(self, d):
         self.fed.append(d)
+
     def get_data(self):
         return ''.join(self.fed)
+
 
 def html_to_text(html):
     # Do some light cleanup.
@@ -34,6 +37,7 @@ def html_to_text(html):
     s = HTMLStripper()
     s.feed(html)
     return s.get_data()
+
 
 def is_admin(nick):
     from . import settings
@@ -55,6 +59,7 @@ def error(err_string):
 def note(warn_string):
     puts(colored.cyan("- Note: %s" % warn_string))
 
+
 def print_head():
         puts("""
       ___/-\___
@@ -65,6 +70,6 @@ def print_head():
      |         |
      |  \___/  |
      |_________|
-           
+
       Will: Hi!
 """)

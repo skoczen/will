@@ -37,7 +37,7 @@ class StorageMixin(object):
             ret = self.storage.set(key, pickle.dumps(value))
             return ret
         except:
-            logging.critical("Unable to save %s: \n%s" % (key, traceback.format_exc()) )
+            logging.critical("Unable to save %s: \n%s" % (key, traceback.format_exc()))
 
     def clear(self, key):
         if not hasattr(self, "storage"):
@@ -57,7 +57,7 @@ class StorageMixin(object):
             val = self.storage.get(key)
             if val is not None:
                 return pickle.loads(val)
-                
+
         except:
             logging.warn("Unable to load %s" % key)
 

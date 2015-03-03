@@ -119,9 +119,8 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
-#### 0.8 - February 27, 2015
+#### 0.7.2 - February 27, 2015
 
-* Big upgrade!  Now only `WILL_USERNAME` and `WILL_PASSWORD` are needed.  This solves the impending one-year V2 token expiry, and the need for a V1 token at all.
 * Improved handling when `.reply()` is called incorrectly, thanks to a report by [dothak](https://github.com/dothak)
 * Fixed the [annoying](https://github.com/skoczen/will/issues/78) "github's ok" on first launch.
 * Restored Python 2.6 compatability thanks to the report and patience of [JPerkster](https://github.com/JPerkster).

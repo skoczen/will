@@ -86,4 +86,3 @@ class RoomMixin(object):
             if "room_id" in room and name_or_id == room["room_id"]:
                 return room
         return None
-

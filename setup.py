@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 import os
 from setuptools import setup, find_packages
 from will import __name__ as PACKAGE_NAME
@@ -31,11 +31,11 @@ setup(
     author_email="skoczen@gmail.com",
     url="https://github.com/skoczen/will",
     version=VERSION,
-    download_url = ['https://github.com/skoczen/will/tarball/%s' % VERSION, ],
+    download_url=['https://github.com/skoczen/will/tarball/%s' % VERSION, ],
     install_requires=reqs,
     packages=find_packages(),
     include_package_data=True,
-    keywords = ["hipchat", "bot"],
+    keywords=["hipchat", "bot"],
     classifiers=[
         "Programming Language :: Python",
         "License :: OSI Approved :: BSD License",

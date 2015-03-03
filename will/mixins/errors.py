@@ -1,6 +1,7 @@
 import logging
 import traceback
 
+
 class ErrorMixin(object):
     def get_startup_errors(self):
         if hasattr(self, "_startup_errors"):
@@ -21,4 +22,4 @@ class ErrorMixin(object):
         logging.critical(error_message)
 
     def runtime_error(self, error_message):
-        logging.critical(error_message)        
+        logging.critical(error_message)
