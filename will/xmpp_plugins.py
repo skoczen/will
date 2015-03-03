@@ -1,23 +1,66 @@
+import base64
 import ssl
 import logging
 
-from sleekxmpp.util import sasl
+from sleekxmpp.util import bytes, sasl
 from sleekxmpp.util.stringprep_profiles import StringPrepError
 from sleekxmpp.stanza import StreamFeatures
-from sleekxmpp.xmlstream import RestartStream, register_stanza_plugin
+from sleekxmpp.xmlstream import StanzaBase, RestartStream, register_stanza_plugin
 from sleekxmpp.plugins import BasePlugin
 from sleekxmpp.xmlstream.matcher import MatchXPath
 from sleekxmpp.xmlstream.handler import Callback
 from sleekxmpp.features.feature_mechanisms import stanza
-
+import settings
 
 log = logging.getLogger(__name__)
 
 
-class HipChatAuthPlugin(BasePlugin):
+class CustomAuth(stanza.Auth):
+    """
+    """
 
-    name = 'feature_mechanisms'
-    description = 'RFC 6120: Stream Feature: SASL'
+    name = 'auth'
+    # namespace = 'urn:ietf:params:xml:ns:xmpp-sasl'
+    namespace = 'http://hipchat.com'
+    interfaces = set(('mechanism', 'value'))
+    plugin_attrib = name
+
+    #: Some SASL mechs require sending values as is,
+    #: without converting base64.
+    plain_mechs = set(['X-MESSENGER-OAUTH2'])
+
+    def setup(self, xml):
+        StanzaBase.setup(self, xml)
+        self.xml.tag = self.tag_name()
+        self.xml.set("oauth2_token", "true")
+
+    def get_value(self):
+        if not self['mechanism'] in self.plain_mechs:
+            return base64.b64decode(bytes(self.xml.text))
+        else:
+            return self.xml.text
+
+    def set_value(self, values):
+        if not self['mechanism'] in self.plain_mechs:
+            values = "0%s0%s0will" % (
+                settings.USERNAME,  # Tried 1234456_784560@chat.hipchat.com or will_email@example.com
+                settings.PASSWORD,  # password
+            )
+            if values:
+                self.xml.text = bytes(base64.b64encode(values)).decode('utf-8')
+            elif values == b'':
+                self.xml.text = '='
+        else:
+            self.xml.text = bytes(values).decode('utf-8')
+
+    def del_value(self):
+        self.xml.text = ''
+
+
+class HipChatAuth(BasePlugin):
+
+    name = 'hipchat_auth'
+    description = 'HipChat Authentication'
     dependencies = set()
     stanza = stanza
     default_config = {
@@ -53,7 +96,7 @@ class HipChatAuthPlugin(BasePlugin):
 
         self.xmpp.register_stanza(stanza.Success)
         self.xmpp.register_stanza(stanza.Failure)
-        self.xmpp.register_stanza(stanza.Auth)
+        self.xmpp.register_stanza(CustomAuth)
         self.xmpp.register_stanza(stanza.Challenge)
         self.xmpp.register_stanza(stanza.Response)
         self.xmpp.register_stanza(stanza.Abort)
@@ -161,6 +204,7 @@ class HipChatAuthPlugin(BasePlugin):
         return self._send_auth()
 
     def _send_auth(self):
+        print self.mech_list
         mech_list = self.mech_list - self.attempted_mechs
         try:
             self.mech = sasl.choose(mech_list,
@@ -178,7 +222,10 @@ class HipChatAuthPlugin(BasePlugin):
             log.exception("A credential value did not pass SASLprep.")
             self.xmpp.disconnect()
 
-        resp = stanza.Auth(self.xmpp)
+        print "stanza"
+        print CustomAuth
+        print self.xmpp
+        resp = CustomAuth(self.xmpp)
         resp['mechanism'] = self.mech.name
         try:
             resp['value'] = self.mech.process()
