@@ -15,11 +15,99 @@ import settings
 log = logging.getLogger(__name__)
 
 
+from sleekxmpp.plugins.base import base_plugin
+
+# class HipChatOauthPlugin(base_plugin):
+#     """
+#     HipChatOauthPlugin
+#     """
+
+#     def plugin_init(self):
+#         self.description = "HipChatOauthPlugin"
+#         # self.xep = "0077"
+
+"""
+    SleekXMPP: The Sleek XMPP Library
+    Copyright (C) 2011  Nathanael C. Fritz
+    This file is part of SleekXMPP.
+
+    See the file LICENSE for copying permission.
+"""
+
+import base64
+
+from sleekxmpp.util import bytes
+from sleekxmpp.xmlstream import StanzaBase
+
+
+class CustomResponse(StanzaBase):
+
+    """
+    """
+
+    name = 'response'
+    namespace = 'http://hipchat.com'
+    interfaces = set(('value',))
+    plugin_attrib = name
+
+    def setup(self, xml):
+        print "resp setup"
+        StanzaBase.setup(self, xml)
+        self.xml.tag = self.tag_name()
+
+    def get_value(self):
+        print "resp get_value"
+        return base64.b64decode(bytes(self.xml.text))
+
+    def set_value(self, values):
+        print "resp set_value"
+        if values:
+            self.xml.text = bytes(base64.b64encode(values)).decode('utf-8')
+        else:
+            self.xml.text = '='
+
+    def del_value(self):
+        print "resp del_value"
+        self.xml.text = ''
+
+
+class CustomSuccess(StanzaBase):
+
+    """
+    """
+
+    name = 'success'
+    namespace = 'http://hipchat.com'
+    interfaces = set(['value'])
+    plugin_attrib = name
+
+    def setup(self, xml):
+        print "setup"
+        StanzaBase.setup(self, xml)
+        self.xml.tag = self.tag_name()
+
+    def get_value(self):
+        print "get_value"
+        return base64.b64decode(bytes(self.xml.text))
+
+    def set_value(self, values):
+        print "set_value"
+        if values:
+            self.xml.text = bytes(base64.b64encode(values)).decode('utf-8')
+        else:
+            self.xml.text = '='
+
+    def del_value(self):
+        print "del_value"
+        self.xml.text = ''
+
+
 class CustomAuth(stanza.Auth):
     """
     """
 
     name = 'auth'
+    # name = 'X-HIPCHAT'
     # namespace = 'urn:ietf:params:xml:ns:xmpp-sasl'
     namespace = 'http://hipchat.com'
     interfaces = set(('mechanism', 'value'))
@@ -27,24 +115,27 @@ class CustomAuth(stanza.Auth):
 
     #: Some SASL mechs require sending values as is,
     #: without converting base64.
-    plain_mechs = set(['X-MESSENGER-OAUTH2'])
+    plain_mechs = set([])
 
     def setup(self, xml):
+        print "setup"
         StanzaBase.setup(self, xml)
         self.xml.tag = self.tag_name()
         self.xml.set("oauth2_token", "true")
 
     def get_value(self):
+        print "get_value"
         if not self['mechanism'] in self.plain_mechs:
             return base64.b64decode(bytes(self.xml.text))
         else:
             return self.xml.text
 
     def set_value(self, values):
+        print "set_value"
         if not self['mechanism'] in self.plain_mechs:
-            values = "0%s0%s0will" % (
-                settings.USERNAME,  # Tried 1234456_784560@chat.hipchat.com or will_email@example.com
-                settings.PASSWORD,  # password
+            values = "\x00%s\x00%s\x00will" % (
+                settings.EMAIL,
+                settings.PASSWORD,
             )
             if values:
                 self.xml.text = bytes(base64.b64encode(values)).decode('utf-8')
@@ -52,8 +143,10 @@ class CustomAuth(stanza.Auth):
                 self.xml.text = '='
         else:
             self.xml.text = bytes(values).decode('utf-8')
+        print "end set_value"
 
     def del_value(self):
+        print "del_value"
         self.xml.text = ''
 
 
@@ -62,7 +155,7 @@ class HipChatAuth(BasePlugin):
     name = 'hipchat_auth'
     description = 'HipChat Authentication'
     dependencies = set()
-    stanza = stanza
+    stanza = CustomAuth
     default_config = {
         'use_mech': None,
         'use_mechs': None,
@@ -78,6 +171,7 @@ class HipChatAuth(BasePlugin):
     }
 
     def plugin_init(self):
+        print "plugin_init"
         if self.sasl_callback is None:
             self.sasl_callback = self._default_credentials
 
@@ -94,7 +188,7 @@ class HipChatAuth(BasePlugin):
 
         register_stanza_plugin(StreamFeatures, stanza.Mechanisms)
 
-        self.xmpp.register_stanza(stanza.Success)
+        self.xmpp.register_stanza(CustomSuccess)
         self.xmpp.register_stanza(stanza.Failure)
         self.xmpp.register_stanza(CustomAuth)
         self.xmpp.register_stanza(stanza.Challenge)
@@ -129,6 +223,7 @@ class HipChatAuth(BasePlugin):
         )
 
     def _default_credentials(self, required_values, optional_values):
+        print "_default_credentials"
         creds = self.xmpp.credentials
         result = {}
         values = required_values.union(optional_values)
@@ -159,6 +254,7 @@ class HipChatAuth(BasePlugin):
         return result
 
     def _default_security(self, values):
+        print "_default_security"
         result = {}
         for value in values:
             if value == 'encrypted':
@@ -173,6 +269,7 @@ class HipChatAuth(BasePlugin):
         return result
 
     def _handle_sasl_auth(self, features):
+        print "_handle_sasl_auth"
         """
         Handle authenticating using SASL.
         Arguments:
@@ -204,6 +301,7 @@ class HipChatAuth(BasePlugin):
         return self._send_auth()
 
     def _send_auth(self):
+        print "_send_auth"
         print self.mech_list
         mech_list = self.mech_list - self.attempted_mechs
         try:
@@ -222,11 +320,14 @@ class HipChatAuth(BasePlugin):
             log.exception("A credential value did not pass SASLprep.")
             self.xmpp.disconnect()
 
-        print "stanza"
         print CustomAuth
         print self.xmpp
         resp = CustomAuth(self.xmpp)
         resp['mechanism'] = self.mech.name
+        print "resp"
+        print "resp"
+        print "resp"
+        print resp
         try:
             resp['value'] = self.mech.process()
         except sasl.SASLCancelled:
@@ -246,6 +347,7 @@ class HipChatAuth(BasePlugin):
         return True
 
     def _handle_challenge(self, stanza):
+        print "_handle_challenge"
         """SASL challenge received. Process and send response."""
         resp = self.stanza.Response(self.xmpp)
         try:
@@ -265,8 +367,15 @@ class HipChatAuth(BasePlugin):
             resp.send(now=True)
 
     def _handle_success(self, stanza):
+        print "_handle_success"
         """SASL authentication succeeded. Restart the stream."""
         try:
+            print "success"
+            print "success"
+            print "success"
+            print dir(stanza)
+            print stanza.get_value()
+            print self.mech.process(stanza['value'])
             self.mech.process(stanza['value'])
         except sasl.SASLMutualAuthFailed:
             log.error("Mutual authentication failed! "
@@ -281,6 +390,7 @@ class HipChatAuth(BasePlugin):
             raise RestartStream()
 
     def _handle_fail(self, stanza):
+        print "_handle_fail"
         """SASL authentication failed. Disconnect and shutdown."""
         self.attempted_mechs.add(self.mech.name)
         log.info("Authentication failed: %s", stanza['condition'])

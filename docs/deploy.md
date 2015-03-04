@@ -26,14 +26,8 @@ At minimum, that's
 ```bash
 heroku config:set \
 WILL_PUBLIC_URL="http://our-will-name.herokuapp.com" \
-WILL_USERNAME='12345_123456@chat.hipchat.com' \
-WILL_PASSWORD='asj2498q89dsf89a8df' \
-WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
-```
-
-If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:
-```bash
-heroku config:set WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
+WILL_EMAIL='will@myexamplecompany.com' \
+WILL_PASSWORD='asj2498q89dsf89a8df'
 ```
 
 Finally, for will's schedule to be correct, you need to set him to the time zone you want:
@@ -88,16 +82,10 @@ In your chosen deploy environment and setup, you'll want to do a couple things:
 At minimum, that's:
 ```bash
 export WILL_PUBLIC_URL="http://our-will-name.herokuapp.com"
-export WILL_USERNAME='12345_123456@chat.hipchat.com'
+export WILL_EMAIL='will@myexamplecompany.com'
 export WILL_PASSWORD='asj2498q89dsf89a8df'
-export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
 export WILL_REDIS_URL='redis://some-domain.com/7/'
 export WILL_HTTPSERVER_PORT='80'
-```
-
-If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:
-```bash
-export WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
 ```
 
 You'll also need to set any environment variables for your plugins.

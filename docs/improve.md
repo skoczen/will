@@ -119,6 +119,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.8.0 - March 4, 2015
+
+* **Breaking change**:  `V1_TOKEN`, `V2_TOKEN`, and `USERNAME` are no longer supported, and any will installs that use them will break.  Please use the `EMAIL` and `PASSWORD` functionality described below and [in the docs]().
+* Big changes on how will authenticates, which simplifes setup, and fixes "the V2 tokens exprire after a year" bug.  From now on, you only need to specify the `EMAIL` and `PASSWORD` for will's hipchat user.  He'll take care of bootstrapping and obtaining the necessary tokens from there.   Many thanks to [dougkeen](https://github.com/dougkeen) and others at hipchat for their help.
+* **A note on deprecation:**  Normally, for any kind of change of this magnitude, will will have a deprecation notice and schedule, to give people time to upgrade.  However, because the nature of this problem is that the V2 token expires one day, and will just silently dies without explanation, the decision was made to make this as a breaking change, with no deprecations schedule.  This is not, and will not, be the norm.  Thanks for hanging in there through the transition.
 
 #### 0.7.3 - March 3, 2015
 

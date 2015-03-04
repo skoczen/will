@@ -111,14 +111,6 @@ def import_settings(quiet=True):
             if not quiet:
                 warn("no PUBLIC_URL found in the environment or config.  Defaulting to '%s'." % default_public)
 
-        if "V1_TOKEN" not in settings:
-            if not quiet:
-                warn(
-                    "no V1_TOKEN found in the environment or config."
-                    "This is generally ok, but if you have more than 30 rooms, "
-                    "you may recieve rate-limit errors without one."
-                )
-
         if "REDIS_MAX_CONNECTIONS" not in settings:
             settings["REDIS_MAX_CONNECTIONS"] = 4
             if not quiet:

@@ -170,16 +170,15 @@ To set your %(name)s:
         missing_settings = False
         required_settings = [
             {
-                "name": "WILL_USERNAME",
-                "obtain_at": """1. Go to hipchat, and create a new user for will.
-2. Log into will, and go to Account settings>XMPP/Jabber Info.
-3. On that page, the 'Jabber ID' is the value you want to use.""",
+                "name": "WILL_EMAIL",
+                "obtain_at": "1. Go to hipchat, and create a new user for will.\n"
+                             "2. The email address you sign in with is the email "
+                             "you want to use.",
             },
             {
                 "name": "WILL_PASSWORD",
-                "obtain_at": "1. Go to hipchat, and create a new user for will.  "
-                             "Note that password - this is the value you want. "
-                             "It's used for signing in via XMPP.",
+                "obtain_at": "1. Go to hipchat, and create a new user for will. \n"
+                             "2. Note that password - this is the value you want. ",
             },
             {
                 "name": "WILL_REDIS_URL",
@@ -201,6 +200,13 @@ To set your %(name)s:
             sys.exit(1)
         else:
             puts("")
+
+        if hasattr("settings", "V2_TOKEN"):
+            warn("V2_TOKEN has been deprecated.  Please use EMAIL and PASSWORD instead.")
+        if hasattr("settings", "V1_TOKEN"):
+            warn("V1_TOKEN has been deprecated.  Please use EMAIL and PASSWORD instead.")
+        if hasattr("settings", "USERNAME"):
+            warn("USERNAME has been deprecated.  Please use EMAIL and PASSWORD instead.")
 
         puts("Verifying credentials...")
         # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.  Yup.
@@ -351,7 +357,7 @@ To set your %(name)s:
 
             self.save("help_modules", sorted_help)
             self.save("all_listener_regexes", self.all_listener_regexes)
-            self.connect()
+            self.connect(('chat.hipchat.com', 5222))
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping xmpp", e)
