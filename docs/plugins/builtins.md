@@ -14,6 +14,11 @@ self.save("my_key", "my_value")
 self.load("my_key", "default value")
 ```
 
+You can also save a value temporarily by setting the number of seconds before it expires:
+
+```python
+self.save("my_key", "my_value", expire=10
+```
 
 
 ## Template rendering
