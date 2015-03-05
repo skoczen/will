@@ -29,12 +29,16 @@ class StorageMixin(object):
                 )
                 self.storage = redis.Redis(connection_pool=connection_pool)
 
-    def save(self, key, value):
+    def save(self, key, value, expire=0):
         if not hasattr(self, "storage"):
             self.bootstrap_storage()
 
         try:
-            ret = self.storage.set(key, pickle.dumps(value))
+            if expire:
+                ret = self.storage.setex(key, pickle.dumps(value),expire)
+            else:
+                ret = self.storage.set(key, pickle.dumps(value))
+
             return ret
         except:
             logging.critical("Unable to save %s: \n%s" % (key, traceback.format_exc()))
