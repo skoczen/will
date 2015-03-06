@@ -22,7 +22,8 @@ class StorageMixin(object):
                     db = url.path[1:]
                 else:
                     db = 0
-                max_connections = getattr(settings, 'REDIS_MAX_CONNECTIONS', None)
+                max_connections = getattr(settings, 'REDIS_MAX_CONNECTIONS',
+                                          None)
                 connection_pool = redis.ConnectionPool(
                     max_connections=max_connections, host=url.hostname,
                     port=url.port, db=db, password=url.password
@@ -35,13 +36,14 @@ class StorageMixin(object):
 
         try:
             if expire:
-                ret = self.storage.setex(key, pickle.dumps(value),expire)
+                ret = self.storage.setex(key, pickle.dumps(value), expire)
             else:
                 ret = self.storage.set(key, pickle.dumps(value))
 
             return ret
         except:
-            logging.critical("Unable to save %s: \n%s" % (key, traceback.format_exc()))
+            logging.critical("Unable to save %s: \n%s" %
+                             (key, traceback.format_exc()))
 
     def clear(self, key):
         if not hasattr(self, "storage"):
