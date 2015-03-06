@@ -8,11 +8,9 @@ All environment variables prefixed with `WILL_` are imported into will's `settin
 
 In best practices, you should keep all of the following in environment variables:
 
-- `WILL_USERNAME`
+- `WILL_EMAIL`
 - `WILL_PASSWORD`
 - `WILL_REDIS_URL`
-- `WILL_V2_TOKEN`
-- `WILL_V1_TOKEN`
 - Any other tokens, keys, passwords, or sensitive URLS.
 
 We've made it easy.  No excuses. :)

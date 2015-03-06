@@ -170,21 +170,15 @@ To set your %(name)s:
         missing_settings = False
         required_settings = [
             {
-                "name": "WILL_USERNAME",
-                "obtain_at": """1. Go to hipchat, and create a new user for will.
-2. Log into will, and go to Account settings>XMPP/Jabber Info.
-3. On that page, the 'Jabber ID' is the value you want to use.""",
+                "name": "WILL_EMAIL",
+                "obtain_at": "1. Go to hipchat, and create a new user for will.\n"
+                             "2. The email address you sign in with is the email "
+                             "you want to use.",
             },
             {
                 "name": "WILL_PASSWORD",
-                "obtain_at": "1. Go to hipchat, and create a new user for will.  Note that password - this is the value you want.  It's used for signing in via XMPP.",
-            },
-            {
-                "name": "WILL_V2_TOKEN",
-                "obtain_at": """1. Log into hipchat using will's user.
-2. Go to https://your-org.hipchat.com/account/api
-3. Create a token.
-4. Copy the value - this is the WILL_V2_TOKEN.""",
+                "obtain_at": "1. Go to hipchat, and create a new user for will. \n"
+                             "2. Note that password - this is the value you want. ",
             },
             {
                 "name": "WILL_REDIS_URL",
@@ -201,31 +195,39 @@ To set your %(name)s:
                 missing_settings = True
 
         if missing_settings:
-            error("Will was unable to start because some required environment variables are missing.  Please fix them and try again!")
+            error("Will was unable to start because some required environment variables "
+                  "are missing.  Please fix them and try again!")
             sys.exit(1)
         else:
             puts("")
 
+        if hasattr("settings", "V2_TOKEN"):
+            warn("V2_TOKEN has been deprecated.  Please use EMAIL and PASSWORD instead.")
+        if hasattr("settings", "V1_TOKEN"):
+            warn("V1_TOKEN has been deprecated.  Please use EMAIL and PASSWORD instead.")
+        if hasattr("settings", "USERNAME"):
+            warn("USERNAME has been deprecated.  Please use EMAIL and PASSWORD instead.")
+
         puts("Verifying credentials...")
         # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.  Yup.
-        user_id = settings.USERNAME[0:settings.USERNAME.find("@")][settings.USERNAME.find("_")+1:]
+        # user_id = settings.USERNAME[0:settings.USERNAME.find("@")][settings.USERNAME.find("_") + 1:]
 
         # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
         # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
-        q = Queue()
-        p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q":q,})
-        p.start()
-        user_data = q.get()
-        p.join()
+        # q = Queue()
+        # p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q":q,})
+        # p.start()
+        # user_data = q.get()
+        # p.join()
 
-        if "error" in user_data:
-            error("We ran into trouble: '%(message)s'" % user_data["error"])
-            sys.exit(1)
-        with indent(2):
-            show_valid("%s authenticated" % user_data["name"])
-            os.environ["WILL_NAME"] = user_data["name"]
-            show_valid("@%s verified as handle" % user_data["mention_name"])
-            os.environ["WILL_HANDLE"] = user_data["mention_name"]
+        # if "error" in user_data:
+        #     error("We ran into trouble: '%(message)s'" % user_data["error"])
+        #     sys.exit(1)
+        # with indent(2):
+        #     show_valid("%s authenticated" % user_data["name"])
+        #     os.environ["WILL_NAME"] = user_data["name"]
+        #     show_valid("@%s verified as handle" % user_data["mention_name"])
+        #     os.environ["WILL_HANDLE"] = user_data["mention_name"]
 
         puts("")
 
@@ -238,10 +240,10 @@ To set your %(name)s:
         puts("Verifying rooms...")
         # If we're missing ROOMS, join all of them.
         with indent(2):
-            if settings.ROOMS == None:
+            if settings.ROOMS is None:
                 # Yup. Thanks, BSDs.
                 q = Queue()
-                p = Process(target=self.update_available_rooms, args=(), kwargs={"q":q,})
+                p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
                 p.start()
                 rooms_list = q.get()
                 show_valid("Joining all %s known rooms." % len(rooms_list))
@@ -249,7 +251,10 @@ To set your %(name)s:
                 p.join()
                 settings.import_settings()
             else:
-                show_valid("Joining the %s room%s specified." % (len(settings.ROOMS), "s" if len(settings.ROOMS)>1 else ""))
+                show_valid("Joining the %s room%s specified." % (
+                    len(settings.ROOMS),
+                    "s" if len(settings.ROOMS) > 1 else ""
+                ))
         puts("")
 
     def verify_plugin_settings(self):
@@ -260,7 +265,9 @@ To set your %(name)s:
         with indent(2):
             for name, meta in self.required_settings_from_plugins.items():
                 if not hasattr(settings, name):
-                    error_message = "%(setting_name)s is missing. It's required by the %(plugin_name)s plugin's '%(function_name)s' method." % meta
+                    error_message = ("%(setting_name)s is missing. "
+                                     "It's required by the %(plugin_name)s plugin's "
+                                     "'%(function_name)s' method." % meta)
                     puts(colored.red("✗ %(setting_name)s" % meta))
                     missing_setting_error_messages.append(error_message)
                     missing_settings = True
@@ -269,7 +276,9 @@ To set your %(name)s:
 
             if missing_settings:
                 puts("")
-                warn("Will is missing settings required by some plugins. He's starting up anyway, but you will run into errors if you try to use those plugins!")
+                warn("Will is missing settings required by some plugins. "
+                     "He's starting up anyway, but you will run into errors "
+                     "if you try to use those plugins!")
                 self.add_startup_error("\n".join(missing_setting_error_messages))
             else:
                 puts("")
@@ -294,10 +303,25 @@ To set your %(name)s:
 
             for plugin_info, fn, function_name in self.periodic_tasks:
                 meta = fn.will_fn_metadata
-                self.add_periodic_task(plugin_info["full_module_name"], plugin_info["name"], function_name, meta["sched_args"], meta["sched_kwargs"], meta["function_name"],)
+                self.add_periodic_task(
+                    plugin_info["full_module_name"],
+                    plugin_info["name"],
+                    function_name,
+                    meta["sched_args"],
+                    meta["sched_kwargs"],
+                    meta["function_name"],
+                )
             for plugin_info, fn, function_name in self.random_tasks:
                 meta = fn.will_fn_metadata
-                self.add_random_tasks(plugin_info["full_module_name"], plugin_info["name"], function_name, meta["start_hour"], meta["end_hour"], meta["day_of_week"], meta["num_times_per_day"])
+                self.add_random_tasks(
+                    plugin_info["full_module_name"],
+                    plugin_info["name"],
+                    function_name,
+                    meta["start_hour"],
+                    meta["end_hour"],
+                    meta["day_of_week"],
+                    meta["num_times_per_day"]
+                )
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping scheduler", e)
@@ -328,12 +352,13 @@ To set your %(name)s:
         try:
             self.start_xmpp_client()
             sorted_help = {}
-            for k,v in self.help_modules.items():
+            for k, v in self.help_modules.items():
                 sorted_help[k] = sorted(v)
 
             self.save("help_modules", sorted_help)
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
+
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping xmpp", e)
@@ -459,7 +484,10 @@ To set your %(name)s:
                             puts("✗ %s (blacklisted)" % plugin_name)
                         else:
                             plugin_instances = {}
-                            for function_name, fn in inspect.getmembers(plugin_info["class"], predicate=inspect.ismethod):
+                            for function_name, fn in inspect.getmembers(
+                                plugin_info["class"],
+                                predicate=inspect.ismethod
+                            ):
                                 try:
                                     # Check for required_settings
                                     with indent(2):
@@ -472,7 +500,11 @@ To set your %(name)s:
                                                         "function_name": function_name,
                                                         "setting_name": s,
                                                     }
-                                            if "listens_to_messages" in meta and meta["listens_to_messages"] and "listener_regex" in meta:
+                                            if (
+                                                "listens_to_messages" in meta and
+                                                meta["listens_to_messages"] and
+                                                "listener_regex" in meta
+                                            ):
                                                 # puts("- %s" % function_name)
                                                 regex = meta["listener_regex"]
                                                 if not meta["case_sensitive"]:
@@ -525,7 +557,11 @@ To set your %(name)s:
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
                                 except Exception, e:
                                     error(plugin_name)
-                                    self.startup_error("Error bootstrapping %s.%s" % (plugin_info["class"], function_name,), e)
+                                    self.startup_error(
+                                        "Error bootstrapping %s.%s" % (
+                                            plugin_info["class"],
+                                            function_name,
+                                        ), e)
                             show_valid(plugin_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
