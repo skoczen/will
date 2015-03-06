@@ -358,7 +358,7 @@ To set your %(name)s:
             self.save("help_modules", sorted_help)
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
-            # self.connect(('chat.hipchat.com', 5222))
+
             bootstrapped = True
         except Exception, e:
             self.startup_error("Error bootstrapping xmpp", e)

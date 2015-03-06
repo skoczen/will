@@ -72,8 +72,6 @@ class CustomSuccess(StanzaBase):
 
 
 class CustomAuth(stanza.Auth):
-    """
-    """
 
     name = 'auth'
     # name = 'X-HIPCHAT'
@@ -91,6 +89,12 @@ class CustomAuth(stanza.Auth):
         StanzaBase.setup(self, xml)
         self.xml.tag = self.tag_name()
         self.xml.set("oauth2_token", "true")
+        self.xml.set("mechanism", "PLAIN")
+        value = "\x00%s\x00%s\x00will" % (
+            settings.EMAIL,
+            settings.PASSWORD,
+        )
+        self.xml.text = bytes(base64.b64encode(value)).decode('utf-8')
 
     def get_value(self):
         print "get_value"
@@ -169,30 +173,30 @@ class HipChatAuth(BasePlugin):
 
         self.xmpp.register_handler(
             Callback(
-                'SASL Success',
+                'HipChat Success',
                 MatchXPath(CustomSuccess.tag_name()),
                 self._handle_success,
                 instream=True)
         )
         self.xmpp.register_handler(
             Callback(
-                'SASL Failure',
+                'HipChat Failure',
                 MatchXPath(stanza.Failure.tag_name()),
                 self._handle_fail,
                 instream=True)
         )
         self.xmpp.register_handler(
             Callback(
-                'SASL Challenge',
+                'HipChat Challenge',
                 MatchXPath(stanza.Challenge.tag_name()),
                 self._handle_challenge)
         )
-        self.xmpp.register_feature(
-            'mechanisms',
-            self._handle_sasl_auth,
-            restart=True,
-            order=self.order
-        )
+        # self.xmpp.register_feature(
+        #     'mechanisms',
+        #     self._handle_sasl_auth,
+        #     restart=True,
+        #     order=self.order
+        # )
 
     def get_oauth_token(self):
         print "get_oauth_token"
@@ -201,6 +205,7 @@ class HipChatAuth(BasePlugin):
         print "get_oauth_token"
         print "get_oauth_token"
         print "get_oauth_token"
+        self._send_auth()
 
     def _default_credentials(self, required_values, optional_values):
         print "_default_credentials"
@@ -282,47 +287,48 @@ class HipChatAuth(BasePlugin):
 
     def _send_auth(self):
         print "_send_auth"
-        print self.mech_list
-        mech_list = self.mech_list - self.attempted_mechs
-        try:
-            self.mech = sasl.choose(mech_list,
-                                    self.sasl_callback,
-                                    self.security_callback,
-                                    limit=self.use_mechs,
-                                    min_mech=self.min_mech)
-        except sasl.SASLNoAppropriateMechanism:
-            log.error("No appropriate login method.")
-            self.xmpp.event("no_auth", direct=True)
-            self.xmpp.event("failed_auth", direct=True)
-            self.attempted_mechs = set()
-            return self.xmpp.disconnect()
-        except StringPrepError:
-            log.exception("A credential value did not pass SASLprep.")
-            self.xmpp.disconnect()
+        # print self.mech_list
+        # mech_list = self.mech_list - self.attempted_mechs
+        # try:
+        #     self.mech = sasl.choose(mech_list,
+        #                             self.sasl_callback,
+        #                             self.security_callback,
+        #                             limit=self.use_mechs,
+        #                             min_mech=self.min_mech)
+        # except sasl.SASLNoAppropriateMechanism:
+        #     log.error("No appropriate login method.")
+        #     self.xmpp.event("no_auth", direct=True)
+        #     self.xmpp.event("failed_auth", direct=True)
+        #     self.attempted_mechs = set()
+        #     return self.xmpp.disconnect()
+        # except StringPrepError:
+        #     log.exception("A credential value did not pass SASLprep.")
+        #     self.xmpp.disconnect()
 
-        print CustomAuth
-        print self.xmpp
+        # print CustomAuth
+        # print self.xmpp
         resp = CustomAuth(self.xmpp)
-        resp['mechanism'] = self.mech.name
+        resp.send(now=True)
+        # resp['mechanism'] = self.mech.name
         print "resp"
         print "resp"
         print "resp"
         print resp
-        try:
-            resp['value'] = self.mech.process()
-        except sasl.SASLCancelled:
-            self.attempted_mechs.add(self.mech.name)
-            self._send_auth()
-        except sasl.SASLFailed:
-            self.attempted_mechs.add(self.mech.name)
-            self._send_auth()
-        except sasl.SASLMutualAuthFailed:
-            log.error("Mutual authentication failed! "
-                      "A security breach is possible.")
-            self.attempted_mechs.add(self.mech.name)
-            self.xmpp.disconnect()
-        else:
-            resp.send(now=True)
+        # try:
+        #     resp['value'] = self.mech.process()
+        # except sasl.SASLCancelled:
+        #     self.attempted_mechs.add(self.mech.name)
+        #     self._send_auth()
+        # except sasl.SASLFailed:
+        #     self.attempted_mechs.add(self.mech.name)
+        #     self._send_auth()
+        # except sasl.SASLMutualAuthFailed:
+        #     log.error("Mutual authentication failed! "
+        #               "A security breach is possible.")
+        #     self.attempted_mechs.add(self.mech.name)
+        #     self.xmpp.disconnect()
+        # else:
+        #     resp.send(now=True)
 
         return True
 

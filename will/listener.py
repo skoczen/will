@@ -18,8 +18,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
         logger = logging.getLogger(__name__)
-        ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD, sasl_mech=['X-HIPCHAT'])
-        # ClientXMPP.__init__(self, settings.EMAIL, settings.PASSWORD)
+        ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
 
         self.rooms = []
         self.default_room = settings.DEFAULT_ROOM
@@ -49,25 +48,19 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         if settings.ALLOW_INSECURE_HIPCHAT_SERVER is True:
             self.add_event_handler('ssl_invalid_cert', lambda cert: True)
 
-        print "self.mechanisms"
-        print dir(self)
-
-        # self.register_plugin(HipChatAuth, name="hipchatauth")
         self.register_plugin('HipChatAuth', module=xmpp_plugins)
         self.add_event_handler("roster_update", self.join_rooms)
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
-
         self.register_plugin('xep_0045')  # MUC
 
-
     def session_start(self, event):
-        self.plugin['HipChatAuth'].get_oauth_token()
         self.send_presence()
         self.get_roster()
 
     def join_rooms(self, event):
+        self.plugin['HipChatAuth'].get_oauth_token()
         self.update_will_roster_and_rooms()
 
         for r in self.rooms:
