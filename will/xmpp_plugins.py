@@ -40,44 +40,13 @@ from sleekxmpp.util import bytes
 from sleekxmpp.xmlstream import StanzaBase
 
 
-class CustomResponse(StanzaBase):
-
-    """
-    """
-
-    name = 'response'
-    namespace = 'http://hipchat.com'
-    interfaces = set(('value',))
-    plugin_attrib = name
-
-    def setup(self, xml):
-        print "resp setup"
-        StanzaBase.setup(self, xml)
-        self.xml.tag = self.tag_name()
-
-    def get_value(self):
-        print "resp get_value"
-        return base64.b64decode(bytes(self.xml.text))
-
-    def set_value(self, values):
-        print "resp set_value"
-        if values:
-            self.xml.text = bytes(base64.b64encode(values)).decode('utf-8')
-        else:
-            self.xml.text = '='
-
-    def del_value(self):
-        print "resp del_value"
-        self.xml.text = ''
-
-
 class CustomSuccess(StanzaBase):
 
     """
     """
 
     name = 'success'
-    namespace = 'http://hipchat.com'
+    namespace = 'urn:ietf:params:xml:ns:xmpp-sasl'
     interfaces = set(['value'])
     plugin_attrib = name
 
@@ -111,7 +80,7 @@ class CustomAuth(stanza.Auth):
     # namespace = 'urn:ietf:params:xml:ns:xmpp-sasl'
     namespace = 'http://hipchat.com'
     interfaces = set(('mechanism', 'value'))
-    plugin_attrib = name
+    plugin_attrib = 'hipchatAuth'
 
     #: Some SASL mechs require sending values as is,
     #: without converting base64.
@@ -152,8 +121,10 @@ class CustomAuth(stanza.Auth):
 
 class HipChatAuth(BasePlugin):
 
-    name = 'hipchat_auth'
+    name = 'HipChatAuth'
     description = 'HipChat Authentication'
+    name = 'feature_mechanisms'
+    description = 'RFC 6120: Stream Feature: SASL'
     dependencies = set()
     stanza = CustomAuth
     default_config = {
@@ -182,11 +153,11 @@ class HipChatAuth(BasePlugin):
         if not self.use_mech and not creds['username']:
             self.use_mech = 'ANONYMOUS'
 
-        self.mech = None
+        self.mech = "X-HIPCHAT"
         self.mech_list = set()
         self.attempted_mechs = set()
 
-        register_stanza_plugin(StreamFeatures, stanza.Mechanisms)
+        # register_stanza_plugin(StreamFeatures, stanza.Mechanisms)
 
         self.xmpp.register_stanza(CustomSuccess)
         self.xmpp.register_stanza(stanza.Failure)
@@ -194,11 +165,12 @@ class HipChatAuth(BasePlugin):
         self.xmpp.register_stanza(stanza.Challenge)
         self.xmpp.register_stanza(stanza.Response)
         self.xmpp.register_stanza(stanza.Abort)
+        # register_stanza_plugin(Iq, Registration)
 
         self.xmpp.register_handler(
             Callback(
                 'SASL Success',
-                MatchXPath(stanza.Success.tag_name()),
+                MatchXPath(CustomSuccess.tag_name()),
                 self._handle_success,
                 instream=True)
         )
@@ -221,6 +193,14 @@ class HipChatAuth(BasePlugin):
             restart=True,
             order=self.order
         )
+
+    def get_oauth_token(self):
+        print "get_oauth_token"
+        print "get_oauth_token"
+        print "get_oauth_token"
+        print "get_oauth_token"
+        print "get_oauth_token"
+        print "get_oauth_token"
 
     def _default_credentials(self, required_values, optional_values):
         print "_default_credentials"
@@ -368,6 +348,10 @@ class HipChatAuth(BasePlugin):
 
     def _handle_success(self, stanza):
         print "_handle_success"
+        print "_handle_success"
+        print "_handle_success"
+        print "_handle_success"
+        print "_handle_success"
         """SASL authentication succeeded. Restart the stream."""
         try:
             print "success"
@@ -375,8 +359,14 @@ class HipChatAuth(BasePlugin):
             print "success"
             print dir(stanza)
             print stanza.get_value()
-            print self.mech.process(stanza['value'])
-            self.mech.process(stanza['value'])
+            print stanza.__dict__
+            print stanza['value']
+            print stanza.xml
+            print dir(stanza.xml)
+            print "stanza.xml.oauth2_token:"
+            print stanza.xml.get("oauth2_token")
+            # print self.mech.process(stanza['value'])
+            self.mech.process(stanza.xml.get("oauth2_token"))
         except sasl.SASLMutualAuthFailed:
             log.error("Mutual authentication failed! "
                       "A security breach is possible.")
