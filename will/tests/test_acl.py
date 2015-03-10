@@ -4,6 +4,7 @@ from will.mixins.roster import RosterMixin
 from will import settings
 from mock import patch
 
+
 class TestIsAdmin(unittest.TestCase):
 
     def setUp(self):
