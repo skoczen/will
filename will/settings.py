@@ -1,6 +1,6 @@
 import os
-from utils import show_valid, warn, error, note
-from clint.textui import puts, indent, columns
+from utils import show_valid, warn, note
+from clint.textui import puts, indent
 
 
 def import_settings(quiet=True):
