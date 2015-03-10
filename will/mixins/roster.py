@@ -1,4 +1,3 @@
-from will import settings
 from ..utils import is_admin
 
 
