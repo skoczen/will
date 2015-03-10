@@ -1,4 +1,4 @@
-def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False):
+def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
     def wrap(f):
         passed_args = []
 
@@ -15,6 +15,7 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, a
         wrapped_f.will_fn_metadata["listens_to_messages"] = True
         wrapped_f.will_fn_metadata["listener_args"] = passed_args
         wrapped_f.will_fn_metadata["__doc__"] = f.__doc__
+        wrapped_f.will_fn_metadata["listeners_acl"] = acl
         return wrapped_f
     return wrap
 
@@ -33,7 +34,7 @@ def periodic(*sched_args, **sched_kwargs):
     return wrap
 
 
-def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False):
+def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
     def wrap(f):
         passed_args = []
 
@@ -49,6 +50,7 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_o
         wrapped_f.will_fn_metadata["listens_to_messages"] = True
         wrapped_f.will_fn_metadata["listener_args"] = passed_args
         wrapped_f.will_fn_metadata["__doc__"] = f.__doc__
+        wrapped_f.will_fn_metadata["listeners_acl"] = acl
 
         return wrapped_f
 
