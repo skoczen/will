@@ -119,3 +119,10 @@ PLUGIN_BLACKLIST = [
 
 # Logging level
 # LOGLEVEL = "DEBUG"
+
+# Proxy settings
+# Use proxy to access hipchat servers
+# Make sure your proxy allows CONNECT method to port 5222
+# PROXY_URL = "http://user:pass@corpproxy.example.com:3128"
+# or
+# PROXY_URL = "http://myproxy:80
