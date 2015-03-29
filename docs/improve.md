@@ -93,6 +93,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [jessamynsmith](jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request.
+- [keNzi](https://github.com/keNzej) added shorten url function using bitly service.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
