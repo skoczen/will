@@ -14,13 +14,10 @@ from will import settings
 
 
 class BitlyPlugin(WillPlugin):
-    """Class for creating Bitly shorten URL's."""
 
     @require_settings("BITLY_ACCESS_TOKEN",)
     def get_bitly_shorten_url(self, long_url):
-        """
-        Function to get shorten_url from bit.ly through API
-        """
+        """Function to get shorten_url from bit.ly through API."""
         # use oauth2 endpoints
         c = bitly_api.Connection(access_token=settings.BITLY_ACCESS_TOKEN)
         response = c.shorten(uri=long_url)
