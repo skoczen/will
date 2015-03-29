@@ -124,6 +124,12 @@ List all regexes for registered `@hear` and `@respond_to` decorators.  This is w
 
 ## Productivity
 
+#### Bitly
+
+If you want to shorten long URL using Bitly API, Will can do that for you in a few seconds:
+
+![Bitly](../../img/bitly.png)
+
 #### Hangout
 
 If you've set a `HANGOUT_URL`, will will toss it in chat for you:
