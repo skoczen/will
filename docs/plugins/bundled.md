@@ -38,6 +38,7 @@ Provides several **admin-only** commands for manipulating will's underlying stor
 Provides a couple of methods for listing and updating will's internal chat room knowledge, and manipulating the current room.
 
 - **@will what are the rooms?**:  List the rooms he knows about, including their hipchat IDs.
+- **@will who is in this room?**: List all the participants of the room he's in, including their name and mention name. 
 - **@will update the room list**:  Get a new list of rooms from the chat server.
 - **@will new topic ____**:   Set the room topic.
 
