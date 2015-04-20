@@ -4,17 +4,15 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 
 class TalkBackPlugin(WillPlugin):
-    QUOTES_URL = ("https://underquoted.herokuapp.com/api/v1/quotations/?"
-                  "format=json&random=true&limit=1")
+    QUOTES_URL = "https://underquoted.herokuapp.com/api/v2/quotations/?random=true&limit=1"
 
     def get_quote(self):
         quote = None
         response = requests.get(self.QUOTES_URL)
         if response.status_code == 200:
             try:
-                quote_obj = response.json()['objects'][0]
-                quote = u'%s ~ %s' % (quote_obj['text'],
-                                      quote_obj['author']['name'])
+                quote_obj = response.json()['results'][0]
+                quote = u'%s ~ %s' % (quote_obj['text'], quote_obj['author'])
             except ValueError:
                 raise Exception(
                     "Response from '%s' could not be decoded as JSON:\n%s"
