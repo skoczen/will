@@ -118,6 +118,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 - [BuddyUp's will](https://github.com/buddyup/our-will)
 - [GreenKahuna's will](https://github.com/greenkahuna/our-will)
+- [Skoczen's will](https://github.com/buddyup/my-will)
 
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
@@ -128,7 +129,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 * What happens when life gets busy and we go a full month and a half between will releases?  Lots and lots:
 * New: All-new `@will who is in this room?` command, thanks to [puug](https://github.com/puug).
-* New: Will now can shorten links via bitly, thanks to [keNzi](https://github.com/keNzi).
+* New: Will now can shorten links via bitly `@will bitly http://example.com`, thanks to [keNzi](https://github.com/keNzi).
 * New: Will now supports a `PROXY_URL` setting, for getting around funky firewalls, thanks to [dmuntean](https://github.com/dmuntean).
 * New: `@will version` command to check version number, thanks to [woohgit](https://github.com/woohgit).
 * New: Awesome new `remind ___ to ___ at ___`, thanks to [woohgit](https://github.com/woohgit).
