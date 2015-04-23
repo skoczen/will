@@ -86,13 +86,14 @@ Will's also has had help from lots of coders. Alphabetically:
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
+- [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
-- [jessamynsmith](jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request.
+- [jessamynsmith](jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
@@ -123,6 +124,8 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 #### 0.8 - April 23, 2015
 
 * Fixed a breaking bug in the `@randomly` decorator, thanks to a report by [camilonova](https://github.com/camilonova).
+* Handles a breaking change in the hipchat API, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
+* Updates to v2 of the underquoted API, thanks [jessamynsmith](https://github.com/jessamynsmith).
 
 
 #### 0.7.3 - March 3, 2015
