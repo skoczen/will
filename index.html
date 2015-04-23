@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/">
         <link rel="shortcut icon" href="./img/favicon.ico">
 
-        <title>Will</title>
+        <title>None</title>
 
         <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -159,7 +170,7 @@
 <h1 id="meet-will">Meet Will</h1>
 <p>Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.</p>
 <p>He makes teaching your chat bot this simple:</p>
-<pre class="prettyprint well"><code>@respond_to(&quot;hi&quot;)
+<pre><code>@respond_to(&quot;hi&quot;)
 def say_hello(self, message):
     self.say(&quot;oh, hello!&quot;)
 </code></pre>
@@ -177,17 +188,17 @@ def say_hello(self, message):
 <h4 id="install-redis-24">Install redis &gt; 2.4</h4>
 <p>Official documentation is at <a href="http://redis.io/">redis.io</a>.</p>
 <p>If you're on Mac OS X, and using <a href="http://brew.sh/">homebrew</a>, you can simply:</p>
-<pre class="prettyprint well"><code class="bash">brew install redis
+<pre><code class="bash">brew install redis
 </code></pre>
 
 <p>On a Redhat (RHEL, Centos, Fedora) machine you can:</p>
-<pre class="prettyprint well"><code class="bash">sudo yum install redis
+<pre><code class="bash">sudo yum install redis
 sudo service redis enable
 sudo service redis start
 </code></pre>
 
 <p>On a Debian (Ubuntu, Mint, KNOPPIX) machine to properly install follow the <a href="http://redis.io/topics/quickstart">Redis Quickstart</a>. But you can start more quickly with:</p>
-<pre class="prettyprint well"><code class="bash">sudo apt-get install redis
+<pre><code class="bash">sudo apt-get install redis
 redis-server
 </code></pre>
 
@@ -198,7 +209,7 @@ redis-server
 <p>The python guide has <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">a great tutorial on virtualenv</a>, if you don't already have it running.  I'd recommend installing the excellent <code>virtualenvwrapper</code> library it mentions as well.</p>
 <h4 id="set-up-a-virtualenv-for-will">Set up a virtualenv for will</h4>
 <p>If you are using virtualenv wrapper:</p>
-<pre class="prettyprint well"><code class="bash">$ mkproject my_will
+<pre><code class="bash">$ mkproject my_will
 # ... some output, setting up the virtualenv
 $ workon my_will
 (my_will) $ 
@@ -209,7 +220,7 @@ $ workon my_will
 <h4 id="setting-up-the-project">Setting up the project</h4>
 <p>Installing will is simple easy.  Ready? Go!</p>
 <p>From your virtualenv and the folder you want to set up your will in,</p>
-<pre class="prettyprint well"><code class="bash">(my_will) $ pip install will
+<pre><code class="bash">(my_will) $ pip install will
 # ... output from a bunch of pip libraries installing
 
 (my_will) $ generate_will_project
@@ -221,18 +232,17 @@ $ workon my_will
 
 <p>That's it!  </p>
 <p>Note that the first time you run, you'll probably be missing some configuration. That's OK - <code>run_will</code> will check your environment, and walk you through getting and setting any necessary config.  We'll go through the nitty-gritty later, but if you have any odd setup problems, look in <code>config.py</code> - that's where all of the non-sensitive data is stored.</p>
-<p><img alt="Uninitialized Environment output" src="img/uninitialized_env.gif" />
+<p><img alt="Uninitialized Environment output" src="./img/uninitialized_env.gif" />
 This is totally normal output.</p>
 <p>Eventually, you'll reach this screen of joy.  Now, it's time to play!</p>
-<p><img alt="Screen of Joy" src="img/screen_of_joy.gif" /></p>
+<p><img alt="Screen of Joy" src="./img/screen_of_joy.gif" /></p>
 <h4 id="testing-will-out">Testing will out</h4>
 <p>Once your will is up and running, hop into any of your hipchat rooms, and say hello!</p>
 <p><code>@will hi</code></p>
-<p><img alt="Hi, Will" src="img/hi.gif" /></p>
+<p><img alt="Hi, Will" src="./img/hi.gif" /></p>
 <p><code>@will help</code></p>
-<p><img alt="Help, will" src="img/help.gif" /></p>
-<p>You're up and running - now it's time to <a href="plugins/basics/">teach your will a few things</a>!</p>
-</div>
+<p><img alt="Help, will" src="./img/help.gif" /></p>
+<p>You're up and running - now it's time to <a href="plugins/basics/">teach your will a few things</a>!</p></div>
         </div>
 
         

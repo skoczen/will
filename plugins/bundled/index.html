@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/plugins/bundled/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
-        <title>Bundled Plugins - Will</title>
+        <title>Bundled Plugins</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -155,6 +166,8 @@
         
             <li><a href="#productivity">Productivity</a></li>
         
+            <li><a href="#version">Version</a></li>
+        
             <li><a href="#web">Web</a></li>
         
     
@@ -170,10 +183,10 @@
 <p>This plugin pings will once a minute at <code>PUBLIC_URL</code>, making sure his processes aren't idled in installations like heroku.</p>
 <h4 id="ping">Ping</h4>
 <p>He's a robot. He should respond to ping. :)</p>
-<p><img alt="Ping" src="../../img/ping.gif" /></p>
+<p><img alt="Ping" src="../../../img/ping.gif" /></p>
 <h4 id="say">Say</h4>
 <p>This provides a web endpoint at <code>/say/some-phrase</code> that will will speak into <code>DEFAULT_ROOM</code>.  Helpful for pay-no-attention-to-the-hand-behind-the-curtain demos.</p>
-<p><img alt="Say" src="../../img/say.gif" /></p>
+<p><img alt="Say" src="../../../img/say.gif" /></p>
 <h4 id="storage">Storage</h4>
 <p>Provides several <strong>admin-only</strong> commands for manipulating will's underlying storage.  These methods are also case-sensitive, because they can do Bad Things.</p>
 <ul>
@@ -186,6 +199,7 @@
 <p>Provides a couple of methods for listing and updating will's internal chat room knowledge, and manipulating the current room.</p>
 <ul>
 <li><strong>@will what are the rooms?</strong>:  List the rooms he knows about, including their hipchat IDs.</li>
+<li><strong>@will who is in this room?</strong>: List all the participants of the room he's in, including their name and mention name. </li>
 <li><strong>@will update the room list</strong>:  Get a new list of rooms from the chat server.</li>
 <li><strong>@will new topic ____</strong>:   Set the room topic.</li>
 </ul>
@@ -202,7 +216,7 @@
 <h4 id="heroku-status">Heroku status</h4>
 <p>Heroku is also really widely used, and if you use it, when it's having troubles, it's good to know.  This plugin checks heroku's <a href="http://status.heroku.com">status api</a>, and alerts chat with the problem when they go down, and again they're back up.</p>
 <p>Note: if you don't use heroku, remember you can always disable this plugin in <code>config.py</code>:</p>
-<pre class="prettyprint well"><code class="python">PLUGIN_BLACKLIST = [
+<pre><code class="python">PLUGIN_BLACKLIST = [
     &quot;will.plugins.devops.heroku_is_up&quot;,
 ]
 </code></pre>
@@ -213,54 +227,64 @@
 <p>Will responds to "good morning", and "good night" appropriately, if he hears it.  If it's Friday, he'll even tell you to have a good weekend!</p>
 <h4 id="hello">Hello</h4>
 <p>Saying hello is important.</p>
-<p><img alt="Hello" src="../../img/hi_hello.gif" /></p>
+<p><img alt="Hello" src="../../../img/hi_hello.gif" /></p>
 <h4 id="thanks">Thanks</h4>
 <p>A little politeness goes a long way.</p>
-<p><img alt="Thanks" src="../../img/thanks.gif" /></p>
+<p><img alt="Thanks" src="../../../img/thanks.gif" /></p>
 <h4 id="cookies">Cookies</h4>
 <p>We promised silly.</p>
-<p><img alt="Cookies" src="../../img/cookies.gif" /></p>
+<p><img alt="Cookies" src="../../../img/cookies.gif" /></p>
 <h4 id="thats-what-she-said">That's what she said.</h4>
 <p>Because seriously, bro. Read some awesome thought-provoking quotes, instead.</p>
-<p><img alt="She Said" src="../../img/shesaid.gif" /></p>
+<p><img alt="She Said" src="../../../img/shesaid.gif" /></p>
 <h4 id="love">Love</h4>
 <p>One day, you'll find yourself saying this.  The response will make your week.</p>
-<p><img alt="Love" src="../../img/love.gif" /></p>
+<p><img alt="Love" src="../../../img/love.gif" /></p>
 <h2 id="help">Help</h2>
 <h4 id="help_1">Help</h4>
 <p>Lists all the plugin commands with docstrings, bundled by module.</p>
-<p><img alt="Help, will" src="../../img/help.gif" /></p>
+<p><img alt="Help, will" src="../../../img/help.gif" /></p>
 <h4 id="programmer-help">Programmer help</h4>
 <p>List all regexes for registered <code>@hear</code> and <code>@respond_to</code> decorators.  This is what help used to be, and may be pulled in the near future.</p>
-<p><img alt="Programmer help" src="../../img/programmer_help.gif" /></p>
+<p><img alt="Programmer help" src="../../../img/programmer_help.gif" /></p>
 <h2 id="productivity">Productivity</h2>
+<h4 id="bitly">Bitly</h4>
+<p>If you want to shorten long URL using Bitly API, Will can do that for you in a few seconds:</p>
+<p><img alt="Bitly" src="../../../img/bitly.png" /></p>
 <h4 id="hangout">Hangout</h4>
 <p>If you've set a <code>HANGOUT_URL</code>, will will toss it in chat for you:</p>
-<p><img alt="Hangout" src="../../img/hangout.gif" /></p>
+<p><img alt="Hangout" src="../../../img/hangout.gif" /></p>
 <h4 id="image-me">Image me</h4>
 <p>Sometimes, a picture is worth a thousand words.</p>
-<p><img alt="Image me a crazy squirrel" src="../../img/image_me.gif" /></p>
+<p><img alt="Image me a crazy squirrel" src="../../../img/image_me.gif" /></p>
 <h4 id="remind-me">Remind me</h4>
 <p>This saves our bacon every day. Timeboxes meetings, helps people remember appointments, and enforces self-control.</p>
-<p><img alt="Remind me" src="../../img/remind_food.gif" /></p>
+<p><img alt="Remind me" src="../../../img/remind_food.gif" /></p>
 <p>Then, when it's 3pm, and I still haven't stopped coding to eat:</p>
-<p><img alt="Remind me" src="../../img/remind_then.gif" /></p>
+<p><img alt="Remind me" src="../../../img/remind_then.gif" /></p>
 <p>Or, more practically,</p>
-<p><img alt="Remind me" src="../../img/remind_client.gif" /></p>
+<p><img alt="Remind me" src="../../../img/remind_client.gif" /></p>
+<h4 id="remind-somebody">Remind somebody</h4>
+<p>You can also remind others as well.</p>
+<p><img alt="Remind somebody" src="../../../img/remind_somebody.gif" /></p>
 <h4 id="world-time">World time</h4>
 <p>We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you,</p>
 <ol>
 <li>Get a free <code>WORLD_WEATHER_ONLINE_V2_KEY</code> from <a href="http://developer.worldweatheronline.com">world weather online</a>.</li>
 <li>Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.</li>
 </ol>
-<p><img alt="World time" src="../../img/world_time.gif" /></p>
+<p><img alt="World time" src="../../../img/world_time.gif" /></p>
+<h2 id="version">Version</h2>
+<p>Provides information about the release version of @will.</p>
+<ul>
+<li><strong>@will version</strong>: Show the current running version.</li>
+</ul>
 <h2 id="web">Web</h2>
 <p>This module's all about web-facing content.</p>
 <h4 id="home-page">Home page</h4>
 <p>Will also includes a home page, so you can fire him, up, browse to his URL, and see his smiling face.</p>
-<p><img alt="Home page" src="../../img/home.png" /></p>
-<p>You now know everything about plugins.  Maybe you're wondering about the <a href="../../config/">finer points of config</a>?  Or perhaps, you're ready to <a href="../../deploy/">deploy your will</a>?</p>
-</div>
+<p><img alt="Home page" src="../../../img/home.png" /></p>
+<p>You now know everything about plugins.  Maybe you're wondering about the <a href="../../config/">finer points of config</a>?  Or perhaps, you're ready to <a href="../../deploy/">deploy your will</a>?</p></div>
         </div>
 
         

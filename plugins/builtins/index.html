@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/plugins/builtins/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
-        <title>Plugin Builtins - Will</title>
+        <title>Plugin Builtins</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -165,13 +176,17 @@
 <h2 id="storage">Storage</h2>
 <p>Will can remember almost any python object (using <a href="https://pypi.python.org/pypi/dill">dill</a>), even across reboots.</p>
 <p>It's as simple as:</p>
-<pre class="prettyprint well"><code class="python">self.save(&quot;my_key&quot;, &quot;my_value&quot;)
+<pre><code class="python">self.save(&quot;my_key&quot;, &quot;my_value&quot;)
 self.load(&quot;my_key&quot;, &quot;default value&quot;)
+</code></pre>
+
+<p>You can also save a value temporarily by setting the number of seconds before it expires:</p>
+<pre><code class="python">self.save(&quot;my_key&quot;, &quot;my_value&quot;, expire=10)
 </code></pre>
 
 <h2 id="template-rendering">Template rendering</h2>
 <p>Will includes <a href="http://jinja.pocoo.org/">Jinja</a> for powerful awesome template rendering.  To use it, just call <code>self.rendered_template()</code></p>
-<pre class="prettyprint well"><code class="python">self.rendered_template(template_name, context={})
+<pre><code class="python">self.rendered_template(template_name, context={})
 </code></pre>
 
 <ul>
@@ -179,7 +194,7 @@ self.load(&quot;my_key&quot;, &quot;default value&quot;)
 <li><strong><code>context</code></strong>: a dictionary to render the template with.</li>
 </ul>
 <p>You can use <code>rendered_template()</code> directly in a plugin,</p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;what are the rooms\?&quot;)
+<pre><code class="python">@respond_to(&quot;what are the rooms\?&quot;)
 def list_rooms(self, message):
     &quot;&quot;&quot;what are the rooms?: List all the rooms I know about.&quot;&quot;&quot;
     context = {&quot;rooms&quot;: self.available_rooms.values(),}
@@ -187,7 +202,7 @@ def list_rooms(self, message):
 </code></pre>
 
 <p>Or, you can stack it as a decorator.</p>
-<pre class="prettyprint well"><code class="python">@route(&quot;/&quot;)
+<pre><code class="python">@route(&quot;/&quot;)
 @rendered_template(&quot;home.html&quot;)
 def homepage_listener(self):
     return {}
@@ -201,7 +216,7 @@ def homepage_listener(self):
 </ul>
 <h2 id="help-and-documentation">Help and documentation</h2>
 <p>Just include a docstring, and your command will be included in @will help:</p>
-<pre class="prettyprint well"><code class="python">class BonjourPlugin(WillPlugin):
+<pre><code class="python">class BonjourPlugin(WillPlugin):
 
     @respond_to(&quot;bonjour&quot;)
     def say_bonjour_will(self, message):
@@ -209,22 +224,22 @@ def homepage_listener(self):
         self.reply(message, &quot;bonjour!&quot;)
 </code></pre>
 
-<p><img alt="Bonjour help" src="../../img/bonjour_help.gif" /></p>
+<p><img alt="Bonjour help" src="../../../img/bonjour_help.gif" /></p>
 <p>If you've <a href="../create/#what-about-that-awesome-help-text">organized your plugins in a module</a>, your plugin's help text will be grouped by module.</p>
-<p><img alt="Help, will" src="../../img/help.gif" /></p>
+<p><img alt="Help, will" src="../../../img/help.gif" /></p>
 <h2 id="access-settings-and-config">Access settings and config</h2>
 <p>Will takes care of passing in environment variables and config via the <code>settings</code> module.  To use it:</p>
 <p>config.py:</p>
-<pre class="prettyprint well"><code class="python">HELLO_MESSAGE = &quot;Bonjour from config.py&quot;
+<pre><code class="python">HELLO_MESSAGE = &quot;Bonjour from config.py&quot;
 </code></pre>
 
 <p>or, on the shell:</p>
-<pre class="prettyprint well"><code class="bash"># note the `WILL_` prefix
+<pre><code class="bash"># note the `WILL_` prefix
 export WILL_HELLO_MESSSAGE=&quot;Bonjour from the environment&quot;
 </code></pre>
 
 <p>then, in any plugin: </p>
-<pre class="prettyprint well"><code class="python">from will import settings
+<pre><code class="python">from will import settings
 
 class BonjourPlugin(WillPlugin):
 
@@ -234,7 +249,7 @@ class BonjourPlugin(WillPlugin):
 </code></pre>
 
 <p>You can also mark one or more settings as required for your plugin with the <code>require_settings</code> decorator, and they'll be checked on startup.</p>
-<pre class="prettyprint well"><code class="python">from will import settings
+<pre><code class="python">from will import settings
 
 class BonjourPlugin(WillPlugin):
 
@@ -245,10 +260,10 @@ class BonjourPlugin(WillPlugin):
 </code></pre>
 
 <p>When will starts up, he'll make sure they've been set:</p>
-<p><img alt="Verify settings" src="../../img/verify_settings.gif" /></p>
+<p><img alt="Verify settings" src="../../../img/verify_settings.gif" /></p>
 <h2 id="getting-a-rooms-history">Getting a room's history</h2>
 <p>Sometimes you'll want to retrieve a room's history. No problem - get the room's object, and the last 75 messages are sitting on <code>.history</code>.</p>
-<pre class="prettyprint well"><code class="python">class HistoryPlugin(WillPlugin):
+<pre><code class="python">class HistoryPlugin(WillPlugin):
 
     @respond_to(&quot;^get last message&quot;)
     def get_history(self, message):
@@ -257,7 +272,7 @@ class BonjourPlugin(WillPlugin):
 </code></pre>
 
 <p><code>.history</code> is pretty much what's returned from the <a href="https://www.hipchat.com/docs/apiv2/method/view_room_history">HipChat room history API</a> - the lone exception is that the date has been converted to a python datetime.</p>
-<pre class="prettyprint well"><code class="python">    {
+<pre><code class="python">    {
         u'from':{
             u'mention_name':u'First Last',
             u'id':xxxx,
@@ -287,15 +302,15 @@ class BonjourPlugin(WillPlugin):
 <p>Often, it's useful to be able to talk to will about time in natural language.  To make that easy, will includes the helper functions built on <a href="https://github.com/bear/parsedatetime">parsedatetime</a> and <a href="https://github.com/tehmaze/natural">natural</a>: <code>self.parse_natural_time</code> and <code>self.to_natural_day_and_time</code>.</p>
 <h3 id="parse_natural_time">parse_natural_time</h3>
 <p><code>self.parse_natural_time(time_string)</code> parses a textual time string, and returns a <code>datetime</code> object.</p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;remind me on (?P&lt;remind_time&gt;.*)&quot;)
+<pre><code class="python">@respond_to(&quot;remind me on (?P&lt;remind_time&gt;.*)&quot;)
 def remind_me_at(self, message, remind_time=None):
     parsed_time = self.parse_natural_time(remind_time)
 </code></pre>
 
-<p><img alt="Parse natural time" src="../../img/remind_trash.gif" /></p>
+<p><img alt="Parse natural time" src="../../../img/remind_trash.gif" /></p>
 <h3 id="to_natural_day_and_time">to_natural_day_and_time</h3>
 <p><code>self.to_natural_day_and_time(my_datetime)</code> converts a python <code>datetime</code> into a human-friendly string.</p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;show_reminders&quot;)
+<pre><code class="python">@respond_to(&quot;show_reminders&quot;)
 def remind_me_at(self, message, remind_time=None):
     reminders = self.load(&quot;reminders&quot;)
     for r in reminders:
@@ -303,8 +318,7 @@ def remind_me_at(self, message, remind_time=None):
         self.say(&quot;On %s&quot; % natural_time)
 </code></pre>
 
-<p>Now you've got the hang of how to write your own plugins - but before you reinvent the wheel, take a look at <a href="../bundled/">what plugins are included in will</a>!</p>
-</div>
+<p>Now you've got the hang of how to write your own plugins - but before you reinvent the wheel, take a look at <a href="../bundled/">what plugins are included in will</a>!</p></div>
         </div>
 
         

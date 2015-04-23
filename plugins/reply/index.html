@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/plugins/reply/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
-        <title>How Will Can Respond - Will</title>
+        <title>How Will Can Respond</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -166,16 +177,16 @@
 <p>Will can respond in a variety of ways, and since he's pure python, your imagination is the limit.</p>
 <h2 id="talk-to-the-room">Talk to the room</h2>
 <p>Like any normal person, will can talk to the chat room, or in 1-1 chats.  To talk to the room in your plugins, you'll want to use the <code>self.say()</code> method.</p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;bonjour&quot;)
+<pre><code class="python">@respond_to(&quot;bonjour&quot;)
 def say_bonjour_will(self, message):
     # Awesome stuff
     self.say(&quot;Bonjour!&quot;, message=message)
 </code></pre>
 
-<p><img alt="Bonjour!" src="../../img/only_bonjour.gif" /></p>
+<p><img alt="Bonjour!" src="../../../img/only_bonjour.gif" /></p>
 <p>Note that we pass <code>messsage</code> along.  This allows will to route his reply to the correct room.  Without it, he'll just speak to the <code>DEFAULT_ROOM</code>.</p>
 <p><code>say()</code> comes with a number of options, including color, html, and ping notify. </p>
-<pre class="prettyprint well"><code class="python">self.say(content, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
+<pre><code class="python">self.say(content, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
 
 <ul>
@@ -188,14 +199,14 @@ def say_bonjour_will(self, message):
 </ul>
 <h2 id="reply-with-a-mention">Reply with a mention</h2>
 <p>Sometimes you want will to ping you - that's where @name mentions are great.  To do those in will, you'll want to use <code>self.reply()</code></p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;^hi&quot;)   # Basic
+<pre><code class="python">@respond_to(&quot;^hi&quot;)   # Basic
 def hi(self, message):
     self.reply(message, &quot;hello, %s!&quot; % message.sender.nick)
 </code></pre>
 
-<p><img alt="Hi, Hello, username!" src="../../img/hi_hello.gif" /></p>
+<p><img alt="Hi, Hello, username!" src="../../../img/hi_hello.gif" /></p>
 <p>Note the order of arguments is different here, and <code>messsage</code> is required. All the options: </p>
-<pre class="prettyprint well"><code class="python">self.reply(message, content, html=False, color=&quot;green&quot;, notify=False)
+<pre><code class="python">self.reply(message, content, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
 
 <ul>
@@ -207,7 +218,7 @@ def hi(self, message):
 </ul>
 <h2 id="talk-to-the-room-from-a-webhook">Talk to the room from a webhook</h2>
 <p>When will recieves messages from webhooks and HTTP requests, he's still connected to chat, and you can use <code>.say()</code>. By default, he'll speak to <code>DEFAULT_ROOM</code>.</p>
-<pre class="prettyprint well"><code class="python">@route(&quot;/ping&quot;)
+<pre><code class="python">@route(&quot;/ping&quot;)
 def ping(self):
     self.say(&quot;PONG!&quot;)
 </code></pre>
@@ -215,13 +226,13 @@ def ping(self):
 <p>If you want to talk to a different room, you can pass in the <code>room</code> argument with one of the rooms from <code>self.available_rooms</code>.</p>
 <h2 id="send-an-email">Send an email</h2>
 <p>Will has one email backend at the moment, via <a href="http://www.mailgun.com">mailgun</a>.  If you've set <code>DEFAULT_FROM_EMAIL</code>, <code>MAILGUN_API_URL</code>, and <code>MAILGUN_API_KEY</code>, you can use <code>self.send_email()</code></p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;status report&quot;)
+<pre><code class="python">@respond_to(&quot;status report&quot;)
 def send_status_report(self):
     self.send_email(email_list=['jill@example.com'], subject=&quot;Here's the latest report&quot;, message=rendered_template(&quot;report.html&quot;, {}))
 </code></pre>
 
 <p>Here's all the options:</p>
-<pre class="prettyprint well"><code class="python">self.send_email(from_email=None, email_list=[], subject=&quot;&quot;, message=&quot;&quot;)
+<pre><code class="python">self.send_email(from_email=None, email_list=[], subject=&quot;&quot;, message=&quot;&quot;)
 </code></pre>
 
 <ul>
@@ -232,7 +243,7 @@ def send_status_report(self):
 </ul>
 <h2 id="schedule-a-reply-for-the-future">Schedule a reply for the future</h2>
 <p>Sometimes, you want will to make plans for the future.  That's where <code>self.schedule_say()</code> comes in handy.</p>
-<pre class="prettyprint well"><code class="python">@randomly(start_hour='10', end_hour='17', day_of_week=&quot;mon-fri&quot;, num_times_per_day=1)
+<pre><code class="python">@randomly(start_hour='10', end_hour='17', day_of_week=&quot;mon-fri&quot;, num_times_per_day=1)
 def walkmaster(self):
     now = datetime.datetime.now()
     in_5_minutes = now + datetime.timedelta(minutes=5)
@@ -242,7 +253,7 @@ def walkmaster(self):
 </code></pre>
 
 <p>The options are pretty much the same as <code>self.say</code>, with the addition of the <code>when</code> parameter.</p>
-<pre class="prettyprint well"><code class="python">self.schedule_say(content, when, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
+<pre><code class="python">self.schedule_say(content, when, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
 
 <ul>
@@ -256,7 +267,7 @@ def walkmaster(self):
 </ul>
 <h2 id="set-the-topic">Set the topic</h2>
 <p>Sometimes, it's good to give the conversation some direction.  Will can set the topic in hipchat using <code>self.set_topic()</code></p>
-<pre class="prettyprint well"><code class="python">import requests
+<pre><code class="python">import requests
 
 @respond_to(&quot;new topic&quot;)
 def give_us_somethin_to_talk_about(self, message):
@@ -266,7 +277,7 @@ def give_us_somethin_to_talk_about(self, message):
 </code></pre>
 
 <p>Note: you can't set the topic of a 1-1 chat. Will will complain politely.  All options:</p>
-<pre class="prettyprint well"><code class="python">self.set_topic(topic, message=None, room=None) 
+<pre><code class="python">self.set_topic(topic, message=None, room=None) 
 </code></pre>
 
 <ul>
@@ -286,8 +297,7 @@ def give_us_somethin_to_talk_about(self, message):
 <li>And the list goes on.</li>
 </ul>
 <p>Will is open-source, and PRs are very welcome.  If someone wants to write <code>self.send_sms()</code>, or anything else, it's all yours!</p>
-<p>Ready to make some plugins?  Check out <a href="../create/">how to create and organize plugins</a>.</p>
-</div>
+<p>Ready to make some plugins?  Check out <a href="../create/">how to create and organize plugins</a>.</p></div>
         </div>
 
         

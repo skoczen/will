@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/deploy/">
         <link rel="shortcut icon" href="../img/favicon.ico">
 
-        <title>Deploy - Will</title>
+        <title>Deploy</title>
 
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -160,7 +171,7 @@
 <p>Heroku is our recommended platform for deployment because it's simple, easy, and free. That's a tough combination to beat.  You're in no way locked in to running will on heroku, though - run him wherever you want!</p>
 <h4 id="step-1-set-up-your-heroku-app-and-a-redis-addon">Step 1: Set up your heroku app, and a redis addon.</h4>
 <p>Assuming you have the <a href="https://toolbelt.heroku.com/">heroku toolbelt</a> installed and all set up, it's as easy as this:</p>
-<pre class="prettyprint well"><code class="bash">heroku create our-will-name
+<pre><code class="bash">heroku create our-will-name
 heroku addons:add rediscloud
 </code></pre>
 
@@ -168,7 +179,7 @@ heroku addons:add rediscloud
 <h4 id="step-2-add-all-the-needed-environment-variables">Step 2: Add all the needed environment variables:</h4>
 <p>You'll want to take all the variables that live in your virtualenv's <code>postactivate</code> file that feed into your will environment, and provide them to your heroku app.</p>
 <p>At minimum, that's</p>
-<pre class="prettyprint well"><code class="bash">heroku config:set \
+<pre><code class="bash">heroku config:set \
 WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot; \
 WILL_USERNAME='12345_123456@chat.hipchat.com' \
 WILL_PASSWORD='asj2498q89dsf89a8df' \
@@ -176,27 +187,27 @@ WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
 </code></pre>
 
 <p>If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:</p>
-<pre class="prettyprint well"><code class="bash">heroku config:set WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
+<pre><code class="bash">heroku config:set WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
 </code></pre>
 
 <p>Finally, for will's schedule to be correct, you need to set him to the time zone you want:</p>
-<pre class="prettyprint well"><code class="bash">heroku config:set TZ=&quot;America/Los_Angeles&quot;
+<pre><code class="bash">heroku config:set TZ=&quot;America/Los_Angeles&quot;
 </code></pre>
 
 <p><strong>Note:</strong> You don't have to worry about setting the <code>REDIS_URL</code> or <code>HTTPSERVER_PORT</code>.  Will auto-detects those and takes care of it.</p>
 <h4 id="step-3-deploy">Step 3: Deploy!</h4>
 <p>You're all set to deploy your will. Ready? Go!</p>
-<pre class="prettyprint well"><code class="bash">git push heroku
+<pre><code class="bash">git push heroku
 </code></pre>
 
 <p>You app is now up on heroku.  Finally, turn it on!</p>
 <p><code>heroku scale web=1</code></p>
 <p>That should be it - head over to <a href="http://our-will-name.herokuapp.com">http://our-will-name.herokuapp.com</a>, and you should see will's smiling face.</p>
 <p>If so, pop into chat, and give a:</p>
-<p><img alt="Hi, Hello, username!" src="../img/hi_hello.gif" /></p>
+<p><img alt="Hi, Hello, username!" src="../../img/hi_hello.gif" /></p>
 <h4 id="deploying-future-updates">Deploying future updates</h4>
 <p>Just commit your updates, then</p>
-<pre class="prettyprint well"><code class="bash">git push heroku
+<pre><code class="bash">git push heroku
 </code></pre>
 
 <p>Simple.  For best-practices, see our continuous deployment recommendations below.</p>
@@ -206,7 +217,7 @@ WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
 <p>In your chosen deploy environment and setup, you'll want to do a couple things:</p>
 <h4 id="replicate-your-environment-settings">Replicate your environment settings</h4>
 <p>At minimum, that's:</p>
-<pre class="prettyprint well"><code class="bash">export WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot;
+<pre><code class="bash">export WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot;
 export WILL_USERNAME='12345_123456@chat.hipchat.com'
 export WILL_PASSWORD='asj2498q89dsf89a8df'
 export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
@@ -215,20 +226,20 @@ export WILL_HTTPSERVER_PORT='80'
 </code></pre>
 
 <p>If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:</p>
-<pre class="prettyprint well"><code class="bash">export WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
+<pre><code class="bash">export WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
 </code></pre>
 
 <p>You'll also need to set any environment variables for your plugins.</p>
 <h4 id="call-run_will-with-something-that-handles-restarts-and-crashes">Call run_will with something that handles restarts and crashes.</h4>
 <p>The command to kick off will is just:</p>
-<pre class="prettyprint well"><code>python run_will.py
+<pre><code>python run_will.py
 </code></pre>
 
 <p>You can run that with whatever supervisory process you'd like. Will's very, very stable, but having something that handles crashes is still a pretty good idea.</p>
 <h4 id="alternate-approach">Alternate approach</h4>
 <p>Ah, you say, but I have this crazy python-twisted-zope-node monolith that self-repairs mars and can do everything. Why do I need the shell at all?</p>
 <p>Answer, crazy monolith mars person: you don't.  Will is Just Python.</p>
-<pre class="prettyprint well"><code class="python">from will.main import WillBot
+<pre><code class="python">from will.main import WillBot
 
 bot = WillBot()
 bot.bootstrap()
@@ -242,8 +253,7 @@ bot.bootstrap()
 <h4 id="use-continuous-deployment">Use Continuous Deployment</h4>
 <p>Our stack is set up so that any pushes on will's master branch have tests run on <a href="http://circleci.com">CircleCI</a>, and if they pass, a new version is deployed to heroku immediately.  This has been delightful. Even though will has very, very minimal tests, we generally catch if things are horribly broken, and it's meant that adding new functionality to will takes minutes, sometimes seconds of developer time.</p>
 <p>Continuous Deployment has dramatically changed how we build and use will - instead of talking about "what if will did...", generally, people just implement it, push it, and play with it for real.  It's been a great place to be.  It might be for you too.</p>
-<p>That's it in getting your will up and running!   But maybe you're one of those people who wants to pitch in and make will even better. Awesome. Learn <a href="../improve/">how to improve will</a>.</p>
-</div>
+<p>That's it in getting your will up and running!   But maybe you're one of those people who wants to pitch in and make will even better. Awesome. Learn <a href="../improve/">how to improve will</a>.</p></div>
         </div>
 
         

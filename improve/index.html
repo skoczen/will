@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/improve/">
         <link rel="shortcut icon" href="../img/favicon.ico">
 
-        <title>Improve - Will</title>
+        <title>Improve</title>
 
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -203,7 +214,7 @@
 </ul>
 <h2 id="tests">Tests</h2>
 <p>Shamefully, tests are just getting rolling, and a proper, well-architected test harness is in the works. However, there are <em>some</em> tests you can run by running:</p>
-<pre class="prettyprint well"><code class="bash">coverage run -m nose
+<pre><code class="bash">coverage run -m nose
 </code></pre>
 
 <p>More soon!</p>
@@ -224,19 +235,23 @@
 <li><a href="https://github.com/adamgilman">adamgilman</a> gave you the friendly error messages when the hipchat key was invalid.</li>
 <li><a href="https://github.com/amckinley">amckinley</a> fixed a bug in the hipchat user list from missing params.</li>
 <li><a href="https://github.com/bfhenderson">bfhenderson</a> removed dependence on the v1 token, and made help more friendly.</li>
+<li><a href="https://github.com/brandonsturgeon">brandonsturgeon</a> jumped on hipchat's API-breaking change, and made will immune in a flash.</li>
 <li><a href="https://github.com/bsvetchine">bsvetchine</a> fixed a bug with README generation.</li>
 <li><a href="https://github.com/carsongee">carsongee</a> pooled your redis connections.</li>
 <li><a href="http://github.com/ckcollab">ckcollab</a> was one of the original contributors, when will was first built at GreenKahuna.</li>
 <li><a href="https://github.com/crccheck">crccheck</a> gave you friendly error messages if your <code>WILL_ROOMS</code> was wrong.</li>
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
+<li><a href="https://github.com/dmuntean">dmuntean</a> gave you proxy support.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
-<li><a href="jessamynsmith">jessamynsmith</a> was kind enough to port <a href="https://github.com/jessamynsmith">talkbackbot</a> over, at my request.</li>
+<li><a href="https://github.com/jessamynsmith">jessamynsmith</a> was kind enough to port <a href="https://github.com/jessamynsmith">talkbackbot</a> over, at my request, then kept it updated through version changes.</li>
+<li><a href="https://github.com/jquast">jquast</a> did the noble and oft unappreciated work of spelling fixes.</li>
+<li><a href="https://github.com/keNzej">keNzi</a> added shorten url function using bitly service.</li>
 <li><a href="http://github.com/levithomason">levithomason</a> was one of the original contributors, when will was first built at GreenKahuna.</li>
 <li><a href="http://github.com/hobson">hobson</a> made setup.py more robust across operating systems, and improved the docs.</li>
 <li><a href="https://github.com/neronmoon">neronmoon</a> made it easier to mention will with non-standard case</li>
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
 <li><a href="https://github.com/mrgrue">mrgrue</a> added support for the hipchat server beta.</li>
-<li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module.</li>
+<li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module, added an expire parameter to <code>self.save()</code>, and added support for will watching hipchat's status.</li>
 <li><a href="https://github.com/pcurry">pcurry</a> added travis support.</li>
 <li><a href="https://github.com/PrideRage">PrideRage</a> gave you access to a room's entire history, and suggested a better talkback regex.</li>
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
@@ -244,7 +259,7 @@
 <li><a href="https://github.com/sivy">sivy</a> added a config flag for disabling SSL, and the ability to look up a user by nickname.</li>
 <li><a href="https://github.com/tomokas">tomokas</a> fixed a bug in the <code>@randomly</code> decorator.</li>
 <li><a href="https://github.com/wohali">wohali</a> tracked down the annoying DNS thread issue, and got will on the right path.</li>
-<li><a href="https://github.com/woohgit">woohgit</a> added support for the v2 WorldWeatherOnline API, and fixed it when I broke it.</li>
+<li><a href="https://github.com/woohgit">woohgit</a> added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And "remind <strong><em> to </em></strong> at ___".  Awesome.</li>
 </ul>
 <h2 id="other-wills">Other Wills</h2>
 <p>If you're looking for plugin inspiration, here are some wills that are open-sourced:</p>
@@ -254,6 +269,23 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
+<h4 id="08-april-23-2015">0.8 - April 23, 2015</h4>
+<ul>
+<li>What happens when life gets busy and we go a full month and a half between will releases?  Lots and lots:</li>
+<li>New: All-new <code>@will who is in this room?</code> command, thanks to <a href="https://github.com/puug">puug</a>.</li>
+<li>New: Will now can shorten links via bitly, thanks to <a href="https://github.com/keNzi">keNzi</a>.</li>
+<li>New: Will now supports a <code>PROXY_URL</code> setting, for getting around funky firewalls, thanks to <a href="https://github.com/dmuntean">dmuntean</a>.</li>
+<li>New: <code>@will version</code> command to check version number, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>New: Awesome new <code>remind ___ to ___ at ___</code>, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>New: Will now keeps an eye on hipchat's uptime as well, thanks to <a href="https://github.com/netjunki">netjunki</a>.</li>
+<li>Fix: a breaking bug in the <code>@randomly</code> decorator, thanks to a report by <a href="https://github.com/camilonova">camilonova</a>.</li>
+<li>Support: Handles a breaking change in the hipchat API, thanks to <a href="https://github.com/brandonsturgeon">brandonsturgeon</a>.</li>
+<li>Support: Updates to v2 of the underquoted API, thanks <a href="https://github.com/jessamynsmith">jessamynsmith</a>.</li>
+<li>Support: Updated to the new WorldWeatherOnline endpoint, since they had DDOS problems, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Improvement: The most important kind of PRs.  Spelling fixes.  Many thanks to <a href="https://github.com/jquast">jquast</a>.</li>
+<li>Improvement: <code>self.save()</code> now accepts an <code>expire</code> value, thanks to <a href="https://github.com/netjunki">netjunki</a>.</li>
+<li>Improvement: PEP8 passes for the whole codebase, with flake8 added to automated tests.</li>
+</ul>
 <h4 id="073-march-3-2015">0.7.3 - March 3, 2015</h4>
 <ul>
 <li>Fixed a breaking bug to world time, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
@@ -409,8 +441,7 @@
 <li>
 <p>Make sure nothing from the readme is missed.</p>
 </li>
-</ul>
-</div>
+</ul></div>
         </div>
 
         

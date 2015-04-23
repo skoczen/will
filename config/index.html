@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/config/">
         <link rel="shortcut icon" href="../img/favicon.ico">
 
-        <title>Configure - Will</title>
+        <title>Configure</title>
 
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -183,12 +194,13 @@
 <li><code>LOGLEVEL</code>: What logging level to use,</li>
 <li><code>HIPCHAT_SERVER</code>: if you're using the <a href="https://www.hipchat.com/server">HipChat server beta</a>, the hostname of the server,</li>
 <li><code>ALLOW_INSECURE_HIPCHAT_SERVER</code>: the option to disable SSL checks (seriously, don't),</li>
+<li><code>PROXY_URL</code>: Proxy server to use, consider exporting it as <code>WILL_PROXY_URL</code> environment variable, if it contains sensitive information</li>
 <li>and all of your non-sensitive plugin settings.</li>
 </ul>
-<p>More expansive documenation on all of those settings is in <code>config.py</code>, right where you need it.</p>
+<p>More expansive documentation on all of those settings is in <code>config.py</code>, right where you need it.</p>
 <h2 id="how-environment-variables-and-configpy-are-combined">How environment variables and config.py are combined</h2>
 <p>The environment variables and config.py are combined, and made available to the rest of the app at:</p>
-<pre class="prettyprint well"><code class="python">from will import settings
+<pre><code class="python">from will import settings
 
 print settings.MY_SETTING_NAME
 </code></pre>
@@ -198,14 +210,13 @@ print settings.MY_SETTING_NAME
 <li>All environment variables that start with <code>WILL_</code> are imported, and <code>WILL_</code> is stripped off their name. (i.e. <code>WILL_PORT</code> becomes <code>PORT</code>)</li>
 <li>
 <p>All variables from <code>config.py</code> are imported.  If there is a conflict, <code>config.py</code> wins, and a message is displayed:</p>
-<p><img alt="Config Conflict" src="../img/config_conflict.gif" /></p>
+<p><img alt="Config Conflict" src="../../img/config_conflict.gif" /></p>
 </li>
 <li>
 <p>Some smart defaulting happens inside settings.py for important variables.  For the moment, I'm going to leave that out of the docs, and refer you to <code>settings.py</code> as I <em>believe</em> things should Just Work, and most people should never need to care.  If this decision's wrong, please open an issue, and these docs will be improved!</p>
 </li>
 </ol>
-<p>Thats's it for config.  Now, let's get your will <a href="../deploy/">deployed</a>!</p>
-</div>
+<p>That's it for config.  Now, let's get your will <a href="../deploy/">deployed</a>!</p></div>
         </div>
 
         

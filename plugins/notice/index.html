@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://skoczen.github.io/will/plugins/notice/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
-        <title>What Will Can Notice - Will</title>
+        <title>What Will Can Notice</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -23,6 +23,17 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
+        <style>
+            div.col-md-9 h1:first-of-type {
+                text-align: center;
+                font-size: 60px;
+                font-weight: 300;
+            }
+
+            div.col-md-9 p:first-of-type {
+                text-align: center;
+            }
+        </style>
         
     </head>
 
@@ -162,19 +173,19 @@
 <p>Will can notice a variety of things, and this list keeps growing.  When you want your will to pay attention to a particular thing, you'll use one of will's decorators - an example of each is below.</p>
 <h2 id="respond-to-direct-mentions">Respond to direct mentions</h2>
 <p>Simple enough - if you directly @will mention him in a message <em>or</em> send him a message in a 1-1 channel, he'll see these.  It's exactly what we used in the hello, world example.</p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;bonjour&quot;)
+<pre><code class="python">@respond_to(&quot;bonjour&quot;)
 def say_bonjour_will(self, message):
     # Awesome stuff
 </code></pre>
 
 <p>You can also use named matches in the regex:</p>
-<pre class="prettyprint well"><code class="python">@respond_to(&quot;award (?P&lt;num_stars&gt;\d)+ gold stars? to (?P&lt;mention_name&gt;.*)&quot;)
+<pre><code class="python">@respond_to(&quot;award (?P&lt;num_stars&gt;\d)+ gold stars? to (?P&lt;mention_name&gt;.*)&quot;)
 def gold_stars(self, message, num_stars=1, mention_name=None):
     # Fantastic gold-starness
 </code></pre>
 
 <p><code>@respond_to</code> takes a number of options:</p>
-<pre class="prettyprint well"><code class="python">@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+<pre><code class="python">@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
 </code></pre>
 
 <ul>
@@ -187,13 +198,13 @@ def gold_stars(self, message, num_stars=1, mention_name=None):
 <p>&nbsp; </p>
 <h2 id="hear-in-any-message">Hear in any message</h2>
 <p>Sometimes, you want will to take actions when he sees things in everyday conversation, even if it wasn't directly addressed to him.  That's what <code>@hear()</code> is for.</p>
-<pre class="prettyprint well"><code class="python">@hear(&quot;(?:ran into )?a bug&quot;)
+<pre><code class="python">@hear(&quot;(?:ran into )?a bug&quot;)
 def log_all_bugs(self, message):
     # Awesome stuff
 </code></pre>
 
 <p><code>@hear</code> takes a the same options as <code>respond_to</code>:</p>
-<pre class="prettyprint well"><code class="python">@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+<pre><code class="python">@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
 </code></pre>
 
 <ul>
@@ -206,7 +217,7 @@ def log_all_bugs(self, message):
 <p>&nbsp; </p>
 <h2 id="take-an-action-on-a-schedule">Take an action on a schedule</h2>
 <p>It's one of the best things about robots - they never, ever forget.  Will's no exception.  The <code>@periodic</code> decorator makes scheduled tasks simple.</p>
-<pre class="prettyprint well"><code class="python">@periodic(hour='10', minute='0', day_of_week=&quot;mon-fri&quot;)
+<pre><code class="python">@periodic(hour='10', minute='0', day_of_week=&quot;mon-fri&quot;)
 def standup(self):
     self.say(&quot;@all Standup! %s&quot; % settings.WILL_HANGOUT_URL)
 </code></pre>
@@ -236,7 +247,7 @@ def standup(self):
 <p>Awesome, right?</p>
 <h2 id="handle-webhooks-and-web-pages">Handle webhooks and web pages</h2>
 <p>That's right. Will's also a full-fledged webserver under the hood, thanks to <a href="http://bottlepy.org">bottle</a>.  Using <code>@route</code>, he can handle webhooks, talk to chat, and render full HTML pages.</p>
-<pre class="prettyprint well"><code class="python"># Simple
+<pre><code class="python"># Simple
 @route(&quot;/ping&quot;)
 def ping(self):
     return &quot;PONG&quot;
@@ -264,13 +275,13 @@ def complex_page(self, page_id):
 
 <h2 id="do-things-randomly">Do things randomly</h2>
 <p>Variety is the spice of life, and nobody wants a robot without at least a <em>little</em> personality.  So, will's <code>@randomly</code> decorator allows you to specify actions that happen randomly, within a given window.</p>
-<pre class="prettyprint well"><code class="python">@randomly(start_hour='10', end_hour='17', day_of_week=&quot;mon-fri&quot;, num_times_per_day=1)
+<pre><code class="python">@randomly(start_hour='10', end_hour='17', day_of_week=&quot;mon-fri&quot;, num_times_per_day=1)
 def walkmaster(self):
     self.say(&quot;@all time for a walk!&quot;)
 </code></pre>
 
 <p><code>@randomly</code> accepts a few arguments:</p>
-<pre class="prettyprint well"><code class="python">@randomly(start_hour=0, end_hour=23, day_of_week=&quot;*&quot;, num_times_per_day=1):
+<pre><code class="python">@randomly(start_hour=0, end_hour=23, day_of_week=&quot;*&quot;, num_times_per_day=1):
 </code></pre>
 
 <ul>
@@ -279,8 +290,7 @@ def walkmaster(self):
 <li><strong><code>day_of_week</code></strong>:  What days of the week is the window available? Parsed with <a href="http://apscheduler.readthedocs.org/en/latest/cronschedule.html#available-fields">apscheduler</a>.</li>
 <li><strong><code>num_times_per_day</code></strong>:  How many times per day within the window, should actions happen?</li>
 </ul>
-<p>Now that you've got a handle on the things will can notice, let's take a look at <a href="../reply/">the ways he can respond</a>.</p>
-</div>
+<p>Now that you've got a handle on the things will can notice, let's take a look at <a href="../reply/">the ways he can respond</a>.</p></div>
         </div>
 
         
