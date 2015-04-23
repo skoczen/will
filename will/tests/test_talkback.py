@@ -32,7 +32,7 @@ class TestTalkBackPlugin(unittest.TestCase):
 
     @patch('requests.get')
     def test_get_quote_invalid_response_format(self, mock_get):
-        data = {'text': 'Hi!', 'author': {'name': 'An'}}
+        data = {'text': 'Hi!', 'author': 'An'}
         mock_json = MagicMock(return_value=data)
         mock_get.return_value = MagicMock(status_code=200, json=mock_json)
 
@@ -44,7 +44,7 @@ class TestTalkBackPlugin(unittest.TestCase):
 
     @patch('requests.get')
     def test_get_quote_success(self, mock_get):
-        data = {'objects': [{'text': 'Hi!', 'author': {'name': 'An'}}]}
+        data = {'results': [{'text': 'Hi!', 'author': 'An'}]}
         mock_json = MagicMock(return_value=data)
         mock_get.return_value = MagicMock(status_code=200, json=mock_json)
 
@@ -68,7 +68,7 @@ class TestTalkBackPlugin(unittest.TestCase):
     @patch('will.plugin.WillPlugin.reply')
     @patch('requests.get')
     def test_talk_back_success(self, mock_get, mock_reply):
-        data = {'objects': [{'text': 'Hi!', 'author': {'name': 'An'}}]}
+        data = {'results': [{'text': 'Hi!', 'author': 'An'}]}
         mock_json = MagicMock(return_value=data)
         mock_get.return_value = MagicMock(status_code=200, json=mock_json)
 
