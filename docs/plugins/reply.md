@@ -14,7 +14,7 @@ def say_bonjour_will(self, message):
     self.say("Bonjour!", message=message)
 ```
 
-![Bonjour!](../../img/only_bonjour.gif)
+![Bonjour!](../img/only_bonjour.gif)
 
 Note that we pass `messsage` along.  This allows will to route his reply to the correct room.  Without it, he'll just speak to the `DEFAULT_ROOM`.
 
@@ -41,7 +41,7 @@ def hi(self, message):
     self.reply(message, "hello, %s!" % message.sender.nick)
 ```
 
-![Hi, Hello, username!](../../img/hi_hello.gif)
+![Hi, Hello, username!](../img/hi_hello.gif)
 
 Note the order of arguments is different here, and `messsage` is required. All the options: 
 

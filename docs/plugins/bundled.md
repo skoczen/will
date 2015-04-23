@@ -15,13 +15,13 @@ This plugin pings will once a minute at `PUBLIC_URL`, making sure his processes 
 
 He's a robot. He should respond to ping. :)
 
-![Ping](../../img/ping.gif)
+![Ping](../img/ping.gif)
 
 #### Say
 
 This provides a web endpoint at `/say/some-phrase` that will will speak into `DEFAULT_ROOM`.  Helpful for pay-no-attention-to-the-hand-behind-the-curtain demos.
 
-![Say](../../img/say.gif)
+![Say](../img/say.gif)
 
 #### Storage
 
@@ -82,31 +82,31 @@ Will responds to "good morning", and "good night" appropriately, if he hears it.
 
 Saying hello is important.
 
-![Hello](../../img/hi_hello.gif)
+![Hello](../img/hi_hello.gif)
 
 #### Thanks
 
 A little politeness goes a long way.
 
-![Thanks](../../img/thanks.gif)
+![Thanks](../img/thanks.gif)
 
 #### Cookies
 
 We promised silly.
 
-![Cookies](../../img/cookies.gif)
+![Cookies](../img/cookies.gif)
 
 #### That's what she said.
 
 Because seriously, bro. Read some awesome thought-provoking quotes, instead.
 
-![She Said](../../img/shesaid.gif)
+![She Said](../img/shesaid.gif)
 
 #### Love
 
 One day, you'll find yourself saying this.  The response will make your week.
 
-![Love](../../img/love.gif)
+![Love](../img/love.gif)
 
 
 ## Help
@@ -115,13 +115,13 @@ One day, you'll find yourself saying this.  The response will make your week.
 
 Lists all the plugin commands with docstrings, bundled by module.
 
-![Help, will](../../img/help.gif)
+![Help, will](../img/help.gif)
 
 #### Programmer help
 
 List all regexes for registered `@hear` and `@respond_to` decorators.  This is what help used to be, and may be pulled in the near future.
 
-![Programmer help](../../img/programmer_help.gif)
+![Programmer help](../img/programmer_help.gif)
 
 ## Productivity
 
@@ -129,40 +129,40 @@ List all regexes for registered `@hear` and `@respond_to` decorators.  This is w
 
 If you want to shorten long URL using Bitly API, Will can do that for you in a few seconds:
 
-![Bitly](../../img/bitly.png)
+![Bitly](../img/bitly.png)
 
 #### Hangout
 
 If you've set a `HANGOUT_URL`, will will toss it in chat for you:
 
-![Hangout](../../img/hangout.gif)
+![Hangout](../img/hangout.gif)
 
 #### Image me
 
 Sometimes, a picture is worth a thousand words.
 
-![Image me a crazy squirrel](../../img/image_me.gif)
+![Image me a crazy squirrel](../img/image_me.gif)
 
 #### Remind me
 
 This saves our bacon every day. Timeboxes meetings, helps people remember appointments, and enforces self-control.
 
-![Remind me](../../img/remind_food.gif)
+![Remind me](../img/remind_food.gif)
 
 Then, when it's 3pm, and I still haven't stopped coding to eat:
 
-![Remind me](../../img/remind_then.gif)
+![Remind me](../img/remind_then.gif)
 
 Or, more practically,
 
-![Remind me](../../img/remind_client.gif)
+![Remind me](../img/remind_client.gif)
 
 
 #### Remind somebody
 
 You can also remind others as well.
 
-![Remind somebody](../../img/remind_somebody.gif)
+![Remind somebody](../img/remind_somebody.gif)
 
 
 #### World time
@@ -172,7 +172,7 @@ We're a remote company. Maybe you are too. Or your clients are.  Or the light/da
 1. Get a free `WORLD_WEATHER_ONLINE_V2_KEY` from [world weather online](http://developer.worldweatheronline.com).
 2. Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.
 
-![World time](../../img/world_time.gif)
+![World time](../img/world_time.gif)
 
 ## Version
 
@@ -187,7 +187,7 @@ This module's all about web-facing content.
 #### Home page
 Will also includes a home page, so you can fire him, up, browse to his URL, and see his smiling face.
 
-![Home page](../../img/home.png)
+![Home page](../img/home.png)
 
 
 You now know everything about plugins.  Maybe you're wondering about the [finer points of config](../config.md)?  Or perhaps, you're ready to [deploy your will](../deploy.md)?
