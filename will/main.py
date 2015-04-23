@@ -174,9 +174,11 @@ To set your %(name)s:
             },
             {
                 "name": "WILL_PASSWORD",
-                "obtain_at": "1. Go to hipchat, and create a new user for will.  "
-                "Note that password - this is the value you want. "
-                "It's used for signing in via XMPP.",
+                "obtain_at": (
+                    "1. Go to hipchat, and create a new user for will.  "
+                    "Note that password - this is the value you want. "
+                    "It's used for signing in via XMPP."
+                ),
             },
             {
                 "name": "WILL_V2_TOKEN",
@@ -267,8 +269,10 @@ To set your %(name)s:
         with indent(2):
             for name, meta in self.required_settings_from_plugins.items():
                 if not hasattr(settings, name):
-                    error_message = "%(setting_name)s is missing. "
-                    "It's required by the %(plugin_name)s plugin's '%(function_name)s' method." % meta
+                    error_message = (
+                        "%(setting_name)s is missing. It's required by the"
+                        "%(plugin_name)s plugin's '%(function_name)s' method."
+                    ) % meta
                     puts(colored.red("✗ %(setting_name)s" % meta))
                     missing_setting_error_messages.append(error_message)
                     missing_settings = True
