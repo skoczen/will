@@ -167,6 +167,12 @@ We're a remote company. Maybe you are too. Or your clients are.  Or the light/da
 
 ![World time](../../img/world_time.gif)
 
+## Version
+
+Provides information about the release version of @will.
+
+- **@will version**: Show the current running version.
+
 ## Web
 
 This module's all about web-facing content.

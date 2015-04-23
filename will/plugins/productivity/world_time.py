@@ -23,12 +23,12 @@ class TimePlugin(WillPlugin):
         else:
             if hasattr(settings, "WORLD_WEATHER_ONLINE_V2_KEY"):
                 r = requests.get(
-                    "http://api.worldweatheronline.com/free/v2/tz.ashx?q=%s&format=json&key=%s" %
+                    "http://api2.worldweatheronline.com/free/v2/tz.ashx?q=%s&format=json&key=%s" %
                     (place, settings.WORLD_WEATHER_ONLINE_V2_KEY)
                 )
             elif hasattr(settings, "WORLD_WEATHER_ONLINE_KEY"):
                 r = requests.get(
-                    "http://api.worldweatheronline.com/free/v1/tz.ashx?q=%s&format=json&key=%s" %
+                    "http://api2.worldweatheronline.com/free/v1/tz.ashx?q=%s&format=json&key=%s" %
                     (place, settings.WORLD_WEATHER_ONLINE_KEY)
                 )
             resp = r.json()
