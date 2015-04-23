@@ -126,19 +126,20 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 0.8 - April 23, 2015
 
-* Fixed a breaking bug in the `@randomly` decorator, thanks to a report by [camilonova](https://github.com/camilonova).
-* Handles a breaking change in the hipchat API, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
-* Updates to v2 of the underquoted API, thanks [jessamynsmith](https://github.com/jessamynsmith).
-* All-new `@will who is in this room?` command, thanks to [puug](https://github.com/puug).
-* The most important kind of PRs.  Spelling fixes.  Many thanks to [jquast](https://github.com/jquast).
-* Will now can shorten links via bitly, thanks to [keNzi](https://github.com/keNzi).
-* Will now supports a `PROXY_URL` setting, for getting around funky firewalls, thanks to [dmuntean](https://github.com/dmuntean).
-* Updated to the new WorldWeatherOnline endpoint, since they had DDOS problems, thanks to [woohgit](https://github.com/woohgit).
-* New `@will version` command to check version number, thanks to [woohgit](https://github.com/woohgit).
-* `self.save()` now accepts an `expire` value, thanks to [netjunki](https://github.com/netjunki).
-* Awesome new `remind ___ to ___ at ___`, thanks to [woohgit](https://github.com/woohgit).
-* Will now keeps an eye on hipchat's uptime as well, thanks to [netjunki](https://github.com/netjunki).
-* PEP8 support, with flake8 added to automated tests.
+* What happens when life gets busy and we go a full month and a half between will releases?  Lots and lots:
+* New: All-new `@will who is in this room?` command, thanks to [puug](https://github.com/puug).
+* New: Will now can shorten links via bitly, thanks to [keNzi](https://github.com/keNzi).
+* New: Will now supports a `PROXY_URL` setting, for getting around funky firewalls, thanks to [dmuntean](https://github.com/dmuntean).
+* New: `@will version` command to check version number, thanks to [woohgit](https://github.com/woohgit).
+* New: Awesome new `remind ___ to ___ at ___`, thanks to [woohgit](https://github.com/woohgit).
+* New: Will now keeps an eye on hipchat's uptime as well, thanks to [netjunki](https://github.com/netjunki).
+* Fix: a breaking bug in the `@randomly` decorator, thanks to a report by [camilonova](https://github.com/camilonova).
+* Support: Handles a breaking change in the hipchat API, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
+* Support: Updates to v2 of the underquoted API, thanks [jessamynsmith](https://github.com/jessamynsmith).
+* Support: Updated to the new WorldWeatherOnline endpoint, since they had DDOS problems, thanks to [woohgit](https://github.com/woohgit).
+* Improvement: The most important kind of PRs.  Spelling fixes.  Many thanks to [jquast](https://github.com/jquast).
+* Improvement: `self.save()` now accepts an `expire` value, thanks to [netjunki](https://github.com/netjunki).
+* Improvement: PEP8 passes for the whole codebase, with flake8 added to automated tests.
 
 #### 0.7.3 - March 3, 2015
 
