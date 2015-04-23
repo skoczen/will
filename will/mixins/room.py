@@ -23,6 +23,19 @@ class Room(Bunch):
             item['date'] = datetime.strptime(item['date'][:-13], "%Y-%m-%dT%H:%M:%S")
         return data
 
+    @property
+    def participants(self):
+        payload = {"auth_token": settings.V2_TOKEN}
+        room_id = int(self['id'])
+        response = requests.get("https://{1}/v2/room/{0}/participant".format(str(room_id),
+                                                                         settings.HIPCHAT_SERVER),
+                                params=payload, **settings.REQUESTS_OPTIONS).json()
+        data = response['items']
+        while 'next' in response['links']:
+            response = requests.get(response['links']['next'],
+                                    params=payload, **settings.REQUESTS_OPTIONS).json()
+            data.extend(response['items'])
+        return data
 
 class RoomMixin(object):
     def update_available_rooms(self, q=None):
