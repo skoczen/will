@@ -35,7 +35,7 @@ Config.py is where all of your non-sensitive settings should go.   This includes
 - `ALLOW_INSECURE_HIPCHAT_SERVER`: the option to disable SSL checks (seriously, don't),
 - and all of your non-sensitive plugin settings.
 
-More expansive documenation on all of those settings is in `config.py`, right where you need it.
+More expansive documentation on all of those settings is in `config.py`, right where you need it.
 
 ## How environment variables and config.py are combined
 
@@ -56,7 +56,7 @@ The rules for combining are fairly straightforward:
 
 3. Some smart defaulting happens inside settings.py for important variables.  For the moment, I'm going to leave that out of the docs, and refer you to `settings.py` as I *believe* things should Just Work, and most people should never need to care.  If this decision's wrong, please open an issue, and these docs will be improved!
 
-Thats's it for config.  Now, let's get your will [deployed](deploy.md)!
+That's it for config.  Now, let's get your will [deployed](deploy.md)!
 
 
 

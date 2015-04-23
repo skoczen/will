@@ -95,14 +95,15 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
             self.last_random_schedule = now
             self._clear_random_tasks()
             for plugin_info, fn, function_name in self.bot.random_tasks:
+                meta = fn.will_fn_metadata
                 self.add_random_tasks(
                     plugin_info["full_module_name"],
                     plugin_info["name"],
                     function_name,
-                    fn.start_hour,
-                    fn.end_hour,
-                    fn.day_of_week,
-                    fn.num_times_per_day
+                    meta.start_hour,
+                    meta.end_hour,
+                    meta.day_of_week,
+                    meta.num_times_per_day
                 )
         try:
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
