@@ -92,6 +92,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
+- [dmuntean](https://github.com/dmuntean) gave you proxy support.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [jessamynsmith](https://github.com/jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
 - [jquast](https://github.com/jquast) did the noble and oft unappreciated work of spelling fixes.
@@ -109,7 +110,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.
 
 ## Other Wills
 
@@ -131,7 +132,10 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 * All-new `@will who is in this room?` command, thanks to [puug](https://github.com/puug).
 * The most important kind of PRs.  Spelling fixes.  Many thanks to [jquast](https://github.com/jquast).
 * Will now can shorten links via bitly, thanks to [keNzi](https://github.com/keNzi).
-
+* Will now supports a `PROXY_URL` setting, for getting around funky firewalls, thanks to [dmuntean](https://github.com/dmuntean).
+* Updated to the new WorldWeatherOnline endpoint, since they had DDOS problems, thanks to [woohgit](https://github.com/woohgit).
+* New `@will version` command to check version number, thanks to [woohgit](https://github.com/woohgit).
+* `self.save()` now accepts an `expire` value, thanks to [netjunki](https://github.com/netjunki).
 
 #### 0.7.3 - March 3, 2015
 
