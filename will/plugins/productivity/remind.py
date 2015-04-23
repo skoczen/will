@@ -26,11 +26,12 @@ class RemindPlugin(WillPlugin):
         parsed_time = self.parse_natural_time(remind_time)
         natural_datetime = self.to_natural_day_and_time(parsed_time)
 
-        formatted_reminder_text = "@%(reminder_recipient)s, %(from_handle)s asked me to remind you %(reminder_text)s" % {
-            "reminder_recipient": reminder_recipient,
-            "from_handle": message.sender.nick,
-            "reminder_text": reminder_text,
-        }
+        formatted_reminder_text = \
+            "@%(reminder_recipient)s, %(from_handle)s asked me to remind you %(reminder_text)s" % {
+                "reminder_recipient": reminder_recipient,
+                "from_handle": message.sender.nick,
+                "reminder_text": reminder_text,
+            }
 
         self.schedule_say(formatted_reminder_text, parsed_time, message=message)
         self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)

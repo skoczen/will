@@ -138,6 +138,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 * `self.save()` now accepts an `expire` value, thanks to [netjunki](https://github.com/netjunki).
 * Awesome new `remind ___ to ___ at ___`, thanks to [woohgit](https://github.com/woohgit).
 * Will now keeps an eye on hipchat's uptime as well, thanks to [netjunki](https://github.com/netjunki).
+* PEP8 support, with flake8 added to automated tests.
 
 #### 0.7.3 - March 3, 2015
 

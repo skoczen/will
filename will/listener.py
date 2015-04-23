@@ -133,7 +133,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
             or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)
             # we're in group chat and I didn't send it
             or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
-            ):
+        ):
                 body = msg["body"]
 
                 sent_directly_to_me = False
@@ -150,7 +150,8 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
                 for l in self.message_listeners:
                     search_matches = l["regex"].search(body)
-                    if (search_matches  # The search regex matches and
+                    if (
+                            search_matches  # The search regex matches and
                             # It's not from me, or this search includes me, and
                             and (msg['mucnick'] != self.nick or l["include_me"])
                             # I'm mentioned, or this is an overheard, or we're in a 1-1
@@ -158,7 +159,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                                  self.handle_regex.search(body) or sent_directly_to_me)
                             # It's from admins only and sender is an admin, or it's not from admins only
                             and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
-                        ):
+                    ):
                         try:
                             thread_args = [msg, ] + l["args"]
 
@@ -166,7 +167,11 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                                 try:
                                     listener["fn"](*args, **kwargs)
                                 except:
-                                    content = "I ran into trouble running %s.%s:\n\n%s" % (listener["class_name"], listener["function_name"], traceback.format_exc(),)
+                                    content = "I ran into trouble running %s.%s:\n\n%s" % (
+                                        listener["class_name"],
+                                        listener["function_name"],
+                                        traceback.format_exc(),
+                                    )
 
                                     if msg is None or msg["type"] == "groupchat":
                                         if msg.sender and "nick" in msg.sender:
@@ -178,4 +183,9 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                             thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
                             thread.start()
                         except:
-                            logging.critical("Error running %s.  \n\n%s\nContinuing...\n" % (l["function_name"], traceback.format_exc() ))
+                            logging.critical(
+                                "Error running %s.  \n\n%s\nContinuing...\n" % (
+                                    l["function_name"],
+                                    traceback.format_exc()
+                                )
+                            )
