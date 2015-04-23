@@ -1,6 +1,7 @@
 import os
 from utils import show_valid, warn, error, note
 from clint.textui import puts, indent, columns
+from urlparse import urlparse
 
 
 def import_settings(quiet=True):
@@ -33,6 +34,15 @@ def import_settings(quiet=True):
     else:
         settings["HIPCHAT_SERVER"] = "api.hipchat.com"
 
+    if "PROXY_URL" in settings:
+        parsed_proxy_url = urlparse(settings["PROXY_URL"])
+        settings["USE_PROXY"] = True
+        settings["PROXY_HOSTNAME"] = parsed_proxy_url.hostname
+        settings["PROXY_USERNAME"] = parsed_proxy_url.username
+        settings["PROXY_PASSWORD"] = parsed_proxy_url.password
+        settings["PROXY_PORT"] = parsed_proxy_url.port
+    else:
+        settings["USE_PROXY"] = False
     # Import from config
     if not quiet:
         puts("Importing config.py... ")

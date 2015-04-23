@@ -15,6 +15,15 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         logger = logging.getLogger(__name__)
         ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
 
+        if settings.USE_PROXY:
+            self.use_proxy = True
+            self.proxy_config = {
+                'host': settings.PROXY_HOSTNAME,
+                'port': settings.PROXY_PORT,
+                'username': settings.PROXY_USERNAME,
+                'passsword': settings.PROXY_PASSWORD,
+            }
+
         self.rooms = []
         self.default_room = settings.DEFAULT_ROOM
 
