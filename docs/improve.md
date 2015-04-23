@@ -125,6 +125,10 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 ## Releases
 
 
+#### 0.8.1 - April 23, 2015
+
+* Moves `version` plugin into admin, so it just works for most users.
+
 #### 0.8 - April 23, 2015
 
 * What happens when life gets busy and we go a full month and a half between will releases?  Lots and lots:
