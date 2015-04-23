@@ -14,3 +14,10 @@ class RoomsPlugin(WillPlugin):
     def update_rooms(self, message):
         self.update_available_rooms()
         self.say("Done!", message=message)
+
+    @respond_to("who is in this room\?")
+    def participants_in_room(self, message):
+        """who is in this room?: List all the participants of this room."""
+        room = self.get_room_from_message(message)
+        context = {"participants": room.participants, }
+        self.say(rendered_template("participants.html", context), message=message, html=True)
