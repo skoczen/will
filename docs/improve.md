@@ -120,6 +120,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 ## Releases
 
 
+#### 0.8 - April 23, 2015
+
+* Fixed a breaking bug in the `@randomly` decorator, thanks to a report by [camilonova](https://github.com/camilonova).
+
+
 #### 0.7.3 - March 3, 2015
 
 * Fixed a breaking bug to world time, thanks to [woohgit](https://github.com/woohgit).
