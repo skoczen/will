@@ -102,7 +102,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
-- [netjunkie](https://github.com/netjunki) fixed a duplicated help module.
+- [netjunkie](https://github.com/netjunki) fixed a duplicated help module, added an expire parameter to `self.save()`, and added support for will watching hipchat's status.
 - [pcurry](https://github.com/pcurry) added travis support.
 - [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history, and suggested a better talkback regex.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
@@ -110,7 +110,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And "remind ___ to ___ at ___".  Awesome.
 
 ## Other Wills
 
@@ -137,6 +137,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 * New `@will version` command to check version number, thanks to [woohgit](https://github.com/woohgit).
 * `self.save()` now accepts an `expire` value, thanks to [netjunki](https://github.com/netjunki).
 * Awesome new `remind ___ to ___ at ___`, thanks to [woohgit](https://github.com/woohgit).
+* Will now keeps an eye on hipchat's uptime as well, thanks to [netjunki](https://github.com/netjunki).
 
 #### 0.7.3 - March 3, 2015
 
