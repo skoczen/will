@@ -93,7 +93,8 @@ Will's also has had help from lots of coders. Alphabetically:
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
-- [jessamynsmith](jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
+- [jessamynsmith](https://github.com/jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
+- [jquast](https://github.com/jquast) did the noble and oft unappreciated work of spelling fixes.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
@@ -126,6 +127,9 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 * Fixed a breaking bug in the `@randomly` decorator, thanks to a report by [camilonova](https://github.com/camilonova).
 * Handles a breaking change in the hipchat API, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
 * Updates to v2 of the underquoted API, thanks [jessamynsmith](https://github.com/jessamynsmith).
+* All-new `@will who is in this room?` command, thanks to [puug](https://github.com/puug).
+* The most important kind of PRs.  Spelling fixes.  Many thanks to [jquast](https://github.com/jquast).
+* Will now can shorten links via bitly, thanks to [keNzi](https://github.com/keNzi).
 
 
 #### 0.7.3 - March 3, 2015
