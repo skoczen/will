@@ -136,6 +136,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 * Updated to the new WorldWeatherOnline endpoint, since they had DDOS problems, thanks to [woohgit](https://github.com/woohgit).
 * New `@will version` command to check version number, thanks to [woohgit](https://github.com/woohgit).
 * `self.save()` now accepts an `expire` value, thanks to [netjunki](https://github.com/netjunki).
+* Awesome new `remind ___ to ___ at ___`, thanks to [woohgit](https://github.com/woohgit).
 
 #### 0.7.3 - March 3, 2015
 
