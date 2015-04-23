@@ -225,7 +225,7 @@ PLUGIN_BLACKLIST = [
 #     "levi",
 # ]
 
-# Disable SSL checks.  Strongly reccomended this is not set to True.
+# Disable SSL checks.  Strongly recommended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
 
 # Mailgun config, if you'd like will to send emails.
