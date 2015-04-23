@@ -158,6 +158,13 @@ Or, more practically,
 ![Remind me](../../img/remind_client.gif)
 
 
+#### Remind somebody
+
+You can also remind others as well.
+
+![Remind somebody](../../img/remind_somebody.gif)
+
+
 #### World time
 
 We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you,
