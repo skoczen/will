@@ -60,9 +60,10 @@ PLUGINS = [
 
 # Don't load any of the plugins in this list.  Same options as above.
 PLUGIN_BLACKLIST = [
-    # "will.plugins.friendly.cookies",       # But who would deprive will of cookies??
-    "will.plugins.productivity.hangout",     # Because it requires a HANGOUT_URL
-    "will.plugins.productivity.world_time",  # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
+    # "will.plugins.friendly.cookies",   # But who would deprive will of cookies??
+    "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
+    "will.plugins.productivity.world_time",   # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
+    "will.plugins.productivity.bitly"   # Because it requires a BITLY_ACCESS_TOKEN key
 ]
 
 
