@@ -46,7 +46,7 @@ class RoomMixin(object):
             rooms = resp.json()
 
             for room in rooms["items"]:
-                url = room["links"]["self"] + "/?auth_token=%s;expand=xmpp_jid" % (settings.V2_TOKEN,)
+                url = room["links"]["self"] + "?auth_token=%s;expand=xmpp_jid" % (settings.V2_TOKEN,)
                 room_details = requests.get(url, **settings.REQUESTS_OPTIONS).json()
                 # map missing hipchat API v1 data
                 for k, v in room_details.items():
