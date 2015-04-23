@@ -7,18 +7,23 @@ from sleekxmpp import ClientXMPP
 import settings
 from utils import Bunch
 from mixins import RosterMixin, RoomMixin, HipChatMixin
-from .xmpp_plugins import HipChatAuth
+from .xmpp_plugins import HipChatAuth, X_HIPCHAT
 import xmpp_plugins
-
+from sleekxmpp.util import bytes, hash, XOR, quote, num_to_bytes
+from sleekxmpp.util.sasl.client import sasl_mech, Mech, \
+                                       SASLCancelled, SASLFailed, \
+                                       SASLMutualAuthFailed
 
 logging.basicConfig(level=logging.DEBUG)
+
 
 
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def start_xmpp_client(self):
         logger = logging.getLogger(__name__)
-        ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
+        ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD, sasl_mech="X-HIPCHAT")
+        # self['feature_mechanisms'].unencrypted_plain = True
 
         self.rooms = []
         self.default_room = settings.DEFAULT_ROOM
@@ -49,11 +54,16 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
             self.add_event_handler('ssl_invalid_cert', lambda cert: True)
 
         self.register_plugin('HipChatAuth', module=xmpp_plugins)
+        # self.register_plugin('X_HIPCHAT', module=xmpp_plugins)
         self.add_event_handler("roster_update", self.join_rooms)
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
         self.register_plugin('xep_0045')  # MUC
+        # self.mech_list = ["X-HIPCHAT"]
+        # self['features'].mechanisms = ["X-HIPCHAT"]
+        # self['feature_mechanisms'].use_mech = "X-HIPCHAT"
+        # self['feature_mechanisms'].mech = X_HIPCHAT()
 
     def session_start(self, event):
         self.send_presence()

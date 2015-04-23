@@ -23,7 +23,7 @@ from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
 from scheduler import Scheduler
 import settings
 from utils import show_valid, error, warn, note, print_head
-
+from .xmpp_plugins import X_HIPCHAT
 
 # Force UTF8
 if sys.version_info < (3, 0):

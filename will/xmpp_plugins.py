@@ -10,7 +10,15 @@ from sleekxmpp.plugins import BasePlugin
 from sleekxmpp.xmlstream.matcher import MatchXPath
 from sleekxmpp.xmlstream.handler import Callback
 from sleekxmpp.features.feature_mechanisms import stanza
+
+
+from sleekxmpp.util import bytes, hash, XOR, quote, num_to_bytes
+from sleekxmpp.util.sasl.client import sasl_mech, Mech, \
+                                       SASLCancelled, SASLFailed, \
+                                       SASLMutualAuthFailed
 import settings
+
+
 
 log = logging.getLogger(__name__)
 
@@ -38,6 +46,37 @@ import base64
 
 from sleekxmpp.util import bytes
 from sleekxmpp.xmlstream import StanzaBase
+
+
+class CustomChallenge(StanzaBase):
+
+    """
+    """
+
+    name = 'success'
+    namespace = 'urn:ietf:params:xml:ns:xmpp-sasl'
+    interfaces = set(['value'])
+    plugin_attrib = name
+
+    def setup(self, xml):
+        print "setup"
+        StanzaBase.setup(self, xml)
+        self.xml.tag = self.tag_name()
+
+    def get_value(self):
+        print "get_value"
+        return base64.b64decode(bytes(self.xml.text))
+
+    def set_value(self, values):
+        print "set_value"
+        if values:
+            self.xml.text = bytes(base64.b64encode(values)).decode('utf-8')
+        else:
+            self.xml.text = '='
+
+    def del_value(self):
+        print "del_value"
+        self.xml.text = ''
 
 
 class CustomSuccess(StanzaBase):
@@ -123,17 +162,42 @@ class CustomAuth(stanza.Auth):
         self.xml.text = ''
 
 
+@sasl_mech(12)
+class X_HIPCHAT(Mech):
+
+    name = 'X-HIPCHAT'
+    # required_credentials = set(['username', 'access_token'])
+
+    def __init__(self, *args, **kwargs):
+        print "INITIALIZED!!!"
+        print "INITIALIZED!!!"
+        print "INITIALIZED!!!"
+        print "INITIALIZED!!!"
+        return super(Mech, self).__init__(*args, **kwargs)
+
+    def process(self, challenge=b''):
+        print "process"
+        print "process"
+        print "process"
+        print "process"
+        print "process"
+        print challenge
+        return b'\x00' + settings.EMAIL + \
+               b'\x00' + settings.PASSWORD + \
+               b'\x00will'
+
+
 class HipChatAuth(BasePlugin):
 
     name = 'HipChatAuth'
     description = 'HipChat Authentication'
-    name = 'feature_mechanisms'
-    description = 'RFC 6120: Stream Feature: SASL'
+    # name = 'feature_mechanisms'
+    # description = 'RFC 6120: Stream Feature: SASL'
     dependencies = set()
     stanza = CustomAuth
     default_config = {
-        'use_mech': None,
-        'use_mechs': None,
+        'use_mech': "X-HIPCHAT",
+        'use_mechs': ["X-HIPCHAT", ],
         'min_mech': None,
         'sasl_callback': None,
         'security_callback': None,
@@ -142,7 +206,7 @@ class HipChatAuth(BasePlugin):
         'unencrypted_digest': False,
         'unencrypted_cram': False,
         'unencrypted_scram': True,
-        'order': 100
+        'order': 1
     }
 
     def plugin_init(self):
@@ -157,16 +221,17 @@ class HipChatAuth(BasePlugin):
         if not self.use_mech and not creds['username']:
             self.use_mech = 'ANONYMOUS'
 
-        self.mech = "X-HIPCHAT"
+        self.mech = X_HIPCHAT
         self.mech_list = set()
         self.attempted_mechs = set()
 
         # register_stanza_plugin(StreamFeatures, stanza.Mechanisms)
 
         self.xmpp.register_stanza(CustomSuccess)
+        # self.xmpp.register_stanza(stanza.Success)
         self.xmpp.register_stanza(stanza.Failure)
-        self.xmpp.register_stanza(CustomAuth)
-        self.xmpp.register_stanza(stanza.Challenge)
+        self.xmpp.register_stanza(CustomChallenge)
+        # self.xmpp.register_stanza(stanza.Challenge)
         self.xmpp.register_stanza(stanza.Response)
         self.xmpp.register_stanza(stanza.Abort)
         # register_stanza_plugin(Iq, Registration)
@@ -188,15 +253,15 @@ class HipChatAuth(BasePlugin):
         self.xmpp.register_handler(
             Callback(
                 'HipChat Challenge',
-                MatchXPath(stanza.Challenge.tag_name()),
+                MatchXPath(CustomChallenge.tag_name()),
                 self._handle_challenge)
         )
-        # self.xmpp.register_feature(
-        #     'mechanisms',
-        #     self._handle_sasl_auth,
-        #     restart=True,
-        #     order=self.order
-        # )
+        self.xmpp.register_feature(
+            'mechanisms',
+            self._handle_sasl_auth,
+            restart=True,
+            order=self.order
+        )
 
     def get_oauth_token(self):
         print "get_oauth_token"
