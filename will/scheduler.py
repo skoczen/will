@@ -100,10 +100,10 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
                     plugin_info["full_module_name"],
                     plugin_info["name"],
                     function_name,
-                    meta.start_hour,
-                    meta.end_hour,
-                    meta.day_of_week,
-                    meta.num_times_per_day
+                    meta["start_hour"],
+                    meta["end_hour"],
+                    meta["day_of_week"],
+                    meta["num_times_per_day"]
                 )
         try:
             if not self.bot.load("scheduler_add_lock", False) or not self.bot.load("scheduler_lock", False):
