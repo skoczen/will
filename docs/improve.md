@@ -124,6 +124,9 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.8.2 - April 24, 2015
+
+* Fixes an odd remaining bug with `@randomly`, thanks to [camilonova](https://github.com/camilonova)'s continued debugging.
 
 #### 0.8.1 - April 23, 2015
 
