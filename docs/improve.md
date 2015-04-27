@@ -110,7 +110,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And "remind ___ to ___ at ___".  Awesome.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome.
 
 ## Other Wills
 
