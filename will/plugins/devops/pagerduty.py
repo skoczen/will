@@ -32,21 +32,21 @@ class PagerDutyPlugin(WillPlugin):
                     incident = pager.incidents.show(entity_id=i)
                 except pygerduty.BadRequest as e:
                     if e.code == 5001:
-                        self.reply(message, "Incident %s was not found." % i)
+                        self.reply(message, "Incident %s was not found." % i, color="yellow")
                     continue
                 if action == 'ack':
                     try:
                         incident.acknowledge(requester_id=user.id)
                     except pygerduty.BadRequest as e:
                         if e.code == 1001:
-                            self.reply(message, "%s has been already resolved." % i)
+                            self.reply(message, "%s has been already resolved." % i, color="yellow")
                         continue
                 elif action == 'resolve':
                     try:
                         incident.resolve(requester_id=user.id)
                     except pygerduty.BadRequest as e:
                         if e.code == 1001:
-                            self.reply(message, "%s has been already resolved." % i)
+                            self.reply(message, "%s has been already resolved." % i, color="yellow")
                         continue
             self.reply(message, "Ok.")
         # if incident(s) are not given
@@ -113,7 +113,7 @@ class PagerDutyPlugin(WillPlugin):
             if service.name == service_name:
                 user = self._associate_pd_user(self.get_hipchat_user(message.sender['hipchat_id'])['email'], pager)
                 if user is None:
-                    self.reply(message, "I couldn't find your user :(")
+                    self.reply(message, "I couldn't find your user :(", color="yellow")
                     return
                 now = datetime.datetime.utcnow()
                 start_time = now.strftime("%Y-%m-%dT%H:%MZ")
