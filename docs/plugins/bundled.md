@@ -70,6 +70,40 @@ PLUGIN_BLACKLIST = [
 ]
 ```
 
+#### PagerDuty integration
+
+In case if you have a PagerDuty account and the PD alerts are integrated with your HipChat server, you probably want this feature. You can acknowledge/resolve incidents using @will and what's more, you can set up a maintenance window as well!
+
+If you've set both `PAGERDUTY_SUBDOMAIN` and `PAGERDUTY_API_KEY` and enabled the plugin in `config.py` - since it's disabled by default - the plugin will work for you. Get one api key from https://YOURSUBDOMAIN.pagerduty.com/api_keys.
+
+##### Acknowledge
+
+You can acknowledge the ongoing incidents. You can do 3 things:
+
+- **@will pd ack**: Acknowledge all open incidents assigned to you
+- **@will pd ack!**: Acknowledge all open incidents
+- **@will pd ack [incident number 1] [incident number 2]**: Acknowledge one or more specific incidentss
+
+![pd ack](../img/pd_ack.gif)
+
+##### Resolve
+
+You can resolve the acknowledged incidents. You can do 3 things:
+
+- **@will pd resolve**: Resolve all acknowledged incidents assigned to you
+- **@will pd resolve!**: Resolve all acknowledged incidents
+- **@will pd resolve [incident number 1] [incident number 2]**: Resolve one or more specific incident
+
+![pd ack](../img/pd_resolve.gif)
+
+##### Schedule maintenance window
+
+You can schedule a maintenance window for a specific service. The last - hour - parameter is optional. The default value is `1 hour`.
+
+**@will pd maintenance [service name] [hour(s)]h**: Schedule a new maintenance window for x hours
+
+![pd maintenance](../img/pd_maintenance.gif)
+
 ## Friendly
 
 Will has personality, and we love that about him.  The friendly module includes some nice, silly, and appreciative aspects to will that really rounds out his personality.

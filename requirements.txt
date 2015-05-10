@@ -31,3 +31,4 @@ six==1.8.0
 tzlocal==1.1.1
 watchdog==0.7.0
 wsgiref==0.1.2
+pygerduty==0.28
