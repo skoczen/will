@@ -74,7 +74,9 @@ PLUGIN_BLACKLIST = [
 
 In case if you have a PagerDuty account and the PD alerts are integrated with your HipChat server, you probably want this feature. You can acknowledge/resolve incidents using @will and what's more, you can set up a maintenance window as well!
 
-If you've set both `PAGERDUTY_SUBDOMAIN` and `PAGERDUTY_API_KEY` and enabled the plugin in `config.py` - since it's disabled by default - the plugin will work for you. Get one api key from https://YOURSUBDOMAIN.pagerduty.com/api_keys.
+If you've set both `PAGERDUTY_SUBDOMAIN` and `PAGERDUTY_API_KEY` and enabled the plugin in `config.py` - since it's disabled by default - the plugin will work for you. Get one full access api key from https://YOURSUBDOMAIN.pagerduty.com/api_keys.
+
+This plugin assumes that your PagerDuty e-mail address and your HipChat e-mail address are the same, this is how will associates your HipChat account with PagerDuty account.
 
 ##### Acknowledge
 
