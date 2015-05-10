@@ -84,7 +84,7 @@ You can acknowledge the ongoing incidents. You can do 3 things:
 
 - **@will pd ack**: Acknowledge all open incidents assigned to you
 - **@will pd ack!**: Acknowledge all open incidents
-- **@will pd ack [incident number 1] [incident number 2]**: Acknowledge one or more specific incidentss
+- **@will pd ack [incident number 1] [incident number 2]**: Acknowledge one or more specific incidents
 
 ![pd ack](../img/pd_ack.gif)
 
@@ -94,7 +94,7 @@ You can resolve the acknowledged incidents. You can do 3 things:
 
 - **@will pd resolve**: Resolve all acknowledged incidents assigned to you
 - **@will pd resolve!**: Resolve all acknowledged incidents
-- **@will pd resolve [incident number 1] [incident number 2]**: Resolve one or more specific incident
+- **@will pd resolve [incident number 1] [incident number 2]**: Resolve one or more specific incidents
 
 ![pd ack](../img/pd_resolve.gif)
 
