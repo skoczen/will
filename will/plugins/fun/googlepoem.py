@@ -4,9 +4,9 @@ import requests
 from xml.dom import minidom
 
 class GooglePoemPlugin(WillPlugin):
-    @respond_to("^gpoem (?P<topic>.*)$")
+    @respond_to("^(gpoem|make a poem about) (?P<topic>.*)$")
     def google_poem(self, message, topic):
-        """gpoem __: show a google poem about __"""
+        """make a poem about __: show a google poem about __"""
         r = requests.get("http://www.google.com/complete/search?output=toolbar&q=" + topic + "%20")
         xmldoc = minidom.parseString(r.text)
         itemList = xmldoc.getElementsByTagName("suggestion")
