@@ -98,6 +98,14 @@ You can resolve the acknowledged incidents. You can do 3 things:
 
 ![pd ack](../img/pd_resolve.gif)
 
+##### Reassign
+
+You can reassign one or more incidents to somebody else. 
+
+**@will pd reassign [incident number 1] [incident number2] [mention name]**: reassign one or more specific incidents.
+
+![pd reassign](../img/pd_reassign.gif)
+
 ##### Schedule maintenance window
 
 You can schedule a maintenance window for a specific service. The last - hour - parameter is optional. The default value is `1 hour`.

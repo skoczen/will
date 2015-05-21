@@ -16,7 +16,15 @@ class PagerDutyPlugin(WillPlugin):
         except StopIteration:
             return None
 
-    def _update_incident(self, message, incidents, action):
+    def _get_user_email_from_mention_name(self, mention_name):
+        try:
+            u = self.get_user_by_nick(mention_name[1:])
+            email_address = self.get_hipchat_user(u['hipchat_id'])['email']
+            return email_address
+        except TypeError:
+            return None
+
+    def _update_incident(self, message, incidents, action, assign_to_email=None):
         pager = pygerduty.PagerDuty(settings.PAGERDUTY_SUBDOMAIN, settings.PAGERDUTY_API_KEY)
         email_address = self.get_hipchat_user(message.sender['hipchat_id'])['email']
         user = self._associate_pd_user(email_address, pager)
@@ -47,6 +55,19 @@ class PagerDutyPlugin(WillPlugin):
                     except pygerduty.BadRequest as e:
                         if e.code == 1001:
                             self.reply(message, "%s has been already resolved." % i, color="yellow")
+                        continue
+                elif action == 'reassign':
+                    try:
+                        if assign_to_email is not None:
+                            assign_to = self._associate_pd_user(assign_to_email, pager)
+                            if assign_to is None:
+                                self.reply(message, "Coudn't find the PD user for %s :(" % assign_to_email)
+                                return
+                            else:
+                                incident.reassign(user_ids=[assign_to.id], requester_id=user.id)
+                    except pygerduty.BadRequest:
+                        # ignore any error, maybe it worth to log it somewhere
+                        # in the future
                         continue
             self.reply(message, "Ok.")
         # if incident(s) are not given
@@ -125,3 +146,11 @@ class PagerDutyPlugin(WillPlugin):
                     self.reply(message, "Ok.")
                 except pygerduty.BadRequest as e:
                     self.reply(message, "Failed: %s" % e.message, color="yellow")
+
+    @respond_to("^pd reassign (?P<incidents>[0-9 ]+)( )(?P<mention_name>[a-zA-Z@]+)$")
+    def reassign_incidents(self, message, incidents, mention_name):
+        email_address = self._get_user_email_from_mention_name(mention_name)
+        if email_address:
+            self._update_incident(message, incidents.split(" "), 'reassign', email_address)
+        else:
+            self.reply(message, "Can't find email address for %s" % mention_name)
