@@ -134,7 +134,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
             # we're in group chat and I didn't send it
             or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
         ):
-                body = msg["body"]
+                body = msg["body"].strip()
 
                 sent_directly_to_me = False
                 # If it's sent directly to me, strip off "@will" from the start.
