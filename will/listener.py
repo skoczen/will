@@ -139,7 +139,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 sent_directly_to_me = False
                 # If it's sent directly to me, strip off "@will" from the start.
                 if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
-                    body = body[len(self.handle) + 1:].strip()
+                    body = body[len(self.handle) + 1:]
                     msg["body"] = body
 
                     sent_directly_to_me = True
