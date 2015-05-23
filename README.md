@@ -11,7 +11,7 @@ He makes teaching your chat bot this simple:
 ```python
 @respond_to("hi")
 def say_hello(self, message):
-    self.say("oh, hello!")
+    self.say("oh, hello!", message=message)
 ```
 
 Will was first built by [Steven Skoczen](http://stevenskoczen.com) while in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](http://skoczen.github.io/will/improve/#the-shoulders-of-giants).

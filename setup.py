@@ -9,9 +9,12 @@ ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
 
 reqs = []
-with open("requirements.txt", "r+") as f:
-    for line in f.readlines():
-        reqs.append(line.strip())
+for req_file in ("requirements.base.txt", "requirements.txt"):
+    with open(req_file, "r+") as f:
+        for line in f.readlines():
+            if line[0] == "-":
+                continue
+            reqs.append(line.strip())
 
 try:
     import pypandoc

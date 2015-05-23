@@ -1,10 +1,8 @@
+import importlib
 import logging
-import redis
-import traceback
-import urlparse
 import dill as pickle
+import functools
 from will import settings
-from will.utils import show_valid, error, warn, note
 
 
 class StorageMixin(object):
@@ -13,58 +11,59 @@ class StorageMixin(object):
             if hasattr(self, "bot") and hasattr(self.bot, "storage"):
                 self.storage = self.bot.storage
             else:
-                # redis://localhost:6379/7
-                # or
-                # redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
-                url = urlparse.urlparse(settings.REDIS_URL)
+                # The STORAGE_BACKEND setting points to a specific module namespace
+                # redis => will.storage.redis_backend
+                # couchbase => will.storage.couchbase_backend
+                # etc...
+                module_name = ''.join([
+                    'will.storage.',
+                    getattr(settings, 'STORAGE_BACKEND', 'redis'),
+                    '_storage'
+                ])
 
-                if hasattr(url, "path"):
-                    db = url.path[1:]
-                else:
-                    db = 0
-                max_connections = getattr(settings, 'REDIS_MAX_CONNECTIONS',
-                                          None)
-                connection_pool = redis.ConnectionPool(
-                    max_connections=max_connections, host=url.hostname,
-                    port=url.port, db=db, password=url.password
-                )
-                self.storage = redis.Redis(connection_pool=connection_pool)
+                # XXX TODO How to handle import errors here?
+                # Since this is required to work (I think), I've just let
+                # the exceptions bubble up for now.
+                storage_module = importlib.import_module(module_name)
 
-    def save(self, key, value, expire=0):
-        if not hasattr(self, "storage"):
-            self.bootstrap_storage()
+                # Now create our storage object using the bootstrap function
+                # from within the import
+                self.storage = storage_module.bootstrap(settings)
 
+    def save(self, key, value, expire=None):
+        self.bootstrap_storage()
         try:
-            if expire:
-                ret = self.storage.setex(key, pickle.dumps(value), expire)
-            else:
-                ret = self.storage.set(key, pickle.dumps(value))
-
-            return ret
-        except:
-            logging.critical("Unable to save %s: \n%s" %
-                             (key, traceback.format_exc()))
+            return self.storage.save(key, pickle.dumps(value), expire=expire)
+        except Exception:
+            logging.exception("Unable to save %s", key)
 
     def clear(self, key):
-        if not hasattr(self, "storage"):
-            self.bootstrap_storage()
-        return self.storage.delete(key)
+        self.bootstrap_storage()
+        try:
+            return self.storage.clear(key)
+        except Exception:
+            logging.exception("Unable to clear %s", key)
 
     def clear_all_keys(self):
-        if not hasattr(self, "storage"):
-            self.bootstrap_storage()
-        return self.storage.flushdb()
+        self.bootstrap_storage()
+        try:
+            return self.storage.clear_all_keys()
+        except Exception:
+            logging.exception("Unable to clear all keys")
 
     def load(self, key, default=None):
-        if not hasattr(self, "storage"):
-            self.bootstrap_storage()
-
+        self.bootstrap_storage()
         try:
-            val = self.storage.get(key)
+            val = self.storage.load(key)
             if val is not None:
                 return pickle.loads(val)
+            return default
+        except Exception:
+            logging.exception("Failed to load %s", key)
 
-        except:
-            logging.warn("Unable to load %s" % key)
-
-        return default
+    def size(self):
+        self.bootstrap_storage()
+        try:
+            return self.storage.size()
+        except Exception:
+            logging.exception("Failed to get the size of our storage")
