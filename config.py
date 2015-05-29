@@ -66,7 +66,6 @@ PLUGIN_BLACKLIST = [
     "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
 ]
 
-
 # ------------------------------------------------------------------------------------
 # Potentially required settings
 # ------------------------------------------------------------------------------------
@@ -107,6 +106,11 @@ PLUGIN_BLACKLIST = [
 #     "steven",
 #     "levi",
 # ]
+
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# STORAGE_BACKEND = ""  # "redis", "couchbase", or "local".
+
 
 # Disable SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False

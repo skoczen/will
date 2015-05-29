@@ -10,7 +10,7 @@ He makes teaching your chat bot this simple:
 ```
 @respond_to("hi")
 def say_hello(self, message):
-    self.say("oh, hello!", message=message)
+    self.say("oh, hello!")
 ```
 
 Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  
@@ -29,7 +29,7 @@ Here's how to set up your system and get will running.  If you already write pyt
 
 ## Install prerequisites
 
-Will doesn't need much, just python and redis.  For a best-practice setup, you'll want:
+Will doesn't need much, just python and either redis, couchbase, or local storage.  The recommended backend is redis, and we'll describe getting it set up below. If you'd prefer to use couchbase or local storage, that's also an option - [check out how over here](deploy.md#Storage-Backends).
 
 #### Install redis > 2.4
 
@@ -125,36 +125,3 @@ Once your will is up and running, hop into any of your hipchat rooms, and say he
 
 You're up and running - now it's time to [teach your will a few things](plugins/basics.md)!
 
-
-## Storage Backends
-
-Will's default storage backend is Redis, but he supports some others if you can't run Redis.
-
-To change the backend you just need to set `STORAGE_BACKEND` in your config and then supply any other needed settings for the new storage backend.  The currently supported backends are:
-
- * `redis` - The default Redis backend
- * `couchbase` - A Couchbase backend
- * `file` - Keeps the settings as files on a local filesystem
-
-
-#### Couchbase
-
-Couchbase requries you set `COUCHBASE_URL` in your config.
-
-You are also required to have the python Couchbase client (and thus, libcouchbase) installed.  If you are installing for development you can use `pip install -r requirements.couchbase.txt` to pull in the Couchbase client.  See [the Python Couchbase client repo](https://github.com/couchbase/couchbase-python-client) for more info.
-
-Examples:
-
- * `COUCHBASE_URL='couchbase:///bucket'`
- * `COUCHBASE_URL='couchbase://hostname/bucket'`
- * `COUCHBASE_URL='couchbase://host1,host2/bucket'`
- * `COUCHBASE_URL='couchbase://hostname/bucket?password=123abc&timeout=5'`
-
-#### File
-
-File requires you set `FILE_DIR` in your config to point to an empty directory.
-
-Examples:
-
- * `FILE_DIR='/var/run/will/settings/'`
- * `FILE_DIR='~will/settings/'`

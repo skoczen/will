@@ -8,6 +8,7 @@ import operator
 import re
 import sys
 import time
+import traceback
 from clint.textui import colored, puts, indent
 from os.path import abspath, dirname
 from multiprocessing import Process, Queue
@@ -243,6 +244,7 @@ To set your %(name)s:
             settings.import_settings(quiet=False)
         puts("")
 
+    def verify_rooms(self):
         puts("Verifying rooms...")
         # If we're missing ROOMS, join all of them.
         with indent(2):
@@ -301,8 +303,13 @@ To set your %(name)s:
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
-        except:
-            error("Unable to bootstrap!")
+        except ImportError, e:
+            module_name = traceback.format_exc(e).split(" ")[-1]
+            error("Unable to bootstrap storage - no module named %s" % module_name)
+            sys.exit(1)
+        except Exception, e:
+            error("Unable to bootstrap storage!")
+            puts(traceback.format_exc(e))
             sys.exit(1)
 
     def bootstrap_scheduler(self):

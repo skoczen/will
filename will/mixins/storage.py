@@ -21,9 +21,6 @@ class StorageMixin(object):
                     '_storage'
                 ])
 
-                # XXX TODO How to handle import errors here?
-                # Since this is required to work (I think), I've just let
-                # the exceptions bubble up for now.
                 storage_module = importlib.import_module(module_name)
 
                 # Now create our storage object using the bootstrap function
