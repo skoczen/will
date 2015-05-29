@@ -549,6 +549,7 @@ To set your %(name)s:
                                                     "include_me": meta["listener_includes_me"],
                                                     "direct_mentions_only": meta["listens_only_to_direct_mentions"],
                                                     "admin_only": meta["listens_only_to_admin"],
+                                                    "acl": meta["listeners_acl"],
                                                 })
                                                 if meta["listener_includes_me"]:
                                                     self.some_listeners_include_me = True

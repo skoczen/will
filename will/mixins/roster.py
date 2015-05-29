@@ -1,5 +1,5 @@
-from will import settings
 from ..utils import is_admin
+from ..acl import is_acl_allowed
 
 
 class RosterMixin(object):
@@ -39,6 +39,10 @@ class RosterMixin(object):
     def message_is_from_admin(self, message):
         nick = self.get_user_from_message(message)['nick']
         return is_admin(nick)
+
+    def message_is_allowed(self, message, acl):
+        nick = self.get_user_from_message(message)['nick']
+        return is_acl_allowed(nick, acl)
 
     def get_user_by_hipchat_id(self, id):
         for jid, info in self.internal_roster.items():
