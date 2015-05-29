@@ -24,7 +24,7 @@ def gold_stars(self, message, num_stars=1, mention_name=None):
 `@respond_to` takes a number of options:
 
 ```python
-@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set())
+@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=[])
 ```
 
 - **`regex`**: a regular expression to match.  Any named matches are passed along as keyword arguments.
@@ -49,7 +49,7 @@ def log_all_bugs(self, message):
 `@hear` takes a the same options as `respond_to`:
 
 ```python
-@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set())
+@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=[])
 ```
 
 - **`regex`**: a regular expression to match.  Any named matches are passed along as keyword arguments.

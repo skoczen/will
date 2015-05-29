@@ -21,7 +21,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 'host': settings.PROXY_HOSTNAME,
                 'port': settings.PROXY_PORT,
                 'username': settings.PROXY_USERNAME,
-                'passsword': settings.PROXY_PASSWORD,
+                'password': settings.PROXY_PASSWORD,
             }
 
         self.rooms = []
