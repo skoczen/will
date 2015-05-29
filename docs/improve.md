@@ -124,6 +124,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.8.3 - May 29, 2015
+
+* Brand-new [ACL](builtins.md#Access-Control) functionality, thanks to [woohgit](https://github.com/woohgit).  Backwards-compatable, even!
+
+
 #### 0.8.2 - April 24, 2015
 
 * Fixes an odd remaining bug with `@randomly`, thanks to [camilonova](https://github.com/camilonova)'s continued debugging.

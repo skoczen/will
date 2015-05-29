@@ -5,7 +5,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class MorninEveninPlugin(WillPlugin):
 
-    @hear("^(good )?(morning?)")
+    @hear("^(good )?(morning?)", acl=["admins", ])
     def morning(self, message):
         self.say("mornin', %s" % message.sender.nick, message=message)
 
