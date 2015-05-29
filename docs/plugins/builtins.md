@@ -58,9 +58,30 @@ A note on `TEMPLATE_DIRS` - Will automatically includes the following:
 - Your Will's `templates` directory,
 - All `templates` directories in the root of modules specified in `settings.PLUGINS`.
 
+
+## Help and documentation
+
+Just include a docstring, and your command will be included in @will help:
+
+
+```python
+class BonjourPlugin(WillPlugin):
+
+    @respond_to("bonjour")
+    def say_bonjour_will(self, message):
+        """bonjour: I know how to say bonjour! In French!"""
+        self.reply(message, "bonjour!")
+```
+
+![Bonjour help](../img/bonjour_help.gif)
+
+If you've [organized your plugins in a module](create.md#what-about-that-awesome-help-text), your plugin's help text will be grouped by module.
+
+![Help, will](../img/help.gif)
+
 ## Access Control
 
-You can restrict your `@respond_to` and `@hear` to one or more set of groups, using Access Control List or ACL in short. This is very similar to the `admin_only=True` parameter, but you can use different access levels, not only one.
+You can restrict certain actions to particular groups, by using will's access control list (ACL) support.
 
 ### Usage
 
@@ -94,27 +115,6 @@ def terminate_ec2_instance(self, message, instance_id):
 ```
 
 Complex ACL behaviors, simple as that.
-
-
-## Help and documentation
-
-Just include a docstring, and your command will be included in @will help:
-
-
-```python
-class BonjourPlugin(WillPlugin):
-
-    @respond_to("bonjour")
-    def say_bonjour_will(self, message):
-        """bonjour: I know how to say bonjour! In French!"""
-        self.reply(message, "bonjour!")
-```
-
-![Bonjour help](../img/bonjour_help.gif)
-
-If you've [organized your plugins in a module](create.md#what-about-that-awesome-help-text), your plugin's help text will be grouped by module.
-
-![Help, will](../img/help.gif)
 
 
 ## Access settings and config
