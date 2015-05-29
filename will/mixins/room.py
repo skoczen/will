@@ -65,7 +65,6 @@ class RoomMixin(object):
             rooms = resp.json()
 
             for room in rooms["items"]:
-
                 room["room_id"] = room["id"]
                 self._available_rooms[room["name"]] = Room(**room)
 
