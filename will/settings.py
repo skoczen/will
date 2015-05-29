@@ -84,27 +84,48 @@ def import_settings(quiet=True):
                     warn("no HTTPSERVER_PORT found in the environment or config.  Defaulting to ':80'.")
                 settings["HTTPSERVER_PORT"] = "80"
 
-        if "REDIS_URL" not in settings:
-            # For heroku
-            if "REDISCLOUD_URL" in os.environ:
-                settings["REDIS_URL"] = os.environ["REDISCLOUD_URL"]
-                if not quiet:
-                    note("WILL_REDIS_URL not set, but it appears you're using RedisCloud. If so, all good.")
-            elif "REDISTOGO_URL" in os.environ:
-                settings["REDIS_URL"] = os.environ["REDISTOGO_URL"]
-                if not quiet:
-                    note("WILL_REDIS_URL not set, but it appears you're using RedisToGo. If so, all good.")
-            elif "OPENREDIS_URL" in os.environ:
-                settings["REDIS_URL"] = os.environ["OPENREDIS_URL"]
-                if not quiet:
-                    note("WILL_REDIS_URL not set, but it appears you're using OpenRedis. If so, all good.")
-            else:
-                settings["REDIS_URL"] = "redis://localhost:6379/7"
-                if not quiet:
-                    note("WILL_REDIS_URL not set.  Defaulting to redis://localhost:6379/7.")
+        if "STORAGE_BACKEND" not in settings:
+            settings["STORAGE_BACKEND"] = "redis"
 
-        if not settings["REDIS_URL"].startswith("redis://"):
-            settings["REDIS_URL"] = "redis://%s" % settings["REDIS_URL"]
+        if settings["STORAGE_BACKEND"] == "redis":
+            if "REDIS_URL" not in settings:
+                # For heroku
+                if "REDISCLOUD_URL" in os.environ:
+                    settings["REDIS_URL"] = os.environ["REDISCLOUD_URL"]
+                    if not quiet:
+                        note("WILL_REDIS_URL not set, but it appears you're using RedisCloud. If so, all good.")
+                elif "REDISTOGO_URL" in os.environ:
+                    settings["REDIS_URL"] = os.environ["REDISTOGO_URL"]
+                    if not quiet:
+                        note("WILL_REDIS_URL not set, but it appears you're using RedisToGo. If so, all good.")
+                elif "OPENREDIS_URL" in os.environ:
+                    settings["REDIS_URL"] = os.environ["OPENREDIS_URL"]
+                    if not quiet:
+                        note("WILL_REDIS_URL not set, but it appears you're using OpenRedis. If so, all good.")
+                else:
+                    settings["REDIS_URL"] = "redis://localhost:6379/7"
+                    if not quiet:
+                        note("WILL_REDIS_URL not set.  Defaulting to redis://localhost:6379/7.")
+
+            if not settings["REDIS_URL"].startswith("redis://"):
+                settings["REDIS_URL"] = "redis://%s" % settings["REDIS_URL"]
+
+            if "REDIS_MAX_CONNECTIONS" not in settings:
+                settings["REDIS_MAX_CONNECTIONS"] = 4
+                if not quiet:
+                    note("REDIS_MAX_CONNECTIONS not set. Defaulting to 4.")
+
+        if settings["STORAGE_BACKEND"] == "file":
+            if "FILE_DIR" not in settings:
+                settings["FILE_DIR"] = "~/.will/"
+                if not quiet:
+                    note("FILE_DIR not set.  Defaulting to ~/.will/")
+
+        if settings["STORAGE_BACKEND"] == "couchbase":
+            if "COUCHBASE_URL" not in settings:
+                settings["COUCHBASE_URL"] = "couchbase:///will"
+                if not quiet:
+                    note("COUCHBASE_URL not set.  Defaulting to couchbase:///will")
 
         if "PUBLIC_URL" not in settings:
             default_public = "http://localhost:%s" % settings["HTTPSERVER_PORT"]
@@ -119,11 +140,6 @@ def import_settings(quiet=True):
                     "This is generally ok, but if you have more than 30 rooms, "
                     "you may recieve rate-limit errors without one."
                 )
-
-        if "REDIS_MAX_CONNECTIONS" not in settings:
-            settings["REDIS_MAX_CONNECTIONS"] = 4
-            if not quiet:
-                note("REDIS_MAX_CONNECTIONS not set. Defaulting to 4.")
 
         if "TEMPLATE_DIRS" not in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:

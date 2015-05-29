@@ -234,6 +234,10 @@ PLUGIN_BLACKLIST = [
 #     "levi",
 # ]
 
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# STORAGE_BACKEND = ""  # "redis", "couchbase", or "local".
+
 # Disable SSL checks.  Strongly recommended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
 

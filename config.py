@@ -68,7 +68,6 @@ PLUGIN_BLACKLIST = [
     "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
 ]
 
-
 # ------------------------------------------------------------------------------------
 # Potentially required settings
 # ------------------------------------------------------------------------------------
@@ -118,6 +117,11 @@ ACL = {
 #     "steven",
 #     "levi",
 # ]
+
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
+
 
 # Disable SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False

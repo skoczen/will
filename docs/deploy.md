@@ -129,6 +129,40 @@ bot.bootstrap()
 and you're good.
 
 
+## Storage Backends
+
+Will's default storage backend is Redis, but he supports some others if you can't run Redis.
+
+To change the backend, just set `STORAGE_BACKEND` in `config.py` and then supply any other needed settings for the new storage backend.  The currently supported backends are:
+
+ * `redis` - The default Redis backend
+ * `couchbase` - A Couchbase backend
+ * `file` - Keeps the settings as files on a local filesystem
+
+
+#### Couchbase
+
+Couchbase requries you set `COUCHBASE_URL` in your config.
+
+You are also required to have the python Couchbase client (and thus, libcouchbase) installed.  If you are installing for development you can use `pip install -r requirements.couchbase.txt` to pull in the Couchbase client.  See [the Python Couchbase client repo](https://github.com/couchbase/couchbase-python-client) for more info.
+
+Examples:
+
+ * `COUCHBASE_URL='couchbase:///bucket'`
+ * `COUCHBASE_URL='couchbase://hostname/bucket'`
+ * `COUCHBASE_URL='couchbase://host1,host2/bucket'`
+ * `COUCHBASE_URL='couchbase://hostname/bucket?password=123abc&timeout=5'`
+
+#### File
+
+File requires you set `FILE_DIR` in your config to point to an empty directory.
+
+Examples:
+
+ * `FILE_DIR='/var/run/will/settings/'`
+ * `FILE_DIR='~will/settings/'`
+
+
 ## Best Practices
 
 In this section, we describe how we deploy and host will, in the hopes that others come forward and share what's working for them, too.  The more good practices, the better.
@@ -144,6 +178,5 @@ Our stack is set up so that any pushes on will's master branch have tests run on
 Continuous Deployment has dramatically changed how we build and use will - instead of talking about "what if will did...", generally, people just implement it, push it, and play with it for real.  It's been a great place to be.  It might be for you too.
 
 That's it in getting your will up and running!   But maybe you're one of those people who wants to pitch in and make will even better. Awesome. Learn [how to improve will](improve.md).
-
 
 

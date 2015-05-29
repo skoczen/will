@@ -29,7 +29,7 @@ Here's how to set up your system and get will running.  If you already write pyt
 
 ## Install prerequisites
 
-Will doesn't need much, just python and redis.  For a best-practice setup, you'll want:
+Will doesn't need much, just python and either redis, couchbase, or local storage.  The recommended backend is redis, and we'll describe getting it set up below. If you'd prefer to use couchbase or local storage, that's also an option - [check out how over here](deploy.md#Storage-Backends).
 
 #### Install redis > 2.4
 
@@ -124,3 +124,4 @@ Once your will is up and running, hop into any of your hipchat rooms, and say he
 ![Help, will](img/help.gif)
 
 You're up and running - now it's time to [teach your will a few things](plugins/basics.md)!
+

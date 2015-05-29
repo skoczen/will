@@ -8,6 +8,7 @@ import operator
 import re
 import sys
 import time
+import traceback
 from clint.textui import colored, puts, indent
 from os.path import abspath, dirname
 from multiprocessing import Process, Queue
@@ -146,6 +147,9 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                         time.sleep(0.5)
 
     def verify_individual_setting(self, test_setting, quiet=False):
+        if not test_setting.get("only_if", True):
+            return True
+
         if hasattr(settings, test_setting["name"][5:]):
             with indent(2):
                 show_valid(test_setting["name"])
@@ -189,9 +193,10 @@ To set your %(name)s:
             },
             {
                 "name": "WILL_REDIS_URL",
+                "only_if": getattr(settings, "STORAGE_BACKEND", "redis") == "redis",
                 "obtain_at": """1. Set up an accessible redis host locally or in production
 2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
-            }
+            },
         ]
 
         puts("")
@@ -211,8 +216,8 @@ To set your %(name)s:
             puts("")
 
         puts("Verifying credentials...")
-        # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.  Yup.
-        user_id = settings.USERNAME[0:settings.USERNAME.find("@")][settings.USERNAME.find("_") + 1:]
+        # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.
+        user_id = settings.USERNAME.split('@')[0].split('_')[1]
 
         # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
         # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
@@ -239,6 +244,7 @@ To set your %(name)s:
             settings.import_settings(quiet=False)
         puts("")
 
+    def verify_rooms(self):
         puts("Verifying rooms...")
         # If we're missing ROOMS, join all of them.
         with indent(2):
@@ -295,10 +301,16 @@ To set your %(name)s:
         try:
             self.bootstrap_storage()
             with indent(2):
-                show_valid("Connection to %s successful." % settings.REDIS_URL)
+                show_valid("Bootstrapped!")
             puts("")
-        except:
-            error("Unable to connect to %s" % settings.REDIS_URL)
+        except ImportError, e:
+            module_name = traceback.format_exc(e).split(" ")[-1]
+            error("Unable to bootstrap storage - attempting to load %s" % module_name)
+            puts(traceback.format_exc(e))
+            sys.exit(1)
+        except Exception, e:
+            error("Unable to bootstrap storage!")
+            puts(traceback.format_exc(e))
             sys.exit(1)
 
     def bootstrap_scheduler(self):
