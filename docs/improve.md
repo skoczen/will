@@ -89,10 +89,11 @@ Will's also has had help from lots of coders. Alphabetically:
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
+- [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
-- [dmuntean](https://github.com/dmuntean) gave you proxy support.
+- [dmuntean](https://github.com/dmuntean) gave you proxy support, and kept it working..
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [jessamynsmith](https://github.com/jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
 - [jquast](https://github.com/jquast) did the noble and oft unappreciated work of spelling fixes.
@@ -110,7 +111,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And "remind ___ to ___ at ___".  Awesome.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And "remind ___ to ___ at ___".  Awesome.  And fixed lots of docs.  And put the time zone with "what time is it?". Yep.
 
 ## Other Wills
 
@@ -129,6 +130,10 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 * **Note:** Module change. New will `"will.plugins.fun",` module. Existing will folks, add it to your `config.py` to keep the fun!
 * Made will a little more fun, thanks to [camilonova](http://github.com/camilonova).  Hint: it involves the world's most meme-friendly dog.
 * Moved stuff like that into a new "fun" module.  Dry, anti-fun people can now disable it more easily. ;)
+* [woohgit](https://github.com/woohgit) made the docs even better, one typo at a time.
+* [dmuntean](https://github.com/dmuntean) fixed up some bugs in proxy support.
+* [woohgit](https://github.com/woohgit) made time even better, by adding time zone to the output.
+* [AirbornePorcine](https://github.com/AirbornePorcine) added a plugin to let will construct google poems.  Will's creativity knows no bounds.
 
 #### 0.8.2 - April 24, 2015
 
