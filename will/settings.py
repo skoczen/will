@@ -34,15 +34,6 @@ def import_settings(quiet=True):
     else:
         settings["HIPCHAT_SERVER"] = "api.hipchat.com"
 
-    if "PROXY_URL" in settings:
-        parsed_proxy_url = urlparse(settings["PROXY_URL"])
-        settings["USE_PROXY"] = True
-        settings["PROXY_HOSTNAME"] = parsed_proxy_url.hostname
-        settings["PROXY_USERNAME"] = parsed_proxy_url.username
-        settings["PROXY_PASSWORD"] = parsed_proxy_url.password
-        settings["PROXY_PORT"] = parsed_proxy_url.port
-    else:
-        settings["USE_PROXY"] = False
     # Import from config
     if not quiet:
         puts("Importing config.py... ")
@@ -158,6 +149,16 @@ def import_settings(quiet=True):
         else:
             if "WILL_ADMINS" in os.environ:
                 settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
+
+        if "PROXY_URL" in settings:
+            parsed_proxy_url = urlparse(settings["PROXY_URL"])
+            settings["USE_PROXY"] = True
+            settings["PROXY_HOSTNAME"] = parsed_proxy_url.hostname
+            settings["PROXY_USERNAME"] = parsed_proxy_url.username
+            settings["PROXY_PASSWORD"] = parsed_proxy_url.password
+            settings["PROXY_PORT"] = parsed_proxy_url.port
+        else:
+            settings["USE_PROXY"] = False
 
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):
