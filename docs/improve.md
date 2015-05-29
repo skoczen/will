@@ -86,6 +86,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
+- [borgstrom](https://github.com/borgstrom) gave you beautifully architected storage backends, including support for couchbase and local storage.
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
@@ -126,19 +127,20 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
-#### 0.8.3 - May 29, 2015
+#### 0.9 - May 29, 2015
 
-* **Note:** Module change. New will `"will.plugins.fun",` module. Existing will folks, add it to your `config.py` to keep the fun!
-* New Feature:  Support for Pagerduty workflows, thanks to [woohgit](https://github.com/woohgit). This is really tremendous stuff. [Check out the docs here](plugins/bundled.md#PagerDuty-integration)!
-* New Feature: [ACL](builtins.md#Access-Control) functionality, thanks to [woohgit](https://github.com/woohgit).  Backwards-compatable, even!
-* Made will a little more fun, thanks to [camilonova](http://github.com/camilonova).  Hint: it involves the world's most meme-friendly dog.
-* Moved stuff like that into a new "fun" module.  Dry, anti-fun people can now disable it more easily. ;)
-* Typo in the docs gone.  Thanks, [woohgit](https://github.com/woohgit).
-* Bugs in proxy support are fixed, thanks to [dmuntean](https://github.com/dmuntean).
-* "What time is it" now outputs time zones, thanks to [woohgit](https://github.com/woohgit).
-* Will can now construct google poems, thanks to [AirbornePorcine](https://github.com/AirbornePorcine). Truly, his creativity knows no bounds.
-* No more rate-limit problems on the v2 token, thanks to [grundprinzip](https://github.com/grundprinzip).
-* Messages are now `.strip()`ed before being compared, to handle [frozen-fingered-typos](https://github.com/skoczen/will/pull/145).  Thanks, [woohgit](https://github.com/woohgit)!
+* **BREAKING:** Module change. New will `"will.plugins.fun",` module. Existing will installs will need to add it to your `config.py` to keep the fun!
+* New:  Support for Pagerduty workflows, thanks to [woohgit](https://github.com/woohgit). This is really tremendous stuff. [Check out the docs here](plugins/bundled.md#PagerDuty-integration)!
+* New: [ACL](builtins.md#Access-Control) functionality, thanks to [woohgit](https://github.com/woohgit).  Backwards-compatable, even!
+* New: Pluggable storage backends, with support for couchbase and local file storage, in addition to redis.  Many thanks to [borgstrom](https://github.com/borgstrom)
+* New: Made will a little more fun, thanks to [camilonova](http://github.com/camilonova).  Hint: it involves the world's most meme-friendly dog.
+* New: Will can now construct google poems, thanks to [AirbornePorcine](https://github.com/AirbornePorcine). Truly, his creativity knows no bounds.
+* Improvement: Moved stuff like that into a new "fun" module.  Dry, anti-fun people can now disable it more easily. ;)
+* Improvement: "What time is it" now outputs time zones, thanks to [woohgit](https://github.com/woohgit).
+* Improvement: No more rate-limit problems on the v2 token, thanks to [grundprinzip](https://github.com/grundprinzip).
+* Improvement: Messages are now `.strip()`ed before being compared, to handle [frozen-fingered-typos](https://github.com/skoczen/will/pull/145).  Thanks, [woohgit](https://github.com/woohgit)!
+* Fix: Typo in the docs gone.  Thanks, [woohgit](https://github.com/woohgit).
+* Fix: Bugs in proxy support are fixed, thanks to [dmuntean](https://github.com/dmuntean).
 
 
 #### 0.8.2 - April 24, 2015
