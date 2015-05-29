@@ -109,6 +109,12 @@ One day, you'll find yourself saying this.  The response will make your week.
 ![Love](../img/love.gif)
 
 
+#### Fun
+
+There are a number of fun-facing plugins.  Check 'em out in the fun module or let them surprise you.
+
+![Hello](../img/hi_hello.gif)
+
 ## Help
 
 #### Help

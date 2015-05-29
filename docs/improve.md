@@ -124,6 +124,12 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.8.3 - May 29, 2015
+
+* **Note:** Module change. New will `"will.plugins.fun",` module. Existing will folks, add it to your `config.py` to keep the fun!
+* Made will a little more fun, thanks to [camilonova](http://github.com/camilonova).  Hint: it involves the world's most meme-friendly dog.
+* Moved stuff like that into a new "fun" module.  Dry, anti-fun people can now disable it more easily. ;)
+
 #### 0.8.2 - April 24, 2015
 
 * Fixes an odd remaining bug with `@randomly`, thanks to [camilonova](https://github.com/camilonova)'s continued debugging.
