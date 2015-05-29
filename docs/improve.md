@@ -131,7 +131,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 * **BREAKING:** Module change. New `will.plugins.fun` module. Existing will installs will need to add it to your `config.py` to keep the fun!
 * New:  Support for Pagerduty workflows, thanks to [woohgit](https://github.com/woohgit). This is really tremendous stuff. [Check out the docs here](plugins/bundled.md#pagerduty-integration)!
-* New: [Pluggable storage backends]](plugins/deploy.md#storage-backends), with support for couchbase and local file storage, in addition to redis.  Many thanks to [borgstrom](https://github.com/borgstrom)
+* New: [Pluggable storage backends](plugins/deploy.md#storage-backends), with support for couchbase and local file storage, in addition to redis.  Many thanks to [borgstrom](https://github.com/borgstrom)
 * New: [ACL](plugins/builtins.md#access-control) functionality, thanks to [woohgit](https://github.com/woohgit).  Backwards-compatable, even!
 * New: Made will a little more fun, thanks to [camilonova](http://github.com/camilonova).  Hint: it involves the world's most meme-friendly dog.
 * New: Will can now construct google poems, thanks to [AirbornePorcine](https://github.com/AirbornePorcine). Truly, his creativity knows no bounds.
