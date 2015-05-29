@@ -65,6 +65,7 @@ PLUGIN_BLACKLIST = [
     "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
     "will.plugins.productivity.world_time",   # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
     "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
+    "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
 ]
 
 
