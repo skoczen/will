@@ -20,7 +20,6 @@ class StorageMixin(object):
                     getattr(settings, 'STORAGE_BACKEND', 'redis'),
                     '_storage'
                 ])
-
                 storage_module = importlib.import_module(module_name)
 
                 # Now create our storage object using the bootstrap function

@@ -305,7 +305,8 @@ To set your %(name)s:
             puts("")
         except ImportError, e:
             module_name = traceback.format_exc(e).split(" ")[-1]
-            error("Unable to bootstrap storage - no module named %s" % module_name)
+            error("Unable to bootstrap storage - attempting to load %s" % module_name)
+            puts(traceback.format_exc(e))
             sys.exit(1)
         except Exception, e:
             error("Unable to bootstrap storage!")

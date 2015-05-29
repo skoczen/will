@@ -109,7 +109,7 @@ PLUGIN_BLACKLIST = [
 
 # Sets a different storage backend.  If unset, defaults to redis.
 # If you use a different backend, make sure to add their required settings.
-# STORAGE_BACKEND = ""  # "redis", "couchbase", or "local".
+# STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
 
 
 # Disable SSL checks.  Strongly reccomended this is not set to True.
