@@ -73,6 +73,10 @@
                         </li>
                     
                         <li >
+                            <a href="../acl/">Access Control</a>
+                        </li>
+                    
+                        <li >
                             <a href="../create/">Creating and Organizing Plugins</a>
                         </li>
                     
@@ -209,6 +213,34 @@
 ]
 </code></pre>
 
+<h4 id="pagerduty-integration">PagerDuty integration</h4>
+<p>In case if you have a PagerDuty account and the PD alerts are integrated with your HipChat server, you probably want this feature. You can acknowledge/resolve incidents using @will and what's more, you can set up a maintenance window as well!</p>
+<p>If you've set both <code>PAGERDUTY_SUBDOMAIN</code> and <code>PAGERDUTY_API_KEY</code> and enabled the plugin in <code>config.py</code> - since it's disabled by default - the plugin will work for you. Get one full access api key from https://YOURSUBDOMAIN.pagerduty.com/api_keys.</p>
+<p>This plugin assumes that your PagerDuty e-mail address and your HipChat e-mail address are the same, this is how will associates your HipChat account with PagerDuty account.</p>
+<h5 id="acknowledge">Acknowledge</h5>
+<p>You can acknowledge the ongoing incidents. You can do 3 things:</p>
+<ul>
+<li><strong>@will pd ack</strong>: Acknowledge all open incidents assigned to you</li>
+<li><strong>@will pd ack!</strong>: Acknowledge all open incidents</li>
+<li><strong>@will pd ack [incident number 1] [incident number 2]</strong>: Acknowledge one or more specific incidents</li>
+</ul>
+<p><img alt="pd ack" src="../../img/pd_ack.gif" /></p>
+<h5 id="resolve">Resolve</h5>
+<p>You can resolve the acknowledged incidents. You can do 3 things:</p>
+<ul>
+<li><strong>@will pd resolve</strong>: Resolve all acknowledged incidents assigned to you</li>
+<li><strong>@will pd resolve!</strong>: Resolve all acknowledged incidents</li>
+<li><strong>@will pd resolve [incident number 1] [incident number 2]</strong>: Resolve one or more specific incidents</li>
+</ul>
+<p><img alt="pd ack" src="../../img/pd_resolve.gif" /></p>
+<h5 id="reassign">Reassign</h5>
+<p>You can reassign one or more incidents to somebody else. </p>
+<p><strong>@will pd reassign [incident number 1] [incident number2] [mention name]</strong>: reassign one or more specific incidents.</p>
+<p><img alt="pd reassign" src="../../img/pd_reassign.gif" /></p>
+<h5 id="schedule-maintenance-window">Schedule maintenance window</h5>
+<p>You can schedule a maintenance window for a specific service. The last - hour - parameter is optional. The default value is <code>1 hour</code>.</p>
+<p><strong>@will pd maintenance [service name] [hour(s)]h</strong>: Schedule a new maintenance window for x hours</p>
+<p><img alt="pd maintenance" src="../../img/pd_maintenance.gif" /></p>
 <h2 id="friendly">Friendly</h2>
 <p>Will has personality, and we love that about him.  The friendly module includes some nice, silly, and appreciative aspects to will that really rounds out his personality.</p>
 <h4 id="good-morning-good-night">Good morning / Good night</h4>
@@ -228,6 +260,9 @@
 <h4 id="love">Love</h4>
 <p>One day, you'll find yourself saying this.  The response will make your week.</p>
 <p><img alt="Love" src="../../img/love.gif" /></p>
+<h4 id="fun">Fun</h4>
+<p>There are a number of fun-facing plugins.  Check 'em out in the fun module or let them surprise you.</p>
+<p><img alt="Hello" src="../../img/hi_hello.gif" /></p>
 <h2 id="help">Help</h2>
 <h4 id="help_1">Help</h4>
 <p>Lists all the plugin commands with docstrings, bundled by module.</p>

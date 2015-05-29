@@ -73,6 +73,10 @@
                         </li>
                     
                         <li >
+                            <a href="../acl/">Access Control</a>
+                        </li>
+                    
+                        <li >
                             <a href="../create/">Creating and Organizing Plugins</a>
                         </li>
                     
@@ -173,7 +177,7 @@ def gold_stars(self, message, num_stars=1, mention_name=None):
 </code></pre>
 
 <p><code>@respond_to</code> takes a number of options:</p>
-<pre><code class="python">@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+<pre><code class="python">@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=[])
 </code></pre>
 
 <ul>
@@ -182,6 +186,7 @@ def gold_stars(self, message, num_stars=1, mention_name=None):
 <li><strong><code>case_sensitive</code></strong>: should the regex be case sensitive?</li>
 <li><strong><code>multiline</code></strong>: should the regex allow multiline matches?</li>
 <li><strong><code>admin_only</code></strong>: only runs the command if the sender is specified as an administrator.</li>
+<li><strong><code>acl</code></strong>: only runs the command if the sender is member of a specific ACL group. Any set is accepted as an argument.</li>
 </ul>
 <p>&nbsp; </p>
 <h2 id="hear-in-any-message">Hear in any message</h2>
@@ -192,7 +197,7 @@ def log_all_bugs(self, message):
 </code></pre>
 
 <p><code>@hear</code> takes a the same options as <code>respond_to</code>:</p>
-<pre><code class="python">@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+<pre><code class="python">@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=[])
 </code></pre>
 
 <ul>
@@ -201,6 +206,7 @@ def log_all_bugs(self, message):
 <li><strong><code>case_sensitive</code></strong>: should the regex be case sensitive?</li>
 <li><strong><code>multiline</code></strong>: should the regex allow multiline matches?</li>
 <li><strong><code>admin_only</code></strong>: only runs the command if the sender is specified as an administrator.</li>
+<li><strong><code>acl</code></strong>: only runs the command if the sender is member of a specific ACL group. Any set is accepted as an argument.</li>
 </ul>
 <p>&nbsp; </p>
 <h2 id="take-an-action-on-a-schedule">Take an action on a schedule</h2>

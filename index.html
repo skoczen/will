@@ -73,6 +73,10 @@
                         </li>
                     
                         <li >
+                            <a href="plugins/acl/">Access Control</a>
+                        </li>
+                    
+                        <li >
                             <a href="plugins/create/">Creating and Organizing Plugins</a>
                         </li>
                     
@@ -172,7 +176,7 @@ def say_hello(self, message):
 <p>Here's how to set up your system and get will running.  If you already write python, it'll probably take less than 5 minutes.</p>
 <hr />
 <h2 id="install-prerequisites">Install prerequisites</h2>
-<p>Will doesn't need much, just python and redis.  For a best-practice setup, you'll want:</p>
+<p>Will doesn't need much, just python and either redis, couchbase, or local storage.  The recommended backend is redis, and we'll describe getting it set up below. If you'd prefer to use couchbase or local storage, that's also an option - <a href="deploy/#Storage-Backends">check out how over here</a>.</p>
 <h4 id="install-redis-24">Install redis &gt; 2.4</h4>
 <p>Official documentation is at <a href="http://redis.io/">redis.io</a>.</p>
 <p>If you're on Mac OS X, and using <a href="http://brew.sh/">homebrew</a>, you can simply:</p>

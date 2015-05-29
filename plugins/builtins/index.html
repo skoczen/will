@@ -73,6 +73,10 @@
                         </li>
                     
                         <li >
+                            <a href="../acl/">Access Control</a>
+                        </li>
+                    
+                        <li >
                             <a href="../create/">Creating and Organizing Plugins</a>
                         </li>
                     
@@ -146,6 +150,8 @@
         
             <li><a href="#template-rendering">Template rendering</a></li>
         
+            <li><a href="#access-control">Access Control</a></li>
+        
             <li><a href="#help-and-documentation">Help and documentation</a></li>
         
             <li><a href="#access-settings-and-config">Access settings and config</a></li>
@@ -202,6 +208,33 @@ def homepage_listener(self):
 <li>Your Will's <code>templates</code> directory,</li>
 <li>All <code>templates</code> directories in the root of modules specified in <code>settings.PLUGINS</code>.</li>
 </ul>
+<h2 id="access-control">Access Control</h2>
+<p>You can restrict your <code>@respond_to</code> and <code>@hear</code> to one or more set of groups, using Access Control List or ACL in short. This is very similar to the <code>admin_only=True</code> parameter, but you can use different access levels, not only one.</p>
+<h3 id="usage">Usage</h3>
+<p>To use ACL, you simply specify ACL groups and the relevant handles in your <code>config.py</code>, then pass <code>acl=[]</code> into any relevant <code>@respond_to</code>s or <code>@hear</code>s. </p>
+<p>Here's an example with an ops team, and an admin team:</p>
+<pre><code class="python"># config.py
+
+ACL = {
+    &quot;ops&quot;: [&quot;steven&quot;, &quot;levi&quot;, &quot;susan&quot;],
+    &quot;admins&quot;: [&quot;wooh&quot;],
+}
+</code></pre>
+
+<p>Then, in your listeners:</p>
+<pre><code class="python"># Allow the ops and admins groups to stop EC2 instances,
+# but only allow admins to terminate the instances.
+
+@respond_to(&quot;ec2 instance stop (?P&lt;instance_id&gt;.*)&quot;, acl=[&quot;ops&quot;, &quot;admins&quot;])
+def stop_ec2_instance(self, message, instance_id):
+    # do AWS stuff
+
+@respond_to(&quot;ec2 instance terminate (?P&lt;instance_id&gt;.*)&quot;, acl=[&quot;admins&quot;])
+def terminate_ec2_instance(self, message, instance_id):
+    # do AWS stuff
+</code></pre>
+
+<p>Complex ACL behaviors, simple as that.</p>
 <h2 id="help-and-documentation">Help and documentation</h2>
 <p>Just include a docstring, and your command will be included in @will help:</p>
 <pre><code class="python">class BonjourPlugin(WillPlugin):

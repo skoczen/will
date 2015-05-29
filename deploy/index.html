@@ -73,6 +73,10 @@
                         </li>
                     
                         <li >
+                            <a href="../plugins/acl/">Access Control</a>
+                        </li>
+                    
+                        <li >
                             <a href="../plugins/create/">Creating and Organizing Plugins</a>
                         </li>
                     
@@ -145,6 +149,8 @@
             <li><a href="#deploy-on-heroku">Deploy on Heroku</a></li>
         
             <li><a href="#deploy-everywhere-else">Deploy Everywhere Else</a></li>
+        
+            <li><a href="#storage-backends">Storage Backends</a></li>
         
             <li><a href="#best-practices">Best Practices</a></li>
         
@@ -234,6 +240,31 @@ bot.bootstrap()
 </code></pre>
 
 <p>and you're good.</p>
+<h2 id="storage-backends">Storage Backends</h2>
+<p>Will's default storage backend is Redis, but he supports some others if you can't run Redis.</p>
+<p>To change the backend, just set <code>STORAGE_BACKEND</code> in <code>config.py</code> and then supply any other needed settings for the new storage backend.  The currently supported backends are:</p>
+<ul>
+<li><code>redis</code> - The default Redis backend</li>
+<li><code>couchbase</code> - A Couchbase backend</li>
+<li><code>file</code> - Keeps the settings as files on a local filesystem</li>
+</ul>
+<h4 id="couchbase">Couchbase</h4>
+<p>Couchbase requries you set <code>COUCHBASE_URL</code> in your config.</p>
+<p>You are also required to have the python Couchbase client (and thus, libcouchbase) installed.  If you are installing for development you can use <code>pip install -r requirements.couchbase.txt</code> to pull in the Couchbase client.  See <a href="https://github.com/couchbase/couchbase-python-client">the Python Couchbase client repo</a> for more info.</p>
+<p>Examples:</p>
+<ul>
+<li><code>COUCHBASE_URL='couchbase:///bucket'</code></li>
+<li><code>COUCHBASE_URL='couchbase://hostname/bucket'</code></li>
+<li><code>COUCHBASE_URL='couchbase://host1,host2/bucket'</code></li>
+<li><code>COUCHBASE_URL='couchbase://hostname/bucket?password=123abc&amp;timeout=5'</code></li>
+</ul>
+<h4 id="file">File</h4>
+<p>File requires you set <code>FILE_DIR</code> in your config to point to an empty directory.</p>
+<p>Examples:</p>
+<ul>
+<li><code>FILE_DIR='/var/run/will/settings/'</code></li>
+<li><code>FILE_DIR='~will/settings/'</code></li>
+</ul>
 <h2 id="best-practices">Best Practices</h2>
 <p>In this section, we describe how we deploy and host will, in the hopes that others come forward and share what's working for them, too.  The more good practices, the better.</p>
 <h4 id="our-stack">Our Stack</h4>
