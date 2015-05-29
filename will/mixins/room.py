@@ -6,7 +6,7 @@ from will import settings
 from will.utils import Bunch
 
 V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
-V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s"
+V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s&expand=items&max-results=1000"
 
 
 class Room(Bunch):
@@ -65,12 +65,6 @@ class RoomMixin(object):
             rooms = resp.json()
 
             for room in rooms["items"]:
-                url = room["links"]["self"] + "?auth_token=%s;expand=xmpp_jid" % (settings.V2_TOKEN,)
-                room_details = requests.get(url, **settings.REQUESTS_OPTIONS).json()
-                # map missing hipchat API v1 data
-                for k, v in room_details.items():
-                    if k not in room:
-                        room[k] = room_details[k]
                 room["room_id"] = room["id"]
                 self._available_rooms[room["name"]] = Room(**room)
 

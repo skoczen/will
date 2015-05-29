@@ -58,6 +58,43 @@ A note on `TEMPLATE_DIRS` - Will automatically includes the following:
 - Your Will's `templates` directory,
 - All `templates` directories in the root of modules specified in `settings.PLUGINS`.
 
+## Access Control
+
+You can restrict your `@respond_to` and `@hear` to one or more set of groups, using Access Control List or ACL in short. This is very similar to the `admin_only=True` parameter, but you can use different access levels, not only one.
+
+### Usage
+
+To use ACL, you simply specify ACL groups and the relevant handles in your `config.py`, then pass `acl=[]` into any relevant `@respond_to`s or `@hear`s. 
+
+
+Here's an example with an ops team, and an admin team:
+
+```python
+# config.py
+
+ACL = {
+    "ops": ["steven", "levi", "susan"],
+    "admins": ["wooh"],
+}
+```
+
+Then, in your listeners:
+
+```python
+# Allow the ops and admins groups to stop EC2 instances,
+# but only allow admins to terminate the instances.
+
+@respond_to("ec2 instance stop (?P<instance_id>.*)", acl=["ops", "admins"])
+def stop_ec2_instance(self, message, instance_id):
+    # do AWS stuff
+
+@respond_to("ec2 instance terminate (?P<instance_id>.*)", acl=["admins"])
+def terminate_ec2_instance(self, message, instance_id):
+    # do AWS stuff
+```
+
+Complex ACL behaviors, simple as that.
+
 
 ## Help and documentation
 

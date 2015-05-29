@@ -24,7 +24,7 @@ def gold_stars(self, message, num_stars=1, mention_name=None):
 `@respond_to` takes a number of options:
 
 ```python
-@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+@respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=[])
 ```
 
 - **`regex`**: a regular expression to match.  Any named matches are passed along as keyword arguments.
@@ -32,6 +32,7 @@ def gold_stars(self, message, num_stars=1, mention_name=None):
 - **`case_sensitive`**: should the regex be case sensitive?
 - **`multiline`**: should the regex allow multiline matches?
 - **`admin_only`**: only runs the command if the sender is specified as an administrator.
+- **`acl`**: only runs the command if the sender is member of a specific ACL group. Any set is accepted as an argument.
 
 &nbsp; 
 
@@ -48,7 +49,7 @@ def log_all_bugs(self, message):
 `@hear` takes a the same options as `respond_to`:
 
 ```python
-@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False)
+@hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=[])
 ```
 
 - **`regex`**: a regular expression to match.  Any named matches are passed along as keyword arguments.
@@ -56,6 +57,7 @@ def log_all_bugs(self, message):
 - **`case_sensitive`**: should the regex be case sensitive?
 - **`multiline`**: should the regex allow multiline matches?
 - **`admin_only`**: only runs the command if the sender is specified as an administrator.
+- **`acl`**: only runs the command if the sender is member of a specific ACL group. Any set is accepted as an argument.
 
 &nbsp; 
 

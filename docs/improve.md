@@ -89,10 +89,11 @@ Will's also has had help from lots of coders. Alphabetically:
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
+- [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
-- [dmuntean](https://github.com/dmuntean) gave you proxy support.
+- [dmuntean](https://github.com/dmuntean) gave you proxy support, and kept it working..
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [jessamynsmith](https://github.com/jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
 - [jquast](https://github.com/jquast) did the noble and oft unappreciated work of spelling fixes.
@@ -110,7 +111,8 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And "remind ___ to ___ at ___".  Awesome.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  Yep.
+
 
 ## Other Wills
 
@@ -123,6 +125,21 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.8.3 - May 29, 2015
+
+* **Note:** Module change. New will `"will.plugins.fun",` module. Existing will folks, add it to your `config.py` to keep the fun!
+* New Feature:  Support for Pagerduty workflows, thanks to [woohgit](https://github.com/woohgit). This is really tremendous stuff. [Check out the docs here](plugins/bundled.md#PagerDuty-integration)!
+* New Feature: [ACL](builtins.md#Access-Control) functionality, thanks to [woohgit](https://github.com/woohgit).  Backwards-compatable, even!
+* Made will a little more fun, thanks to [camilonova](http://github.com/camilonova).  Hint: it involves the world's most meme-friendly dog.
+* Moved stuff like that into a new "fun" module.  Dry, anti-fun people can now disable it more easily. ;)
+* Typo in the docs gone.  Thanks, [woohgit](https://github.com/woohgit).
+* Bugs in proxy support are fixed, thanks to [dmuntean](https://github.com/dmuntean).
+* "What time is it" now outputs time zones, thanks to [woohgit](https://github.com/woohgit).
+* Will can now construct google poems, thanks to [AirbornePorcine](https://github.com/AirbornePorcine). Truly, his creativity knows no bounds.
+* No more rate-limit problems on the v2 token, thanks to [grundprinzip](https://github.com/grundprinzip).
+* Messages are now `.strip()`ed before being compared, to handle [frozen-fingered-typos](https://github.com/skoczen/will/pull/145).  Thanks, [woohgit](https://github.com/woohgit)!
+
 
 #### 0.8.2 - April 24, 2015
 

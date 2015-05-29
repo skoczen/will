@@ -70,6 +70,50 @@ PLUGIN_BLACKLIST = [
 ]
 ```
 
+#### PagerDuty integration
+
+In case if you have a PagerDuty account and the PD alerts are integrated with your HipChat server, you probably want this feature. You can acknowledge/resolve incidents using @will and what's more, you can set up a maintenance window as well!
+
+If you've set both `PAGERDUTY_SUBDOMAIN` and `PAGERDUTY_API_KEY` and enabled the plugin in `config.py` - since it's disabled by default - the plugin will work for you. Get one full access api key from https://YOURSUBDOMAIN.pagerduty.com/api_keys.
+
+This plugin assumes that your PagerDuty e-mail address and your HipChat e-mail address are the same, this is how will associates your HipChat account with PagerDuty account.
+
+##### Acknowledge
+
+You can acknowledge the ongoing incidents. You can do 3 things:
+
+- **@will pd ack**: Acknowledge all open incidents assigned to you
+- **@will pd ack!**: Acknowledge all open incidents
+- **@will pd ack [incident number 1] [incident number 2]**: Acknowledge one or more specific incidents
+
+![pd ack](../img/pd_ack.gif)
+
+##### Resolve
+
+You can resolve the acknowledged incidents. You can do 3 things:
+
+- **@will pd resolve**: Resolve all acknowledged incidents assigned to you
+- **@will pd resolve!**: Resolve all acknowledged incidents
+- **@will pd resolve [incident number 1] [incident number 2]**: Resolve one or more specific incidents
+
+![pd ack](../img/pd_resolve.gif)
+
+##### Reassign
+
+You can reassign one or more incidents to somebody else. 
+
+**@will pd reassign [incident number 1] [incident number2] [mention name]**: reassign one or more specific incidents.
+
+![pd reassign](../img/pd_reassign.gif)
+
+##### Schedule maintenance window
+
+You can schedule a maintenance window for a specific service. The last - hour - parameter is optional. The default value is `1 hour`.
+
+**@will pd maintenance [service name] [hour(s)]h**: Schedule a new maintenance window for x hours
+
+![pd maintenance](../img/pd_maintenance.gif)
+
 ## Friendly
 
 Will has personality, and we love that about him.  The friendly module includes some nice, silly, and appreciative aspects to will that really rounds out his personality.
@@ -108,6 +152,12 @@ One day, you'll find yourself saying this.  The response will make your week.
 
 ![Love](../img/love.gif)
 
+
+#### Fun
+
+There are a number of fun-facing plugins.  Check 'em out in the fun module or let them surprise you.
+
+![Hello](../img/hi_hello.gif)
 
 ## Help
 

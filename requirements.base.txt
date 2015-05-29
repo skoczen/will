@@ -14,3 +14,4 @@ Jinja2==2.7.3
 Markdown==2.3.1
 MarkupSafe==0.23
 PyYAML==3.10
+pygerduty==0.28

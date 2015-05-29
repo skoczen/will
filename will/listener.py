@@ -21,7 +21,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 'host': settings.PROXY_HOSTNAME,
                 'port': settings.PROXY_PORT,
                 'username': settings.PROXY_USERNAME,
-                'passsword': settings.PROXY_PASSWORD,
+                'password': settings.PROXY_PASSWORD,
             }
 
         self.rooms = []
@@ -134,12 +134,12 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
             # we're in group chat and I didn't send it
             or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
         ):
-                body = msg["body"]
+                body = msg["body"].strip()
 
                 sent_directly_to_me = False
                 # If it's sent directly to me, strip off "@will" from the start.
                 if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
-                    body = body[len(self.handle) + 1:].strip()
+                    body = body[len(self.handle) + 1:]
                     msg["body"] = body
 
                     sent_directly_to_me = True
@@ -159,7 +159,10 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                                  self.handle_regex.search(body) or sent_directly_to_me)
                             # It's from admins only and sender is an admin, or it's not from admins only
                             and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
+                            # It's available only to the members of one or more ACLs, or no ACL in use
+                            and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
                     ):
+
                         try:
                             thread_args = [msg, ] + l["args"]
 
