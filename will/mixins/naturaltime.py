@@ -26,8 +26,15 @@ class NaturalTimeMixin(object):
 
     def to_natural_day_and_time(self, dt, with_timezone=False):
         if dt.minute == 0:
-            time_str = "%s %s" % (dt.strftime("%I%p").lower(), time.tzname[0]) if with_timezone else dt.strftime("%I%p").lower()
+            if with_timezone:
+                time_str = "%s %s" % (dt.strftime("%I%p").lower(), time.tzname[0])
+            else:
+                time_str = dt.strftime("%I%p").lower()
         else:
-            time_str = "%s %s" % (dt.strftime("%I:%M%p").lower(), time.tzname[0]) if with_timezone else dt.strftime("%I:%M%p").lower()
+            if with_timezone:
+                time_str = "%s %s" % (dt.strftime("%I:%M%p").lower(), time.tzname[0])
+            else:
+                time_str = dt.strftime("%I:%M%p").lower()
+
         full_str = "%s at %s" % (self.to_natural_day(dt), time_str)
         return self.strip_leading_zeros(full_str)
