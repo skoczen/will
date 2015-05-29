@@ -111,7 +111,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  Yep.
 
 
 ## Other Wills
@@ -130,6 +130,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 * **Note:** Module change. New will `"will.plugins.fun",` module. Existing will folks, add it to your `config.py` to keep the fun!
 * New Feature:  Support for Pagerduty workflows, thanks to [woohgit](https://github.com/woohgit). This is really tremendous stuff. [Check out the docs here](plugins/bundled.md#PagerDuty-integration)!
+* New Feature: [ACL](builtins.md#Access-Control) functionality, thanks to [woohgit](https://github.com/woohgit).  Backwards-compatable, even!
 * Made will a little more fun, thanks to [camilonova](http://github.com/camilonova).  Hint: it involves the world's most meme-friendly dog.
 * Moved stuff like that into a new "fun" module.  Dry, anti-fun people can now disable it more easily. ;)
 * Typo in the docs gone.  Thanks, [woohgit](https://github.com/woohgit).
@@ -138,6 +139,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 * Will can now construct google poems, thanks to [AirbornePorcine](https://github.com/AirbornePorcine). Truly, his creativity knows no bounds.
 * No more rate-limit problems on the v2 token, thanks to [grundprinzip](https://github.com/grundprinzip).
 * Messages are now `.strip()`ed before being compared, to handle [frozen-fingered-typos](https://github.com/skoczen/will/pull/145).  Thanks, [woohgit](https://github.com/woohgit)!
+
 
 #### 0.8.2 - April 24, 2015
 

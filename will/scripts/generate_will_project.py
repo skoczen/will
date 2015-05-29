@@ -220,8 +220,15 @@ PLUGIN_BLACKLIST = [
 #   os.path.abspath("other_folder/templates")
 # ]
 
+# Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
+# in respond_to and hear actions.
+# Group names can be any string, and the list is composed of user handles.
+# ACL = {
+#     "admins": ["steven", "will"]
+# }
 
-# User handles who are allowed to perform `admin_only` plugins.  Defaults to everyone.
+# Deprecated - use ACL, above, instead:  User handles who are allowed to perform
+# `admin_only` plugins.  Defaults to everyone.
 # ADMINS = [
 #     "steven",
 #     "levi",

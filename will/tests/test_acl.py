@@ -2,7 +2,7 @@ import unittest
 
 from will.mixins.roster import RosterMixin
 from will import settings
-from will.acl import get_acl_settings_name, get_acl_members, is_acl_allowed
+from will.acl import get_acl_members, is_acl_allowed
 from mock import patch
 
 
@@ -36,25 +36,13 @@ class TestIsAdmin(unittest.TestCase):
         self.assertFalse(RosterMixin().message_is_from_admin(self.message))
 
 
-class TestAclSettings(unittest.TestCase):
-
-    def setUp(self):
-        settings.ACL_ONE = ["a", "b"]
-
-    def test_get_acl_settings_name(self):
-        self.assertEqual(get_acl_settings_name("one"), "ACL_ONE")
-        self.assertEqual(get_acl_settings_name("two_two"), 'ACL_TWO_TWO')
-
-    def test_get_acl_members(self):
-        self.assertEqual(get_acl_members("one"), settings.ACL_ONE)
-        self.assertEqual(get_acl_members("not_set"), [])
-
-
 class TestVerifyAcl(unittest.TestCase):
 
     def setUp(self):
-        settings.ACL_ENGINEERING_OPS = ["bob", "alice"]
-        settings.ACL_ENGINEERING_DEVS = ["eve"]
+        settings.ACL = {
+            "ENGINEERING_OPS": ["bob", "alice"],
+            "engineering_devs": ["eve"]
+        }
 
     def test_is_acl_allowed_returns_true(self):
         self.assertTrue(is_acl_allowed("bob", {"engineering_ops"}))
