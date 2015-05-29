@@ -4,10 +4,15 @@ from . import settings
 
 def get_acl_members(acl):
     acl_members = []
+    acl = acl.lower()
 
-    if getattr(settings, "ACL", None) and acl in settings.ACL:
+    if getattr(settings, "ACL", None):
         try:
-            acl_members = settings.ACL[acl]
+            # Case-insensitive checks
+            for k, v in settings.ACL.items():
+                if k.lower() == acl:
+                    acl_members = settings.ACL[k]
+                    break
         except AttributeError:
             pass
 
