@@ -139,7 +139,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 sent_directly_to_me = False
                 # If it's sent directly to me, strip off "@will" from the start.
                 if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
-                    body = body[len(self.handle) + 1:]
+                    body = body[len(self.handle) + 1:].strip()
                     msg["body"] = body
 
                     sent_directly_to_me = True
@@ -162,7 +162,6 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                             # It's available only to the members of one or more ACLs, or no ACL in use
                             and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
                     ):
-
                         try:
                             thread_args = [msg, ] + l["args"]
 

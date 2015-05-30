@@ -127,6 +127,10 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 0.9.1 - May 30, 2015
+
+* Fixes bug that affected `@will`s - thanks to [woohgit](https://github.com/woohgit) for the report!
+
 #### 0.9 - May 29, 2015
 
 * **BREAKING:** Module change. New `will.plugins.fun` module. Existing will installs will need to add it to your `config.py` to keep the fun!
