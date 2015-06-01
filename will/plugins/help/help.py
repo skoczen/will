@@ -4,7 +4,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class HelpPlugin(WillPlugin):
 
-    @respond_to("^help")
+    @respond_to("^help$")
     def help(self, message):
         """help: the normal help you're reading."""
         # help_data = self.load("help_files")

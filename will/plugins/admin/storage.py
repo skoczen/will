@@ -19,7 +19,7 @@ class StoragePlugin(WillPlugin):
             if res not in (None, True, False):
                 self.say("Something happened while clearing: %s" % res, message=message)
 
-    @respond_to("^SERIOUSLY. REALLY. Clear all keys.", case_sensitive=True, admin_only=True)
+    @respond_to("^SERIOUSLY. REALLY. Clear all keys.$", case_sensitive=True, admin_only=True)
     def clear_all_keys_listener(self, message):
         self.say(
             "Ok, I'm clearing them. You're probably going to want to restart me."
