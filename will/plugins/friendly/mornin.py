@@ -5,11 +5,11 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class MorninEveninPlugin(WillPlugin):
 
-    @hear("^(good )?(morning?)")
+    @hear("^(good )?(morning?)\b")
     def morning(self, message):
         self.say("mornin', %s" % message.sender.nick, message=message)
 
-    @hear("^(good ?|g')?('?night)")
+    @hear("^(good ?|g')?('?night)\b")
     def good_night(self, message):
         now = datetime.datetime.now()
         if now.weekday() == 4:  # Friday
