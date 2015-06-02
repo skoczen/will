@@ -168,6 +168,8 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                             def fn(listener, args, kwargs):
                                 try:
                                     listener["fn"](*args, **kwargs)
+                                except SystemExit:
+                                    raise  # Let plugins exit will if they really want
                                 except:
                                     content = "I ran into trouble running %s.%s:\n\n%s" % (
                                         listener["class_name"],

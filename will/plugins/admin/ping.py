@@ -8,3 +8,7 @@ class PingPlugin(WillPlugin):
     @respond_to("^ping$")
     def ping(self, message):
         self.reply(message, "PONG")
+
+    @respond_to("^pong$")
+    def ping(self, message):
+        self.reply(message, "PING")
