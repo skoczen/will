@@ -99,6 +99,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
         print_head()
         self.verify_environment()
         self.load_config()
+        self.verify_rooms()
         self.bootstrap_storage_mixin()
         self.bootstrap_plugins()
         self.verify_plugin_settings()
