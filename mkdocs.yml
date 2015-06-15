@@ -6,7 +6,6 @@ pages:
 - ["plugins/basics.md", "Teach Your Will", "The Basics"]
 - ["plugins/notice.md", "Teach Your Will", "What Will Can Notice"]
 - ["plugins/reply.md", "Teach Your Will", "How Will Can Respond"]
-- ["plugins/acl.md", "Teach Your Will", "Access Control"]
 - ["plugins/create.md", "Teach Your Will", "Creating and Organizing Plugins"]
 - ["plugins/builtins.md", "Teach Your Will", "Plugin Builtins"]
 - ["plugins/bundled.md", "Teach Your Will", "Bundled Plugins"]
