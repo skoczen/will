@@ -1,12 +1,16 @@
 from datetime import datetime
+import logging
 import json
+
 import requests
 
 from will import settings
 from will.utils import Bunch
 
+logger = logging.getLogger(__name__)
+
 V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
-V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s&expand=items&max-results=1000"
+V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s&expand=items"
 
 
 class Room(Bunch):
@@ -57,16 +61,27 @@ class RoomMixin(object):
                 self._available_rooms[room["name"]] = room
         # Otherwise, grab 'em one-by-one via the v2 api.
         else:
+            params = {}
+            params['start-index'] = 0
+            max_results = params['max-results'] = 1000
             url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
                                   "token": settings.V2_TOKEN}
-            resp = requests.get(url, **settings.REQUESTS_OPTIONS)
-            if resp.status_code == requests.codes.unauthorized:
-                raise Exception("V2_TOKEN authentication failed with HipChat")
-            rooms = resp.json()
+            while True:
+                resp = requests.get(url, params=params,
+                                    **settings.REQUESTS_OPTIONS)
+                if resp.status_code == requests.codes.unauthorized:
+                    raise Exception("V2_TOKEN authentication failed with HipChat")
+                rooms = resp.json()
 
-            for room in rooms["items"]:
-                room["room_id"] = room["id"]
-                self._available_rooms[room["name"]] = Room(**room)
+                for room in rooms["items"]:
+                    room["room_id"] = room["id"]
+                    self._available_rooms[room["name"]] = Room(**room)
+
+                logger.info('Got %d rooms', len(rooms['items']))
+                if len(rooms['items']) == max_results:
+                    params['start-index'] = max_results
+                else:
+                    break
 
         self.save("hipchat_rooms", self._available_rooms)
         if q:
