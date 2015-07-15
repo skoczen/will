@@ -4,7 +4,7 @@ import requests
 import json
 
 class DefinitionPlugin(WillPlugin):
-    @respond_to("^define (?P<word>.*)$")
+    @respond_to("^urban dictionary (?P<word>.*)$")
     def definition(self, message, word):
         r = requests.get("http://api.urbandictionary.com/v0/define?term={0}".format(word))
         wordlist = r.json()
