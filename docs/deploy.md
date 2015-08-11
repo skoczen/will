@@ -120,13 +120,18 @@ Ah, you say, but I have this crazy python-twisted-zope-node monolith that self-r
 Answer, crazy monolith mars person: you don't.  Will is Just Python.
 
 ```python
-from will.main import WillBot
+from will.cli import clirunner
 
-bot = WillBot()
-bot.bootstrap()
+clirunner()
 ```
 
 and you're good.
+
+You can also specify a custom path to the config file:
+
+```
+python run_will.py -c /path/to/config.py
+```
 
 
 ## Storage Backends

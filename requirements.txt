@@ -1,4 +1,5 @@
 hiredis==0.1.4
 redis==2.10.3
+click==4.1
 
 -r requirements.base.txt

@@ -55,6 +55,9 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
             format='%(levelname)-8s %(message)s'
         )
 
+        # load settings
+        self.load_config(kwargs.get('config_file'))
+
         # Find all the PLUGINS modules
         plugins = settings.PLUGINS
         self.plugins_dirs = {}
@@ -98,7 +101,6 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
     def bootstrap(self):
         print_head()
         self.verify_environment()
-        self.load_config()
         self.verify_rooms()
         self.bootstrap_storage_mixin()
         self.bootstrap_plugins()
@@ -239,10 +241,10 @@ To set your %(name)s:
 
         puts("")
 
-    def load_config(self):
+    def load_config(self, config_source=None):
         puts("Loading configuration...")
         with indent(2):
-            settings.import_settings(quiet=False)
+            settings.import_settings(quiet=False, config_source=config_source)
         puts("")
 
     def verify_rooms(self):
