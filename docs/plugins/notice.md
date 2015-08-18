@@ -115,7 +115,7 @@ def keep_alive(self):
     return {}
 
 # With full control, multiple templates, still connected to chat.
-@route("/complex_page/<page_id:int>", method='POST')
+@route("/complex_page/<page_id:int>", method="POST")
 def complex_page(self, page_id):
     # Talk to chat
     self.say("Hey, somebody's loading the complex page.")
