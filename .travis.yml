@@ -1,4 +1,5 @@
 language: python
+sudo: false
 
 # Versions of Python on which to test
 python:
