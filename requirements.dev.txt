@@ -7,3 +7,4 @@ fabric
 flake8
 mock
 nose
+coverage

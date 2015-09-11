@@ -92,6 +92,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
+- [charlax](https://github.com/charlax) gave us batch-get of rooms via the V2 API.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [d0ugal](https://github.com/d0ugal) fixed up the docs to meet the new mkdocs standard.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
@@ -133,13 +134,14 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 ## Releases
 
 
-#### 1.0 - September 11, 2015
+#### 0.9.3 - September 11, 2015
 
 Thanks for your patience on this long-delayed release!  Here's what's new:
 
 * New: Will watches bitbucket, and alerts on downtime, thanks to [mvanbaak](https://github.com/mvanbaak).
 * New: `@will urban dictionary`, thanks to [Ironykins](https://github.com/Ironykins).
 * Improvement: More specific regexes for hi, clear storage, and a few others thanks to [shadow7412](https://github.com/shadow7412).
+* Improvement: Batch-getting of rooms, thanks to [charlax](https://github.com/charlax).
 * Improvement: Better handling of uptime check edge cases, thanks to [woohgit](https://github.com/woohgit).
 * Improvement: Proper docs for installing redis on ubuntu/debian, thanks to [kenden](https://github.com/kenden).
 * Improvement: Pulled an extraneous doc page, thanks to [woohgit](https://github.com/woohgit).

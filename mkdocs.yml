@@ -2,18 +2,6 @@ site_name: Will's Docs
 site_url: http://skoczen.github.io/will
 site_description: "Will is a simple, beautiful-to-code python hipchat bot"
 pages:
-<<<<<<< HEAD
-- ["index.md", "Get Started"]
-- ["plugins/basics.md", "Teach Your Will", "The Basics"]
-- ["plugins/notice.md", "Teach Your Will", "What Will Can Notice"]
-- ["plugins/reply.md", "Teach Your Will", "How Will Can Respond"]
-- ["plugins/create.md", "Teach Your Will", "Creating and Organizing Plugins"]
-- ["plugins/builtins.md", "Teach Your Will", "Plugin Builtins"]
-- ["plugins/bundled.md", "Teach Your Will", "Bundled Plugins"]
-- ["config.md", "Configure"]
-- ["deploy.md", "Deploy"]
-- ["improve.md", "Improve"]
-=======
 - Get Started: index.md
 - Teach Your Will:
   - The Basics: plugins/basics.md
@@ -26,7 +14,6 @@ pages:
 - Configure: config.md
 - Deploy: deploy.md
 - Improve: improve.md
->>>>>>> a98af1f2b200906953598b11090fb69b86b95915
 theme: will
 site_name: Will
 theme_dir: "docs/themes/will/"
