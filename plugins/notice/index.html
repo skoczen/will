@@ -73,10 +73,6 @@
                         </li>
                     
                         <li >
-                            <a href="../acl/">Access Control</a>
-                        </li>
-                    
-                        <li >
                             <a href="../create/">Creating and Organizing Plugins</a>
                         </li>
                     
@@ -253,7 +249,7 @@ def keep_alive(self):
     return {}
 
 # With full control, multiple templates, still connected to chat.
-@route(&quot;/complex_page/&lt;page_id:int&gt;&quot;, method=POST)
+@route(&quot;/complex_page/&lt;page_id:int&gt;&quot;, method=&quot;POST&quot;)
 def complex_page(self, page_id):
     # Talk to chat
     self.say(&quot;Hey, somebody's loading the complex page.&quot;)
