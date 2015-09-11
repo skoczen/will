@@ -16,7 +16,7 @@ class EmergencyContactsPlugin(WillPlugin):
         self.save("contact_info", contacts)
         self.say("Got it.", message=message)
 
-    @respond_to("^contact info")
+    @respond_to("^contact info$")
     def respond_to_contact_info(self, message):
         """contact info: Show everyone's emergency contact info."""
         contacts = self.load("contact_info", {})
