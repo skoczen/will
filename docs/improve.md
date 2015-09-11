@@ -96,6 +96,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [d0ugal](https://github.com/d0ugal) fixed up the docs to meet the new mkdocs standard.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [dmuntean](https://github.com/dmuntean) gave you proxy support, and kept it working..
+- [Ironykins](https://github.com/Ironykins) brought you urban dictionary support.
 - [kenden](https://github.com/kenden) fixed up the redis docs for ubuntu/debian.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
 - [jessamynsmith](https://github.com/jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
@@ -116,7 +117,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And more doc fixes. Yep.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. Yep.
 
 
 ## Other Wills
@@ -137,11 +138,13 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 Thanks for your patience on this long-delayed release!  Here's what's new:
 
 * New: Will watches bitbucket, and alerts on downtime, thanks to [mvanbaak](https://github.com/mvanbaak).
+* New: `@will urban dictionary`, thanks to [Ironykins](https://github.com/Ironykins).
 * Improvement: More specific regexes for hi, clear storage, and a few others thanks to [shadow7412](https://github.com/shadow7412).
-* Improvements: Proper docs for installing redis on ubuntu/debian, thanks to [kenden](https://github.com/kenden).
-* Improvements: Pulled an extraneous doc page, thanks to [woohgit](https://github.com/woohgit).
-* Improvements: Fixes to the route doc syntax, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
-* Improvements: Docs now fit the new mkdocs format, thanks to [d0ugal](https://github.com/d0ugal).
+* Improvement: Better handling of uptime check edge cases, thanks to [woohgit](https://github.com/woohgit).
+* Improvement: Proper docs for installing redis on ubuntu/debian, thanks to [kenden](https://github.com/kenden).
+* Improvement: Pulled an extraneous doc page, thanks to [woohgit](https://github.com/woohgit).
+* Improvement: Fixes to the route doc syntax, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
+* Improvement: Docs now fit the new mkdocs format, thanks to [d0ugal](https://github.com/d0ugal).
 
 * Fixes bug that caused will not to join all rooms if `ROOMS` was missing. Thanks to [camilonova](https://github.com/camilonova) for the report!
 
