@@ -54,7 +54,7 @@ sudo service redis start
 On a Debian (Ubuntu, Mint, KNOPPIX) machine to properly install follow the [Redis Quickstart](http://redis.io/topics/quickstart). But you can start more quickly with:
 
 ```bash
-sudo apt-get install redis
+sudo apt-get install redis-server
 redis-server
 ```
 
