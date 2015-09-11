@@ -5,7 +5,10 @@ python:
   - "2.7"
 
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install: "pip install -r requirements.dev.txt"
 
 # Test script to run
-script: ./will/scripts/test_run.sh
+script: 
+    - ./will/scripts/test_run.sh
+    - coverage run -m nose
+    - flake8
