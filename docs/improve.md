@@ -147,6 +147,7 @@ Thanks for your patience on this long-delayed release!  Here's what's new:
 * Improvement: Pulled an extraneous doc page, thanks to [woohgit](https://github.com/woohgit).
 * Improvement: Fixes to the route doc syntax, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
 * Improvement: Docs now fit the new mkdocs format, thanks to [d0ugal](https://github.com/d0ugal).
+* Improvement: New travis.yml setup for easier travis running, and plugged my CircleCI builds into the github repo. All future PRs should automatically have tests run!
 
 * Fixes bug that caused will not to join all rooms if `ROOMS` was missing. Thanks to [camilonova](https://github.com/camilonova) for the report!
 
