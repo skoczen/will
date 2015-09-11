@@ -139,7 +139,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 Thanks for your patience on this long-delayed release!  Here's what's new:
 
 * New: Will watches bitbucket, and alerts on downtime, thanks to [mvanbaak](https://github.com/mvanbaak).
-* New: `@will urban dictionary`, thanks to [Ironykins](https://github.com/Ironykins).
+* New: `@will urban dictionary ______`, thanks to [Ironykins](https://github.com/Ironykins).
 * Improvement: More specific regexes for hi, clear storage, and a few others thanks to [shadow7412](https://github.com/shadow7412).
 * Improvement: Batch-getting of rooms, thanks to [charlax](https://github.com/charlax).
 * Improvement: Better handling of uptime check edge cases, thanks to [woohgit](https://github.com/woohgit).
@@ -148,8 +148,6 @@ Thanks for your patience on this long-delayed release!  Here's what's new:
 * Improvement: Fixes to the route doc syntax, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
 * Improvement: Docs now fit the new mkdocs format, thanks to [d0ugal](https://github.com/d0ugal).
 * Improvement: New travis.yml setup for easier travis running, and plugged my CircleCI builds into the github repo. All future PRs should automatically have tests run!
-
-* Fixes bug that caused will not to join all rooms if `ROOMS` was missing. Thanks to [camilonova](https://github.com/camilonova) for the report!
 
 #### 0.9.2 - June 5, 2015
 
