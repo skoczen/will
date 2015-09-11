@@ -7,14 +7,13 @@ pages:
   - The Basics: plugins/basics.md
   - What Will Can Notice: plugins/notice.md
   - How Will Can Respond: plugins/reply.md
-  - Access Control: plugins/acl.md
   - Creating and Organizing Plugins: plugins/create.md
   - Plugin Builtins: plugins/builtins.md
   - Bundled Plugins: plugins/bundled.md
 - Configure: config.md
 - Deploy: deploy.md
 - Improve: improve.md
-theme: will
+# theme: will
 site_name: Will
 theme_dir: "docs/themes/will/"
 repo_url: https://github.com/skoczen/will/
