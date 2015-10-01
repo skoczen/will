@@ -29,7 +29,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         if kwargs is None:
             kwargs = {}
 
-        if kwargs.get("html", False) and (message and message['type'] in ('chat', 'normal')):
+        if not kwargs.get("html", False) and (message and message['type'] in ('chat', 'normal')):
             # 1-1 can't have HTML.
             content = html_to_text(content)
         elif kwargs.get("html", True):
