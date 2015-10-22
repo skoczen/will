@@ -58,7 +58,7 @@ class RoomMixin(object):
             if r.status_code == requests.codes.unauthorized:
                 raise Exception("V1_TOKEN authentication failed with HipChat")
             for room in r.json()["rooms"]:
-                self._available_rooms[room["name"]] = room
+                self._available_rooms[room["name"]] = Room(**room)
         # Otherwise, grab 'em one-by-one via the v2 api.
         else:
             params = {}
