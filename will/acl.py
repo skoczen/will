@@ -22,8 +22,6 @@ def get_acl_members(acl):
 def is_acl_allowed(nick, acl):
     for a in acl:
         acl_members = get_acl_members(a)
-        print acl_members
-        print nick
         if nick in acl_members or nick.lower() in [x.lower() for x in acl_members]:
             return True
 
