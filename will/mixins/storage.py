@@ -63,3 +63,28 @@ class StorageMixin(object):
             return self.storage.size()
         except Exception:
             logging.exception("Failed to get the size of our storage")
+
+    # list specific save/load/clear operations
+
+    def remove_from_list(self, key, value):
+        tmp_value = self.load(key)
+        if tmp_value is None:
+            pass
+        else:
+            tmp_value.remove(value)
+            self.save(key, tmp_value)
+
+    def save_to_list(self, key, value):
+        tmp_value = self.load(key)
+        if tmp_value is None:
+            self.save(key, [value])
+        else:
+            tmp_value.append(value)
+            self.save(key, tmp_value)
+
+    def load_as_list(self, key):
+        value = self.load(key)
+        if value is None:
+            return []
+        else:
+            return value
