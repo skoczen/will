@@ -12,6 +12,9 @@ It's as simple as:
 ```python
 self.save("my_key", "my_value")
 self.load("my_key", "default value")
+self.save_to_list("my_key", "value")
+self.load_as_list("my_key")
+self.remove_from_list("my_key", "value")
 ```
 
 You can also save a value temporarily by setting the number of seconds before it expires:
