@@ -9,8 +9,7 @@ from will.utils import Bunch
 
 logger = logging.getLogger(__name__)
 
-V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
-V2_TOKEN_URL = "https://%(server)s/v2/room"
+V2_TOKEN_URL = "https://%(server)s/v2/room?max-results=1000&expand=items"
 
 
 class Room(Bunch):
@@ -50,39 +49,25 @@ class Room(Bunch):
 class RoomMixin(object):
     def update_available_rooms(self, q=None):
         self._available_rooms = {}
-        # Use v1 token to grab a full room list if we can (good to avoid rate limiting)
-        if hasattr(settings, "V1_TOKEN"):
-            url = V1_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
-                                  "token": settings.V1_TOKEN}
-            r = requests.get(url, **settings.REQUESTS_OPTIONS)
-            if r.status_code == requests.codes.unauthorized:
-                raise Exception("V1_TOKEN authentication failed with HipChat")
-            for room in r.json()["rooms"]:
-                self._available_rooms[room["name"]] = room
-        # Otherwise, grab 'em one-by-one via the v2 api.
-        else:
-            params = {}
-            #params['start-index'] = 0
-            max_results = params['max-results'] = 1000
-            params['auth_token'] = settings.V2_TOKEN
-            params['expand'] = 'items'
-            url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER}
-            while True:
-                resp = requests.get(url, params=params,
-                                    **settings.REQUESTS_OPTIONS)
-                if resp.status_code == requests.codes.unauthorized:
-                    raise Exception("V2_TOKEN authentication failed with HipChat")
-                rooms = resp.json()
+        params = {}
+        params['auth_token'] = settings.V2_TOKEN
+        url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER}
+        while True:
+            resp = requests.get(url, params=params,
+                                **settings.REQUESTS_OPTIONS)
+            if resp.status_code == requests.codes.unauthorized:
+                raise Exception("V2_TOKEN authentication failed with HipChat")
+            rooms = resp.json()
 
-                for room in rooms["items"]:
-                    room["room_id"] = room["id"]
-                    self._available_rooms[room["name"]] = Room(**room)
+            for room in rooms["items"]:
+                room["room_id"] = room["id"]
+                self._available_rooms[room["name"]] = Room(**room)
 
-                logger.info('Got %d rooms', len(rooms['items']))
-                if rooms['links'].get('next',None):
-                    url=rooms['links']['next']
-                else:
-                    break
+            logger.info('Got %d rooms', len(rooms['items']))
+            if rooms['links'].get('next',None):
+                url=rooms['links']['next']
+            else:
+                break
 
         self.save("hipchat_rooms", self._available_rooms)
         if q:
