@@ -10,7 +10,7 @@ from will.utils import Bunch
 logger = logging.getLogger(__name__)
 
 V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
-V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s&expand=items"
+V2_TOKEN_URL = "https://%(server)s/v2/room"
 
 
 class Room(Bunch):
@@ -62,10 +62,11 @@ class RoomMixin(object):
         # Otherwise, grab 'em one-by-one via the v2 api.
         else:
             params = {}
-            params['start-index'] = 0
+            #params['start-index'] = 0
             max_results = params['max-results'] = 1000
-            url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
-                                  "token": settings.V2_TOKEN}
+            params['auth_token'] = settings.V2_TOKEN
+            params['expand'] = 'items'
+            url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER}
             while True:
                 resp = requests.get(url, params=params,
                                     **settings.REQUESTS_OPTIONS)
@@ -78,8 +79,8 @@ class RoomMixin(object):
                     self._available_rooms[room["name"]] = Room(**room)
 
                 logger.info('Got %d rooms', len(rooms['items']))
-                if len(rooms['items']) == max_results:
-                    params['start-index'] = max_results
+                if rooms['links'].get('next',None):
+                    url=rooms['links']['next']
                 else:
                     break
 
