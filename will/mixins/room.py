@@ -64,8 +64,8 @@ class RoomMixin(object):
                 self._available_rooms[room["name"]] = Room(**room)
 
             logger.info('Got %d rooms', len(rooms['items']))
-            if rooms['links'].get('next',None):
-                url=rooms['links']['next']
+            if rooms['links'].get('next', None):
+                url = rooms['links']['next']
             else:
                 break
 
