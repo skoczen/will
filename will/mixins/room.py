@@ -48,6 +48,10 @@ class Room(Bunch):
 
 class RoomMixin(object):
     def update_available_rooms(self, q=None):
+        timestamp = self.storage.load("rooms:timestamp")
+        print "###############"
+        print timestamp
+
         self._available_rooms = {}
         params = {}
         params['auth_token'] = settings.V2_TOKEN
