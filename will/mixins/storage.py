@@ -66,7 +66,7 @@ class StorageMixin(object):
 
     # list specific save/load/clear operations
 
-    def remove_from_list(self, key, value):
+    def pop(self, key, value):
         tmp_value = self.load(key)
         if tmp_value is None:
             pass
@@ -74,17 +74,10 @@ class StorageMixin(object):
             tmp_value.remove(value)
             self.save(key, tmp_value)
 
-    def save_to_list(self, key, value, expire=None):
+    def append(self, key, value, expire=None):
         tmp_value = self.load(key)
         if tmp_value is None:
             self.save(key, [value], expire)
         else:
             tmp_value.append(value)
             self.save(key, tmp_value, expire)
-
-    def load_as_list(self, key):
-        value = self.load(key)
-        if value is None:
-            return []
-        else:
-            return value
