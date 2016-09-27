@@ -140,7 +140,7 @@ class PagerDutyPlugin(WillPlugin):
                 start_time = now.strftime("%Y-%m-%dT%H:%MZ")
                 end_time = (now + datetime.timedelta(hours=int(interval))).strftime("%Y-%m-%dT%H:%MZ")
                 try:
-                    pager.maintenance_windows.create(service_ids=service.id, requester_id=user.id,
+                    pager.maintenance_windows.create(service_ids=[service.id], requester_id=user.id,
                                                      start_time=start_time,
                                                      end_time=end_time)
                     self.reply(message, "Ok.")
