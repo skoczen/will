@@ -143,8 +143,7 @@ def import_settings(quiet=True):
 
         if "TEMPLATE_DIRS" not in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:
-                # All good
-                pass
+                settings["TEMPLATE_DIRS"] = os.environ["WILL_TEMPLATE_DIRS_PICKLED"].split(";;")
             else:
                 settings["TEMPLATE_DIRS"] = []
         if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and\
