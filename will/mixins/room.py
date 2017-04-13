@@ -63,7 +63,7 @@ class RoomMixin(object):
         else:
             params = {}
             params['start-index'] = 0
-            params['max-results'] = 1000
+            max_results = params['max-results'] = 1000
             url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
                                   "token": settings.V2_TOKEN}
             while True:
@@ -78,8 +78,8 @@ class RoomMixin(object):
                     self._available_rooms[room["name"]] = Room(**room)
 
                 logger.info('Got %d rooms', len(rooms['items']))
-                if len(rooms['items']) == params['max-results']:
-                    params['start-index'] += params['max-results']
+                if len(rooms['items']) == max_results:
+                    params['start-index'] += max_results
                 else:
                     break
 
