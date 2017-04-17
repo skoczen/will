@@ -1,15 +1,7 @@
 language: python
 sudo: false
 
-# Versions of Python on which to test
-python:
-  - "2.7"
-
-# command to install dependencies
-install: "pip install -r requirements.dev.txt"
-
-# Test script to run
+install:
+    - pip install -U tox
 script: 
-    - ./will/scripts/test_run.sh
-    - coverage run -m nose
-    - flake8
+    - tox
