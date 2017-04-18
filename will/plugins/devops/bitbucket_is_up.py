@@ -4,7 +4,7 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 
 
-class BitbucketIsUpPlugin(WillPlugin):
+class BitBucketIsUpPlugin(WillPlugin):
 
     @periodic(second='36')
     def bitbucket_is_up(self):

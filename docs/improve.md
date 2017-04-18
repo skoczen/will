@@ -104,6 +104,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [jquast](https://github.com/jquast) did the noble and oft unappreciated work of spelling fixes.
 - [keNzi](https://github.com/keNzej) added shorten url function using bitly service.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
+- [mark-adams](https://github.com/mark-adams) cleaned up a Bitbucket typo.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
@@ -132,6 +133,12 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.9.4 - April 20, 2017
+
+New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience it it being merged in.
+
+* Improvement: Proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams)
 
 
 #### 0.9.3 - September 11, 2015
