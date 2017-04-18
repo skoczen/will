@@ -167,6 +167,12 @@ Lists all the plugin commands with docstrings, bundled by module.
 
 ![Help, will](../img/help.gif)
 
+
+Lists only the matching plugin commands with docsstrings, bundled by modules. It searches in docsstrings too.
+
+![Help pattern, will](../img/help_pattern.gif)
+
+
 #### Programmer help
 
 List all regexes for registered `@hear` and `@respond_to` decorators.  This is what help used to be, and may be pulled in the near future.
