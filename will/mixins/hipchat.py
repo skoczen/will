@@ -10,7 +10,7 @@ ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(toke
 PRIVATE_MESSAGE_URL = "https://%(server)s/v2/user/%(user_id)s/message?auth_token=%(token)s"
 SET_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 USER_DETAILS_URL = "https://%(server)s/v2/user/%(user_id)s?auth_token=%(token)s"
-ALL_USERS_URL = "https://%(server)s/v2/user?auth_token=%(token)s&start-index=%(start_index)s"
+ALL_USERS_URL = "https://%(server)s/v2/user?auth_token=%(token)s&start-index=%(start_index)s&max-results=%(max_results)s"
 
 
 class HipChatMixin(object):
@@ -100,7 +100,8 @@ class HipChatMixin(object):
             # Grab the first roster page, and populate full_roster
             url = ALL_USERS_URL % {"server": settings.HIPCHAT_SERVER,
                                    "token": settings.V2_TOKEN,
-                                   "start_index": 0}
+                                   "start_index": 0,
+                                   "max_results": 1000}
             r = requests.get(url, **settings.REQUESTS_OPTIONS)
             for user in r.json()['items']:
                 full_roster["%s" % (user['id'],)] = user
