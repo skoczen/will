@@ -139,7 +139,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience it it being merged in.
 
 * Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
-* Improvement: Proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
+* Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
 
 
 #### 0.9.3 - September 11, 2015
