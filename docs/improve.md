@@ -88,7 +88,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [borgstrom](https://github.com/borgstrom) gave you beautifully architected storage backends, including support for couchbase and local storage.
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Fixed the docs, too.
-- [BrianGallew](https://github.com/BrianGallew) improved the blacklist import mechanism, so blacklisted modules aren't even attempted to be imported, and taught will to handle zombie users with grace.
+- [BrianGallew](https://github.com/BrianGallew) improved the blacklist import mechanism, so blacklisted modules aren't even attempted to be imported, taught will to handle zombie users with grace, and fixed the file storage backend.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.
@@ -121,7 +121,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. Yep.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. And added `append` and `pop` list support. Yep.
 - [woparry](https://github.com/woparry) made sure that Will could handle organizations with a massive (>2000) number of rooms.
 
 
@@ -142,8 +142,10 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience it it being merged in.
 
+* New: `self.append()` and `self.pop()` methods to support list storage, thanks to [woohgit](https://github.com/woohgit).
 * Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
 * Improvement: Blacklisted modules aren't even attempted to be imported, thanks to [BrianGallew](https://github.com/BrianGallew).
+* Improvement: File storage engine expires properly, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: Zombie users no longer cause will trouble, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of [woparry](https://github.com/woparry).
 * Improvement: V2 API calls for multiple rooms now properly uses `max-results` and doesn't hang, thanks to [chillipeper](https://github.com/chillipeper).
