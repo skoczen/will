@@ -88,6 +88,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [borgstrom](https://github.com/borgstrom) gave you beautifully architected storage backends, including support for couchbase and local storage.
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Fixed the docs, too.
+- [BrianGallew](https://github.com/BrianGallew) improved the blacklist import mechanism, so blacklisted modules aren't even attempted to be imported.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.
@@ -139,6 +140,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience it it being merged in.
 
 * Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
+* Improvement: Blacklisted modules aren't even attempted to be imported, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
 
 
