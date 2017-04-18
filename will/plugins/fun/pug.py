@@ -13,6 +13,5 @@ class PugPlugin(WillPlugin):
             pug = req.json()['pug']
             if 'media.tumblr.com' in pug:
                 pug = 'https://media.tumblr.com' + pug.split('media.tumblr.com')[1]
-                self.say(pug, message=message)
-            else:
-                self.say(pug, message=message)
+
+            self.say(pug, message=message)
