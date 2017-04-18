@@ -255,8 +255,8 @@ To set your %(name)s:
                 p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
                 p.start()
                 rooms_list = q.get()
-                show_valid("Joining all %s known rooms." % len(rooms_list))
-                os.environ["WILL_ROOMS"] = ";".join(rooms_list)
+                show_valid("Joining all %s known rooms." % len(rooms_list[0]))
+                os.environ["WILL_ROOMS"] = ";".join(rooms_list[0])
                 p.join()
                 settings.import_settings()
             else:

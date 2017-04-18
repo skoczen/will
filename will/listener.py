@@ -52,7 +52,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         if settings.ALLOW_INSECURE_HIPCHAT_SERVER is True:
             self.add_event_handler('ssl_invalid_cert', lambda cert: True)
 
-        self.add_event_handler("roster_update", self.join_rooms)
+        #self.add_event_handler("roster_update", self.join_rooms)
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
@@ -61,9 +61,14 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def session_start(self, event):
         self.send_presence()
-        self.get_roster()
+        self.update_will_roster_and_rooms()
+        for r in self.rooms:
+            if "xmpp_jid" in r:
+                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+
 
     def join_rooms(self, event):
+        print "in listener:join_rooms"
         self.update_will_roster_and_rooms()
 
         for r in self.rooms:
@@ -71,6 +76,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
 
     def update_will_roster_and_rooms(self):
+        print "in listener:update_will_roster_and_rooms"
         internal_roster = self.load('will_roster', {})
         # Loop through the connected rooms
         for roster_id in self.roster:
@@ -104,6 +110,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
         self.save("will_roster", internal_roster)
 
+        print "gonna update available rooms for update reasons"
         self.update_available_rooms()
 
     def room_message(self, msg):
@@ -126,6 +133,14 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         return msg["from"]
 
     def _handle_message_listeners(self, msg):
+        logging.error(" " + msg['type'] + " " + msg['body'])
+        logging.error(self.handle)
+        try:
+            if self.me:
+                pass
+        except AttributeError:
+            self.join_rooms(msg)
+
         if (
             # I've been asked to listen to my own messages
             self.some_listeners_include_me
@@ -149,6 +164,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 msg.sender = self.get_user_from_message(msg)
 
                 for l in self.message_listeners:
+                    logging.error(l["regex"].pattern)
                     search_matches = l["regex"].search(body)
                     if (
                             search_matches  # The search regex matches and
@@ -163,6 +179,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                             and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
                     ):
                         try:
+                            logging.error("matched pattern")
                             thread_args = [msg, ] + l["args"]
 
                             def fn(listener, args, kwargs):
