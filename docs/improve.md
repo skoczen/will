@@ -130,6 +130,8 @@ Will's also has had help from lots of coders. Alphabetically:
 If you're looking for plugin inspiration, here are some wills that are open-sourced:
 
 - [BuddyUp's will](https://github.com/buddyup/our-will)
+- [edX's devops will](https://github.com/edx/alton)
+- [edX's fun will](https://github.com/edx/xsy)
 - [GreenKahuna's will](https://github.com/greenkahuna/our-will)
 - [Skoczen's will](https://github.com/buddyup/my-will)
 
