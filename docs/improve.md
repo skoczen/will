@@ -131,6 +131,8 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 - [BuddyUp's will](https://github.com/buddyup/our-will)
 - [Skoczen's will](https://github.com/skoczen/my-will)
+- [edX's devops will](https://github.com/edx/alton)
+- [edX's fun will](https://github.com/edx/xsy)
 
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
