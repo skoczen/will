@@ -13,7 +13,7 @@ class HelpPlugin(WillPlugin):
         self.say("Sure thing, %s." % message.sender.nick, message=message)
 
         help_text = "Here's what I know how to do:"
-        if plugin and help_modules.has_key(plugin):
+        if plugin and plugin in help_modules:
             help_text = "Here's what I know how to do about %s:" % plugin
             selected_modules = dict()
             selected_modules[plugin] = help_modules[plugin]

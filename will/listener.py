@@ -99,7 +99,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                         internal_roster[user_id].mention_name = user_data["mention_name"]
 
                     # If it's me, save that info!
-                    if internal_roster[user_id].get("name","") == self.nick:
+                    if internal_roster[user_id].get("name", "") == self.nick:
                         self.me = internal_roster[user_id]
 
         self.save("will_roster", internal_roster)

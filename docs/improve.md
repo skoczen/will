@@ -120,6 +120,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [shadow7412](https://github/shadow7412) cleaned up a bunch of regex
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
+- [tophsic](https://github.com/tophsic) made help friendlier, including plugin-specific help.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
 - [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. And added `append` and `pop` list support. Yep.
 - [woparry](https://github.com/woparry) made sure that Will could handle organizations with a massive (>2000) number of rooms.
@@ -144,6 +145,7 @@ New releases and movement again!  Exciting things in the pipeline for will, and 
 
 * New: `self.append()` and `self.pop()` methods to support list storage, thanks to [woohgit](https://github.com/woohgit).
 * Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
+* Improvement: `@will help <plugin>` now gives plugin-specific help, thanks to [tophsic](https://github.com/tophsic).
 * Improvement: Blacklisted modules aren't even attempted to be imported, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: File storage engine expires properly, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: Zombie users no longer cause will trouble, thanks to [BrianGallew](https://github.com/BrianGallew).
