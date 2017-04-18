@@ -94,6 +94,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [charlax](https://github.com/charlax) gave us batch-get of rooms via the V2 API.
+- [chillipeper](https://github.com/chillipeper) fixed up the max-size and handling of V2 rooms.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [d0ugal](https://github.com/d0ugal) fixed up the docs to meet the new mkdocs standard.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
@@ -121,6 +122,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
 - [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. Yep.
+- [woparry](https://github.com/woparry) made sure that Will could handle organizations with a massive (>2000) number of rooms.
 
 
 ## Other Wills
@@ -141,6 +143,8 @@ New releases and movement again!  Exciting things in the pipeline for will, and 
 
 * Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
 * Improvement: Blacklisted modules aren't even attempted to be imported, thanks to [BrianGallew](https://github.com/BrianGallew).
+* Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of [woparry](https://github.com/woparry).
+* Improvement: V2 API calls for multiple rooms now properly uses `max-results` and doesn't hang, thanks to [chillipeper](https://github.com/chillipeper).
 * Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
 
 
