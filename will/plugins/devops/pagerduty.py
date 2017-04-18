@@ -125,7 +125,7 @@ class PagerDutyPlugin(WillPlugin):
         self._update_incident(message, None, 'resolve_all')
 
     @require_settings("PAGERDUTY_SUBDOMAIN", "PAGERDUTY_API_KEY")
-    @respond_to("^pd maintenance (?P<service_name>[a-zA-Z_ -]*[a-z-A-Z])( )?(?P<interval>[1-9]+)?h?")
+    @respond_to("^pd maintenance (?P<service_name>[\S+ ]+) (?P<interval>[1-9])h$")
     def set_service_maintenance(self, message, service_name=None, interval=None):
         if not interval:
             interval = 1
@@ -140,7 +140,7 @@ class PagerDutyPlugin(WillPlugin):
                 start_time = now.strftime("%Y-%m-%dT%H:%MZ")
                 end_time = (now + datetime.timedelta(hours=int(interval))).strftime("%Y-%m-%dT%H:%MZ")
                 try:
-                    pager.maintenance_windows.create(service_ids=service.id, requester_id=user.id,
+                    pager.maintenance_windows.create(service_ids=[service.id], requester_id=user.id,
                                                      start_time=start_time,
                                                      end_time=end_time)
                     self.reply(message, "Ok.")

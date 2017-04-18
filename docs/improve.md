@@ -88,11 +88,13 @@ Will's also has had help from lots of coders. Alphabetically:
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [borgstrom](https://github.com/borgstrom) gave you beautifully architected storage backends, including support for couchbase and local storage.
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Fixed the docs, too.
+- [BrianGallew](https://github.com/BrianGallew) improved the blacklist import mechanism, so blacklisted modules aren't even attempted to be imported, and taught will to handle zombie users with grace.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [charlax](https://github.com/charlax) gave us batch-get of rooms via the V2 API.
+- [chillipeper](https://github.com/chillipeper) fixed up the max-size and handling of V2 rooms.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [d0ugal](https://github.com/d0ugal) fixed up the docs to meet the new mkdocs standard.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
@@ -104,6 +106,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [jquast](https://github.com/jquast) did the noble and oft unappreciated work of spelling fixes.
 - [keNzi](https://github.com/keNzej) added shorten url function using bitly service.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
+- [mark-adams](https://github.com/mark-adams) cleaned up a Bitbucket typo.
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
@@ -118,7 +121,8 @@ Will's also has had help from lots of coders. Alphabetically:
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. Yep.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. Yep.
+- [woparry](https://github.com/woparry) made sure that Will could handle organizations with a massive (>2000) number of rooms.
 
 
 ## Other Wills
@@ -126,12 +130,25 @@ Will's also has had help from lots of coders. Alphabetically:
 If you're looking for plugin inspiration, here are some wills that are open-sourced:
 
 - [BuddyUp's will](https://github.com/buddyup/our-will)
-- [GreenKahuna's will](https://github.com/greenkahuna/our-will)
-- [Skoczen's will](https://github.com/buddyup/my-will)
+- [Skoczen's will](https://github.com/skoczen/my-will)
+- [edX's devops will](https://github.com/edx/alton)
+- [edX's fun will](https://github.com/edx/xsy)
 
 **Note:** Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!
 
 ## Releases
+
+#### 0.9.4 - April 20, 2017
+
+New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience it it being merged in.
+
+* Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
+* Improvement: Blacklisted modules aren't even attempted to be imported, thanks to [BrianGallew](https://github.com/BrianGallew).
+* Improvement: Zombie users no longer cause will trouble, thanks to [BrianGallew](https://github.com/BrianGallew).
+* Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of [woparry](https://github.com/woparry).
+* Improvement: V2 API calls for multiple rooms now properly uses `max-results` and doesn't hang, thanks to [chillipeper](https://github.com/chillipeper).
+* Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
+* Improvement: Updated to the new pagerduty docs, thanks to [woohgit](https://github.com/woohgit).
 
 
 #### 0.9.3 - September 11, 2015
@@ -139,7 +156,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 Thanks for your patience on this long-delayed release!  Here's what's new:
 
 * New: Will watches bitbucket, and alerts on downtime, thanks to [mvanbaak](https://github.com/mvanbaak).
-* New: `@will urban dictionary`, thanks to [Ironykins](https://github.com/Ironykins).
+* New: `@will urban dictionary ______`, thanks to [Ironykins](https://github.com/Ironykins).
 * Improvement: More specific regexes for hi, clear storage, and a few others thanks to [shadow7412](https://github.com/shadow7412).
 * Improvement: Batch-getting of rooms, thanks to [charlax](https://github.com/charlax).
 * Improvement: Better handling of uptime check edge cases, thanks to [woohgit](https://github.com/woohgit).
@@ -148,8 +165,6 @@ Thanks for your patience on this long-delayed release!  Here's what's new:
 * Improvement: Fixes to the route doc syntax, thanks to [brandonsturgeon](https://github.com/brandonsturgeon).
 * Improvement: Docs now fit the new mkdocs format, thanks to [d0ugal](https://github.com/d0ugal).
 * Improvement: New travis.yml setup for easier travis running, and plugged my CircleCI builds into the github repo. All future PRs should automatically have tests run!
-
-* Fixes bug that caused will not to join all rooms if `ROOMS` was missing. Thanks to [camilonova](https://github.com/camilonova) for the report!
 
 #### 0.9.2 - June 5, 2015
 
