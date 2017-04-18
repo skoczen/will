@@ -79,7 +79,7 @@ class RoomMixin(object):
 
                 logger.info('Got %d rooms', len(rooms['items']))
                 if len(rooms['items']) == max_results:
-                    params['start-index'] = max_results
+                    params['start-index'] = params['start-index'] + max_results
                 else:
                     break
 
