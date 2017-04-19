@@ -117,6 +117,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [mvanbaak](https://github.com/mvanbaak) brought you support for bitbucket uptime.
 - [netjunkie](https://github.com/netjunki) fixed a duplicated help module, added an expire parameter to `self.save()`, and added support for will watching hipchat's status.
 - [pcurry](https://github.com/pcurry) added travis support.
+- [pepedocs](https://github.com/pepedocs) added friendly timestamps to the default logging output.
 - [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history, and suggested a better talkback regex.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [Regner](https://github.com/Regner) upgraded the hiredis version to work on windows.
@@ -157,6 +158,7 @@ New releases and movement again!  Exciting things in the pipeline for will, and 
 * Improvement: V2 API calls for multiple rooms now properly uses `max-results` and doesn't hang, thanks to [chillipeper](https://github.com/chillipeper).
 * Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
 * Improvement: `_available_rooms` is now populated with `Room` objects, regardless of whether you use V1 or V2, thanks to [jcdyer](https://github.com/jcdyer).
+* Improvement: Output logging now includes timestamps by default, thanks to [pepedocs](https://github.com/pepedocs).
 * Improvement: Upgraded to `hiredis` > 0.2 to get windows builds working, thanks to [Regner](https://github.com/Regner).
 * Improvement: Updated to the new pagerduty docs, thanks to [woohgit](https://github.com/woohgit).
 
