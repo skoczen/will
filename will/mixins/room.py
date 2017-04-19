@@ -29,7 +29,7 @@ class Room(Bunch):
     @property
     def history(self):
         payload = {"auth_token": settings.V2_TOKEN}
-        response = requests.get("https://{1}/v2/room/{0}/history".format(str(room.id),
+        response = requests.get("https://{1}/v2/room/{0}/history".format(str(self.id),
                                                                          settings.HIPCHAT_SERVER),
                                 params=payload, **settings.REQUESTS_OPTIONS)
         data = json.loads(response.text)['items']
@@ -42,7 +42,7 @@ class Room(Bunch):
         payload = {"auth_token": settings.V2_TOKEN}
         response = requests.get(
             "https://{1}/v2/room/{0}/participant".format(
-                str(room.id),
+                str(self.id),
                 settings.HIPCHAT_SERVER
             ),
             params=payload,
@@ -69,7 +69,7 @@ class RoomMixin(object):
             for room in r.json()["rooms"]:
                 # Some integrations expect a particular name for the ID field.
                 # Better to use room.id.
-                room["id"] = room["room_id"]  
+                room["id"] = room["room_id"]
                 self._available_rooms[room["name"]] = Room(**room)
         # Otherwise, grab 'em one-by-one via the v2 api.
         else:
