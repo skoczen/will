@@ -52,7 +52,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
         log_level = getattr(settings, 'LOGLEVEL', logging.ERROR)
         logging.basicConfig(
             level=log_level,
-            format='%(levelname)-8s %(message)s'
+            format='%(asctime)s [%(levelname)s] %(message)s',
+            datefmt='%a, %d %b %Y %H:%M:%S',
         )
 
         # Find all the PLUGINS modules
