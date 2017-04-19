@@ -193,6 +193,14 @@ Sometimes, a picture is worth a thousand words.
 
 ![Image me a crazy squirrel](../img/image_me.gif)
 
+To get image me running, you'll need to have a Google API key, and custom search key, set in `config.py`.
+
+```python
+# config.py
+GOOGLE_API_KEY = "FILL THIS IN"
+GOOGLE_CUSTOM_SEARCH_KEY = "FILL THIS IN"
+```
+
 #### Remind me
 
 This saves our bacon every day. Timeboxes meetings, helps people remember appointments, and enforces self-control.

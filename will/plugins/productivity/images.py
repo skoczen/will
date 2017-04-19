@@ -12,7 +12,7 @@ class ImagesPlugin(WillPlugin):
         """image me ___ : Search google images for ___, and post a random one."""
 
         if not (getattr(settings, "GOOGLE_API_KEY", False) and getattr("GOOGLE_CUSTOM_SEARCH_KEY", False)):
-            self.say("Sorry, the person who set me up did not configure the google api key.", color="red")
+            self.say("Sorry, I'm missing my GOOGLE_API_KEY and GOOGLE_CUSTOM_SEARCH_KEY. Can someone give them to me?", color="red")
             return
 
         # https://developers.google.com/custom-search/json-api/v1/reference/cse/list?hl=en

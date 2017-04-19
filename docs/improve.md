@@ -99,6 +99,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [d0ugal](https://github.com/d0ugal) fixed up the docs to meet the new mkdocs standard.
 - [danbourke](https://github.com/danbourke) submitted a fix for the >2000 rooms bug, and kept Will happy.
+- [derek-adair](https://github.com/derek-adair) found a solution for the duplicated 'hi' messages.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [dmuntean](https://github.com/dmuntean) gave you proxy support, and kept it working..
 - [Ironykins](https://github.com/Ironykins) brought you urban dictionary support.
@@ -122,7 +123,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
 - [Regner](https://github.com/Regner) upgraded the hiredis version to work on windows.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
-- [shadow7412](https://github/shadow7412) cleaned up a bunch of regex
+- [shadow7412](https://github/shadow7412) cleaned up a bunch of regex, and fixed up `image me` after google pulled the free API.
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [tophsic](https://github.com/tophsic) made help friendlier, including plugin-specific help.
@@ -149,7 +150,8 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience with it being merged in.
 
 * New: `self.append()` and `self.pop()` methods to support list storage, thanks to [woohgit](https://github.com/woohgit).
-* Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
+* Fixed: `@will image me` works again (but requires a google API key - see `config.py`, thanks to [shadow7412](https://github.com/shadow7412).
+* Fixed: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
 * Improvement: `@will help <plugin>` now gives plugin-specific help, thanks to [tophsic](https://github.com/tophsic).
 * Improvement: Blacklisted modules aren't even attempted to be imported, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: File storage engine expires properly, thanks to [BrianGallew](https://github.com/BrianGallew).
@@ -161,6 +163,7 @@ New releases and movement again!  Exciting things in the pipeline for will, and 
 * Improvement: Output logging now includes timestamps by default, thanks to [pepedocs](https://github.com/pepedocs).
 * Improvement: Upgraded to `hiredis` > 0.2 to get windows builds working, thanks to [Regner](https://github.com/Regner).
 * Improvement: Updated to the new pagerduty docs, thanks to [woohgit](https://github.com/woohgit).
+* Improvement: Generation script doesn't make a duplicate `hi` response, thanks to [brandonsturgeon](https://github.com/brandonsturgeon) and [derek-adair](https://github.com/derek-adair).
 
 
 #### 0.9.3 - September 11, 2015
