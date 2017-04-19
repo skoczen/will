@@ -87,7 +87,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [borgstrom](https://github.com/borgstrom) gave you beautifully architected storage backends, including support for couchbase and local storage.
-- [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Fixed the docs, too.
+- [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Improved the docs all over, too.
 - [BrianGallew](https://github.com/BrianGallew) improved the blacklist import mechanism, so blacklisted modules aren't even attempted to be imported, taught will to handle zombie users with grace, and fixed the file storage backend.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
 - [buran](https://github.com/AndrewBurdyug) added HTML support to 1-1 messages.
