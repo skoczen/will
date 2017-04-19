@@ -16,10 +16,20 @@ V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s&expand=items"
 class Room(Bunch):
 
     @property
+    def id(self):
+        if 'room_id' in self:
+            # Using API v1
+            return self['room_id']
+        elif 'id' in self:
+            # Using API v2
+            return self['id']
+        else:
+            raise TypeError('Room ID not found')
+
+    @property
     def history(self):
         payload = {"auth_token": settings.V2_TOKEN}
-        room_id = int(self['id'])
-        response = requests.get("https://{1}/v2/room/{0}/history".format(str(room_id),
+        response = requests.get("https://{1}/v2/room/{0}/history".format(str(room.id),
                                                                          settings.HIPCHAT_SERVER),
                                 params=payload, **settings.REQUESTS_OPTIONS)
         data = json.loads(response.text)['items']
@@ -30,10 +40,9 @@ class Room(Bunch):
     @property
     def participants(self):
         payload = {"auth_token": settings.V2_TOKEN}
-        room_id = int(self['id'])
         response = requests.get(
             "https://{1}/v2/room/{0}/participant".format(
-                str(room_id),
+                str(room.id),
                 settings.HIPCHAT_SERVER
             ),
             params=payload,
@@ -58,7 +67,10 @@ class RoomMixin(object):
             if r.status_code == requests.codes.unauthorized:
                 raise Exception("V1_TOKEN authentication failed with HipChat")
             for room in r.json()["rooms"]:
-                self._available_rooms[room["name"]] = room
+                # Some integrations expect a particular name for the ID field.
+                # Better to use room.id.
+                room["id"] = room["room_id"]  
+                self._available_rooms[room["name"]] = Room(**room)
         # Otherwise, grab 'em one-by-one via the v2 api.
         else:
             params = {}
@@ -74,6 +86,8 @@ class RoomMixin(object):
                 rooms = resp.json()
 
                 for room in rooms["items"]:
+                    # Some integrations expect a particular name for the ID field.
+                    # Better to use room.id
                     room["room_id"] = room["id"]
                     self._available_rooms[room["name"]] = Room(**room)
 

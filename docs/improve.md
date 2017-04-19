@@ -103,6 +103,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [Ironykins](https://github.com/Ironykins) brought you urban dictionary support.
 - [kenden](https://github.com/kenden) fixed up the redis docs for ubuntu/debian.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
+- [jcdyer](https://github.com/jcdyer) made the `_available_rooms` object consistent across API versions.
 - [jessamynsmith](https://github.com/jessamynsmith) was kind enough to port [talkbackbot](https://github.com/jessamynsmith) over, at my request, then kept it updated through version changes.
 - [jquast](https://github.com/jquast) did the noble and oft unappreciated work of spelling fixes.
 - [keNzi](https://github.com/keNzej) added shorten url function using bitly service.
@@ -153,6 +154,7 @@ New releases and movement again!  Exciting things in the pipeline for will, and 
 * Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of [woparry](https://github.com/woparry).
 * Improvement: V2 API calls for multiple rooms now properly uses `max-results` and doesn't hang, thanks to [chillipeper](https://github.com/chillipeper).
 * Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
+* Improvement: `_available_rooms` is now populated with `Room` objects, regardless of whether you use V1 or V2, thanks to [jcdyer](https://github.com/jcdyer).
 * Improvement: Updated to the new pagerduty docs, thanks to [woohgit](https://github.com/woohgit).
 
 
