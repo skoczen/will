@@ -90,6 +90,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Fixed the docs, too.
 - [BrianGallew](https://github.com/BrianGallew) improved the blacklist import mechanism, so blacklisted modules aren't even attempted to be imported, taught will to handle zombie users with grace, and fixed the file storage backend.
 - [bsvetchine](https://github.com/bsvetchine) fixed a bug with README generation.
+- [buran](https://github.com/AndrewBurdyug) added HTML support to 1-1 messages.
 - [carsongee](https://github.com/carsongee) pooled your redis connections.
 - [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
@@ -141,7 +142,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 0.9.4 - April 20, 2017
 
-New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience it it being merged in.
+New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience with it being merged in.
 
 * New: `self.append()` and `self.pop()` methods to support list storage, thanks to [woohgit](https://github.com/woohgit).
 * Improvement: `@will pugs` thankfully works again, thanks to [gordol](https://github.com/gordol).
@@ -161,7 +162,7 @@ Thanks for your patience on this long-delayed release!  Here's what's new:
 
 * New: Will watches bitbucket, and alerts on downtime, thanks to [mvanbaak](https://github.com/mvanbaak).
 * New: `@will urban dictionary ______`, thanks to [Ironykins](https://github.com/Ironykins).
-* Improvement: More specific regexes for hi, clear storage, and a few others thanks to [shadow7412](https://github.com/shadow7412).
+* New: 1-1 messages now support HTML, thanks to [AndrewBurdyug](https://github.com/AndrewBurdyug) and [brandonsturgeon](https://github.com/brandonsturgeon)
 * Improvement: Batch-getting of rooms, thanks to [charlax](https://github.com/charlax).
 * Improvement: Better handling of uptime check edge cases, thanks to [woohgit](https://github.com/woohgit).
 * Improvement: Proper docs for installing redis on ubuntu/debian, thanks to [kenden](https://github.com/kenden).
