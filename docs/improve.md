@@ -98,6 +98,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [chillipeper](https://github.com/chillipeper) fixed up the max-size and handling of V2 rooms.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [d0ugal](https://github.com/d0ugal) fixed up the docs to meet the new mkdocs standard.
+- [danbourke](https://github.com/danbourke) submitted a fix for the >2000 rooms bug, and kept Will happy.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [dmuntean](https://github.com/dmuntean) gave you proxy support, and kept it working..
 - [Ironykins](https://github.com/Ironykins) brought you urban dictionary support.
@@ -118,6 +119,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [pcurry](https://github.com/pcurry) added travis support.
 - [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history, and suggested a better talkback regex.
 - [quixeybrian](https://github.com/quixeybrian) wrote the awesome new help system and stopped the rate limit nightmare.
+- [Regner](https://github.com/Regner) upgraded the hiredis version to work on windows.
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 - [shadow7412](https://github/shadow7412) cleaned up a bunch of regex
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
@@ -151,10 +153,11 @@ New releases and movement again!  Exciting things in the pipeline for will, and 
 * Improvement: Blacklisted modules aren't even attempted to be imported, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: File storage engine expires properly, thanks to [BrianGallew](https://github.com/BrianGallew).
 * Improvement: Zombie users no longer cause will trouble, thanks to [BrianGallew](https://github.com/BrianGallew).
-* Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of [woparry](https://github.com/woparry).
+* Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of [woparry](https://github.com/woparry) and [danbourke](https://github.com/danbourke).
 * Improvement: V2 API calls for multiple rooms now properly uses `max-results` and doesn't hang, thanks to [chillipeper](https://github.com/chillipeper).
 * Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to [mark-adams](https://github.com/mark-adams).
 * Improvement: `_available_rooms` is now populated with `Room` objects, regardless of whether you use V1 or V2, thanks to [jcdyer](https://github.com/jcdyer).
+* Improvement: Upgraded to `hiredis` > 0.2 to get windows builds working, thanks to [Regner](https://github.com/Regner).
 * Improvement: Updated to the new pagerduty docs, thanks to [woohgit](https://github.com/woohgit).
 
 
