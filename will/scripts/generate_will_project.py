@@ -50,20 +50,20 @@ def main():
     with open(os.path.join(plugins_dir, "__init__.py"), 'w+') as f:
         pass
 
-    print "     hello.py"
-    # Create the hello plugin
-    hello_file_path = os.path.join(plugins_dir, "hello.py")
-    if not os.path.exists(hello_file_path):
-        with open(hello_file_path, 'w+') as f:
+    print "     morning.py"
+    # Create the morning plugin
+    morning_file_path = os.path.join(plugins_dir, "morning.py")
+    if not os.path.exists(morning_file_path):
+        with open(morning_file_path, 'w+') as f:
             f.write("""from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 
 
-class HelloPlugin(WillPlugin):
+class MorningPlugin(WillPlugin):
 
-    @respond_to("^hello")
-    def hello(self, message):
-        self.reply(message, "hi!")
+    @respond_to("^good morning")
+    def good_morning(self, message):
+        self.reply(message, "oh, g'morning!")
     """)
 
     print "  /templates"
