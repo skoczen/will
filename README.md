@@ -20,3 +20,6 @@ Will has docs, including a quickstart and lots of screenshots at:
 **[http://skoczen.github.io/will/](http://skoczen.github.io/will)** 
 
 Check them out!
+
+
+**Next Release** 0.9.4 is scheduled for April 25, 2017.  Please test your integrations against master, and report any bugs!

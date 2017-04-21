@@ -145,7 +145,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
-#### 0.9.4 - April 20, 2017
+#### 0.9.4 - April 25, 2017 (scheduled, please test on master and report!)
 
 New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience with it being merged in.
 
