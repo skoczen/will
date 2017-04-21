@@ -224,9 +224,10 @@
 <li><a href="https://github.com/amckinley">amckinley</a> fixed a bug in the hipchat user list from missing params.</li>
 <li><a href="https://github.com/bfhenderson">bfhenderson</a> removed dependence on the v1 token, and made help more friendly.</li>
 <li><a href="https://github.com/borgstrom">borgstrom</a> gave you beautifully architected storage backends, including support for couchbase and local storage.</li>
-<li><a href="https://github.com/brandonsturgeon">brandonsturgeon</a> jumped on hipchat's API-breaking change, and made will immune in a flash.  Fixed the docs, too.</li>
+<li><a href="https://github.com/brandonsturgeon">brandonsturgeon</a> jumped on hipchat's API-breaking change, and made will immune in a flash.  Improved the docs all over, too.</li>
 <li><a href="https://github.com/BrianGallew">BrianGallew</a> improved the blacklist import mechanism, so blacklisted modules aren't even attempted to be imported, taught will to handle zombie users with grace, and fixed the file storage backend.</li>
 <li><a href="https://github.com/bsvetchine">bsvetchine</a> fixed a bug with README generation.</li>
+<li><a href="https://github.com/AndrewBurdyug">buran</a> added HTML support to 1-1 messages.</li>
 <li><a href="https://github.com/carsongee">carsongee</a> pooled your redis connections.</li>
 <li><a href="https://github.com/camilonova">camilonova</a> fixed the <code>@randomly</code> decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.</li>
 <li><a href="http://github.com/ckcollab">ckcollab</a> was one of the original contributors, when will was first built at GreenKahuna.</li>
@@ -234,11 +235,14 @@
 <li><a href="https://github.com/chillipeper">chillipeper</a> fixed up the max-size and handling of V2 rooms.</li>
 <li><a href="https://github.com/crccheck">crccheck</a> gave you friendly error messages if your <code>WILL_ROOMS</code> was wrong.</li>
 <li><a href="https://github.com/d0ugal">d0ugal</a> fixed up the docs to meet the new mkdocs standard.</li>
+<li><a href="https://github.com/danbourke">danbourke</a> submitted a fix for the &gt;2000 rooms bug, and kept Will happy.</li>
+<li><a href="https://github.com/derek-adair">derek-adair</a> found a solution for the duplicated 'hi' messages.</li>
 <li><a href="https://github.com/dpoirier">dpoirier</a> figured out how to properly ignore the initial catch-up messages, and gave you log-level control.</li>
 <li><a href="https://github.com/dmuntean">dmuntean</a> gave you proxy support, and kept it working..</li>
 <li><a href="https://github.com/Ironykins">Ironykins</a> brought you urban dictionary support.</li>
 <li><a href="https://github.com/kenden">kenden</a> fixed up the redis docs for ubuntu/debian.</li>
 <li><a href="http://github.com/jbeluch">jbeluch</a> found a bug with <code>get_roster</code> not populating in time.</li>
+<li><a href="https://github.com/jcdyer">jcdyer</a> made the <code>_available_rooms</code> object consistent across API versions.</li>
 <li><a href="https://github.com/jessamynsmith">jessamynsmith</a> was kind enough to port <a href="https://github.com/jessamynsmith">talkbackbot</a> over, at my request, then kept it updated through version changes.</li>
 <li><a href="https://github.com/jquast">jquast</a> did the noble and oft unappreciated work of spelling fixes.</li>
 <li><a href="https://github.com/keNzej">keNzi</a> added shorten url function using bitly service.</li>
@@ -251,10 +255,12 @@
 <li><a href="https://github.com/mvanbaak">mvanbaak</a> brought you support for bitbucket uptime.</li>
 <li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module, added an expire parameter to <code>self.save()</code>, and added support for will watching hipchat's status.</li>
 <li><a href="https://github.com/pcurry">pcurry</a> added travis support.</li>
+<li><a href="https://github.com/pepedocs">pepedocs</a> added friendly timestamps to the default logging output.</li>
 <li><a href="https://github.com/PrideRage">PrideRage</a> gave you access to a room's entire history, and suggested a better talkback regex.</li>
 <li><a href="https://github.com/quixeybrian">quixeybrian</a> wrote the awesome new help system and stopped the rate limit nightmare.</li>
+<li><a href="https://github.com/Regner">Regner</a> upgraded the hiredis version to work on windows.</li>
 <li><a href="https://github.com/rbp">rbp</a> added the <code>admin_only</code> argument, and fixed a bug with <code>room</code> not being passed along properly to messages.</li>
-<li><a href="https://github/shadow7412">shadow7412</a> cleaned up a bunch of regex</li>
+<li><a href="https://github/shadow7412">shadow7412</a> cleaned up a bunch of regex, and fixed up <code>image me</code> after google pulled the free API.</li>
 <li><a href="https://github.com/sivy">sivy</a> added a config flag for disabling SSL, and the ability to look up a user by nickname.</li>
 <li><a href="https://github.com/tomokas">tomokas</a> fixed a bug in the <code>@randomly</code> decorator.</li>
 <li><a href="https://github.com/tophsic">tophsic</a> made help friendlier, including plugin-specific help.</li>
@@ -272,26 +278,31 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
-<h4 id="094-april-20-2017">0.9.4 - April 20, 2017</h4>
-<p>New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience it it being merged in.</p>
+<h4 id="094-april-25-2017-scheduled-please-test-on-master-and-report">0.9.4 - April 25, 2017 (scheduled, please test on master and report!)</h4>
+<p>New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience with it being merged in.</p>
 <ul>
 <li>New: <code>self.append()</code> and <code>self.pop()</code> methods to support list storage, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
-<li>Improvement: <code>@will pugs</code> thankfully works again, thanks to <a href="https://github.com/gordol">gordol</a>.</li>
+<li>Fixed: <code>@will image me</code> works again (but requires a google API key - see <code>config.py</code>, thanks to <a href="https://github.com/shadow7412">shadow7412</a>.</li>
+<li>Fixed: <code>@will pugs</code> thankfully works again, thanks to <a href="https://github.com/gordol">gordol</a>.</li>
 <li>Improvement: <code>@will help &lt;plugin&gt;</code> now gives plugin-specific help, thanks to <a href="https://github.com/tophsic">tophsic</a>.</li>
 <li>Improvement: Blacklisted modules aren't even attempted to be imported, thanks to <a href="https://github.com/BrianGallew">BrianGallew</a>.</li>
 <li>Improvement: File storage engine expires properly, thanks to <a href="https://github.com/BrianGallew">BrianGallew</a>.</li>
 <li>Improvement: Zombie users no longer cause will trouble, thanks to <a href="https://github.com/BrianGallew">BrianGallew</a>.</li>
-<li>Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of <a href="https://github.com/woparry">woparry</a>.</li>
+<li>Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of <a href="https://github.com/woparry">woparry</a> and <a href="https://github.com/danbourke">danbourke</a>.</li>
 <li>Improvement: V2 API calls for multiple rooms now properly uses <code>max-results</code> and doesn't hang, thanks to <a href="https://github.com/chillipeper">chillipeper</a>.</li>
 <li>Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to <a href="https://github.com/mark-adams">mark-adams</a>.</li>
+<li>Improvement: <code>_available_rooms</code> is now populated with <code>Room</code> objects, regardless of whether you use V1 or V2, thanks to <a href="https://github.com/jcdyer">jcdyer</a>.</li>
+<li>Improvement: Output logging now includes timestamps by default, thanks to <a href="https://github.com/pepedocs">pepedocs</a>.</li>
+<li>Improvement: Upgraded to <code>hiredis</code> &gt; 0.2 to get windows builds working, thanks to <a href="https://github.com/Regner">Regner</a>.</li>
 <li>Improvement: Updated to the new pagerduty docs, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Improvement: Generation script doesn't make a duplicate <code>hi</code> response, thanks to <a href="https://github.com/brandonsturgeon">brandonsturgeon</a> and <a href="https://github.com/derek-adair">derek-adair</a>.</li>
 </ul>
 <h4 id="093-september-11-2015">0.9.3 - September 11, 2015</h4>
 <p>Thanks for your patience on this long-delayed release!  Here's what's new:</p>
 <ul>
 <li>New: Will watches bitbucket, and alerts on downtime, thanks to <a href="https://github.com/mvanbaak">mvanbaak</a>.</li>
 <li>New: <code>@will urban dictionary ______</code>, thanks to <a href="https://github.com/Ironykins">Ironykins</a>.</li>
-<li>Improvement: More specific regexes for hi, clear storage, and a few others thanks to <a href="https://github.com/shadow7412">shadow7412</a>.</li>
+<li>New: 1-1 messages now support HTML, thanks to <a href="https://github.com/AndrewBurdyug">AndrewBurdyug</a> and <a href="https://github.com/brandonsturgeon">brandonsturgeon</a></li>
 <li>Improvement: Batch-getting of rooms, thanks to <a href="https://github.com/charlax">charlax</a>.</li>
 <li>Improvement: Better handling of uptime check edge cases, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
 <li>Improvement: Proper docs for installing redis on ubuntu/debian, thanks to <a href="https://github.com/kenden">kenden</a>.</li>
