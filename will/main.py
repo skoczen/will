@@ -398,6 +398,7 @@ To set your %(name)s:
             parent_help_text = None
             for plugin_name, plugin_root in self.plugins_dirs.items():
                 for root, dirs, files in os.walk(plugin_root, topdown=False):
+                    files.sort()
                     for f in files:
                         if f[-3:] == ".py" and f != "__init__.py":
                             try:
