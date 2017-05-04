@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://skoczen.github.io/will/roadmap/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+        <title>Roadmap</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/prettify-1.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link href="../css/style.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">Will</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
+            
+            
+                <li >
+                    <a href="..">Get Started</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../plugins/basics/">The Basics</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/notice/">What Will Can Notice</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/reply/">How Will Can Respond</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/create/">Creating and Organizing Plugins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/builtins/">Plugin Builtins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/bundled/">Bundled Plugins</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../config/">Configure</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../deploy/">Deploy</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../improve/">Improve</a>
+                </li>
+            
+            
+            
+                <li class="active">
+                    <a href="./">Roadmap</a>
+                </li>
+            
+            
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li >
+                    <a rel="next" href="../improve/">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li class="disabled">
+                    <a rel="prev" >
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="https://github.com/skoczen/will/">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#a-note-from-steven">A Note from Steven</a></li>
+        
+    
+        <li class="main "><a href="#overall-project-structure-and-goals">Overall Project Structure and Goals</a></li>
+        
+    
+        <li class="main "><a href="#project-roadmap">Project Roadmap</a></li>
+        
+    
+        <li class="main "><a href="#release-schedule">Release Schedule.</a></li>
+        
+    
+        <li class="main "><a href="#questions-and-comments">Questions and Comments</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<p>Last Update: May 5, 2017</p>
+<h2 id="a-note-from-steven">A Note from Steven</h2>
+<blockquote>
+<p>"Open source projects with no funding mechanism typically stagnate and die." 
+-<a href="https://greensock.com/why-license">GreenSock</a></p>
+</blockquote>
+<p>I read that quote a few years ago when considering using GreenSock in a front-end product, and it stuck with me since, in both Will and my other projects.  At first, the statement really bugged me - but as I looked objectively at my own long list of abandoned open-source work, I realized there was a deep truth to it.</p>
+<p>Will has gone on a similar journey - it was written with the support from a couple of my day jobs, and after those left, my time dried up, and the project started to stagnate.</p>
+<p>That stagnation has bugged me for a long time, but I didn't really have a way to solve the problem until now.</p>
+<p>What this document outlines is a future roadmap for Will that's both open-source and revenue-generating.  A project that can keep the codebase active, healthy, and adding new features (First up: Slack), while also paying my (and hopefully other folks') bills - and with some luck, maybe even changing the world.</p>
+<p>I recognize that a lot of people have contributed to will, and while many of you will be thrilled by the prospect of active, sustainable development, a few folks might have the "OMG WHAT KIND OF SELL OUT BULL*** IS THIS??!?!".   To those folks, I'd like to reiterate - Will is open-source, and is going to stay that way. :) </p>
+<p>Now let's talk about how.</p>
+<p><em>Note</em>: I use the royal "we" below because it feels more natural in the long-term.  Right now it's just me and it's awkward.  Thanks for rolling with it.</p>
+<h2 id="overall-project-structure-and-goals">Overall Project Structure and Goals</h2>
+<p>Will is being founded as a company, and with the core chat bot product, we'll have both the open-source library and a PaaS/SaaS service (ala Wordpress.com/.org).  The core of the company is around an idea we call Personal AI.</p>
+<p>(Read more about the mission at <a href="http://heywill.nz/mission">http://heywill.io/mission</a>.)</p>
+<p>This shift means growing the project to something much bigger than a hipchat bot, and into a write-once, run anywhere platform for chat bots, AIs, and fun new holy-crap-that's-amazing ideas.</p>
+<p>The big goal is to provide an easy-to-build-on batteries-included platform that bridges modes of communication (HipChat, Slack, SMS, Email, Telegram, FB Messenger, etc) with services (IFTTT, Amazon AI, IBM Watson, Google APIs, etc) and built-in AI tools (NLP, ML, DL, etc).  </p>
+<p>This broader platform serves as an OS for AI development, and has the tremendously creative working name of AIOS.</p>
+<p>Developers can build AIOS apps (our current plugins) for will using any and all of those tools, and run them on their personal wills or distribute them to a broader audience.</p>
+<p>Will the company will focus, like Wordpress, on running the PaaS and SaaS platforms, and a marketplace for apps.  Our goal is to keep Will development brisk, bring in talented folks across the spectrum, and keep Will available to anyone, anywhere on the planet, regardless of financial or technical access. </p>
+<h2 id="project-roadmap">Project Roadmap</h2>
+<p>Here's the nuts and bolts of how, today, we see this rolling out.</p>
+<p>0.9.4 - Just released, catches up almost all open PRs</p>
+<p>1.0 - Soon, closes up existing issues, code cleanup and prep for improvements</p>
+<p>1.2 - Slack Support, <code>IOBackend</code> documented and working.  PRs for new IOs accepted.</p>
+<p>1.3 - API Support released, via an <code>APIBackend</code> implementation of <code>IOBackend</code>.</p>
+<p>1.4 - IFTTT Support, <code>SkillsBackend</code> documented and working.  PRs for new Skills accepted.</p>
+<p>1.5 - Will UI, with on-the-fly config, plugin enable/disable, and restartability.</p>
+<p>1.6 - App specs for AIOS and <code>AIOSApp</code> class released.</p>
+<p>1.7 - Release of first five apps. TBD, but considered: (Image me, Remind me, Groceries, News Summary, Scattegories, Stale Package Finder)</p>
+<p>2.0 - App Marketplace released, Git library integration released, and all existing Will plugins released as AIOS apps.</p>
+<p>2.0+ - "The root of all evil is premature optimization."  Releases after 2.0 are likely to move in a direction of improved AIOS features, more built-in AI tools, smarter and richer message processing and context, cross-app communication, and speed/reliability bumps.  We'd also like to look at the feasibility of authoring apps in both Python and JS.  </p>
+<p>That said, this will really be determined after 2.0 is released, the launch craziness settles down, and we hear from the community and customers which directions need the most support, and what pain points folks are feeling the most.</p>
+<p>We can't wait to have those discussions.</p>
+<h2 id="release-schedule">Release Schedule.</h2>
+<p>A new version of Will will be released on the 1st of every month, with a 12-month guarantee for <code>IOBackend</code>, <code>SkillsBackend</code>, API and AIOS APK function stability, and a minimum 6 month deprecation warning.</p>
+<h2 id="questions-and-comments">Questions and Comments</h2>
+<p>I've set up an issue <a href="https://github.com/skoczen/will/issues/257">here</a> to talk through this new direction, hear people's thoughts, comments, suggestions, and feedback.</p>
+<p>I'm so excited to take will in this new, bigger direction, find consistent time and energy to keep him maintained, and grow him into something amazing together.</p>
+<p>Thank you so much for contributing to will thus far, and I can't wait to see where we take him together!</p>
+<p>-Steven</p></div>
+        </div>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/prettify-1.0.min.js"></script>
+        <script src="../js/base.js"></script>
+    </body>
+</html>
