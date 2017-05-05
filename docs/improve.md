@@ -102,6 +102,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [derek-adair](https://github.com/derek-adair) found a solution for the duplicated 'hi' messages.
 - [dpoirier](https://github.com/dpoirier) figured out how to properly ignore the initial catch-up messages, and gave you log-level control.
 - [dmuntean](https://github.com/dmuntean) gave you proxy support, and kept it working..
+- [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [Ironykins](https://github.com/Ironykins) brought you urban dictionary support.
 - [kenden](https://github.com/kenden) fixed up the redis docs for ubuntu/debian.
 - [jbeluch](http://github.com/jbeluch) found a bug with `get_roster` not populating in time.
@@ -111,7 +112,6 @@ Will's also has had help from lots of coders. Alphabetically:
 - [keNzi](https://github.com/keNzej) added shorten url function using bitly service.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
 - [mark-adams](https://github.com/mark-adams) cleaned up a Bitbucket typo.
-- [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
