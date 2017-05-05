@@ -22,4 +22,4 @@ Will has docs, including a quickstart and lots of screenshots at:
 Check them out!
 
 
-**Big Update:** I've just posted the [roadmap and future direction]() for will.  Your thoughts are welcome!!
+**Big Update:** I've just posted the [roadmap and future direction](https://github.com/skoczen/will/issues/257) for will.  Your thoughts are welcome!!
