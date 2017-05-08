@@ -12,8 +12,15 @@ It's as simple as:
 ```python
 self.save("my_key", "my_value")
 self.load("my_key", "default value")
+self.append("my_key", "value")
+self.pop("my_key", "value")
 ```
 
+You can also save a value temporarily by setting the number of seconds before it expires:
+
+```python
+self.save("my_key", "my_value", expire=10)
+```
 
 
 ## Template rendering
@@ -47,6 +54,12 @@ def homepage_listener(self):
     return {}
 ```
 
+A note on `TEMPLATE_DIRS` - Will automatically includes the following:
+
+- Core Will's `templates` directory,
+- Your Will's `templates` directory,
+- All `templates` directories in the root of modules specified in `settings.PLUGINS`.
+
 
 ## Help and documentation
 
@@ -62,11 +75,48 @@ class BonjourPlugin(WillPlugin):
         self.reply(message, "bonjour!")
 ```
 
-![Bonjour help](../../img/bonjour_help.gif)
+![Bonjour help](../img/bonjour_help.gif)
 
 If you've [organized your plugins in a module](create.md#what-about-that-awesome-help-text), your plugin's help text will be grouped by module.
 
-![Help, will](../../img/help.gif)
+![Help, will](../img/help.gif)
+
+## Access Control
+
+You can restrict certain actions to particular groups, by using will's access control list (ACL) support.
+
+### Usage
+
+To use ACL, you simply specify ACL groups and the relevant handles in your `config.py`, then pass `acl=[]` into any relevant `@respond_to`s or `@hear`s. 
+
+
+Here's an example with an ops team, and an admin team:
+
+```python
+# config.py
+
+ACL = {
+    "ops": ["steven", "levi", "susan"],
+    "admins": ["wooh"],
+}
+```
+
+Then, in your listeners:
+
+```python
+# Allow the ops and admins groups to stop EC2 instances,
+# but only allow admins to terminate the instances.
+
+@respond_to("ec2 instance stop (?P<instance_id>.*)", acl=["ops", "admins"])
+def stop_ec2_instance(self, message, instance_id):
+    # do AWS stuff
+
+@respond_to("ec2 instance terminate (?P<instance_id>.*)", acl=["admins"])
+def terminate_ec2_instance(self, message, instance_id):
+    # do AWS stuff
+```
+
+Complex ACL behaviors, simple as that.
 
 
 ## Access settings and config
@@ -113,9 +163,51 @@ class BonjourPlugin(WillPlugin):
 
 When will starts up, he'll make sure they've been set:
 
-![Verify settings](../../img/verify_settings.gif)
+![Verify settings](../img/verify_settings.gif)
 
 
+
+## Getting a room's history
+
+Sometimes you'll want to retrieve a room's history. No problem - get the room's object, and the last 75 messages are sitting on `.history`.
+
+```python  
+class HistoryPlugin(WillPlugin):
+
+    @respond_to("^get last message")
+    def get_history(self, message):
+        room = self.get_room_from_message(message)
+        self.reply(message, room.history[-1]["message"])
+```
+
+`.history` is pretty much what's returned from the [HipChat room history API](https://www.hipchat.com/docs/apiv2/method/view_room_history) - the lone exception is that the date has been converted to a python datetime.
+
+```python
+    {
+        u'from':{
+            u'mention_name':u'First Last',
+            u'id':xxxx,
+            u'links':{
+                u'self': u'https://api.hipchat.com/v2/user/xxxx'
+            },
+            u'name':u'First Last'
+        },
+        u'date':datetime.datetime(2015, 1, 26, 15, 26, 52),
+        u'mentions':[
+            {
+                u'mention_name':u'FirstLast',
+                u'id':xyxy,
+                u'links':{
+                    u'self': u'https://api.hipchat.com/v2/user/xyxy'
+                },
+                u'name':u'First Last'
+            }
+        ],
+        u'message':u'Hi there!',
+        u'type':u'message',
+        u'id':u'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+    }
+```
 
 ## Parse natural time
 
@@ -131,7 +223,7 @@ def remind_me_at(self, message, remind_time=None):
     parsed_time = self.parse_natural_time(remind_time)
 ```
 
-![Parse natural time](../../img/remind_trash.gif)
+![Parse natural time](../img/remind_trash.gif)
 
 
 ### to_natural_day_and_time

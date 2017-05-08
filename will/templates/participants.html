@@ -1,0 +1,5 @@
+Here's the participants in the room: <br>
+{% for p in participants %}
+    <li><b>{{p.name}}</b> (@{{p.mention_name}})</li>
+{% endfor %}
+</ul>

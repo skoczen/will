@@ -21,7 +21,7 @@ Let's start as simple as they come - a plugin for will to say hello.  Since he a
 
 This file can be called anything, but given the functionality, bonjour seems like a fair name.  Create the file in your plugins folder:
 
-![Plugins folder with bonjour.py](../../img/plugins_bonjour.gif)
+![Plugins folder with bonjour.py](../img/plugins_bonjour.gif)
 
 #### Step 2: Add the plugin python code
 
@@ -46,6 +46,6 @@ class BonjourPlugin(WillPlugin):
 
 Finally, `ctrl+c` then restart your will to load the new plugin, and you should be able to do this:
 
-![Plugins folder with bonjour.py](../../img/bonjour_chat.gif)
+![Plugins folder with bonjour.py](../img/bonjour_chat.gif)
 
 Easy, right?  Well, now that you've got your feet wet, let's see  [what else will knows how to notice](notice.md).

@@ -1,29 +1,27 @@
 # Welcome to Will's settings.
-# 
+#
 
 # Config and the environment:
 # ---------------------------
 # Will can use settings from the environment or this file, and sets reasonable defaults.
-# 
-# Best practices: set keys and the like in the environment, and anything you'd be ok 
+#
+# Best practices: set keys and the like in the environment, and anything you'd be ok
 # with other people knowing in this file.
-# 
-# To specify in the environment, just prefix with WILL_ 
-# (i.e. WILL_DEFAULT_ROOM becomes DEFAULT_ROOM).  
+#
+# To specify in the environment, just prefix with WILL_
+# (i.e. WILL_DEFAULT_ROOM becomes DEFAULT_ROOM).
 # In case of conflict, you will see a warning message, and the value in this file will win.
-
-
 
 # ------------------------------------------------------------------------------------
 # Required settings
 # ------------------------------------------------------------------------------------
 
-# The list of plugin modules will should load. 
+# The list of plugin modules will should load.
 # Will recursively loads all plugins contained in each module.
 
 
 # This list can contain:
-# 
+#
 # Built-in core plugins:
 # ----------------------
 # All built-in modules:     will.plugins
@@ -35,7 +33,7 @@
 # All modules:              plugins
 # A specific module:        plugins.module_name
 # Specific plugins:         plugins.module_name.plugin
-# 
+#
 # Plugins anywhere else on your PYTHONPATH:
 # -----------------------------------------
 # All modules:              someapp
@@ -44,7 +42,7 @@
 
 
 # By default, the list below includes all the core will plugins and
-# all your project's plugins.  
+# all your project's plugins.
 
 PLUGINS = [
     # Built-ins
@@ -52,6 +50,7 @@ PLUGINS = [
     "will.plugins.chat_room",
     "will.plugins.devops",
     "will.plugins.friendly",
+    "will.plugins.fun",
     "will.plugins.help",
     "will.plugins.productivity",
     "will.plugins.web",
@@ -62,11 +61,12 @@ PLUGINS = [
 
 # Don't load any of the plugins in this list.  Same options as above.
 PLUGIN_BLACKLIST = [
-    # "will.plugins.friendly.cookies",      # But who would deprive will of cookies??
-    "will.plugins.productivity.hangout",    # Because it requires a HANGOUT_URL
-    "will.plugins.productivity.world_time", # Because it requires a WORLD_WEATHER_ONLINE key
+    "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
+    "will.plugins.productivity.world_time",   # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
+    "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
+    "will.plugins.devops.bitbucket_is_up",   # Because most folks use github.
+    "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
 ]
-
 
 # ------------------------------------------------------------------------------------
 # Potentially required settings
@@ -89,25 +89,42 @@ PLUGIN_BLACKLIST = [
 # ROOMS = ['Testing, Will Kahuna',]
 
 
-# The room will will talk to if the trigger is a webhook and he isn't told a specific room. 
+# The room will will talk to if the trigger is a webhook and he isn't told a specific room.
 # Default is the first of ROOMS.
 # DEFAULT_ROOM = 'Testing, Will Kahuna'
 
 
-# Fully-qualified folders to look for templates in, beyond the two that 
-# are always included: core will's templates folder, and your project's templates folder.
-# 
+# Fully-qualified folders to look for templates in, beyond the two that
+# are always included: core will's templates folder, your project's templates folder, and
+# all templates folders in included plugins, if they exist.
+#
 # TEMPLATE_DIRS = [
 #   os.path.abspath("other_folder/templates")
 # ]
 
 
-# User handles who are allowed to perform `admin_only` plugins.  Defaults to everyone.
+# Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
+# in respond_to and hear actions.
+# Group names can be any string, and the list is composed of user handles.
+# ACL = {
+#     "admins": ["steven", "will"]
+# }
+
+
+# Deprecated - please use ACL, above, instead:  User handles who are allowed to perform
+# `admin_only` plugins.  Defaults to everyone.
 # ADMINS = [
 #     "steven",
 #     "levi",
 # ]
 
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
+
+
+# Disable SSL checks.  Strongly reccomended this is not set to True.
+# ALLOW_INSECURE_HIPCHAT_SERVER = False
 
 # Mailgun config, if you'd like will to send emails.
 # DEFAULT_FROM_EMAIL="will@example.com"
@@ -118,3 +135,14 @@ PLUGIN_BLACKLIST = [
 
 # Logging level
 # LOGLEVEL = "DEBUG"
+
+# Proxy settings
+# Use proxy to access hipchat servers
+# Make sure your proxy allows CONNECT method to port 5222
+# PROXY_URL = "http://user:pass@corpproxy.example.com:3128"
+# or
+# PROXY_URL = "http://myproxy:80
+
+# Google Application key for "image me" command
+# GOOGLE_API_KEY = "FILL THIS IN"
+# GOOGLE_CUSTOM_SEARCH_KEY = "FILL THIS IN"

@@ -1,0 +1,2 @@
+-e git+git://github.com/couchbase/couchbase-python-client#egg=couchbase-python-client
+-r requirements.base.txt

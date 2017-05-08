@@ -1,17 +1,35 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 import os
+import sys
 from setuptools import setup, find_packages
 from will import __name__ as PACKAGE_NAME
+from will import VERSION
 
 DESCRIPTION = "A friendly python hipchat bot"
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
-VERSION = "0.5.6"
 
-reqs = []
-with open("requirements.txt", "r+") as f:
-    for line in f.readlines():
-        reqs.append(line.strip())
+install_requires = []
+for req_file in ("requirements.base.txt", "requirements.txt"):
+    with open(req_file, "r+") as f:
+        for line in f.readlines():
+            if line[0] == "-":
+                continue
+            install_requires.append(line.strip())
+
+tests_require = [
+    'pytest==2.8.3',
+    'pytest-cov',
+    'pytest-runner',
+    'mock'
+]
+
+setup_requires = []
+needs_pytest = set(('pytest', 'test', 'ptr')).intersection(sys.argv)
+
+if needs_pytest:
+    setup_requires.append('pytest-runner')
+
 
 try:
     import pypandoc
@@ -31,11 +49,13 @@ setup(
     author_email="skoczen@gmail.com",
     url="https://github.com/skoczen/will",
     version=VERSION,
-    download_url = ['https://github.com/skoczen/will/tarball/%s' % VERSION, ],
-    install_requires=reqs,
+    download_url=['https://github.com/skoczen/will/tarball/%s' % VERSION, ],
+    install_requires=install_requires,
+    setup_requires=setup_requires,
+    tests_require=tests_require,
     packages=find_packages(),
     include_package_data=True,
-    keywords = ["hipchat", "bot"],
+    keywords=["hipchat", "bot", "ai"],
     classifiers=[
         "Programming Language :: Python",
         "License :: OSI Approved :: BSD License",

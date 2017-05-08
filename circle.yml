@@ -1,4 +1,8 @@
+dependencies:
+  pre:
+    - pip install -r requirements.dev.txt
 test:
   override:
     - /home/ubuntu/will/will/scripts/test_run.sh
-    # - nose test
+    - coverage run -m nose
+    - flake8

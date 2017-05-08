@@ -1,4 +1,6 @@
+.DS_Store
 *.py[cod]
+venv/
 
 # C extensions
 *.so
@@ -6,6 +8,8 @@
 # Packages
 *.egg
 *.egg-info
+.cache
+.eggs
 dist
 build
 eggs
@@ -36,3 +40,9 @@ README.html
 shelf.db
 .idea/*
 site
+docs/.DS_Store
+
+# VIM swap files
+.*.sw[a-z]
+
+source/logo.psd

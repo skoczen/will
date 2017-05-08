@@ -15,7 +15,7 @@ def say_hello(self, message):
 
 Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  
 
-Will started by [Steven Skoczen](http://stevenskoczen.com) while he was in the [Greenkahuna Skunkworks](http://skunkworks.greenkahuna.com), and has been [contributed to by lots of folks](improve.md#shoulders).
+Will started by [Steven Skoczen](http://www.inkandfeet.com), and has been [contributed to by lots of folks](improve.md#shoulders).
 
 Check out the quickstart below!
 
@@ -29,7 +29,9 @@ Here's how to set up your system and get will running.  If you already write pyt
 
 ## Install prerequisites
 
-Will doesn't need much, just python and redis.  For a best-practice setup, you'll want:
+Will doesn't need much, just python and a place to store things.
+
+Will can store stuff in Redis, Couchbase, or local storage.  Our recommended backend is redis, and we'll describe getting it set up below. [Information on using Couchbase or local storage is here](deploy.md#Storage-Backends).
 
 #### Install redis > 2.4
 
@@ -52,7 +54,7 @@ sudo service redis start
 On a Debian (Ubuntu, Mint, KNOPPIX) machine to properly install follow the [Redis Quickstart](http://redis.io/topics/quickstart). But you can start more quickly with:
 
 ```bash
-sudo apt-get install redis
+sudo apt-get install redis-server
 redis-server
 ```
 
@@ -124,3 +126,4 @@ Once your will is up and running, hop into any of your hipchat rooms, and say he
 ![Help, will](img/help.gif)
 
 You're up and running - now it's time to [teach your will a few things](plugins/basics.md)!
+

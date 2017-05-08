@@ -6,5 +6,5 @@ class RosterPlugin(WillPlugin):
 
     @respond_to("who do you know about?")
     def list_roster(self, message):
-        context = {"internal_roster": self.internal_roster.values(),}
+        context = {"internal_roster": self.internal_roster.values(), }
         self.say(rendered_template("roster.html", context), message=message, html=True)
