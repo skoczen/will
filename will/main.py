@@ -153,11 +153,11 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                 print '\n\nReceived keyboard interrupt, quitting threads.',
                 while (scheduler_thread.is_alive() or
                        bottle_thread.is_alive() or
-                       ("shell" in settings.CHAT_BACKENDS and shell_thread.is_alive()) or
                        ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())):
                         sys.stdout.write(".")
                         sys.stdout.flush()
                         time.sleep(0.5)
+                print ". done.\n"
 
 
     def verify_individual_setting(self, test_setting, quiet=False):

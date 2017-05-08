@@ -1,6 +1,7 @@
 from ..utils import is_admin
 from ..acl import is_acl_allowed
 
+from will import settings
 
 class RosterMixin(object):
     @property
@@ -10,25 +11,33 @@ class RosterMixin(object):
         return self._internal_roster
 
     def get_user_by_full_name(self, name):
+        if "shell" in settings.CHAT_BACKENDS:
+            return {"jid": "123", "hipchat_id": "123"}
         for jid, info in self.internal_roster.items():
             if info["name"] == name:
                 return info
         return None
 
     def get_user_by_nick(self, nick):
+        if "shell" in settings.CHAT_BACKENDS:
+            return {"jid": "123", "hipchat_id": "123"}
         for jid, info in self.internal_roster.items():
             if info["nick"] == nick:
                 return info
         return None
 
     def get_user_by_jid(self, jid):
+        if "shell" in settings.CHAT_BACKENDS:
+            return {"jid": "123", "hipchat_id": "123"}
         if jid in self.internal_roster:
             return self.internal_roster[jid]
 
         return None
 
     def get_user_from_message(self, message):
-        if message["type"] == "groupchat":
+        if "shell" in settings.CHAT_BACKENDS:
+            return {"jid": "123", "hipchat_id": "123"}
+        elif message["type"] == "groupchat":
             return self.get_user_by_full_name(message["mucnick"])
         elif message['type'] in ('chat', 'normal'):
             jid = ("%s" % message["from"]).split("/")[0]

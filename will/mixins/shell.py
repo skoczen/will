@@ -38,6 +38,9 @@ class ShellListener(cmd.Cmd, object):
                 mucnick="",
                 sender=Bunch(hipchat_id="123", nick="You"),
             )
+            # Reserved keyword joys.
+            msg["from"] = "me"
+            line = "%s\n" % line
             for l in self.bot.message_listeners:
                 search_matches = l["regex"].search(line)
                 if (
