@@ -14,7 +14,7 @@ ALL_USERS_URL = ("https://%(server)s/v2/user?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s")
 
 
-class HipChatMixin(object):
+class HipChatBackend(object):
 
     def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
         if kwargs:

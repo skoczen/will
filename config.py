@@ -80,6 +80,10 @@ PLUGIN_BLACKLIST = [
 # Set > 1024 to run without elevated permission.
 # HTTPSERVER_PORT = "9000"
 
+# CHAT_BACKENDS = ["hipchat", "shell"]  # Eventually, multiple. Right now, one.
+CHAT_BACKENDS = ["shell", ]
+# CHAT_BACKENDS = ["hipchat", ]
+
 
 # ------------------------------------------------------------------------------------
 # Optional settings

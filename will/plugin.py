@@ -3,13 +3,13 @@ import logging
 
 import settings
 from bottle import request
-from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin, \
-    EmailMixin
+from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
+    EmailMixin, IOMixin
 from utils import html_to_text
 
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin,
-                 ScheduleMixin, HipChatMixin, SettingsMixin):
+                 ScheduleMixin, IOMixin, SettingsMixin):
     is_will_plugin = True
     request = request
 
@@ -49,14 +49,17 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             for r in rooms:
                 self.send_room_message(r["room_id"], content, **kwargs)
         else:
-            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
+            if "sender" in message:
+                sender = message["sender"]
+            else:
+                sender = message.sender
+            self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
     def reply(self, message, content, **kwargs):
         # Valid kwargs:
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
-
         content = self._prepared_content(content, message, kwargs)
         if message is None or message["type"] == "groupchat":
             # Reply, speaking to the room.
@@ -69,8 +72,11 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
 
         elif message['type'] in ('chat', 'normal'):
             # Reply to the user (1-1 chat)
-
-            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
+            if "sender" in message:
+                sender = message["sender"]
+            else:
+                sender = message.sender
+            self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
     def set_topic(self, topic, message=None, room=None):
 

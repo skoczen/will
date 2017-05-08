@@ -16,8 +16,8 @@ from multiprocessing import Process, Queue
 import bottle
 
 from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
-    RoomMixin, PluginModulesLibraryMixin, EmailMixin
+from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatBackend,\
+    RoomMixin, PluginModulesLibraryMixin, ShellBackend, EmailMixin, IOMixin
 from scheduler import Scheduler
 import settings
 from utils import show_valid, error, warn, print_head
@@ -41,7 +41,7 @@ sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
 class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
-              ErrorMixin, RoomMixin, HipChatMixin, PluginModulesLibraryMixin):
+              ErrorMixin, RoomMixin, IOMixin, PluginModulesLibraryMixin):
 
     def __init__(self, **kwargs):
         if "template_dirs" in kwargs:
@@ -98,8 +98,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
 
     def bootstrap(self):
         print_head()
-        self.verify_environment()
         self.load_config()
+        self.verify_environment()
         self.verify_rooms()
         self.bootstrap_storage_mixin()
         self.bootstrap_plugins()
@@ -115,16 +115,22 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
         bottle_thread = Process(target=self.bootstrap_bottle)
         # bottle_thread.daemon = True
 
-        # XMPP Listener
-        xmpp_thread = Process(target=self.bootstrap_xmpp)
-        # xmpp_thread.daemon = True
+        xmpp_thread = False
+
+        # TODO: Abstract these into listener_threads[]
+        if "hipchat" in settings.CHAT_BACKENDS:
+            # XMPP Listener
+            xmpp_thread = Process(target=self.bootstrap_xmpp)
+            # xmpp_thread.daemon = True
 
         with indent(2):
             try:
                 # Start up threads.
-                xmpp_thread.start()
+                if "hipchat" in settings.CHAT_BACKENDS:
+                    xmpp_thread.start()
                 scheduler_thread.start()
                 bottle_thread.start()
+
                 errors = self.get_startup_errors()
                 if len(errors) > 0:
                     default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
@@ -134,19 +140,25 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                     self.send_room_message(default_room, error_message, color="yellow")
                     puts(colored.red(error_message))
 
+                if "shell" in settings.CHAT_BACKENDS:
+                    time.sleep(2)
+                    self.bootstrap_shell()
                 while True:
                     time.sleep(100)
             except (KeyboardInterrupt, SystemExit):
                 scheduler_thread.terminate()
                 bottle_thread.terminate()
-                xmpp_thread.terminate()
+                if xmpp_thread:
+                    xmpp_thread.terminate()
                 print '\n\nReceived keyboard interrupt, quitting threads.',
                 while (scheduler_thread.is_alive() or
                        bottle_thread.is_alive() or
-                       xmpp_thread.is_alive()):
+                       ("shell" in settings.CHAT_BACKENDS and shell_thread.is_alive()) or
+                       ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())):
                         sys.stdout.write(".")
                         sys.stdout.flush()
                         time.sleep(0.5)
+
 
     def verify_individual_setting(self, test_setting, quiet=False):
         if not test_setting.get("only_if", True):
@@ -171,35 +183,37 @@ To set your %(name)s:
 
     def verify_environment(self):
         missing_settings = False
-        required_settings = [
-            {
-                "name": "WILL_USERNAME",
-                "obtain_at": """1. Go to hipchat, and create a new user for will.
-2. Log into will, and go to Account settings>XMPP/Jabber Info.
-3. On that page, the 'Jabber ID' is the value you want to use.""",
-            },
-            {
-                "name": "WILL_PASSWORD",
-                "obtain_at": (
-                    "1. Go to hipchat, and create a new user for will.  "
-                    "Note that password - this is the value you want. "
-                    "It's used for signing in via XMPP."
-                ),
-            },
-            {
-                "name": "WILL_V2_TOKEN",
-                "obtain_at": """1. Log into hipchat using will's user.
-2. Go to https://your-org.hipchat.com/account/api
-3. Create a token.
-4. Copy the value - this is the WILL_V2_TOKEN.""",
-            },
-            {
-                "name": "WILL_REDIS_URL",
-                "only_if": getattr(settings, "STORAGE_BACKEND", "redis") == "redis",
-                "obtain_at": """1. Set up an accessible redis host locally or in production
-2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
-            },
-        ]
+        required_settings = []
+        if "hipchat" in settings.CHAT_BACKENDS:
+            required_settings = [
+                {
+                    "name": "WILL_USERNAME",
+                    "obtain_at": """1. Go to hipchat, and create a new user for will.
+    2. Log into will, and go to Account settings>XMPP/Jabber Info.
+    3. On that page, the 'Jabber ID' is the value you want to use.""",
+                },
+                {
+                    "name": "WILL_PASSWORD",
+                    "obtain_at": (
+                        "1. Go to hipchat, and create a new user for will.  "
+                        "Note that password - this is the value you want. "
+                        "It's used for signing in via XMPP."
+                    ),
+                },
+                {
+                    "name": "WILL_V2_TOKEN",
+                    "obtain_at": """1. Log into hipchat using will's user.
+    2. Go to https://your-org.hipchat.com/account/api
+    3. Create a token.
+    4. Copy the value - this is the WILL_V2_TOKEN.""",
+                },
+                {
+                    "name": "WILL_REDIS_URL",
+                    "only_if": getattr(settings, "STORAGE_BACKEND", "redis") == "redis",
+                    "obtain_at": """1. Set up an accessible redis host locally or in production
+    2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
+                },
+            ]
 
         puts("")
         puts("Verifying environment...")
@@ -217,28 +231,30 @@ To set your %(name)s:
         else:
             puts("")
 
-        puts("Verifying credentials...")
-        # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.
-        user_id = settings.USERNAME.split('@')[0].split('_')[1]
+        if "hipchat" in settings.CHAT_BACKENDS:
 
-        # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
-        # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
-        q = Queue()
-        p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q": q, })
-        p.start()
-        user_data = q.get()
-        p.join()
+            puts("Verifying credentials...")
+            # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.
+            user_id = settings.USERNAME.split('@')[0].split('_')[1]
 
-        if "error" in user_data:
-            error("We ran into trouble: '%(message)s'" % user_data["error"])
-            sys.exit(1)
-        with indent(2):
-            show_valid("%s authenticated" % user_data["name"])
-            os.environ["WILL_NAME"] = user_data["name"]
-            show_valid("@%s verified as handle" % user_data["mention_name"])
-            os.environ["WILL_HANDLE"] = user_data["mention_name"]
+            # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
+            # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
+            q = Queue()
+            p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q": q, })
+            p.start()
+            user_data = q.get()
+            p.join()
 
-        puts("")
+            if "error" in user_data:
+                error("We ran into trouble: '%(message)s'" % user_data["error"])
+                sys.exit(1)
+            with indent(2):
+                show_valid("%s authenticated" % user_data["name"])
+                os.environ["WILL_NAME"] = user_data["name"]
+                show_valid("@%s verified as handle" % user_data["mention_name"])
+                os.environ["WILL_HANDLE"] = user_data["mention_name"]
+
+            puts("")
 
     def load_config(self):
         puts("Loading configuration...")
@@ -247,27 +263,28 @@ To set your %(name)s:
         puts("")
 
     def verify_rooms(self):
-        puts("Verifying rooms...")
-        # If we're missing ROOMS, join all of them.
-        with indent(2):
-            if settings.ROOMS is None:
-                # Yup. Thanks, BSDs.
-                q = Queue()
-                p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
-                p.start()
-                rooms_list = q.get()
-                show_valid("Joining all %s known rooms." % len(rooms_list))
-                os.environ["WILL_ROOMS"] = ";".join(rooms_list)
-                p.join()
-                settings.import_settings()
-            else:
-                show_valid(
-                    "Joining the %s room%s specified." % (
-                        len(settings.ROOMS),
-                        "s" if len(settings.ROOMS) > 1 else ""
+        if "hipchat" in settings.CHAT_BACKENDS:
+            puts("Verifying rooms...")
+            # If we're missing ROOMS, join all of them.
+            with indent(2):
+                if settings.ROOMS is None:
+                    # Yup. Thanks, BSDs.
+                    q = Queue()
+                    p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
+                    p.start()
+                    rooms_list = q.get()
+                    show_valid("Joining all %s known rooms." % len(rooms_list))
+                    os.environ["WILL_ROOMS"] = ";".join(rooms_list)
+                    p.join()
+                    settings.import_settings()
+                else:
+                    show_valid(
+                        "Joining the %s room%s specified." % (
+                            len(settings.ROOMS),
+                            "s" if len(settings.ROOMS) > 1 else ""
+                        )
                     )
-                )
-        puts("")
+            puts("")
 
     def verify_plugin_settings(self):
         puts("Verifying settings requested by plugins...")
@@ -368,11 +385,42 @@ To set your %(name)s:
             show_valid("Web server started.")
             bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='cherrypy', quiet=True)
 
+
+    def bootstrap_shell(self):
+        bootstrapped = False
+        try:
+            self.output_backend = ShellBackend()
+            self.output_backend.init_shell_client(self)
+            sorted_help = {}
+            for k, v in self.help_modules.items():
+                sorted_help[k] = sorted(v)
+
+            self.save("help_modules", sorted_help)
+            self.save("all_listener_regexes", self.all_listener_regexes)
+
+            show_valid("Chat client started.")
+            show_valid("Will is running.")
+            self.output_backend.start_shell()
+            bootstrapped = True
+        except Exception, e:
+            self.startup_error("Error bootstrapping shell", e)
+        if bootstrapped:
+            self.process(block=True)
+
+
     def bootstrap_xmpp(self):
         bootstrapped = False
         try:
+            self.output_backend = HipchatBackend()
             self.start_xmpp_client()
             sorted_help = {}
+            # self.send_direct_message = self.output_backend.send_direct_message
+            # self.send_direct_message_reply = self.output_backend.send_direct_message_reply
+            # self.send_room_message = self.output_backend.send_room_message
+            # self.set_room_topic = self.output_backend.set_room_topic
+            # self.get_user = self.output_backend.get_hipchat_user
+            # self.get_user_list = self.output_backend.full_hipchat_user_list
+
             for k, v in self.help_modules.items():
                 sorted_help[k] = sorted(v)
 
@@ -402,7 +450,7 @@ To set your %(name)s:
                         if f[-3:] == ".py" and f != "__init__.py":
                             try:
                                 module_path = os.path.join(root, f)
-                                path_components = os.path.split(module_path)
+                                path_components = module_path.split(os.sep)
                                 module_name = path_components[-1][:-3]
                                 full_module_name = ".".join(path_components)
                                 # Need to pass along module name, path all the way through
@@ -411,25 +459,26 @@ To set your %(name)s:
                                 # Check blacklist.
                                 blacklisted = False
                                 for b in settings.PLUGIN_BLACKLIST:
-                                    if b in combined_name:
+                                    if b in full_module_name:
                                         blacklisted = True
-
-                                # Don't even *try* to load a blacklisted module.
-                                if not blacklisted:
-                                    plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
+                                        break
 
                                 parent_mod = path_components[-2].split("/")[-1]
                                 parent_help_text = parent_mod.title()
-                                try:
-                                    parent_root = os.path.join(root, "__init__.py")
-                                    parent = imp.load_source(parent_mod, parent_root)
-                                    parent_help_text = getattr(parent, "MODULE_DESCRIPTION", parent_help_text)
-                                except:
-                                    # If it's blacklisted, don't worry if this blows up.
-                                    if blacklisted:
-                                        pass
-                                    else:
-                                        raise
+                                # Don't even *try* to load a blacklisted module.
+                                if not blacklisted:
+                                    try:
+                                        plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
+
+                                        parent_root = os.path.join(root, "__init__.py")
+                                        parent = imp.load_source(parent_mod, parent_root)
+                                        parent_help_text = getattr(parent, "MODULE_DESCRIPTION", parent_help_text)
+                                    except:
+                                        # If it's blacklisted, don't worry if this blows up.
+                                        if blacklisted:
+                                            pass
+                                        else:
+                                            raise
 
                                 plugin_modules_library[full_module_name] = {
                                     "full_module_name": full_module_name,

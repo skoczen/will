@@ -6,10 +6,10 @@ from sleekxmpp import ClientXMPP
 
 import settings
 from utils import Bunch
-from mixins import RosterMixin, RoomMixin, HipChatMixin
+from mixins import RosterMixin, RoomMixin
 
 
-class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
+class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin):
 
     def start_xmpp_client(self):
         logger = logging.getLogger(__name__)
@@ -94,7 +94,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
                     # If we don't have a nick yet, pull it and mention_name off the master user list.
                     if not hasattr(internal_roster[user_id], "nick") and hipchat_id in self.full_hipchat_user_list:
-                        user_data = self.full_hipchat_user_list[hipchat_id]
+                        user_data = self.get_user_list[hipchat_id]
                         internal_roster[user_id].nick = user_data["mention_name"]
                         internal_roster[user_id].mention_name = user_data["mention_name"]
 

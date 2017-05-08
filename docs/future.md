@@ -36,6 +36,15 @@ class SkillBackend():
         pass
 
 
+class ParsingBackend():
+    # Takes an input, looks through the list of things will knows about, and decides what (if anything) to do.
+
+    def __init__():
+        pass
+
+    def handle_input(message, context, knowledge):
+        pass
+
 
 class AIOSApp(*args, **kwargs):
     # The base class for AIOS apps (currently: plugins)
