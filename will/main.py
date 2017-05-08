@@ -411,7 +411,7 @@ To set your %(name)s:
     def bootstrap_xmpp(self):
         bootstrapped = False
         try:
-            self.output_backend = HipchatBackend()
+            self.output_backend = HipChatBackend()
             self.start_xmpp_client()
             sorted_help = {}
             # self.send_direct_message = self.output_backend.send_direct_message
