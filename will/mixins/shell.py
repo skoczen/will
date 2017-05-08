@@ -9,18 +9,11 @@ from will.utils import Bunch
 
 from will import settings
 
+
 class ShellListener(cmd.Cmd, object):
     """Simple command processor example."""
 
     prompt = " You: "
-
-    # def do_greet(self, person):
-    #     """greet [person]
-    #     Greet the named person"""
-    #     if person:
-    #         print "hi,", person
-    #     else:
-    #         print 'hi'
 
     def __init__(self, *args, **kwargs):
         if "bot" in kwargs:
