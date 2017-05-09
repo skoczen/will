@@ -115,6 +115,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
         puts("\nStarting core processes:")
         self.queues = Bunch()
         self.queues.io = Bunch()
+        self.queues.io._incoming = Queue()
 
         # self.queues.stdin = Queue()
 
@@ -126,6 +127,9 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
         bottle_thread = Process(target=self.bootstrap_bottle)
         # bottle_thread.daemon = True
 
+        # Incoming message queue
+        incoming_message_thread = Process(target=self.bootstrap_message_handler)
+
         self.io_threads = []
 
         with indent(2):
@@ -135,6 +139,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
 
                 scheduler_thread.start()
                 bottle_thread.start()
+                incoming_message_thread.start()
 
                 errors = self.get_startup_errors()
                 if len(errors) > 0:
@@ -146,6 +151,9 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                     puts(colored.red(error_message))
 
                 signal.signal(signal.SIGINT, self.handle_sys_exit)
+                # TODO this hangs for some reason.
+                # signal.signal(signal.SIGTERM, self.handle_sys_exit)
+
                 if self.has_stdin_io_backend:
                     self.queues.io.stdin_input = Queue()
                     self.stdin_listener_thread = Process(target=self.handle_main_stdin_queue)
@@ -164,6 +172,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
             except (KeyboardInterrupt, SystemExit):
                 scheduler_thread.terminate()
                 bottle_thread.terminate()
+                incoming_message_thread.terminate()
 
                 if self.stdin_listener_thread:
                     self.stdin_listener_thread.terminate()
@@ -174,6 +183,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                 print '\n\nReceived keyboard interrupt, quitting threads.',
                 while (scheduler_thread.is_alive() or
                        bottle_thread.is_alive() or
+                       incoming_message_thread.is_alive() or
                        self.stdin_listener_thread.is_alive() or
                        ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())):
                         sys.stdout.write(".")
@@ -347,6 +357,7 @@ To set your %(name)s:
                 "or listen!\n       Quitting now, please look at the above errors!\n"
             )
             sys.exit(1)
+        puts()
 
     def verify_plugin_settings(self):
         puts("Verifying settings requested by plugins...")
@@ -386,6 +397,28 @@ To set your %(name)s:
                 line = self.queues.io.stdin_input.get(timeout=0.1)
                 for name, q in self.queues.io.stdin_backend_queues.items():
                     q.put(line)
+            except:
+                # import traceback; traceback.print_exc();
+                pass 
+
+    def bootstrap_message_handler(self):
+        while True:
+            try:
+                message = self.queues.io._incoming.get(timeout=0.1)
+                # Send to analyze
+                print "Ready for analyze"
+                print message
+
+                # Analysis (Understand, add metadata)
+                # Now: Run each analyze syncrhonously, add info to message.
+                # Later: Fire up analyze threads for each, with queues for output
+
+                # Generate (make a list of possible responses)
+
+                # Execute (choose from the possible responses based on the highest score.)
+                # Possibly do some analysis to post-check and re-decide an outcome.
+                # Take an action.
+
             except:
                 # import traceback; traceback.print_exc();
                 pass 
@@ -461,7 +494,7 @@ To set your %(name)s:
             bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='cherrypy', quiet=True)
 
     def bootstrap_io(self):
-        puts("Bootstrapping IO...")
+        # puts("Bootstrapping IO...")
         self.has_stdin_io_backend = False
         self.io_backends = []
         self.queues.io.stdin_queue = []
@@ -477,16 +510,16 @@ To set your %(name)s:
                         if hasattr(c, "use_stdin") and c.use_stdin:
                             my_stdin_queue = Queue()
                             self.queues.io.stdin_backend_queues[b] = my_stdin_queue
-                            thread = Process(target=c.start, args=(self.queues.io.stdin_backend_queues[b],))
+                            thread = Process(target=c.start, args=(b, self.queues.io._incoming, self.queues.io.stdin_backend_queues[b],))
                             thread.start()
                             self.has_stdin_io_backend = True
                             self.stdin_io_threads.append(thread)
                         else:
-                            thread = Process(target=c.start)
+                            thread = Process(target=c.start, args=(b, self.queues.io._incoming,))
                             thread.start()
 
                         self.io_threads.append(thread)
-                        show_valid("%s" % cls.friendly_name)
+                        show_valid("%s Backend started." % cls.friendly_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 

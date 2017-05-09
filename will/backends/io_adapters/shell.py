@@ -1,12 +1,13 @@
 import cmd
 import sys
 import logging
+from multiprocessing.queues import Empty
 import requests
 import threading
 import readline
 import traceback
 from will.utils import Bunch
-from .base import IOBackend
+from .base import IOBackend, Message
 
 from will import settings
 
@@ -126,19 +127,36 @@ class ShellBackend(IOBackend):
                 print "shell heard: %s" % line
                 # Pass this along to whereever it should go.
                 # will.queues?
+                m = Message(
+                    body=line,
+                    is_direct=True,
+                    backend=self.name
+                )
+                self.incoming_queue.put(m)
+                # IO Adapters are responsible for taking the input, 
+                # adding their own metadata and standard info
+                # and providing a return method
 
-              # treat_input(
-                # pass that on to all the stdin backends
+                # Standard info:
+                # is_direct
+                # message_body
+                # medium/backend
+                # timestamp
+                # message_hash (for queues) (subclass?)
+
+            except Empty:
+                pass
             except:
-                # import traceback; traceback.print_exc();
+                import traceback; traceback.print_exc();
                 pass
 
             # print "got stdin: %s" % linein
 
-
-    def start(self, stdin_queue=None):
+    def start(self, name, incoming_queue, stdin_queue=None):
         if stdin_queue:
             self.stdin_queue = stdin_queue
+        self.name = name
+        self.incoming_queue = incoming_queue
         self.init_shell_client()
         self.handle_stdin_loop()
 
