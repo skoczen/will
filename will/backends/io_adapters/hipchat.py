@@ -4,6 +4,7 @@ import requests
 import traceback
 
 from will import settings
+from .base import IOBackend
 
 ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
 ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
@@ -14,7 +15,9 @@ ALL_USERS_URL = ("https://%(server)s/v2/user?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s")
 
 
-class HipChatBackend(object):
+class HipChatBackend(IOBackend):
+    friendly_name = "HipChat"
+    use_stdin = False
 
     def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
         if kwargs:
@@ -117,3 +120,6 @@ class HipChatBackend(object):
 
             self._full_hipchat_user_list = full_roster
         return self._full_hipchat_user_list
+
+    def start(self):
+        pass

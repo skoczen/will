@@ -84,6 +84,26 @@ PLUGIN_BLACKLIST = [
 CHAT_BACKENDS = ["shell", ]
 # CHAT_BACKENDS = ["hipchat", ]
 
+# Platforms and mediums messages can come in and go out on.
+IO_BACKENDS = [
+    "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.shell",
+]
+
+# Backends to analyze messages and generate useful metadata
+ANALYZE_BACKENDS = [
+    "will.backends.analysis.nothing",
+]
+
+# Backends to generate possible actions, and metadata about them.
+GENERATION_BACKENDS = [
+    "will.backends.generation.regex",
+]
+
+# The "decision making" backend that looks among the generated choices, and decides which to follow.
+EXECUTION_BACKEND = "will.backends.execution.all"
+# EXECUTION_BACKEND = "will.backends.execute.highest"
+
 
 # ------------------------------------------------------------------------------------
 # Optional settings

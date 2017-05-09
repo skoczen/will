@@ -1,12 +1,10 @@
 from errors import ErrorMixin
 from email import EmailMixin
-from hipchat import HipChatBackend
-from io_backend import IOMixin
 from naturaltime import NaturalTimeMixin
 from room import RoomMixin
 from roster import RosterMixin
 from plugins_library import PluginModulesLibraryMixin
 from schedule import ScheduleMixin
 from settings import SettingsMixin
-from shell import ShellBackend
 from storage import StorageMixin
+

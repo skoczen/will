@@ -3,6 +3,7 @@ from ..acl import is_acl_allowed
 
 from will import settings
 
+
 class RosterMixin(object):
     @property
     def internal_roster(self):

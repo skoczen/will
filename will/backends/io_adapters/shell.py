@@ -6,6 +6,7 @@ import threading
 import readline
 import traceback
 from will.utils import Bunch
+from .base import IOBackend
 
 from will import settings
 
@@ -13,6 +14,7 @@ from will import settings
 class ShellListener(cmd.Cmd, object):
     """Simple command processor example."""
 
+    friendly_name = "Shell"
     prompt = " You: "
 
     def __init__(self, *args, **kwargs):
@@ -34,6 +36,7 @@ class ShellListener(cmd.Cmd, object):
             # Reserved keyword joys.
             msg["from"] = "me"
             line = "%s\n" % line
+
             for l in self.bot.message_listeners:
                 search_matches = l["regex"].search(line)
                 if (
@@ -78,8 +81,9 @@ class ShellListener(cmd.Cmd, object):
 
 
 
-class ShellBackend(object):
-
+class ShellBackend(IOBackend):
+    use_stdin = True
+    friendly_name = "Interactive Shell"
 
     def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
         print("Will: %s" % message_body)
@@ -110,10 +114,30 @@ class ShellBackend(object):
         return []
 
 
-    def init_shell_client(self, bot):
-        self.shell_cmd = ShellListener(bot=bot)
-        return self.shell_cmd
+    def init_shell_client(self, bot=None):
+        # self.shell_cmd = ShellListener(bot=bot)
+        # return self.shell_cmd
+        pass
+
+    def handle_stdin_loop(self):
+        while True:
+            try:
+                line = self.my_stdin_queue.get(timeout=0.4)
+                print "shell heard: %s" % line
+
+              # treat_input(
+                # pass that on to all the stdin backends
+            except:
+                # import traceback; traceback.print_exc();
+                pass
+
+            # print "got stdin: %s" % linein
 
 
-    def start_shell(self):
-        self.shell_cmd.cmdloop("\n\n")
+    def start(self, my_stdin_queue=None):
+        if my_stdin_queue:
+            self.my_stdin_queue = my_stdin_queue
+        self.init_shell_client()
+        self.handle_stdin_loop()
+
+        # self.shell_cmd.cmdloop("\n\n")

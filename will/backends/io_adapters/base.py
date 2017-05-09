@@ -1,11 +1,13 @@
 from will import settings
-from .hipchat import HipChatBackend
-from .shell import ShellBackend
 
 
-class IOMixin(object):
+class IOBackend(object):
+    is_will_iobackend = True
 
     def send_direct_message(self, *args, **kwargs):
+        # This needs to recieve the message and context, and is what's responsible
+        # for returning the reply along the proper IO channel
+
         if "hipchat" in settings.CHAT_BACKENDS:
             b = HipChatBackend()
             b.send_direct_message(*args, **kwargs)
@@ -45,7 +47,7 @@ class IOMixin(object):
             b = ShellBackend()
             b.set_room_topic(*args, **kwargs)
 
-    def get_hipchat_user(self, *args, **kwargs):
+    def get_user(self, *args, **kwargs):
 
         if "hipchat" in settings.CHAT_BACKENDS:
             b = HipChatBackend()
@@ -65,3 +67,11 @@ class IOMixin(object):
         if "shell" in settings.CHAT_BACKENDS:
             b = ShellBackend()
             b.full_hipchat_user_list(*args, **kwargs)
+
+    def get_room_list(self, *args, **kwargs):
+        pass
+
+    def handle_message(message, context, *args, **kwargs):
+        context.platform = ""
+
+        pass

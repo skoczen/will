@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import logging
-import inspect
 import imp
-import os
+import inspect
+import logging
 import operator
+import os
 import re
+import signal
 import sys
+import threading
 import time
 import traceback
+from importlib import import_module
 from clint.textui import colored, puts, indent
 from os.path import abspath, dirname
 from multiprocessing import Process, Queue
 
 import bottle
 
-from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatBackend,\
-    RoomMixin, PluginModulesLibraryMixin, ShellBackend, EmailMixin, IOMixin
+from listener import ListenerMixin
+
+from mixins import ScheduleMixin, StorageMixin, ErrorMixin,\
+    RoomMixin, PluginModulesLibraryMixin, EmailMixin
+from backends import analysis, execution, generation, io_adapters
 from scheduler import Scheduler
 import settings
 from utils import show_valid, error, warn, print_head
@@ -40,8 +45,8 @@ sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
-class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
-              ErrorMixin, RoomMixin, IOMixin, PluginModulesLibraryMixin):
+class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
+              ErrorMixin, RoomMixin, ListenerMixin, PluginModulesLibraryMixin):
 
     def __init__(self, **kwargs):
         if "template_dirs" in kwargs:
@@ -104,6 +109,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
         self.bootstrap_storage_mixin()
         self.bootstrap_plugins()
         self.verify_plugin_settings()
+        self.verify_io()
 
         puts("Bootstrapping complete.")
         puts("\nStarting core processes:")
@@ -115,19 +121,13 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
         bottle_thread = Process(target=self.bootstrap_bottle)
         # bottle_thread.daemon = True
 
-        xmpp_thread = False
-
-        # TODO: Abstract these into listener_threads[]
-        if "hipchat" in settings.CHAT_BACKENDS:
-            # XMPP Listener
-            xmpp_thread = Process(target=self.bootstrap_xmpp)
-            # xmpp_thread.daemon = True
+        self.io_threads = []
 
         with indent(2):
             try:
+                self.bootstrap_io()
                 # Start up threads.
-                if "hipchat" in settings.CHAT_BACKENDS:
-                    xmpp_thread.start()
+
                 scheduler_thread.start()
                 bottle_thread.start()
 
@@ -140,25 +140,41 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                     self.send_room_message(default_room, error_message, color="yellow")
                     puts(colored.red(error_message))
 
-                if "shell" in settings.CHAT_BACKENDS:
-                    time.sleep(2)
-                    self.bootstrap_shell()
+                signal.signal(signal.SIGINT, self.handle_sys_exit)
+                if self.has_stdin_io_backend:
+                    print "setting up listener on main"
+                    self.main_input_queue = Queue()
+                    self.stdin_listener_thread = Process(target=self.handle_main_stdin_queue)
+                    self.stdin_listener_thread.start()
+
+                    self.current_line = ""
+                    for line in sys.stdin.readline():
+                        if "\n" in line:
+                            self.main_input_queue.put(self.current_line)
+                            self.current_line = ""
+                        else:
+                            self.current_line += line
                 while True:
                     time.sleep(100)
             except (KeyboardInterrupt, SystemExit):
                 scheduler_thread.terminate()
                 bottle_thread.terminate()
-                if xmpp_thread:
-                    xmpp_thread.terminate()
+
+                if self.stdin_listener_thread:
+                    self.stdin_listener_thread.terminate()
+
+                for t in self.stdin_io_threads:
+                    t.terminate()
+
                 print '\n\nReceived keyboard interrupt, quitting threads.',
                 while (scheduler_thread.is_alive() or
                        bottle_thread.is_alive() or
+                       self.stdin_listener_thread.is_alive() or
                        ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())):
                         sys.stdout.write(".")
                         sys.stdout.flush()
                         time.sleep(0.5)
                 print ". done.\n"
-
 
     def verify_individual_setting(self, test_setting, quiet=False):
         if not test_setting.get("only_if", True):
@@ -240,7 +256,7 @@ To set your %(name)s:
             # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
             # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
             q = Queue()
-            p = Process(target=self.get_hipchat_user, args=(user_id,), kwargs={"q": q, })
+            p = Process(target=self.get_user, args=(user_id,), kwargs={"q": q, })
             p.start()
             user_data = q.get()
             p.join()
@@ -286,6 +302,47 @@ To set your %(name)s:
                     )
             puts("")
 
+    def verify_io(self):
+        puts("Verifying IO backends...")
+        missing_settings = False
+        missing_setting_error_messages = []
+        one_valid_backend = False
+
+        if not hasattr(settings, "IO_BACKENDS"):
+            settings.IO_BACKENDS = ["will.io.shell", ]
+        # Try to import them all, catch errors and output trouble if we hit it.
+        for b in settings.IO_BACKENDS:
+            with indent(2):
+                try:
+                    path_name = None
+                    for mod in b.split('.'):
+                        if path_name is not None:
+                            path_name = [path_name]
+                        file_name, path_name, description = imp.find_module(mod, path_name)
+
+                    one_valid_backend = True
+                    show_valid("%s" % b)
+                except ImportError, e:
+                    error_message = (
+                        "IO backend %s is missing. Please either remove it \nfrom config.py "
+                        "or WILL_IO_BACKENDS, or provide it somehow (pip install, etc)."
+                    ) % b
+                    puts(colored.red("✗ %s" % b))
+                    puts()
+                    puts(error_message)
+                    puts()
+                    puts(traceback.format_exc(e))
+                    missing_setting_error_messages.append(error_message)
+                    missing_settings = True
+
+        if missing_settings and not one_valid_backend:
+            puts("")
+            error(
+                "Unable to find a valid IO backend - will has no way to talk "
+                "or listen!\n       Quitting now, please look at the above errors!\n"
+            )
+            sys.exit(1)
+
     def verify_plugin_settings(self):
         puts("Verifying settings requested by plugins...")
 
@@ -314,6 +371,24 @@ To set your %(name)s:
                 self.add_startup_error("\n".join(missing_setting_error_messages))
             else:
                 puts("")
+
+    def handle_sys_exit(self, *args, **kwargs):
+        sys.exit(1)
+
+    def handle_main_stdin_queue(self):
+        print "handle_main_stdin_queue started"
+        while True:
+            try:
+                line = self.main_input_queue.get(timeout=0.1)
+                print "got %s" % line
+                for q in self.stdin_queues:
+                    print q
+                    print q.put(line)
+            except:
+                # import traceback; traceback.print_exc();
+                pass
+
+            # print "got stdin: %s" % linein
 
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")
@@ -385,6 +460,36 @@ To set your %(name)s:
             show_valid("Web server started.")
             bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='cherrypy', quiet=True)
 
+    def bootstrap_io(self):
+        puts("Bootstrapping IO...")
+        self.has_stdin_io_backend = False
+        self.io_backends = []
+        self.stdin_queues = []
+        self.stdin_io_threads = []
+        self.stdin_io_backends = []
+        for b in settings.IO_BACKENDS:
+            module = import_module(b)
+            for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                try:
+                    if hasattr(cls, "is_will_iobackend") and cls.is_will_iobackend and class_name != "IOBackend":
+                        c = cls()
+                        if hasattr(c, "use_stdin") and c.use_stdin:
+                            my_stdin_queue = Queue()
+                            thread = Process(target=c.start, args=(my_stdin_queue,))
+                            thread.start()
+                            self.has_stdin_io_backend = True
+                            self.stdin_io_threads.append(thread)
+                            self.stdin_queues.append(my_stdin_queue)
+                        else:
+                            thread = Process(target=c.start)
+                            thread.start()
+
+                        self.io_threads.append(thread)
+                        show_valid("%s" % cls.friendly_name)
+                except Exception, e:
+                    self.startup_error("Error bootstrapping %s io" % b, e)
+
+            self.io_backends.append(b)
 
     def bootstrap_shell(self):
         bootstrapped = False
@@ -407,10 +512,10 @@ To set your %(name)s:
         if bootstrapped:
             self.process(block=True)
 
-
     def bootstrap_xmpp(self):
         bootstrapped = False
         try:
+            self.xmpp_thread = Process(target=self.bootstrap_xmpp)
             self.output_backend = HipChatBackend()
             self.start_xmpp_client()
             sorted_help = {}
@@ -453,8 +558,6 @@ To set your %(name)s:
                                 path_components = module_path.split(os.sep)
                                 module_name = path_components[-1][:-3]
                                 full_module_name = ".".join(path_components)
-                                # Need to pass along module name, path all the way through
-                                combined_name = ".".join([plugin_name, module_name])
 
                                 # Check blacklist.
                                 blacklisted = False
