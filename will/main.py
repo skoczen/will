@@ -25,7 +25,7 @@ from mixins import ScheduleMixin, StorageMixin, ErrorMixin,\
 from backends import analysis, execution, generation, io_adapters
 from scheduler import Scheduler
 import settings
-from utils import show_valid, error, warn, print_head
+from utils import show_valid, error, warn, print_head, Bunch
 
 
 # Force UTF8
@@ -113,6 +113,11 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
 
         puts("Bootstrapping complete.")
         puts("\nStarting core processes:")
+        self.queues = Bunch()
+        self.queues.io = Bunch()
+
+        # self.queues.stdin = Queue()
+
         # Scheduler
         scheduler_thread = Process(target=self.bootstrap_scheduler)
         # scheduler_thread.daemon = True
@@ -142,18 +147,18 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
 
                 signal.signal(signal.SIGINT, self.handle_sys_exit)
                 if self.has_stdin_io_backend:
-                    print "setting up listener on main"
-                    self.main_input_queue = Queue()
+                    self.queues.io.stdin_input = Queue()
                     self.stdin_listener_thread = Process(target=self.handle_main_stdin_queue)
                     self.stdin_listener_thread.start()
 
                     self.current_line = ""
-                    for line in sys.stdin.readline():
-                        if "\n" in line:
-                            self.main_input_queue.put(self.current_line)
-                            self.current_line = ""
-                        else:
-                            self.current_line += line
+                    while True:
+                        for line in sys.stdin.readline():
+                            if "\n" in line:
+                                self.queues.io.stdin_input.put(self.current_line)
+                                self.current_line = ""
+                            else:
+                                self.current_line += line
                 while True:
                     time.sleep(100)
             except (KeyboardInterrupt, SystemExit):
@@ -376,19 +381,14 @@ To set your %(name)s:
         sys.exit(1)
 
     def handle_main_stdin_queue(self):
-        print "handle_main_stdin_queue started"
         while True:
             try:
-                line = self.main_input_queue.get(timeout=0.1)
-                print "got %s" % line
-                for q in self.stdin_queues:
-                    print q
-                    print q.put(line)
+                line = self.queues.io.stdin_input.get(timeout=0.1)
+                for name, q in self.queues.io.stdin_backend_queues.items():
+                    q.put(line)
             except:
                 # import traceback; traceback.print_exc();
-                pass
-
-            # print "got stdin: %s" % linein
+                pass 
 
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")
@@ -464,7 +464,8 @@ To set your %(name)s:
         puts("Bootstrapping IO...")
         self.has_stdin_io_backend = False
         self.io_backends = []
-        self.stdin_queues = []
+        self.queues.io.stdin_queue = []
+        self.queues.io.stdin_backend_queues = {}
         self.stdin_io_threads = []
         self.stdin_io_backends = []
         for b in settings.IO_BACKENDS:
@@ -475,11 +476,11 @@ To set your %(name)s:
                         c = cls()
                         if hasattr(c, "use_stdin") and c.use_stdin:
                             my_stdin_queue = Queue()
-                            thread = Process(target=c.start, args=(my_stdin_queue,))
+                            self.queues.io.stdin_backend_queues[b] = my_stdin_queue
+                            thread = Process(target=c.start, args=(self.queues.io.stdin_backend_queues[b],))
                             thread.start()
                             self.has_stdin_io_backend = True
                             self.stdin_io_threads.append(thread)
-                            self.stdin_queues.append(my_stdin_queue)
                         else:
                             thread = Process(target=c.start)
                             thread.start()

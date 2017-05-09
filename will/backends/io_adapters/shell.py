@@ -122,8 +122,10 @@ class ShellBackend(IOBackend):
     def handle_stdin_loop(self):
         while True:
             try:
-                line = self.my_stdin_queue.get(timeout=0.4)
+                line = self.stdin_queue.get(timeout=0.4)
                 print "shell heard: %s" % line
+                # Pass this along to whereever it should go.
+                # will.queues?
 
               # treat_input(
                 # pass that on to all the stdin backends
@@ -134,9 +136,9 @@ class ShellBackend(IOBackend):
             # print "got stdin: %s" % linein
 
 
-    def start(self, my_stdin_queue=None):
-        if my_stdin_queue:
-            self.my_stdin_queue = my_stdin_queue
+    def start(self, stdin_queue=None):
+        if stdin_queue:
+            self.stdin_queue = stdin_queue
         self.init_shell_client()
         self.handle_stdin_loop()
 
