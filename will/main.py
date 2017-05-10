@@ -474,31 +474,32 @@ To set your %(name)s:
         missing_setting_error_messages = []
         one_valid_backend = False
 
-        if not hasattr(settings, "EXECUTION_BACKEND"):
-            settings.EXECUTION_BACKEND = ["will.backends.execution.all", ]
+        if not hasattr(settings, "EXECUTION_BACKENDS"):
+            settings.EXECUTION_BACKENDS = ["will.backends.execution.all", ]
 
         with indent(2):
-            try:
-                path_name = None
-                for mod in settings.EXECUTION_BACKEND.split('.'):
-                    if path_name is not None:
-                        path_name = [path_name]
-                    file_name, path_name, description = imp.find_module(mod, path_name)
+            for b in settings.EXECUTION_BACKENDS:
+                try:
+                    path_name = None
+                    for mod in b.split('.'):
+                        if path_name is not None:
+                            path_name = [path_name]
+                        file_name, path_name, description = imp.find_module(mod, path_name)
 
-                one_valid_backend = True
-                show_valid("%s" % settings.EXECUTION_BACKEND)
-            except ImportError, e:
-                error_message = (
-                    "Execution backend %s is missing. Please either remove it \nfrom config.py "
-                    "or WILL_EXECUTION_BACKEND, or provide it somehow (pip install, etc)."
-                ) % settings.EXECUTION_BACKEND
-                puts(colored.red("✗ %s" % settings.EXECUTION_BACKEND))
-                puts()
-                puts(error_message)
-                puts()
-                puts(traceback.format_exc(e))
-                missing_setting_error_messages.append(error_message)
-                missing_settings = True
+                    one_valid_backend = True
+                    show_valid("%s" % b)
+                except ImportError, e:
+                    error_message = (
+                        "Execution backend %s is missing. Please either remove it \nfrom config.py "
+                        "or WILL_EXECUTION_BACKENDS, or provide it somehow (pip install, etc)."
+                    ) % b
+                    puts(colored.red("✗ %s" % b))
+                    puts()
+                    puts(error_message)
+                    puts()
+                    puts(traceback.format_exc(e))
+                    missing_setting_error_messages.append(error_message)
+                    missing_settings = True
 
         if missing_settings and not one_valid_backend:
             puts("")
@@ -510,27 +511,29 @@ To set your %(name)s:
         puts()
 
     def bootstrap_execution(self):
-        self.execution_backend = False
-        execution_module = getattr(settings, "EXECUTION_BACKEND", "will.backends.execution.all")
-        module = import_module(execution_module)
-        for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
-            try:
-                if hasattr(cls, "is_will_execution_backend") and cls.is_will_execution_backend and class_name != "ExecutionBackend":
-                    self.execution_backend = cls()
-            except ImportError, e:
-                error_message = (
-                    "Execution backend %s is missing. Please either remove it \nfrom config.py "
-                    "or WILL_EXECUTION_BACKEND, or provide it somehow (pip install, etc)."
-                ) % settings.EXECUTION_BACKEND
-                puts(colored.red("✗ %s" % settings.EXECUTION_BACKEND))
-                puts()
-                puts(error_message)
-                puts()
-                puts(traceback.format_exc(e))
-                missing_setting_error_messages.append(error_message)
-                missing_settings = True
+        self.execution_backends = []
+        execution_backends = getattr(settings, "EXECUTION_BACKENDS", ["will.backends.execution.all", ])
+        for b in execution_backends:
+            module = import_module(b)
+            for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                try:
+                    if hasattr(cls, "is_will_execution_backend") and cls.is_will_execution_backend and class_name != "ExecutionBackend":
+                        c = cls()
+                        self.execution_backends.append(c)
+                except ImportError, e:
+                    error_message = (
+                        "Execution backend %s is missing. Please either remove it \nfrom config.py "
+                        "or WILL_EXECUTION_BACKENDS, or provide it somehow (pip install, etc)."
+                    ) % settings.EXECUTION_BACKENDS
+                    puts(colored.red("✗ %s" % settings.EXECUTION_BACKENDS))
+                    puts()
+                    puts(error_message)
+                    puts()
+                    puts(traceback.format_exc(e))
+                    missing_setting_error_messages.append(error_message)
+                    missing_settings = True
 
-        if not self.execution_backend:
+        if len(self.execution_backends) == 0:
             puts("")
             error(
                 "Unable to find a valid execution backend - will has no way to make decisions!"
@@ -667,7 +670,12 @@ To set your %(name)s:
         # Execute (choose from the possible responses based on the highest score.)
         # Possibly do some analysis to post-check and re-decide an outcome.
         # Take an action.
-        self.execution_backend.execute(message)
+        for b in self.execution_backends:
+            try:
+                b.execute(message)
+            except:
+                break
+
 
 
     def bootstrap_storage_mixin(self):

@@ -101,9 +101,13 @@ GENERATION_BACKENDS = [
     "will.backends.generation.regex",
 ]
 
-# The "decision making" backend that looks among the generated choices, and decides which to follow.
-EXECUTION_BACKEND = "will.backends.execution.all"
-# EXECUTION_BACKEND = "will.backends.execute.highest"
+# The "decision making" backends that look among the generated choices,
+# and decide which to follow. Backends are executed in order, and any 
+# backend can stop further evaluation.
+EXECUTION_BACKENDS = [
+    # "will.backends.execution.highest",
+    "will.backends.execution.all",
+]
 
 
 # ------------------------------------------------------------------------------------
