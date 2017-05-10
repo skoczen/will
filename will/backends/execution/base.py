@@ -7,3 +7,9 @@ class ExecutionBackend(object):
 
     def execute(self, message, context):
         raise NotImplemented
+
+    def __init__(self, bot=None, *args, **kwargs):
+        self.bot = bot
+        if not bot:
+            raise Exception("Can't proceed without an instance of bot passed to the backend.")
+        super(ExecutionBackend, self).__init__(*args, **kwargs)

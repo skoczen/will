@@ -133,8 +133,8 @@ class ShellBackend(IOBackend):
                     backend=self.name
                 )
                 print m
-                print self.incoming_queue
-                self.incoming_queue.put(m)
+                print self.input_queue
+                self.input_queue.put(m)
                 # IO Adapters are responsible for taking the input, 
                 # adding their own metadata and standard info
                 # and providing a return method
@@ -151,15 +151,46 @@ class ShellBackend(IOBackend):
             except:
                 import traceback; traceback.print_exc();
                 pass
+            try:
+                output_dict = self.output_queue.get(timeout=0.1)
+                print "shell ready to output: %s" % output_dict
+                # Pass this along to whereever it should go.
+                # will.queues?
+                print output_dict["content"]
+
+            except Empty:
+                pass
+            except:
+                import traceback; traceback.print_exc();
+                pass
+
 
             # print "got stdin: %s" % linein
 
-    def start(self, name, incoming_queue, stdin_queue=None):
+    def handle_output_loop(self):
+        while True:
+            try:
+                output_dict = self.output_queue.get(timeout=0.1)
+                print "shell ready to output: %s" % output_dict
+                # Pass this along to whereever it should go.
+                # will.queues?
+                print output_dict["message"]
+
+            except Empty:
+                pass
+            except:
+                import traceback; traceback.print_exc();
+                pass
+
+
+    def start(self, name, input_queue, output_queue, stdin_queue=None):
         if stdin_queue:
             self.stdin_queue = stdin_queue
         self.name = name
-        self.incoming_queue = incoming_queue
+        self.input_queue = input_queue
+        self.output_queue = output_queue
         self.init_shell_client()
         self.handle_stdin_loop()
+        self.handle_output_loop()
 
         # self.shell_cmd.cmdloop("\n\n")

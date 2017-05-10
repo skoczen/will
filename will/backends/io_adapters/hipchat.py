@@ -121,7 +121,7 @@ class HipChatBackend(IOBackend):
             self._full_hipchat_user_list = full_roster
         return self._full_hipchat_user_list
 
-    def start(self, name, incoming_queue):
+    def start(self, name, incoming_queue, output_queue):
         self.name = name
         self.incoming_queue = incoming_queue
-
+        self.output_queue = output_queue

@@ -518,7 +518,7 @@ To set your %(name)s:
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
                     if hasattr(cls, "is_will_execution_backend") and cls.is_will_execution_backend and class_name != "ExecutionBackend":
-                        c = cls()
+                        c = cls(bot=self)
                         self.execution_backends.append(c)
                 except ImportError, e:
                     error_message = (
@@ -601,9 +601,6 @@ To set your %(name)s:
     def handle_message(self, message):
 
         # Send to analyze
-        print "Ready for analyze"
-        print message
-
         # Analysis (Understand, add metadata)
         # Now: Run each analyze syncrhonously, add info to message.
         # Later: Fire up analyze threads for each, with queues for output
@@ -622,8 +619,6 @@ To set your %(name)s:
                     context = q.get(timeout=0.1)
                     # TODO: Last one wins right now - this should not
                     # allow conflicts.
-                    print name
-                    print context
                     message.analysis.update(context)
 
                     queues_heard_from += 1
@@ -631,9 +626,6 @@ To set your %(name)s:
                     pass
         if datetime.datetime.now() > timeout_end:
             print "timed out"
-
-        print "analysis done"
-        print message.analysis
 
         # Generate (make a list of possible responses)
         message.generation_options = []
@@ -651,8 +643,6 @@ To set your %(name)s:
                     options = q.get(timeout=0.1)
                     # TODO: Last one wins right now - this should not
                     # allow conflicts.
-                    print name
-                    print options
                     for o in options:
                         message.generation_options.append(o)
 
@@ -663,8 +653,6 @@ To set your %(name)s:
             print "timed out"
 
         print "generation done."
-        print message
-        print message.__dict__
 
         print "ready for execution"
         # Execute (choose from the possible responses based on the highest score.)
@@ -675,7 +663,6 @@ To set your %(name)s:
                 b.execute(message)
             except:
                 break
-
 
 
     def bootstrap_storage_mixin(self):
@@ -754,6 +741,7 @@ To set your %(name)s:
         self.io_backends = []
         self.queues.io.stdin_queue = []
         self.queues.io.stdin_backend_queues = {}
+        self.queues.io.output = {}
         self.stdin_io_threads = []
         self.stdin_io_backends = []
         for b in settings.IO_BACKENDS:
@@ -762,15 +750,17 @@ To set your %(name)s:
                 try:
                     if hasattr(cls, "is_will_iobackend") and cls.is_will_iobackend and class_name != "IOBackend":
                         c = cls()
+                        my_output_queue = Queue()
+                        self.queues.io.output[b] = my_output_queue
                         if hasattr(c, "use_stdin") and c.use_stdin:
                             my_stdin_queue = Queue()
                             self.queues.io.stdin_backend_queues[b] = my_stdin_queue
-                            thread = Process(target=c.start, args=(b, self.queues.io._incoming, self.queues.io.stdin_backend_queues[b],))
+                            thread = Process(target=c.start, args=(b, self.queues.io._incoming, self.queues.io.output[b], self.queues.io.stdin_backend_queues[b],))
                             thread.start()
                             self.has_stdin_io_backend = True
                             self.stdin_io_threads.append(thread)
                         else:
-                            thread = Process(target=c.start, args=(b, self.queues.io._incoming,))
+                            thread = Process(target=c.start, args=(b, self.queues.io._incoming, self.queues.io.output[b]))
                             thread.start()
 
                         self.io_threads.append(thread)
@@ -803,7 +793,8 @@ To set your %(name)s:
                                 b,
                                 self.queues.analysis.input[b],
                                 self.queues.analysis.output[b],
-                            )
+                            ),
+                            kwargs={"bot": self},
                         )
                         thread.start()
                         self.analysis_threads.append(thread)
@@ -826,7 +817,6 @@ To set your %(name)s:
                 try:
                     if hasattr(cls, "is_will_generationbackend") and cls.is_will_generationbackend and class_name != "GenerationBackend":
                         c = cls()
-                        print b
                         my_generation_input_queue = Queue()
                         my_generation_output_queue = Queue()
                         self.queues.generation.input[b] = my_generation_input_queue
@@ -837,7 +827,8 @@ To set your %(name)s:
                                 b,
                                 self.queues.generation.input[b],
                                 self.queues.generation.output[b],
-                            )
+                            ),
+                            kwargs={"bot": self},
                         )
                         thread.start()
                         self.generation_threads.append(thread)
@@ -976,7 +967,7 @@ To set your %(name)s:
             self._plugin_modules_library = plugin_modules_library
 
             # Sift and Sort.
-            self.message_listeners = []
+            self.message_listeners = {}
             self.periodic_tasks = []
             self.random_tasks = []
             self.bottle_routes = []
@@ -1054,10 +1045,12 @@ To set your %(name)s:
                                                 if plugin_info["class"] in plugin_instances:
                                                     instance = plugin_instances[plugin_info["class"]]
                                                 else:
-                                                    instance = plugin_info["class"]()
+                                                    instance = plugin_info["class"](bot=self)
                                                     plugin_instances[plugin_info["class"]] = instance
 
-                                                self.message_listeners.append({
+                                                full_method_name = "%s.%s" % (plugin_info["name"], function_name)
+                                                self.message_listeners[full_method_name] = {
+                                                    "full_method_name": full_method_name,
                                                     "function_name": function_name,
                                                     "class_name": plugin_info["name"],
                                                     "regex_pattern": meta["listener_regex"],
@@ -1068,7 +1061,7 @@ To set your %(name)s:
                                                     "direct_mentions_only": meta["listens_only_to_direct_mentions"],
                                                     "admin_only": meta["listens_only_to_admin"],
                                                     "acl": meta["listeners_acl"],
-                                                })
+                                                }
                                                 if meta["listener_includes_me"]:
                                                     self.some_listeners_include_me = True
                                             elif "periodic_task" in meta and meta["periodic_task"]:

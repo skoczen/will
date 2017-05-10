@@ -23,7 +23,10 @@ class AnalysisBackend(object):
         # Take message, return a dict to add to its context.
         raise NotImplemented
 
-    def start(self, name, input_queue, output_queue):
+    def start(self, name, input_queue, output_queue, **kwargs):
+        for k, v in kwargs.items():
+            self.__dict__[k] = v
+
         self.name = name
         self.__input_queue = input_queue
         self.__output_queue = output_queue

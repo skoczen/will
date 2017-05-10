@@ -149,7 +149,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin):
                 msg.room = self.get_room_from_message(msg)
                 msg.sender = self.get_user_from_message(msg)
 
-                for l in self.message_listeners:
+                for name, l in self.message_listeners.items():
                     search_matches = l["regex"].search(body)
                     if (
                             search_matches  # The search regex matches and

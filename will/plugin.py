@@ -13,6 +13,15 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
     is_will_plugin = True
     request = request
 
+    def __init__(self, *args, **kwargs):
+        if "bot" in kwargs:
+            self.bot = kwargs["bot"]
+            del kwargs["bot"]
+        super(WillPlugin, self).__init__(*args, **kwargs)
+    # TODO: pull all the hipchat-specific logic out of this,
+    # Set up the hipchat and shell backends' output queues,
+    # THen call the appropriate one in this function.
+
     def _rooms_from_message_and_room(self, message, room):
         if room == "ALL_ROOMS":
             rooms = self.available_rooms
@@ -56,27 +65,41 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
     def reply(self, message, content, **kwargs):
-        # Valid kwargs:
-        # color: yellow, red, green, purple, gray, random.  Default is green.
-        # html: Display HTML or not. Default is False
-        # notify: Ping everyone. Default is False
-        content = self._prepared_content(content, message, kwargs)
-        if message is None or message["type"] == "groupchat":
-            # Reply, speaking to the room.
-            try:
-                content = "@%s %s" % (message.sender["nick"], content)
-            except TypeError:
-                content = "%s\nNote: I was told to reply, but this message didn't come from a person!" % (content,)
+        # Be smart about backend.
 
-            self.say(content, message=message, **kwargs)
+        if hasattr(message, "backend"):
+            print "message.backend"
+            print message.backend
+            print "self.bot"
+            print self.bot.queues.io.output
+            # TODO HERE: connect to bot / main thread to push out.
+            self.bot.queues.io.output[message.backend].put({
+                "content": content,
+                "message": message,
+                "kwargs": kwargs,
+            })
 
-        elif message['type'] in ('chat', 'normal'):
-            # Reply to the user (1-1 chat)
-            if "sender" in message:
-                sender = message["sender"]
-            else:
-                sender = message.sender
-            self.send_direct_message(sender["hipchat_id"], content, **kwargs)
+        # # Valid kwargs:
+        # # color: yellow, red, green, purple, gray, random.  Default is green.
+        # # html: Display HTML or not. Default is False
+        # # notify: Ping everyone. Default is False
+        # content = self._prepared_content(content, message, kwargs)
+        # if message is None or message["type"] == "groupchat":
+        #     # Reply, speaking to the room.
+        #     try:
+        #         content = "@%s %s" % (message.sender["nick"], content)
+        #     except TypeError:
+        #         content = "%s\nNote: I was told to reply, but this message didn't come from a person!" % (content,)
+
+        #     self.say(content, message=message, **kwargs)
+
+        # elif message['type'] in ('chat', 'normal'):
+        #     # Reply to the user (1-1 chat)
+        #     if "sender" in message:
+        #         sender = message["sender"]
+        #     else:
+        #         sender = message.sender
+        #     self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
     def set_topic(self, topic, message=None, room=None):
 
