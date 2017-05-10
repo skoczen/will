@@ -1,10 +1,9 @@
-import requests
-
 from will import settings
 from will.decorators import require_settings
-from .base import GenerateBackend
+from .base import GenerationBackend
 
-class RegexBackend(GenerateBackend):
 
-    def generate(self, message, context):
-        return {}
+class RegexBackend(GenerationBackend):
+
+    def do_generate(self, message):
+        return []

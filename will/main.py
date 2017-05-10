@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import datetime
 import imp
 import inspect
 import logging
@@ -15,6 +15,7 @@ from importlib import import_module
 from clint.textui import colored, puts, indent
 from os.path import abspath, dirname
 from multiprocessing import Process, Queue
+from multiprocessing.queues import Empty
 
 import bottle
 
@@ -110,12 +111,18 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
         self.bootstrap_plugins()
         self.verify_plugin_settings()
         self.verify_io()
+        self.verify_analysis()
+        self.verify_generate()
+        self.verify_execution()
+        self.bootstrap_execution()
 
         puts("Bootstrapping complete.")
         puts("\nStarting core processes:")
         self.queues = Bunch()
         self.queues.io = Bunch()
         self.queues.io._incoming = Queue()
+        self.queues.analysis = Bunch()
+        self.queues.generation = Bunch()
 
         # self.queues.stdin = Queue()
 
@@ -131,11 +138,16 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
         incoming_message_thread = Process(target=self.bootstrap_message_handler)
 
         self.io_threads = []
+        self.analysis_threads = []
+        self.generation_threads = []
+        self.message_handler_threads = []
 
         with indent(2):
             try:
-                self.bootstrap_io()
                 # Start up threads.
+                self.bootstrap_io()
+                self.bootstrap_analysis()
+                self.bootstrap_generation()
 
                 scheduler_thread.start()
                 bottle_thread.start()
@@ -180,11 +192,24 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                 for t in self.stdin_io_threads:
                     t.terminate()
 
+                for t in self.analysis_threads:
+                    t.terminate()
+
+                for t in self.generation_threads:
+                    t.terminate()
+
+                for t in self.message_handler_threads:
+                    t.terminate()
+
                 print '\n\nReceived keyboard interrupt, quitting threads.',
                 while (scheduler_thread.is_alive() or
                        bottle_thread.is_alive() or
                        incoming_message_thread.is_alive() or
                        self.stdin_listener_thread.is_alive() or
+                       any([t.is_alive() for t in self.stdin_io_threads]) or
+                       any([t.is_alive() for t in self.analysis_threads]) or
+                       any([t.is_alive() for t in self.generation_threads]) or
+                       any([t.is_alive() for t in self.message_handler_threads]) or
                        ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())):
                         sys.stdout.write(".")
                         sys.stdout.flush()
@@ -324,7 +349,7 @@ To set your %(name)s:
         one_valid_backend = False
 
         if not hasattr(settings, "IO_BACKENDS"):
-            settings.IO_BACKENDS = ["will.io.shell", ]
+            settings.IO_BACKENDS = ["will.backends.io_adapters.shell", ]
         # Try to import them all, catch errors and output trouble if we hit it.
         for b in settings.IO_BACKENDS:
             with indent(2):
@@ -358,6 +383,161 @@ To set your %(name)s:
             )
             sys.exit(1)
         puts()
+
+    def verify_analysis(self):
+        puts("Verifying Analysis backends...")
+        missing_settings = False
+        missing_setting_error_messages = []
+        one_valid_backend = False
+
+        if not hasattr(settings, "ANALYZE_BACKENDS"):
+            settings.ANALYZE_BACKENDS = ["will.backends.analysis.nothing", ]
+        # Try to import them all, catch errors and output trouble if we hit it.
+        for b in settings.ANALYZE_BACKENDS:
+            with indent(2):
+                try:
+                    path_name = None
+                    for mod in b.split('.'):
+                        if path_name is not None:
+                            path_name = [path_name]
+                        file_name, path_name, description = imp.find_module(mod, path_name)
+
+                    one_valid_backend = True
+                    show_valid("%s" % b)
+                except ImportError, e:
+                    error_message = (
+                        "Analysis backend %s is missing. Please either remove it \nfrom config.py "
+                        "or WILL_ANALYZE_BACKENDS, or provide it somehow (pip install, etc)."
+                    ) % b
+                    puts(colored.red("✗ %s" % b))
+                    puts()
+                    puts(error_message)
+                    puts()
+                    puts(traceback.format_exc(e))
+                    missing_setting_error_messages.append(error_message)
+                    missing_settings = True
+
+        if missing_settings and not one_valid_backend:
+            puts("")
+            error(
+                "Unable to find a valid IO backend - will has no way to talk "
+                "or listen!\n       Quitting now, please look at the above errors!\n"
+            )
+            sys.exit(1)
+        puts()
+
+    def verify_generate(self):
+        puts("Verifying Generation backends...")
+        missing_settings = False
+        missing_setting_error_messages = []
+        one_valid_backend = False
+
+        if not hasattr(settings, "GENERATION_BACKENDS"):
+            settings.GENERATION_BACKENDS = ["will.backends.generation.regex", ]
+        # Try to import them all, catch errors and output trouble if we hit it.
+        for b in settings.GENERATION_BACKENDS:
+            with indent(2):
+                try:
+                    path_name = None
+                    for mod in b.split('.'):
+                        if path_name is not None:
+                            path_name = [path_name]
+                        file_name, path_name, description = imp.find_module(mod, path_name)
+
+                    one_valid_backend = True
+                    show_valid("%s" % b)
+                except ImportError, e:
+                    error_message = (
+                        "Generation backend %s is missing. Please either remove it \nfrom config.py "
+                        "or WILL_GENERATION_BACKENDS, or provide it somehow (pip install, etc)."
+                    ) % b
+                    puts(colored.red("✗ %s" % b))
+                    puts()
+                    puts(error_message)
+                    puts()
+                    puts(traceback.format_exc(e))
+                    missing_setting_error_messages.append(error_message)
+                    missing_settings = True
+
+        if missing_settings and not one_valid_backend:
+            puts("")
+            error(
+                "Unable to find a valid IO backend - will has no way to talk "
+                "or listen!\n       Quitting now, please look at the above errors!\n"
+            )
+            sys.exit(1)
+        puts()
+
+    def verify_execution(self):
+        puts("Verifying Execution backend...")
+        missing_settings = False
+        missing_setting_error_messages = []
+        one_valid_backend = False
+
+        if not hasattr(settings, "EXECUTION_BACKEND"):
+            settings.EXECUTION_BACKEND = ["will.backends.execution.all", ]
+
+        with indent(2):
+            try:
+                path_name = None
+                for mod in settings.EXECUTION_BACKEND.split('.'):
+                    if path_name is not None:
+                        path_name = [path_name]
+                    file_name, path_name, description = imp.find_module(mod, path_name)
+
+                one_valid_backend = True
+                show_valid("%s" % settings.EXECUTION_BACKEND)
+            except ImportError, e:
+                error_message = (
+                    "Execution backend %s is missing. Please either remove it \nfrom config.py "
+                    "or WILL_EXECUTION_BACKEND, or provide it somehow (pip install, etc)."
+                ) % settings.EXECUTION_BACKEND
+                puts(colored.red("✗ %s" % settings.EXECUTION_BACKEND))
+                puts()
+                puts(error_message)
+                puts()
+                puts(traceback.format_exc(e))
+                missing_setting_error_messages.append(error_message)
+                missing_settings = True
+
+        if missing_settings and not one_valid_backend:
+            puts("")
+            error(
+                "Unable to find a valid IO backend - will has no way to talk "
+                "or listen!\n       Quitting now, please look at the above errors!\n"
+            )
+            sys.exit(1)
+        puts()
+
+    def bootstrap_execution(self):
+        self.execution_backend = False
+        execution_module = getattr(settings, "EXECUTION_BACKEND", "will.backends.execution.all")
+        module = import_module(execution_module)
+        for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+            try:
+                if hasattr(cls, "is_will_execution_backend") and cls.is_will_execution_backend and class_name != "ExecutionBackend":
+                    self.execution_backend = cls()
+            except ImportError, e:
+                error_message = (
+                    "Execution backend %s is missing. Please either remove it \nfrom config.py "
+                    "or WILL_EXECUTION_BACKEND, or provide it somehow (pip install, etc)."
+                ) % settings.EXECUTION_BACKEND
+                puts(colored.red("✗ %s" % settings.EXECUTION_BACKEND))
+                puts()
+                puts(error_message)
+                puts()
+                puts(traceback.format_exc(e))
+                missing_setting_error_messages.append(error_message)
+                missing_settings = True
+
+        if not self.execution_backend:
+            puts("")
+            error(
+                "Unable to find a valid execution backend - will has no way to make decisions!"
+                "\n       Quitting now, please look at the above error!\n"
+            )
+            sys.exit(1)
+
 
     def verify_plugin_settings(self):
         puts("Verifying settings requested by plugins...")
@@ -402,26 +582,93 @@ To set your %(name)s:
                 pass 
 
     def bootstrap_message_handler(self):
+        self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)
+        self.generation_timeout = getattr(settings, "GENERATION_TIMEOUT_MS", 2000)
+        self.message_handler_threads = []
+
         while True:
             try:
                 message = self.queues.io._incoming.get(timeout=0.1)
-                # Send to analyze
-                print "Ready for analyze"
-                print message
+                t = Process(target=self.handle_message, args=(message,))
+                t.start()
+                self.message_handler_threads.append(t)
+            except Empty:
+                pass
 
-                # Analysis (Understand, add metadata)
-                # Now: Run each analyze syncrhonously, add info to message.
-                # Later: Fire up analyze threads for each, with queues for output
+    def handle_message(self, message):
 
-                # Generate (make a list of possible responses)
+        # Send to analyze
+        print "Ready for analyze"
+        print message
 
-                # Execute (choose from the possible responses based on the highest score.)
-                # Possibly do some analysis to post-check and re-decide an outcome.
-                # Take an action.
+        # Analysis (Understand, add metadata)
+        # Now: Run each analyze syncrhonously, add info to message.
+        # Later: Fire up analyze threads for each, with queues for output
+        message.analysis = Bunch()
 
-            except:
-                # import traceback; traceback.print_exc();
-                pass 
+        num_queues = len(self.queues.analysis.input)
+        queues_heard_from = 0
+        timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000)
+        for name, q in self.queues.analysis.input.items():
+            q.put(message)
+
+        # Grab results from all the queues, give up on timeout after
+        while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
+            for name, q in self.queues.analysis.output.items():
+                try:
+                    context = q.get(timeout=0.1)
+                    # TODO: Last one wins right now - this should not
+                    # allow conflicts.
+                    print name
+                    print context
+                    message.analysis.update(context)
+
+                    queues_heard_from += 1
+                except Empty:
+                    pass
+        if datetime.datetime.now() > timeout_end:
+            print "timed out"
+
+        print "analysis done"
+        print message.analysis
+
+        # Generate (make a list of possible responses)
+        message.generation_options = []
+
+        num_queues = len(self.queues.generation.input)
+        queues_heard_from = 0
+        timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.generation_timeout/1000)
+        for name, q in self.queues.generation.input.items():
+            q.put(message)
+
+        # Grab results from all the queues, give up on timeout after
+        while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
+            for name, q in self.queues.generation.output.items():
+                try:
+                    options = q.get(timeout=0.1)
+                    # TODO: Last one wins right now - this should not
+                    # allow conflicts.
+                    print name
+                    print options
+                    for o in options:
+                        message.generation_options.append(o)
+
+                    queues_heard_from += 1
+                except Empty:
+                    pass
+        if datetime.datetime.now() > timeout_end:
+            print "timed out"
+
+        print "generation done."
+        print message
+        print message.__dict__
+
+        print "ready for execution"
+        # Execute (choose from the possible responses based on the highest score.)
+        # Possibly do some analysis to post-check and re-decide an outcome.
+        # Take an action.
+        self.execution_backend.execute(message)
+
 
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")
@@ -524,6 +771,74 @@ To set your %(name)s:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.io_backends.append(b)
+
+    def bootstrap_analysis(self):
+
+        self.analysis_backends = []
+        self.analysis_threads = []
+        self.queues.analysis.input = {}
+        self.queues.analysis.output = {}
+
+        for b in settings.ANALYZE_BACKENDS:
+            module = import_module(b)
+            for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                try:
+                    if hasattr(cls, "is_will_analysisbackend") and cls.is_will_analysisbackend and class_name != "AnalysisBackend":
+                        c = cls()
+                        my_analysis_input_queue = Queue()
+                        my_analysis_output_queue = Queue()
+                        self.queues.analysis.input[b] = my_analysis_input_queue
+                        self.queues.analysis.output[b] = my_analysis_output_queue
+                        thread = Process(
+                            target=c.start,
+                            args=(
+                                b,
+                                self.queues.analysis.input[b],
+                                self.queues.analysis.output[b],
+                            )
+                        )
+                        thread.start()
+                        self.analysis_threads.append(thread)
+                        show_valid("%s Backend started." % cls.__name__)
+                except Exception, e:
+                    self.startup_error("Error bootstrapping %s io" % b, e)
+
+            self.analysis_backends.append(b)
+        pass
+
+    def bootstrap_generation(self):
+        self.generation_backends = []
+        self.generation_threads = []
+        self.queues.generation.input = {}
+        self.queues.generation.output = {}
+
+        for b in settings.GENERATION_BACKENDS:
+            module = import_module(b)
+            for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                try:
+                    if hasattr(cls, "is_will_generationbackend") and cls.is_will_generationbackend and class_name != "GenerationBackend":
+                        c = cls()
+                        print b
+                        my_generation_input_queue = Queue()
+                        my_generation_output_queue = Queue()
+                        self.queues.generation.input[b] = my_generation_input_queue
+                        self.queues.generation.output[b] = my_generation_output_queue
+                        thread = Process(
+                            target=c.start,
+                            args=(
+                                b,
+                                self.queues.generation.input[b],
+                                self.queues.generation.output[b],
+                            )
+                        )
+                        thread.start()
+                        self.generation_threads.append(thread)
+                        show_valid("%s Backend started." % cls.__name__)
+                except Exception, e:
+                    self.startup_error("Error bootstrapping %s io" % b, e)
+
+            self.generation_backends.append(b)
+        pass
 
     def bootstrap_shell(self):
         bootstrapped = False

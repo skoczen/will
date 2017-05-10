@@ -93,6 +93,7 @@ IO_BACKENDS = [
 # Backends to analyze messages and generate useful metadata
 ANALYZE_BACKENDS = [
     "will.backends.analysis.nothing",
+    "will.backends.analysis.history",
 ]
 
 # Backends to generate possible actions, and metadata about them.
@@ -111,6 +112,12 @@ EXECUTION_BACKEND = "will.backends.execution.all"
 
 # The list of rooms will should join.  Default is all rooms.
 # ROOMS = ['Testing, Will Kahuna',]
+
+# The maximum number of milliseconds to wait for an analysis backend to finish
+# ANALYSIS_TIMEOUT_MS = 2000
+
+# The maximum number of milliseconds to wait for a generation backend to finish
+# GENERATION_TIMEOUT_MS = 2000
 
 
 # The room will will talk to if the trigger is a webhook and he isn't told a specific room.

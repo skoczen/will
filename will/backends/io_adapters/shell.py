@@ -132,6 +132,8 @@ class ShellBackend(IOBackend):
                     is_direct=True,
                     backend=self.name
                 )
+                print m
+                print self.incoming_queue
                 self.incoming_queue.put(m)
                 # IO Adapters are responsible for taking the input, 
                 # adding their own metadata and standard info
