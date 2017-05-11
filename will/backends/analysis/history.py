@@ -15,12 +15,10 @@ class HistoryAnalysis(AnalysisBackend, StorageMixin):
         max_history_context = getattr(settings, "HISTORY_CONTEXT_LENGTH", 20)
 
         context = {
-            "history": history
+            "history": history[:max_history_context]
         }
 
         history.append(message)
         self.save("message_history", history)
 
-        return {
-            "history": history[:max_history_context]
-        }
+        return context

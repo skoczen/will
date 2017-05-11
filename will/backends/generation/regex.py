@@ -8,7 +8,7 @@ class RegexBackend(GenerationBackend):
 
     def do_generate(self, message):
         # print "regex generate"
-        exclude_list = ["fn",]
+        exclude_list = ["fn", ]
         matches = []
 
         for name, l in self.bot.message_listeners.items():

@@ -80,9 +80,8 @@ PLUGIN_BLACKLIST = [
 # Set > 1024 to run without elevated permission.
 # HTTPSERVER_PORT = "9000"
 
-# CHAT_BACKENDS = ["hipchat", "shell"]  # Eventually, multiple. Right now, one.
+# Deprectated, about to die.
 CHAT_BACKENDS = ["shell", ]
-# CHAT_BACKENDS = ["hipchat", ]
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
@@ -102,7 +101,7 @@ GENERATION_BACKENDS = [
 ]
 
 # The "decision making" backends that look among the generated choices,
-# and decide which to follow. Backends are executed in order, and any 
+# and decide which to follow. Backends are executed in order, and any
 # backend can stop further evaluation.
 EXECUTION_BACKENDS = [
     # "will.backends.execution.highest",

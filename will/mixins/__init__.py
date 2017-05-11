@@ -7,4 +7,3 @@ from plugins_library import PluginModulesLibraryMixin
 from schedule import ScheduleMixin
 from settings import SettingsMixin
 from storage import StorageMixin
-

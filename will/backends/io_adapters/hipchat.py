@@ -125,3 +125,31 @@ class HipChatBackend(IOBackend):
         self.name = name
         self.incoming_queue = incoming_queue
         self.output_queue = output_queue
+
+        # Sort this out.
+        # bootstrapped = False
+        # try:
+        #     self.xmpp_thread = Process(target=self.bootstrap_xmpp)
+        #     self.output_backend = HipChatBackend()
+        #     self.start_xmpp_client()
+        #     sorted_help = {}
+        #     # self.send_direct_message = self.output_backend.send_direct_message
+        #     # self.send_direct_message_reply = self.output_backend.send_direct_message_reply
+        #     # self.send_room_message = self.output_backend.send_room_message
+        #     # self.set_room_topic = self.output_backend.set_room_topic
+        #     # self.get_user = self.output_backend.get_hipchat_user
+        #     # self.get_user_list = self.output_backend.full_hipchat_user_list
+
+        #     for k, v in self.help_modules.items():
+        #         sorted_help[k] = sorted(v)
+
+        #     self.save("help_modules", sorted_help)
+        #     self.save("all_listener_regexes", self.all_listener_regexes)
+        #     self.connect()
+        #     bootstrapped = True
+        # except Exception, e:
+        #     self.startup_error("Error bootstrapping xmpp", e)
+        # if bootstrapped:
+        #     show_valid("Chat client started.")
+        #     show_valid("Will is running.")
+        #     self.process(block=True)

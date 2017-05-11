@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import datetime
 import imp
 import inspect
@@ -202,15 +203,18 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                     t.terminate()
 
                 print '\n\nReceived keyboard interrupt, quitting threads.',
-                while (scheduler_thread.is_alive() or
-                       bottle_thread.is_alive() or
-                       incoming_message_thread.is_alive() or
-                       self.stdin_listener_thread.is_alive() or
-                       any([t.is_alive() for t in self.stdin_io_threads]) or
-                       any([t.is_alive() for t in self.analysis_threads]) or
-                       any([t.is_alive() for t in self.generation_threads]) or
-                       any([t.is_alive() for t in self.message_handler_threads]) or
-                       ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())):
+                while (
+                    scheduler_thread.is_alive() or
+                    bottle_thread.is_alive() or
+                    incoming_message_thread.is_alive() or
+                    self.stdin_listener_thread.is_alive() or
+                    any([t.is_alive() for t in self.stdin_io_threads]) or
+                    any([t.is_alive() for t in self.analysis_threads]) or
+                    any([t.is_alive() for t in self.generation_threads]) or
+                    any([t.is_alive() for t in self.message_handler_threads])
+                    # or
+                    # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
+                ):
                         sys.stdout.write(".")
                         sys.stdout.flush()
                         time.sleep(0.5)
@@ -511,13 +515,18 @@ To set your %(name)s:
         puts()
 
     def bootstrap_execution(self):
+        missing_setting_error_messages = []
         self.execution_backends = []
         execution_backends = getattr(settings, "EXECUTION_BACKENDS", ["will.backends.execution.all", ])
         for b in execution_backends:
             module = import_module(b)
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
-                    if hasattr(cls, "is_will_execution_backend") and cls.is_will_execution_backend and class_name != "ExecutionBackend":
+                    if (
+                        hasattr(cls, "is_will_execution_backend") and
+                        cls.is_will_execution_backend and
+                        class_name != "ExecutionBackend"
+                    ):
                         c = cls(bot=self)
                         self.execution_backends.append(c)
                 except ImportError, e:
@@ -531,7 +540,6 @@ To set your %(name)s:
                     puts()
                     puts(traceback.format_exc(e))
                     missing_setting_error_messages.append(error_message)
-                    missing_settings = True
 
         if len(self.execution_backends) == 0:
             puts("")
@@ -540,7 +548,6 @@ To set your %(name)s:
                 "\n       Quitting now, please look at the above error!\n"
             )
             sys.exit(1)
-
 
     def verify_plugin_settings(self):
         puts("Verifying settings requested by plugins...")
@@ -668,7 +675,6 @@ To set your %(name)s:
             except:
                 break
 
-
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")
         try:
@@ -759,12 +765,27 @@ To set your %(name)s:
                         if hasattr(c, "use_stdin") and c.use_stdin:
                             my_stdin_queue = Queue()
                             self.queues.io.stdin_backend_queues[b] = my_stdin_queue
-                            thread = Process(target=c.start, args=(b, self.queues.io._incoming, self.queues.io.output[b], self.queues.io.stdin_backend_queues[b],))
+                            thread = Process(
+                                target=c.start,
+                                args=(
+                                    b,
+                                    self.queues.io._incoming,
+                                    self.queues.io.output[b],
+                                    self.queues.io.stdin_backend_queues[b],
+                                )
+                            )
                             thread.start()
                             self.has_stdin_io_backend = True
                             self.stdin_io_threads.append(thread)
                         else:
-                            thread = Process(target=c.start, args=(b, self.queues.io._incoming, self.queues.io.output[b]))
+                            thread = Process(
+                                target=c.start,
+                                args=(
+                                    b,
+                                    self.queues.io._incoming,
+                                    self.queues.io.output[b]
+                                )
+                            )
                             thread.start()
 
                         self.io_threads.append(thread)
@@ -785,7 +806,11 @@ To set your %(name)s:
             module = import_module(b)
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
-                    if hasattr(cls, "is_will_analysisbackend") and cls.is_will_analysisbackend and class_name != "AnalysisBackend":
+                    if (
+                        hasattr(cls, "is_will_analysisbackend") and
+                        cls.is_will_analysisbackend and
+                        class_name != "AnalysisBackend"
+                    ):
                         c = cls()
                         my_analysis_input_queue = Queue()
                         my_analysis_output_queue = Queue()
@@ -819,7 +844,11 @@ To set your %(name)s:
             module = import_module(b)
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
-                    if hasattr(cls, "is_will_generationbackend") and cls.is_will_generationbackend and class_name != "GenerationBackend":
+                    if (
+                        hasattr(cls, "is_will_generationbackend") and
+                        cls.is_will_generationbackend and
+                        class_name != "GenerationBackend"
+                    ):
                         c = cls()
                         my_generation_input_queue = Queue()
                         my_generation_output_queue = Queue()
@@ -842,55 +871,6 @@ To set your %(name)s:
 
             self.generation_backends.append(b)
         pass
-
-    def bootstrap_shell(self):
-        bootstrapped = False
-        try:
-            self.output_backend = ShellBackend()
-            self.output_backend.init_shell_client(self)
-            sorted_help = {}
-            for k, v in self.help_modules.items():
-                sorted_help[k] = sorted(v)
-
-            self.save("help_modules", sorted_help)
-            self.save("all_listener_regexes", self.all_listener_regexes)
-
-            show_valid("Chat client started.")
-            show_valid("Will is running.")
-            self.output_backend.start_shell()
-            bootstrapped = True
-        except Exception, e:
-            self.startup_error("Error bootstrapping shell", e)
-        if bootstrapped:
-            self.process(block=True)
-
-    def bootstrap_xmpp(self):
-        bootstrapped = False
-        try:
-            self.xmpp_thread = Process(target=self.bootstrap_xmpp)
-            self.output_backend = HipChatBackend()
-            self.start_xmpp_client()
-            sorted_help = {}
-            # self.send_direct_message = self.output_backend.send_direct_message
-            # self.send_direct_message_reply = self.output_backend.send_direct_message_reply
-            # self.send_room_message = self.output_backend.send_room_message
-            # self.set_room_topic = self.output_backend.set_room_topic
-            # self.get_user = self.output_backend.get_hipchat_user
-            # self.get_user_list = self.output_backend.full_hipchat_user_list
-
-            for k, v in self.help_modules.items():
-                sorted_help[k] = sorted(v)
-
-            self.save("help_modules", sorted_help)
-            self.save("all_listener_regexes", self.all_listener_regexes)
-            self.connect()
-            bootstrapped = True
-        except Exception, e:
-            self.startup_error("Error bootstrapping xmpp", e)
-        if bootstrapped:
-            show_valid("Chat client started.")
-            show_valid("Will is running.")
-            self.process(block=True)
 
     def bootstrap_plugins(self):
         puts("Bootstrapping plugins...")
