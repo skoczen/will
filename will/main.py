@@ -579,10 +579,14 @@ To set your %(name)s:
             try:
                 line = self.queues.io.stdin_input.get(timeout=0.1)
                 for name, q in self.queues.io.stdin_backend_queues.items():
-                    q.put(line)
+                    q.put({
+                        "type": "message",
+                        "source": "stdin",
+                        "content": line,
+                    })
             except:
                 # import traceback; traceback.print_exc();
-                pass 
+                pass
 
     def bootstrap_message_handler(self):
         self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)
@@ -652,9 +656,9 @@ To set your %(name)s:
         if datetime.datetime.now() > timeout_end:
             print "timed out"
 
-        print "generation done."
+        # print "generation done."
 
-        print "ready for execution"
+        # print "ready for execution"
         # Execute (choose from the possible responses based on the highest score.)
         # Possibly do some analysis to post-check and re-decide an outcome.
         # Take an action.

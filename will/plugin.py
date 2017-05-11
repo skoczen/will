@@ -44,6 +44,25 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
 
+        if hasattr(message, "backend"):
+            # print "message.backend"
+            # print message.backend
+            # print "self.bot"
+            # print self.bot.queues.io.output
+            # TODO HERE: Change io.input and io.output queues to have a type?
+            # Events, content/type/timestamp
+            # {
+            #   message: message,
+            #   type: "reply/say/topic_change/emoji/etc"
+            # }
+            self.bot.queues.io.output[message.backend].put({
+                "type": "say",
+                "content": content,
+                "message": message,
+                "kwargs": kwargs,
+            })
+        return
+
         content = self._prepared_content(content, message, kwargs)
         rooms = []
         if room is not None:
@@ -68,12 +87,13 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # Be smart about backend.
 
         if hasattr(message, "backend"):
-            print "message.backend"
-            print message.backend
-            print "self.bot"
-            print self.bot.queues.io.output
+            # print "message.backend"
+            # print message.backend
+            # print "self.bot"
+            # print self.bot.queues.io.output
             # TODO HERE: connect to bot / main thread to push out.
             self.bot.queues.io.output[message.backend].put({
+                "type": "reply",
                 "content": content,
                 "message": message,
                 "kwargs": kwargs,

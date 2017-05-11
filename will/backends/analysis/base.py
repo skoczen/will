@@ -10,7 +10,7 @@ class AnalysisBackend(object):
         while True:
             try:
                 message = self.__input_queue.get(timeout=0.1)
-                print "AnalysisBackend heard: %s" % message
+                # print "AnalysisBackend heard: %s" % message
                 self.__analyze(message)
             except Empty:
                 pass

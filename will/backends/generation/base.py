@@ -10,7 +10,7 @@ class GenerationBackend(object):
         while True:
             try:
                 message = self.__input_queue.get(timeout=0.1)
-                print "GenerationBackend heard: %s" % message
+                # print "GenerationBackend heard: %s" % message
                 self.__generate(message)
             except Empty:
                 pass

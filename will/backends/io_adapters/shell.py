@@ -120,21 +120,22 @@ class ShellBackend(IOBackend):
         # return self.shell_cmd
         pass
 
-    def handle_stdin_loop(self):
+    def event_handler_loop(self):
         while True:
             try:
-                line = self.stdin_queue.get(timeout=0.4)
-                print "shell heard: %s" % line
+                event = self.stdin_queue.get(timeout=0.4)
                 # Pass this along to whereever it should go.
                 # will.queues?
-                m = Message(
-                    body=line,
-                    is_direct=True,
-                    backend=self.name
-                )
-                print m
-                print self.input_queue
-                self.input_queue.put(m)
+                if event["type"] == "message":
+                    m = Message(
+                        body=event["content"],
+                        source=event["source"],
+                        type=event["type"],
+                        is_direct=True,
+                        backend=self.name
+                    )
+
+                    self.input_queue.put(m)
                 # IO Adapters are responsible for taking the input, 
                 # adding their own metadata and standard info
                 # and providing a return method
@@ -152,29 +153,15 @@ class ShellBackend(IOBackend):
                 import traceback; traceback.print_exc();
                 pass
             try:
-                output_dict = self.output_queue.get(timeout=0.1)
-                print "shell ready to output: %s" % output_dict
+                output_event = self.output_queue.get(timeout=0.1)
                 # Pass this along to whereever it should go.
                 # will.queues?
-                print output_dict["content"]
+                if output_event["type"] in ["say", "reply"]:
+                    print "Will: %s " % output_event["content"]
 
-            except Empty:
-                pass
-            except:
-                import traceback; traceback.print_exc();
-                pass
-
-
-            # print "got stdin: %s" % linein
-
-    def handle_output_loop(self):
-        while True:
-            try:
-                output_dict = self.output_queue.get(timeout=0.1)
-                print "shell ready to output: %s" % output_dict
-                # Pass this along to whereever it should go.
-                # will.queues?
-                print output_dict["message"]
+                # if output_event["type"] == "no_response":
+                sys.stdout.write("You:  ")
+                sys.stdout.flush()
 
             except Empty:
                 pass
@@ -190,7 +177,8 @@ class ShellBackend(IOBackend):
         self.input_queue = input_queue
         self.output_queue = output_queue
         self.init_shell_client()
-        self.handle_stdin_loop()
-        self.handle_output_loop()
+        self.event_handler_loop()
 
         # self.shell_cmd.cmdloop("\n\n")
+
+    
