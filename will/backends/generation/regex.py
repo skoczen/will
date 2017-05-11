@@ -12,7 +12,7 @@ class RegexBackend(GenerationBackend):
         matches = []
 
         for name, l in self.bot.message_listeners.items():
-            search_matches = l["regex"].search(message.body)
+            search_matches = l["regex"].search(message.content)
             if (
                     search_matches  # The search regex matches and
                     # # It's not from me, or this search includes me, and

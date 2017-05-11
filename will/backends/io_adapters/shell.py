@@ -1,4 +1,5 @@
 import cmd
+import random
 import sys
 import logging
 from multiprocessing.queues import Empty
@@ -10,6 +11,15 @@ from will.utils import Bunch
 from .base import IOBackend, Message
 
 from will import settings
+
+UNSURE_REPLIES = [
+    "Hmm.  I'm not sure what to say.",
+    "I didn't understand that.",
+    "I heard you, but I'm not sure what to do",
+    "Darn.  I'm not sure what that means.  Maybe you can teach me?",
+    "I really wish I knew how to do that.",
+    "Hm. I understood you, but I'm not sure what to do.",
+]
 
 
 class ShellBackend(IOBackend):
@@ -45,13 +55,14 @@ class ShellBackend(IOBackend):
                 # Input queue
                 event = self.stdin_queue.get(timeout=0.4)
 
-                if event["type"] == "message":
+                if event.type == "message":
                     m = Message(
-                        body=event["content"],
-                        source=event["source"],
-                        type=event["type"],
+                        content=event.content,
+                        source=event.source,
+                        type=event.type,
                         is_direct=True,
-                        backend=self.name
+                        backend=self.name,
+                        sender=Bunch(nick="You"),
                     )
 
                     self.input_queue.put(m)
@@ -69,8 +80,12 @@ class ShellBackend(IOBackend):
                 output_event = self.output_queue.get(timeout=0.1)
 
                 # Print any replies.
-                if output_event["type"] in ["say", "reply"]:
-                    self.send_direct_message(output_event["content"])
+                if output_event.type in ["say", "reply"]:
+                    self.send_direct_message(output_event.content)
+
+                elif output_event.type == "no_response":
+                    if len(output_event.source_message.content) > 0:
+                        self.send_direct_message(random.choice(UNSURE_REPLIES))
 
                 # Regardless of whether or not we had something to say,
                 # give the user a new prompt.

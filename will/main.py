@@ -25,6 +25,7 @@ from listener import ListenerMixin
 from mixins import ScheduleMixin, StorageMixin, ErrorMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin
 from backends import analysis, execution, generation, io_adapters
+from backends.io_adapters.base import Event
 from scheduler import Scheduler
 import settings
 from utils import show_valid, error, warn, print_head, Bunch
@@ -586,11 +587,11 @@ To set your %(name)s:
             try:
                 line = self.queues.io.stdin_input.get(timeout=0.1)
                 for name, q in self.queues.io.stdin_backend_queues.items():
-                    q.put({
-                        "type": "message",
-                        "source": "stdin",
-                        "content": line,
-                    })
+                    q.put(Event(
+                        type="message",
+                        source="stdin",
+                        content=line,
+                    ))
             except:
                 # import traceback; traceback.print_exc();
                 pass
@@ -615,65 +616,73 @@ To set your %(name)s:
         # Analysis (Understand, add metadata)
         # Now: Run each analyze syncrhonously, add info to message.
         # Later: Fire up analyze threads for each, with queues for output
-        message.analysis = Bunch()
+        try:
+            message.analysis = Bunch()
 
-        num_queues = len(self.queues.analysis.input)
-        queues_heard_from = 0
-        timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000)
-        for name, q in self.queues.analysis.input.items():
-            q.put(message)
+            num_queues = len(self.queues.analysis.input)
+            queues_heard_from = 0
+            timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000)
+            for name, q in self.queues.analysis.input.items():
+                q.put(message)
 
-        # Grab results from all the queues, give up on timeout after
-        while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
-            for name, q in self.queues.analysis.output.items():
+            # Grab results from all the queues, give up on timeout after
+            while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
+                for name, q in self.queues.analysis.output.items():
+                    try:
+                        context = q.get(timeout=0.1)
+                        # TODO: Last one wins right now - this should not
+                        # allow conflicts.
+                        message.analysis.update(context)
+
+                        queues_heard_from += 1
+                    except Empty:
+                        pass
+            if datetime.datetime.now() > timeout_end:
+                print "timed out"
+
+            # Generate (make a list of possible responses)
+            message.generation_options = []
+
+            num_queues = len(self.queues.generation.input)
+            queues_heard_from = 0
+            timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.generation_timeout/1000)
+            for name, q in self.queues.generation.input.items():
+                q.put(message)
+
+            # Grab results from all the queues, give up on timeout after
+            while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
+                for name, q in self.queues.generation.output.items():
+                    try:
+                        options = q.get(timeout=0.1)
+                        # TODO: Last one wins right now - this should not
+                        # allow conflicts.
+                        for o in options:
+                            message.generation_options.append(o)
+
+                        queues_heard_from += 1
+                    except Empty:
+                        pass
+            if datetime.datetime.now() > timeout_end:
+                print "timed out"
+
+            # print "generation done."
+
+            # print "ready for execution"
+            # Execute (choose from the possible responses based on the highest score.)
+            # Possibly do some analysis to post-check and re-decide an outcome.
+            # Take an action.
+            for b in self.execution_backends:
                 try:
-                    context = q.get(timeout=0.1)
-                    # TODO: Last one wins right now - this should not
-                    # allow conflicts.
-                    message.analysis.update(context)
-
-                    queues_heard_from += 1
-                except Empty:
-                    pass
-        if datetime.datetime.now() > timeout_end:
-            print "timed out"
-
-        # Generate (make a list of possible responses)
-        message.generation_options = []
-
-        num_queues = len(self.queues.generation.input)
-        queues_heard_from = 0
-        timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.generation_timeout/1000)
-        for name, q in self.queues.generation.input.items():
-            q.put(message)
-
-        # Grab results from all the queues, give up on timeout after
-        while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
-            for name, q in self.queues.generation.output.items():
-                try:
-                    options = q.get(timeout=0.1)
-                    # TODO: Last one wins right now - this should not
-                    # allow conflicts.
-                    for o in options:
-                        message.generation_options.append(o)
-
-                    queues_heard_from += 1
-                except Empty:
-                    pass
-        if datetime.datetime.now() > timeout_end:
-            print "timed out"
-
-        # print "generation done."
-
-        # print "ready for execution"
-        # Execute (choose from the possible responses based on the highest score.)
-        # Possibly do some analysis to post-check and re-decide an outcome.
-        # Take an action.
-        for b in self.execution_backends:
-            try:
-                b.execute(message)
-            except:
-                break
+                    b.execute(message)
+                except:
+                    break
+        except:
+            logging.critical(
+                "Error running %s.  \n\n%s\nContinuing...\n" % (
+                    message,
+                    traceback.format_exc()
+                )
+            )
 
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")

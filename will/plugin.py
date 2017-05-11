@@ -6,6 +6,7 @@ from bottle import request
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
     EmailMixin
 from utils import html_to_text
+from will.backends.io_adapters.base import Event, Message
 
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin,
@@ -55,12 +56,16 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             #   message: message,
             #   type: "reply/say/topic_change/emoji/etc"
             # }
-            self.bot.queues.io.output[message.backend].put({
-                "type": "say",
-                "content": content,
-                "message": message,
-                "kwargs": kwargs,
-            })
+            self.bot.queues.io.output[message.backend].put(Event(
+                type="say",
+                content=content,
+                source_message=message,
+                kwargs=kwargs,
+            ))
+        else:
+            # TODO: Default backend?
+            # Somethin?
+            pass
         return
 
         content = self._prepared_content(content, message, kwargs)
@@ -92,12 +97,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             # print "self.bot"
             # print self.bot.queues.io.output
             # TODO HERE: connect to bot / main thread to push out.
-            self.bot.queues.io.output[message.backend].put({
-                "type": "reply",
-                "content": content,
-                "message": message,
-                "kwargs": kwargs,
-            })
+            self.bot.queues.io.output[message.backend].put(Event(
+                type="reply",
+                content=content,
+                source_message=message,
+                kwargs=kwargs,
+            ))
 
         # # Valid kwargs:
         # # color: yellow, red, green, purple, gray, random.  Default is green.
