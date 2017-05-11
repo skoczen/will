@@ -16,7 +16,7 @@ class ShellBackend(IOBackend):
     use_stdin = True
     friendly_name = "Interactive Shell"
 
-    def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
+    def send_direct_message(self, message_body, **kwargs):
         print("Will: %s" % message_body)
         # sys.stdout.flush()
 
@@ -61,6 +61,8 @@ class ShellBackend(IOBackend):
             except Empty:
                 # No input
                 pass
+            except (KeyboardInterrupt, SystemExit):
+                pass
 
             # Output Queue
             try:
@@ -68,7 +70,7 @@ class ShellBackend(IOBackend):
 
                 # Print any replies.
                 if output_event["type"] in ["say", "reply"]:
-                    print "Will: %s " % output_event["content"]
+                    self.send_direct_message(output_event["content"])
 
                 # Regardless of whether or not we had something to say,
                 # give the user a new prompt.
@@ -76,6 +78,8 @@ class ShellBackend(IOBackend):
                 sys.stdout.flush()
 
             except Empty:
+                pass
+            except (KeyboardInterrupt, SystemExit):
                 pass
 
     def start(self, name, input_queue, output_queue, stdin_queue=None):

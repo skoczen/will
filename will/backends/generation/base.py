@@ -14,6 +14,8 @@ class GenerationBackend(object):
                 self.__generate(message)
             except Empty:
                 pass
+            except (KeyboardInterrupt, SystemExit):
+                pass
 
     def __generate(self, message):
         ret = self.do_generate(message)

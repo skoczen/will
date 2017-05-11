@@ -14,6 +14,8 @@ class AnalysisBackend(object):
                 self.__analyze(message)
             except Empty:
                 pass
+            except (KeyboardInterrupt, SystemExit):
+                pass
 
     def __analyze(self, message):
         ret = self.do_analyze(message)
