@@ -31,7 +31,7 @@ class ImagesPlugin(WillPlugin):
         r.raise_for_status()
         try:
             response = r.json()
-            results = [result["link"] for result in response["items"] if "image" in r.json()]
+            results = [result["link"] for result in response["items"] if "items" in r.json()]
         except TypeError:
             results = []
         if results:
