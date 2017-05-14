@@ -198,7 +198,7 @@ To get image me running, you'll need to have a Google API key, and custom search
 ```python
 # config.py
 GOOGLE_API_KEY = "FILL THIS IN"
-GOOGLE_CUSTOM_SEARCH_KEY = "FILL THIS IN"
+GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"
 ```
 
 #### Remind me
