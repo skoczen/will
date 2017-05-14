@@ -11,7 +11,7 @@ class ImagesPlugin(WillPlugin):
     def image_me(self, message, search_query):
         """image me ___ : Search google images for ___, and post a random one."""
 
-        if not (getattr(settings, "GOOGLE_API_KEY", False) and getattr("GOOGLE_CUSTOM_SEARCH_KEY", False)):
+        if not (getattr(settings, "GOOGLE_API_KEY", False) and getattr(settings, "GOOGLE_CUSTOM_SEARCH_KEY", False)):
             self.say(
                 "Sorry, I'm missing my GOOGLE_API_KEY and GOOGLE_CUSTOM_SEARCH_KEY."
                 " Can someone give them to me?", color="red"
