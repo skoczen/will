@@ -193,13 +193,20 @@ Sometimes, a picture is worth a thousand words.
 
 ![Image me a crazy squirrel](../img/image_me.gif)
 
-To get image me running, you'll need to have a Google API key, and custom search key, set in `config.py`.
+To configure `image me`, you'll need to set the following two variables in `config.py` or [in your environment with the appropriate `WILL_` prefix](http://skoczen.github.io/will/config/). Here are some instructions on where to obtain both.
 
-```python
-# config.py
-GOOGLE_API_KEY = "FILL THIS IN"
-GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"
-```
+* `GOOGLE_API_KEY`
+  * Go to the [Google Developers Console](https://console.developers.google.com).
+  * From the menu in the top left, choose `API Manager -> Credentials`.
+  * Click `Create credentials` from the drop down, then `API Key`, that's the key you need here.
+  * Optionally, give the key a suitable human-readable name so it looks nice in the list e.g. `will-api`.
+* `GOOGLE_CUSTOM_SEARCH_ENGINE_ID`
+  * [Setup a custom search engine](https://support.google.com/customsearch/answer/2630963?hl=en) (CSE) if you don't already have one.
+  * You'll need to provide a site for the CSE to search - just input anything, so the wizard can create the CSE.
+  * Type something useful like `Will` in the name field and create the CSE.
+  * Edit the settings for the CSE you just created, and in the `Sites to search` section, change the drop-down to `Search the entire web but emphasize included sites`.
+  * Delete the "anything" site you added two steps ago, to clean it up.
+  * In the `Details` section, click the `Search engine ID` button, and copy the ID which you need here.
 
 #### Remind me
 
