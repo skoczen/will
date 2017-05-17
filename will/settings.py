@@ -4,7 +4,7 @@ from clint.textui import puts, indent
 from urlparse import urlparse
 
 
-def import_settings(quiet=True):
+def import_settings(quiet=True, config_source=None):
     """This method takes care of importing settings from the environment, and config.py file.
 
     Order of operations:
@@ -37,10 +37,16 @@ def import_settings(quiet=True):
     # Import from config
     if not quiet:
         puts("Importing config.py... ")
+
     with indent(2):
         try:
             had_warning = False
-            import config
+            if not config_source:
+                import config
+            else:
+                import imp
+                config = imp.load_source('config', config_source)
+
             for k, v in config.__dict__.items():
                 # Ignore private variables
                 if "__" not in k:
