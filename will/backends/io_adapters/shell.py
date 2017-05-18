@@ -25,6 +25,7 @@ UNSURE_REPLIES = [
 class ShellBackend(IOBackend):
     use_stdin = True
     friendly_name = "Interactive Shell"
+    internal_name = "will.backends.io_adapters.shell"
 
     def send_direct_message(self, message_body, **kwargs):
         print("Will: %s" % message_body)

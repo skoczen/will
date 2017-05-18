@@ -114,7 +114,7 @@ EXECUTION_BACKENDS = [
 # ------------------------------------------------------------------------------------
 
 # The list of rooms will should join.  Default is all rooms.
-# ROOMS = ['Testing, Will Kahuna',]
+ROOMS = ['Will Testing', ]
 
 # The maximum number of milliseconds to wait for an analysis backend to finish
 # ANALYSIS_TIMEOUT_MS = 2000

@@ -1,19 +1,28 @@
 import logging
+import pickle
 import re
+import sys
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
+from multiprocessing import Process, Queue
 
-import settings
+from will import settings
 from will.utils import Bunch
-from .roster import RosterMixin
-from .room import RoomMixin
+from will.mixins import RosterMixin, RoomMixin, StorageMixin
+from will.backends.io_adapters.base import Event, Message
 
 
-class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin):
+class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
 
-    def start_xmpp_client(self):
+    def start_xmpp_client(self, input_queue=None, output_queue=None):
         logger = logging.getLogger(__name__)
+        if not input_queue or not output_queue:
+            logger.error("Missing required input and output queues")
+
+        self.input_queue = input_queue
+        self.output_queue = output_queue
+
         ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
 
         if settings.USE_PROXY:
@@ -127,9 +136,54 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin):
         return msg["from"]
 
     def _handle_message_listeners(self, msg):
+        # print("_handle_message_listeners")
+        is_direct = False
+        body = msg["body"]
+        if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
+            body = body[len(self.handle) + 1:].strip()
+            msg["body"] = body
+            pass
+
+        # print 'msg["body"]'
+        # print msg["body"]
+        msg.room = self.get_room_from_message(msg)
+        msg.sender = self.get_user_from_message(msg)
+        # print msg
+
+        # print msg.xml.keys()
+        # print dir(msg.xml)
+        stripped_msg = Bunch()
+        for k, v in msg.__dict__.items():
+            try:
+                pickle.dumps(v)
+                stripped_msg[k] = v
+            except:
+                # print "failed to parse %s" % k
+                pass
+        for k in msg.xml.keys():
+            try:
+                # print k
+                # print msg.xml.get(k)
+                pickle.dumps(msg.xml.get(k))
+                stripped_msg[k] = msg.xml.get(k)
+            except:
+                # print "failed to parse %s" % k
+                pass
+        # print "stripped_msg"
+        # print stripped_msg
+        self.input_queue.put(Message(
+            backend="will.backends.io_adapters.hipchat",
+            is_direct=is_direct,
+            content=msg["body"],
+            hipchat_message=stripped_msg
+
+        ))
+        # print self.input_queue
+        return
+
         if (
             # I've been asked to listen to my own messages
-            self.some_listeners_include_me
+            self.bot.some_listeners_include_me
             # or we're in a 1 on 1 chat and I didn't send it
             or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)
             # we're in group chat and I didn't send it
