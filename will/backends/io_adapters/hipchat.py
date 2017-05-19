@@ -24,7 +24,7 @@ ALL_USERS_URL = ("https://%(server)s/v2/user?auth_token=%(token)s&start-index"
 UNSURE_REPLIES = [
     "Hmm.  I'm not sure what to say.",
     "I didn't understand that.",
-    "I heard you, but I'm not sure what to do",
+    "I heard you, but I'm not sure what to do.",
     "Darn.  I'm not sure what that means.  Maybe you can teach me?",
     "I really wish I knew how to do that.",
     "Hm. I understood you, but I'm not sure what to do.",
@@ -35,9 +35,12 @@ class HipChatBackend(IOBackend):
     friendly_name = "HipChat"
     internal_name = "will.backends.io_adapters.hipchat"
     use_stdin = False
+    stdin_processes = []
+    io_processes = ["start", "event_handler_loop"]
 
-    def send_direct_message(self, message_body, html=False, notify=False, **kwargs):
-        user_id = settings.USERNAME.split('@')[0].split('_')[1]
+    def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
+        # user_id = settings.USERNAME.split('@')[0].split('_')[1]
+
         if kwargs:
             logging.warn("Unknown keyword args for send_direct_message: %s" % kwargs)
 
@@ -58,13 +61,9 @@ class HipChatBackend(IOBackend):
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
         except:
+            import traceback; traceback.print_exc();
             logging.critical("Error in send_direct_message: \n%s" % traceback.format_exc())
 
-    def send_direct_message_reply(self, message, message_body):
-        try:
-            message.reply(message_body).send()
-        except:
-            logging.critical("Error in send_direct_message_reply: \n%s" % traceback.format_exc())
 
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
         if kwargs:
@@ -139,38 +138,49 @@ class HipChatBackend(IOBackend):
             self._full_hipchat_user_list = full_roster
         return self._full_hipchat_user_list
 
-    def _event_handler_loop(self):
+    def event_handler_loop(self, name, input_queue, output_queue):
+        self.name = name
+        self.input_queue = input_queue
+        self.output_queue = output_queue
+
         while True:
             # Output Queue
             try:
                 output_event = self.output_queue.get(timeout=0.1)
-                # print "output_event"
-                # print output_event.source_message.hipchat_message.__dict__
-                # print output_event.type
-                # print output_event
-                # Print any replies.
+                kwargs = {}
+                if hasattr(output_event, "kwargs"):
+                    kwargs.update(output_event.kwargs)
                 if output_event.type in ["say", "reply"]:
                     if output_event.source_message.hipchat_message.type == "groupchat":
                         self.send_room_message(
                             output_event.source_message.hipchat_message.room.room_id,
                             output_event.content,
-                            **output_event.kwargs
+                            **kwargs
                         )
                     else:
-                        self.send_direct_message(output_event.content, **output_event.kwargs)
+                        output_event.source_message
+                        user_id = output_event.source_message.hipchat_message.sender["hipchat_id"]
+                        self.send_direct_message(
+                            user_id,
+                            output_event.content,
+                            **kwargs
+                        )
 
-                elif output_event.type == "no_response":
-                    if len(output_event.source_message.content) > 0:
-                        self.send_direct_message(random.choice(UNSURE_REPLIES))
-
-                # Regardless of whether or not we had something to say,
-                # give the user a new prompt.
-                sys.stdout.write("You:  ")
-                sys.stdout.flush()
+                elif output_event.type == "no_response" and output_event.source_message.is_direct:
+                    if output_event.source_message.hipchat_message.type == "groupchat":
+                        self.send_room_message(
+                            output_event.source_message.hipchat_message.room.room_id,
+                            random.choice(UNSURE_REPLIES),
+                            **kwargs
+                        )
+                    else:
+                        self.send_direct_message(
+                            output_event.source_message.hipchat_message.sender["hipchat_id"],
+                            random.choice(UNSURE_REPLIES),
+                            **kwargs
+                        )
 
             except Empty:
-                pass
-            except (KeyboardInterrupt, SystemExit):
                 pass
 
     def start(self, name, input_queue, output_queue):
@@ -182,24 +192,14 @@ class HipChatBackend(IOBackend):
         # Sort this out.
         bootstrapped = False
         try:
-            # self.output_backend = HipChatBackend()
             self.client.start_xmpp_client(input_queue=self.input_queue, output_queue=output_queue)
-            sorted_help = {}
-
-            # for k, v in self.help_modules.items():
-            #     sorted_help[k] = sorted(v)
-
-            # self.save("help_modules", sorted_help)
-            # self.save("all_listener_regexes", self.all_listener_regexes)
             self.client.connect()
             bootstrapped = True
         except Exception, e:
-            import traceback; traceback.print_exc();
             self.startup_error("Error bootstrapping xmpp", e)
+
         if bootstrapped:
-            # show_valid("Chat client started.")
-            # show_valid("Will is running.")
             self.xmpp_thread = Process(target=self.client.process, kwargs={"block": True})
             self.xmpp_thread.start()
-            self._event_handler_loop = Process(target=self._event_handler_loop)
-            self._event_handler_loop.start()
+            self._event_handler_loop_thread = Process(target=self._event_handler_loop)
+            self._event_handler_loop_thread.start()

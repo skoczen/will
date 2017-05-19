@@ -142,8 +142,13 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
         if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
             body = body[len(self.handle) + 1:].strip()
             msg["body"] = body
-            pass
+            is_direct = True
 
+        # print msg["type"]
+        if msg["type"] == "chat":
+            is_direct = True
+
+        print is_direct
         # print 'msg["body"]'
         # print msg["body"]
         msg.room = self.get_room_from_message(msg)

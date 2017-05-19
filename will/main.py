@@ -771,33 +771,40 @@ To set your %(name)s:
                         c = cls()
                         my_output_queue = Queue()
                         self.queues.io.output[b] = my_output_queue
-                        if hasattr(c, "use_stdin") and c.use_stdin:
-                            my_stdin_queue = Queue()
-                            self.queues.io.stdin_backend_queues[b] = my_stdin_queue
-                            thread = Process(
-                                target=c.start,
-                                args=(
-                                    b,
-                                    self.queues.io._incoming,
-                                    self.queues.io.output[b],
-                                    self.queues.io.stdin_backend_queues[b],
+                        if hasattr(c, "stdin_processes") and len(c.stdin_processes) > 0:
+                            for p in c.stdin_processes:
+                                my_stdin_queue = Queue()
+                                p_name = "%s-%s" % (b, p)
+                                self.queues.io.stdin_backend_queues[p_name] = my_stdin_queue
+                                thread = Process(
+                                    target=getattr(c, p),
+                                    args=(
+                                        b,
+                                        self.queues.io._incoming,
+                                        self.queues.io.output[b],
+                                        self.queues.io.stdin_backend_queues[p_name],
+                                    )
                                 )
-                            )
-                            thread.start()
-                            self.has_stdin_io_backend = True
-                            self.stdin_io_threads.append(thread)
-                        else:
-                            thread = Process(
-                                target=c.start,
-                                args=(
-                                    b,
-                                    self.queues.io._incoming,
-                                    self.queues.io.output[b]
-                                )
-                            )
-                            thread.start()
+                                thread.start()
+                                self.has_stdin_io_backend = True
+                                self.stdin_io_threads.append(thread)
 
-                        self.io_threads.append(thread)
+                        if hasattr(c, "io_processes") and len(c.io_processes) > 0:
+                            for p in c.io_processes:
+                                my_stdin_queue = Queue()
+                                p_name = "%s%s" % (p, b)
+                                self.queues.io.stdin_backend_queues[p_name] = my_stdin_queue
+                                thread = Process(
+                                    target=getattr(c, p),
+                                    args=(
+                                        b,
+                                        self.queues.io._incoming,
+                                        self.queues.io.output[b],
+                                    )
+                                )
+                                thread.start()
+                                self.io_threads.append(thread)
+
                         show_valid("%s Backend started." % cls.friendly_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s io" % b, e)

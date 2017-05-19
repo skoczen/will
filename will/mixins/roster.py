@@ -12,39 +12,33 @@ class RosterMixin(object):
         return self._internal_roster
 
     def get_user_by_full_name(self, name):
-        if "shell" in settings.CHAT_BACKENDS:
-            return {"jid": "123", "hipchat_id": "123"}
+        # TODO: Fix this better for shell, etc
         for jid, info in self.internal_roster.items():
             if info["name"] == name:
                 return info
-        return None
+
+        return {"jid": "123", "hipchat_id": "123"}
 
     def get_user_by_nick(self, nick):
-        if "shell" in settings.CHAT_BACKENDS:
-            return {"jid": "123", "hipchat_id": "123"}
         for jid, info in self.internal_roster.items():
             if info["nick"] == nick:
                 return info
-        return None
+        return {"jid": "123", "hipchat_id": "123"}
 
     def get_user_by_jid(self, jid):
-        if "shell" in settings.CHAT_BACKENDS:
-            return {"jid": "123", "hipchat_id": "123"}
         if jid in self.internal_roster:
             return self.internal_roster[jid]
 
-        return None
+        return {"jid": "123", "hipchat_id": "123"}
 
     def get_user_from_message(self, message):
-        if "shell" in settings.CHAT_BACKENDS:
-            return {"jid": "123", "hipchat_id": "123"}
-        elif message["type"] == "groupchat":
+        if message["type"] == "groupchat":
             return self.get_user_by_full_name(message["mucnick"])
         elif message['type'] in ('chat', 'normal'):
             jid = ("%s" % message["from"]).split("/")[0]
             return self.get_user_by_jid(jid)
         else:
-            return None
+            return {"jid": "123", "hipchat_id": "123"}
 
     def message_is_from_admin(self, message):
         nick = self.get_user_from_message(message)['nick']

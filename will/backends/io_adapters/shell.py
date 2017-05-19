@@ -15,7 +15,7 @@ from will import settings
 UNSURE_REPLIES = [
     "Hmm.  I'm not sure what to say.",
     "I didn't understand that.",
-    "I heard you, but I'm not sure what to do",
+    "I heard you, but I'm not sure what to do.",
     "Darn.  I'm not sure what that means.  Maybe you can teach me?",
     "I really wish I knew how to do that.",
     "Hm. I understood you, but I'm not sure what to do.",
@@ -26,12 +26,10 @@ class ShellBackend(IOBackend):
     use_stdin = True
     friendly_name = "Interactive Shell"
     internal_name = "will.backends.io_adapters.shell"
+    stdin_processes = ["start", ]
+    io_processes = []
 
     def send_direct_message(self, message_body, **kwargs):
-        print("Will: %s" % message_body)
-        # sys.stdout.flush()
-
-    def send_direct_message_reply(self, message, message_body):
         print("Will: %s" % message_body)
         # sys.stdout.flush()
 

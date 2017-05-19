@@ -81,7 +81,7 @@ PLUGIN_BLACKLIST = [
 # HTTPSERVER_PORT = "9000"
 
 # Deprectated, about to die.
-CHAT_BACKENDS = ["shell", ]
+CHAT_BACKENDS = ["", ]
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
