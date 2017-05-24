@@ -87,6 +87,7 @@ CHAT_BACKENDS = ["", ]
 IO_BACKENDS = [
     "will.backends.io_adapters.hipchat",
     "will.backends.io_adapters.shell",
+    "will.backends.io_adapters.slack",
 ]
 
 # Backends to analyze messages and generate useful metadata

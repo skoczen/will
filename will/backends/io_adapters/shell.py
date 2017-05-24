@@ -39,7 +39,6 @@ class ShellBackend(StdInOutIOBackend):
         if event.type == "message":
             m = Message(
                 content=event.content,
-                source=event.source,
                 type=event.type,
                 is_direct=True,
                 is_private_chat=True,
@@ -74,7 +73,6 @@ class ShellBackend(StdInOutIOBackend):
         # Do this to get the first "you" prompt.
         self.input_queue.put(Message(
                 content="",
-                source="",
                 type="chat",
                 is_direct=True,
                 is_private_chat=True,

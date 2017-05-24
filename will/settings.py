@@ -81,6 +81,8 @@ def import_settings(quiet=True):
                      "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
             settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
 
+        print "TODO: check slack and hipchat tokens if they're in the backends"
+
         if "HTTPSERVER_PORT" not in settings:
             # For heroku
             if "PORT" in os.environ:
