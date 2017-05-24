@@ -3,6 +3,7 @@ import logging
 import requests
 import random
 import sys
+import time
 import traceback
 
 from will import settings
@@ -34,9 +35,6 @@ UNSURE_REPLIES = [
 class HipChatBackend(IOBackend):
     friendly_name = "HipChat"
     internal_name = "will.backends.io_adapters.hipchat"
-    use_stdin = False
-    stdin_processes = []
-    io_processes = ["start", "event_handler_loop"]
 
     def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
         # user_id = settings.USERNAME.split('@')[0].split('_')[1]
@@ -61,9 +59,7 @@ class HipChatBackend(IOBackend):
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
         except:
-            import traceback; traceback.print_exc();
             logging.critical("Error in send_direct_message: \n%s" % traceback.format_exc())
-
 
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
         if kwargs:
@@ -138,68 +134,67 @@ class HipChatBackend(IOBackend):
             self._full_hipchat_user_list = full_roster
         return self._full_hipchat_user_list
 
-    def event_handler_loop(self, name, input_queue, output_queue):
-        self.name = name
-        self.input_queue = input_queue
-        self.output_queue = output_queue
+    def handle_incoming_event(self, event):
+        # Handled in XMPP (for now).
+        pass
 
-        while True:
-            # Output Queue
-            try:
-                output_event = self.output_queue.get(timeout=0.1)
-                kwargs = {}
-                if hasattr(output_event, "kwargs"):
-                    kwargs.update(output_event.kwargs)
-                if output_event.type in ["say", "reply"]:
-                    if output_event.source_message.hipchat_message.type == "groupchat":
-                        self.send_room_message(
-                            output_event.source_message.hipchat_message.room.room_id,
-                            output_event.content,
-                            **kwargs
-                        )
-                    else:
-                        output_event.source_message
-                        user_id = output_event.source_message.hipchat_message.sender["hipchat_id"]
-                        self.send_direct_message(
-                            user_id,
-                            output_event.content,
-                            **kwargs
-                        )
+    def handle_outgoing_event(self, event):
+        kwargs = {}
+        if hasattr(event, "kwargs"):
+            kwargs.update(event.kwargs)
 
-                elif output_event.type == "no_response" and output_event.source_message.is_direct:
-                    if output_event.source_message.hipchat_message.type == "groupchat":
-                        self.send_room_message(
-                            output_event.source_message.hipchat_message.room.room_id,
-                            random.choice(UNSURE_REPLIES),
-                            **kwargs
-                        )
-                    else:
-                        self.send_direct_message(
-                            output_event.source_message.hipchat_message.sender["hipchat_id"],
-                            random.choice(UNSURE_REPLIES),
-                            **kwargs
-                        )
+        if event.type in ["say", "reply"]:
+            if event.source_message.hipchat_message.type == "groupchat":
+                self.send_room_message(
+                    event.source_message.hipchat_message.room.room_id,
+                    event.content,
+                    **kwargs
+                )
+            else:
+                event.source_message
+                user_id = event.source_message.hipchat_message.sender["hipchat_id"]
+                self.send_direct_message(
+                    user_id,
+                    event.content,
+                    **kwargs
+                )
 
-            except Empty:
-                pass
+        elif event.type == "no_response" and event.source_message.is_direct:
+            if event.source_message.hipchat_message.type == "groupchat":
+                self.send_room_message(
+                    event.source_message.hipchat_message.room.room_id,
+                    random.choice(UNSURE_REPLIES),
+                    **kwargs
+                )
+            else:
+                self.send_direct_message(
+                    event.source_message.hipchat_message.sender["hipchat_id"],
+                    random.choice(UNSURE_REPLIES),
+                    **kwargs
+                )
 
-    def start(self, name, input_queue, output_queue):
-        self.name = name
-        self.input_queue = input_queue
-        self.output_queue = output_queue
+    def terminate(self):
+        self.xmpp_thread.terminate()
+        while self.xmpp_thread.is_alive():
+            time.sleep(0.2)
 
+    def bootstrap(self):
         self.client = WillXMPPClientMixin("%s/bot" % settings.USERNAME, settings.PASSWORD)
         # Sort this out.
         bootstrapped = False
         try:
-            self.client.start_xmpp_client(input_queue=self.input_queue, output_queue=output_queue)
+            self.client.start_xmpp_client(
+                input_queue=self.input_queue,
+                output_queue=self.output_queue
+            )
+            # This is blocking.
             self.client.connect()
+
             bootstrapped = True
         except Exception, e:
-            self.startup_error("Error bootstrapping xmpp", e)
+            import traceback; traceback.print_exc();
+            print "Error bootstrapping xmpp"
+            raise
 
-        if bootstrapped:
-            self.xmpp_thread = Process(target=self.client.process, kwargs={"block": True})
-            self.xmpp_thread.start()
-            self._event_handler_loop_thread = Process(target=self._event_handler_loop)
-            self._event_handler_loop_thread.start()
+        self.xmpp_thread = Process(target=self.client.process, kwargs={"block": True})
+        self.xmpp_thread.start()

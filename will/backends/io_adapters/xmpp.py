@@ -145,10 +145,9 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
             is_direct = True
 
         # print msg["type"]
-        if msg["type"] == "chat":
+        if msg["type"] in ('chat', 'normal'):
             is_direct = True
 
-        print is_direct
         # print 'msg["body"]'
         # print msg["body"]
         msg.room = self.get_room_from_message(msg)
@@ -176,12 +175,20 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
                 pass
         # print "stripped_msg"
         # print stripped_msg
+        environment = "1-1"
+        if msg['type'] == 'groupchat':
+            environment = "group"
+
         self.input_queue.put(Message(
             backend="will.backends.io_adapters.hipchat",
             is_direct=is_direct,
             content=msg["body"],
-            hipchat_message=stripped_msg
-
+            hipchat_message=stripped_msg,
+            environment=environment,
+            will_is_mentioned=("@%s" % self.handle) in msg["body"],
+            will_said_it=self.real_sender_jid(msg) == self.me.jid,
+            sender=self.get_user_from_message(msg),
+            backend_supports_acl=True,
         ))
         # print self.input_queue
         return

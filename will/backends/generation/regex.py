@@ -15,7 +15,7 @@ class RegexBackend(GenerationBackend):
             search_matches = l["regex"].search(message.content)
             if (
                     search_matches  # The search regex matches and
-                    # # It's not from me, or this search includes me, and
+                    # It's not from me, or this search includes me, and
                     # and (msg['mucnick'] != self.nick or l["include_me"])
                     # # I'm mentioned, or this is an overheard, or we're in a 1-1
                     # and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or

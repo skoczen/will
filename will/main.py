@@ -128,24 +128,24 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
 
         # self.queues.stdin = Queue()
 
-        # Scheduler
-        scheduler_thread = Process(target=self.bootstrap_scheduler)
-        # scheduler_thread.daemon = True
+        try:
+            # Scheduler
+            scheduler_thread = Process(target=self.bootstrap_scheduler)
+            # scheduler_thread.daemon = True
 
-        # Bottle
-        bottle_thread = Process(target=self.bootstrap_bottle)
-        # bottle_thread.daemon = True
+            # Bottle
+            bottle_thread = Process(target=self.bootstrap_bottle)
+            # bottle_thread.daemon = True
 
-        # Incoming message queue
-        incoming_message_thread = Process(target=self.bootstrap_message_handler)
+            # Incoming message queue
+            incoming_message_thread = Process(target=self.bootstrap_message_handler)
 
-        self.io_threads = []
-        self.analysis_threads = []
-        self.generation_threads = []
-        self.message_handler_threads = []
+            self.io_threads = []
+            self.analysis_threads = []
+            self.generation_threads = []
+            self.message_handler_threads = []
 
-        with indent(2):
-            try:
+            with indent(2):
                 # Start up threads.
                 self.bootstrap_io()
                 self.bootstrap_analysis()
@@ -168,6 +168,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                 # TODO this hangs for some reason.
                 # signal.signal(signal.SIGTERM, self.handle_sys_exit)
 
+                self.stdin_listener_thread = False
                 if self.has_stdin_io_backend:
                     self.queues.io.stdin_input = Queue()
                     self.stdin_listener_thread = Process(target=self.handle_main_stdin_queue)
@@ -183,43 +184,50 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                                 self.current_line += line
                 while True:
                     time.sleep(100)
-            except (KeyboardInterrupt, SystemExit):
-                scheduler_thread.terminate()
-                bottle_thread.terminate()
-                incoming_message_thread.terminate()
+        except (KeyboardInterrupt, SystemExit):
+            scheduler_thread.terminate()
+            bottle_thread.terminate()
+            incoming_message_thread.terminate()
 
-                if self.stdin_listener_thread:
-                    self.stdin_listener_thread.terminate()
+            if self.stdin_listener_thread:
+                self.stdin_listener_thread.terminate()
 
-                for t in self.stdin_io_threads:
-                    t.terminate()
+            # for t in self.stdin_io_threads:
+            #     t.terminate()
 
-                for t in self.analysis_threads:
-                    t.terminate()
+            # for t in self.io_threads:
+            #     t.terminate()
 
-                for t in self.generation_threads:
-                    t.terminate()
+            for q in self.queues.io.terminate:
+                q.put({"type": "terminate"})
 
-                for t in self.message_handler_threads:
-                    t.terminate()
+            for t in self.analysis_threads:
+                t.terminate()
 
-                print '\n\nReceived keyboard interrupt, quitting threads.',
-                while (
-                    scheduler_thread.is_alive() or
-                    bottle_thread.is_alive() or
-                    incoming_message_thread.is_alive() or
-                    self.stdin_listener_thread.is_alive() or
-                    any([t.is_alive() for t in self.stdin_io_threads]) or
-                    any([t.is_alive() for t in self.analysis_threads]) or
-                    any([t.is_alive() for t in self.generation_threads]) or
-                    any([t.is_alive() for t in self.message_handler_threads])
-                    # or
-                    # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
-                ):
-                        sys.stdout.write(".")
-                        sys.stdout.flush()
-                        time.sleep(0.5)
-                print ". done.\n"
+            for t in self.generation_threads:
+                t.terminate()
+
+            for t in self.message_handler_threads:
+                t.terminate()
+
+            print '\n\nReceived keyboard interrupt, quitting threads.',
+            while (
+                scheduler_thread.is_alive() or
+                bottle_thread.is_alive() or
+                incoming_message_thread.is_alive() or
+                self.stdin_listener_thread.is_alive() or
+                any([t.is_alive() for t in self.stdin_io_threads]) or
+                any([t.is_alive() for t in self.stdin_io_threads]) or
+                any([t.is_alive() for t in self.analysis_threads]) or
+                any([t.is_alive() for t in self.generation_threads]) or
+                any([t.is_alive() for t in self.message_handler_threads])
+                # or
+                # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
+            ):
+                    sys.stdout.write(".")
+                    sys.stdout.flush()
+                    time.sleep(0.5)
+            print ". done.\n"
 
     def verify_individual_setting(self, test_setting, quiet=False):
         if not test_setting.get("only_if", True):
@@ -760,6 +768,7 @@ To set your %(name)s:
         self.io_backends = []
         self.queues.io.stdin_queue = []
         self.queues.io.stdin_backend_queues = {}
+        self.queues.io.terminate = []
         self.queues.io.output = {}
         self.stdin_io_threads = []
         self.stdin_io_backends = []
@@ -767,43 +776,48 @@ To set your %(name)s:
             module = import_module(b)
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
-                    if hasattr(cls, "is_will_iobackend") and cls.is_will_iobackend and class_name != "IOBackend":
+                    if (
+                        hasattr(cls, "is_will_iobackend") and
+                        cls.is_will_iobackend and
+                        class_name != "IOBackend" and
+                        class_name != "StdInOutIOBackend"
+                    ):
                         c = cls()
                         my_output_queue = Queue()
                         self.queues.io.output[b] = my_output_queue
-                        if hasattr(c, "stdin_processes") and len(c.stdin_processes) > 0:
-                            for p in c.stdin_processes:
-                                my_stdin_queue = Queue()
-                                p_name = "%s-%s" % (b, p)
-                                self.queues.io.stdin_backend_queues[p_name] = my_stdin_queue
-                                thread = Process(
-                                    target=getattr(c, p),
-                                    args=(
-                                        b,
-                                        self.queues.io._incoming,
-                                        self.queues.io.output[b],
-                                        self.queues.io.stdin_backend_queues[p_name],
-                                    )
-                                )
-                                thread.start()
-                                self.has_stdin_io_backend = True
-                                self.stdin_io_threads.append(thread)
+                        my_stdin_queue = Queue()
+                        my_terminate_queue = Queue()
+                        self.queues.io.terminate.append(my_terminate_queue)
 
-                        if hasattr(c, "io_processes") and len(c.io_processes) > 0:
-                            for p in c.io_processes:
-                                my_stdin_queue = Queue()
-                                p_name = "%s%s" % (p, b)
-                                self.queues.io.stdin_backend_queues[p_name] = my_stdin_queue
-                                thread = Process(
-                                    target=getattr(c, p),
-                                    args=(
-                                        b,
-                                        self.queues.io._incoming,
-                                        self.queues.io.output[b],
-                                    )
+                        if hasattr(c, "stdin_process") and c.stdin_process:
+                            self.queues.io.stdin_backend_queues[b] = my_stdin_queue
+                            thread = Process(
+                                target=c._start,
+                                args=(
+                                    b,
+                                    self.queues.io._incoming,
+                                    self.queues.io.output[b],
+                                    my_terminate_queue,
+                                ),
+                                kwargs={
+                                    "stdin_queue": self.queues.io.stdin_backend_queues[b],
+                                },
+                            )
+                            thread.start()
+                            self.has_stdin_io_backend = True
+                            self.stdin_io_threads.append(thread)
+                        else:
+                            thread = Process(
+                                target=c._start,
+                                args=(
+                                    b,
+                                    self.queues.io._incoming,
+                                    self.queues.io.output[b],
+                                    my_terminate_queue
                                 )
-                                thread.start()
-                                self.io_threads.append(thread)
+                            )
+                            thread.start()
+                            self.io_threads.append(thread)
 
                         show_valid("%s Backend started." % cls.friendly_name)
                 except Exception, e:
