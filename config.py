@@ -126,8 +126,9 @@ ROOMS = ['Will Testing', ]
 # Increasing the value will make will slower, but consume fewer resources.
 QUEUE_INTERVAL = 0.025
 
-# The room will will talk to if the trigger is a webhook and he isn't told a specific room.
-# Default is the first of ROOMS.
+# The backend and room will will talk to if the trigger is a webhook and he isn't told
+# a specific one.  Default is the first of IO_BACKENDS and ROOMS.
+# DEFAULT_BACKEND = "will.backends.io_adapters.hipchat"
 # DEFAULT_ROOM = 'Testing, Will Kahuna'
 
 

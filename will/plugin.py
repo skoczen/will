@@ -32,6 +32,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_message(message), ]
             else:
                 rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
+        print rooms
         return rooms
 
     def say(self, content, message=None, room=None, **kwargs):
@@ -42,22 +43,25 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         if not "room" in kwargs and room:
             kwargs["room"] = room
 
+        backend = False
         if hasattr(message, "backend"):
             # Events, content/type/timestamp
             # {
             #   message: message,
             #   type: "reply/say/topic_change/emoji/etc"
             # }
-            self.bot.queues.io.output[message.backend].put(Event(
+            backend = message.backend
+        else:
+            backend = settings.DEFAULT_BACKEND
+
+        if backend:
+            self.bot.queues.io.output[backend].put(Event(
                 type="say",
                 content=content,
                 source_message=message,
                 kwargs=kwargs,
             ))
-        else:
-            # TODO: Default backend?
-            # Somethin?
-            pass
+
         return
 
         content = self._prepared_content(content, message, kwargs)
