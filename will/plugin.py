@@ -19,9 +19,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             self.bot = kwargs["bot"]
             del kwargs["bot"]
         super(WillPlugin, self).__init__(*args, **kwargs)
+
     # TODO: pull all the hipchat-specific logic out of this,
-    # Set up the hipchat and shell backends' output queues,
-    # THen call the appropriate one in this function.
 
     def _rooms_from_message_and_room(self, message, room):
         if room == "ALL_ROOMS":
@@ -35,22 +34,15 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
         return rooms
 
-    def _prepared_content(self, content, message, kwargs):
-        content = re.sub(r'>\s+<', '><', content)
-        return content
-
     def say(self, content, message=None, room=None, **kwargs):
         # Valid kwargs:
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
+        if not "room" in kwargs and room:
+            kwargs["room"] = room
 
         if hasattr(message, "backend"):
-            # print "message.backend"
-            # print message.backend
-            # print "self.bot"
-            # print self.bot.queues.io.output
-            # TODO HERE: Change io.input and io.output queues to have a type?
             # Events, content/type/timestamp
             # {
             #   message: message,

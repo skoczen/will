@@ -9,7 +9,7 @@ class GenerationBackend(object):
     def __watch_input_queue(self):
         while True:
             try:
-                message = self.__input_queue.get(timeout=0.1)
+                message = self.__input_queue.get(timeout=settings.QUEUE_INTERVAL)
                 # print "GenerationBackend heard: %s" % message
                 self.__generate(message)
             except Empty:

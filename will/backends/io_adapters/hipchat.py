@@ -1,7 +1,8 @@
 import json
 import logging
-import requests
 import random
+import re
+import requests
 import sys
 import time
 import traceback
@@ -143,7 +144,9 @@ class HipChatBackend(IOBackend):
         if hasattr(event, "kwargs"):
             kwargs.update(event.kwargs)
 
-        if event.type in ["say", "reply"]:
+        if event.type in ["say", "reply"]: 
+            event.content = re.sub(r'>\s+<', '><', event.content)
+
             if event.source_message.hipchat_message.type == "groupchat":
                 self.send_room_message(
                     event.source_message.hipchat_message.room.room_id,
@@ -173,28 +176,20 @@ class HipChatBackend(IOBackend):
                     **kwargs
                 )
 
-    def terminate(self):
-        self.xmpp_thread.terminate()
-        while self.xmpp_thread.is_alive():
-            time.sleep(0.2)
-
     def bootstrap(self):
         self.client = WillXMPPClientMixin("%s/bot" % settings.USERNAME, settings.PASSWORD)
-        # Sort this out.
-        bootstrapped = False
-        try:
-            self.client.start_xmpp_client(
-                input_queue=self.input_queue,
-                output_queue=self.output_queue
-            )
-            # This is blocking.
-            self.client.connect()
-
-            bootstrapped = True
-        except Exception, e:
-            import traceback; traceback.print_exc();
-            print "Error bootstrapping xmpp"
-            raise
+        self.client.start_xmpp_client(
+            input_queue=self.input_queue,
+            output_queue=self.output_queue,
+            backend_name=self.internal_name,
+        )
+        self.client.connect()
 
         self.xmpp_thread = Process(target=self.client.process, kwargs={"block": True})
         self.xmpp_thread.start()
+
+    def terminate(self):
+        if hasattr(self, "xmpp_thread"):
+            self.xmpp_thread.terminate()
+            while self.xmpp_thread.is_alive():
+                time.sleep(0.2)

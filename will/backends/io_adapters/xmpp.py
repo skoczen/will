@@ -15,13 +15,14 @@ from will.backends.io_adapters.base import Event, Message
 
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
 
-    def start_xmpp_client(self, input_queue=None, output_queue=None):
+    def start_xmpp_client(self, input_queue=None, output_queue=None, backend_name=""):
         logger = logging.getLogger(__name__)
         if not input_queue or not output_queue:
             logger.error("Missing required input and output queues")
 
         self.input_queue = input_queue
         self.output_queue = output_queue
+        self.backend_name = backend_name
 
         ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
 
@@ -175,86 +176,83 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
                 pass
         # print "stripped_msg"
         # print stripped_msg
-        environment = "1-1"
-        if msg['type'] == 'groupchat':
-            environment = "group"
 
         self.input_queue.put(Message(
-            backend="will.backends.io_adapters.hipchat",
+            backend=self.backend_name,
             is_direct=is_direct,
+            is_private_chat=msg['type'] != 'groupchat',
+            is_group_chat=msg['type'] == 'groupchat',
             content=msg["body"],
             hipchat_message=stripped_msg,
-            environment=environment,
             will_is_mentioned=("@%s" % self.handle) in msg["body"],
             will_said_it=self.real_sender_jid(msg) == self.me.jid,
             sender=self.get_user_from_message(msg),
             backend_supports_acl=True,
         ))
         # print self.input_queue
-        return
 
-        if (
-            # I've been asked to listen to my own messages
-            self.bot.some_listeners_include_me
-            # or we're in a 1 on 1 chat and I didn't send it
-            or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)
-            # we're in group chat and I didn't send it
-            or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
-        ):
-                body = msg["body"].strip()
+        # if (
+        #     # I've been asked to listen to my own messages
+        #     self.bot.some_listeners_include_me
+        #     # or we're in a 1 on 1 chat and I didn't send it
+        #     or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)
+        #     # we're in group chat and I didn't send it
+        #     or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
+        # ):
+        #         body = msg["body"].strip()
 
-                sent_directly_to_me = False
-                # If it's sent directly to me, strip off "@will" from the start.
-                if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
-                    body = body[len(self.handle) + 1:].strip()
-                    msg["body"] = body
+        #         sent_directly_to_me = False
+        #         # If it's sent directly to me, strip off "@will" from the start.
+        #         if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
+        #             body = body[len(self.handle) + 1:].strip()
+        #             msg["body"] = body
 
-                    sent_directly_to_me = True
+        #             sent_directly_to_me = True
 
-                # Make the message object a bit friendlier
-                msg.room = self.get_room_from_message(msg)
-                msg.sender = self.get_user_from_message(msg)
+        #         # Make the message object a bit friendlier
+        #         msg.room = self.get_room_from_message(msg)
+        #         msg.sender = self.get_user_from_message(msg)
 
-                for name, l in self.message_listeners.items():
-                    search_matches = l["regex"].search(body)
-                    if (
-                            search_matches  # The search regex matches and
-                            # It's not from me, or this search includes me, and
-                            and (msg['mucnick'] != self.nick or l["include_me"])
-                            # I'm mentioned, or this is an overheard, or we're in a 1-1
-                            and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or
-                                 self.handle_regex.search(body) or sent_directly_to_me)
-                            # It's from admins only and sender is an admin, or it's not from admins only
-                            and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
-                            # It's available only to the members of one or more ACLs, or no ACL in use
-                            and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
-                    ):
-                        try:
-                            thread_args = [msg, ] + l["args"]
+        #         for name, l in self.message_listeners.items():
+        #             search_matches = l["regex"].search(body)
+        #             if (
+        #                     search_matches  # The search regex matches and
+        #                     # It's not from me, or this search includes me, and
+        #                     and (msg['mucnick'] != self.nick or l["include_me"])
+        #                     # I'm mentioned, or this is an overheard, or we're in a 1-1
+        #                     and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or
+        #                          self.handle_regex.search(body) or sent_directly_to_me)
+        #                     # It's from admins only and sender is an admin, or it's not from admins only
+        #                     and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
+        #                     # It's available only to the members of one or more ACLs, or no ACL in use
+        #                     and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
+        #             ):
+        #                 try:
+        #                     thread_args = [msg, ] + l["args"]
 
-                            def fn(listener, args, kwargs):
-                                try:
-                                    listener["fn"](*args, **kwargs)
-                                except:
-                                    content = "I ran into trouble running %s.%s:\n\n%s" % (
-                                        listener["class_name"],
-                                        listener["function_name"],
-                                        traceback.format_exc(),
-                                    )
+        #                     def fn(listener, args, kwargs):
+        #                         try:
+        #                             listener["fn"](*args, **kwargs)
+        #                         except:
+        #                             content = "I ran into trouble running %s.%s:\n\n%s" % (
+        #                                 listener["class_name"],
+        #                                 listener["function_name"],
+        #                                 traceback.format_exc(),
+        #                             )
 
-                                    if msg is None or msg["type"] == "groupchat":
-                                        if msg.sender and "nick" in msg.sender:
-                                            content = "@%s %s" % (msg.sender["nick"], content)
-                                        self.send_room_message(msg.room["room_id"], content, color="red")
-                                    elif msg['type'] in ('chat', 'normal'):
-                                        self.send_direct_message(msg.sender["hipchat_id"], content)
+        #                             if msg is None or msg["type"] == "groupchat":
+        #                                 if msg.sender and "nick" in msg.sender:
+        #                                     content = "@%s %s" % (msg.sender["nick"], content)
+        #                                 self.send_room_message(msg.room["room_id"], content, color="red")
+        #                             elif msg['type'] in ('chat', 'normal'):
+        #                                 self.send_direct_message(msg.sender["hipchat_id"], content)
 
-                            thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
-                            thread.start()
-                        except:
-                            logging.critical(
-                                "Error running %s.  \n\n%s\nContinuing...\n" % (
-                                    l["function_name"],
-                                    traceback.format_exc()
-                                )
-                            )
+        #                     thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
+        #                     thread.start()
+        #                 except:
+        #                     logging.critical(
+        #                         "Error running %s.  \n\n%s\nContinuing...\n" % (
+        #                             l["function_name"],
+        #                             traceback.format_exc()
+        #                         )
+        #                     )

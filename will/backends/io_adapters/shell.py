@@ -14,7 +14,7 @@ from will import settings
 
 UNSURE_REPLIES = [
     "Hmm.  I'm not sure what to say.",
-    "I didn't understand that.",
+    "Hm. I didn't understand that.",
     "I heard you, but I'm not sure what to do.",
     "Darn.  I'm not sure what that means.  Maybe you can teach me?",
     "I really wish I knew how to do that.",
@@ -28,15 +28,12 @@ class ShellBackend(StdInOutIOBackend):
 
     def send_direct_message(self, message_body, **kwargs):
         print("Will: %s" % message_body)
-        # sys.stdout.flush()
 
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
         print("Will: %s" % message_body)
-        # sys.stdout.flush()
 
     def set_room_topic(self, room_id, topic):
         print("Will: Setting the Topic to %s" & topic)
-        # sys.stdout.flush()
 
     def handle_incoming_event(self, event):
         if event.type == "message":
@@ -45,9 +42,10 @@ class ShellBackend(StdInOutIOBackend):
                 source=event.source,
                 type=event.type,
                 is_direct=True,
+                is_private_chat=True,
+                is_group_chat=False,
                 backend=self.name,
                 sender=Bunch(nick="You"),
-                environment="1-1",
                 will_is_mentioned=False,
                 will_said_it=False,
                 backend_supports_acl=False,
@@ -79,9 +77,10 @@ class ShellBackend(StdInOutIOBackend):
                 source="",
                 type="chat",
                 is_direct=True,
+                is_private_chat=True,
+                is_group_chat=False,
                 backend=self.name,
                 sender=Bunch(nick="You"),
-                environment="1-1",
                 will_is_mentioned=False,
                 will_said_it=False,
                 backend_supports_acl=False,

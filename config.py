@@ -122,6 +122,9 @@ ROOMS = ['Will Testing', ]
 # The maximum number of milliseconds to wait for a generation backend to finish
 # GENERATION_TIMEOUT_MS = 2000
 
+# The interval will checks his internal cross-thread messaging queues, in seconds.
+# Increasing the value will make will slower, but consume fewer resources.
+QUEUE_INTERVAL = 0.025
 
 # The room will will talk to if the trigger is a webhook and he isn't told a specific room.
 # Default is the first of ROOMS.

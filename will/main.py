@@ -593,7 +593,7 @@ To set your %(name)s:
     def handle_main_stdin_queue(self):
         while True:
             try:
-                line = self.queues.io.stdin_input.get(timeout=0.1)
+                line = self.queues.io.stdin_input.get(timeout=settings.QUEUE_INTERVAL)
                 for name, q in self.queues.io.stdin_backend_queues.items():
                     q.put(Event(
                         type="message",
@@ -611,7 +611,7 @@ To set your %(name)s:
 
         while True:
             try:
-                message = self.queues.io._incoming.get(timeout=0.1)
+                message = self.queues.io._incoming.get(timeout=settings.QUEUE_INTERVAL)
                 t = Process(target=self.handle_message, args=(message,))
                 t.start()
                 self.message_handler_threads.append(t)
@@ -637,7 +637,7 @@ To set your %(name)s:
             while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
                 for name, q in self.queues.analysis.output.items():
                     try:
-                        context = q.get(timeout=0.1)
+                        context = q.get(timeout=settings.QUEUE_INTERVAL)
                         # TODO: Last one wins right now - this should not
                         # allow conflicts.
                         message.analysis.update(context)
@@ -661,7 +661,7 @@ To set your %(name)s:
             while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
                 for name, q in self.queues.generation.output.items():
                     try:
-                        options = q.get(timeout=0.1)
+                        options = q.get(timeout=settings.QUEUE_INTERVAL)
                         # TODO: Last one wins right now - this should not
                         # allow conflicts.
                         for o in options:

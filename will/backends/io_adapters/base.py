@@ -27,7 +27,7 @@ class IOBackend(object):
         while running:
             try:
                 try:
-                    output_event = self.output_queue.get(timeout=0.1)
+                    output_event = self.output_queue.get(timeout=settings.QUEUE_INTERVAL)
                     if output_event:
                         self.handle_outgoing_event(output_event)
 
@@ -35,7 +35,7 @@ class IOBackend(object):
                     pass
 
                 try:
-                    input_event = self.input_queue.get(timeout=0.1)
+                    input_event = self.input_queue.get(timeout=settings.QUEUE_INTERVAL)
                     if input_event:
                         self.handle_incoming_event(input_event)
 
@@ -44,7 +44,7 @@ class IOBackend(object):
 
                 if hasattr(self, "stdin_queue") and self.stdin_queue:
                     try:
-                        input_event = self.stdin_queue.get(timeout=0.1)
+                        input_event = self.stdin_queue.get(timeout=settings.QUEUE_INTERVAL)
                         if input_event:
                             self.handle_incoming_event(input_event)
 
@@ -52,7 +52,7 @@ class IOBackend(object):
                         pass
 
                 try:
-                    terminate_event = self.terminate_queue.get(timeout=0.1)
+                    terminate_event = self.terminate_queue.get(timeout=settings.QUEUE_INTERVAL)
                     if terminate_event:
                         self.__handle_terminate()
                         running = False
@@ -66,7 +66,7 @@ class IOBackend(object):
         if hasattr(self, "__event_listener_thread"):
             self.__event_listener_thread.terminate()
             while self.__event_listener_thread.is_alive():
-                time.sleep(0.1)
+                time.sleep(settings.QUEUE_INTERVAL)
         if hasattr(self, "terminate"):
             self.terminate()
 
@@ -83,8 +83,6 @@ class IOBackend(object):
         )
         self.__event_listener_thread.start()
 
-        # Here's the problem - bootstrap is blocking, and I need to make sure the event listeners are 
-        # handled properly and kick off
         self.bootstrap()
 
 
@@ -94,15 +92,15 @@ class StdInOutIOBackend(IOBackend):
 
 MESSAGE_REQUIRED_FIELDS = [
     # TODO: make sure we have all the context we need for ACL/etc.
-    "is_direct",  # Direct to me (answer no matter what?)
-    "environment",  # 1-1 or room
+    "is_direct",
+    "is_private_chat",
+    "is_group_chat",
     "will_is_mentioned",
     "will_said_it",
     "sender",
     "backend_supports_acl",
     "content",
     "backend",
-    # "timestamp",
 ]
 
 
