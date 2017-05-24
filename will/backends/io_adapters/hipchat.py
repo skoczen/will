@@ -10,6 +10,9 @@ import traceback
 from will import settings
 from .base import IOBackend
 from .xmpp import WillXMPPClientMixin
+from will.mixins import RoomMixin, StorageMixin
+# from mixins import ScheduleMixin, StorageMixin, ErrorMixin,\
+#    26      RoomMixin, PluginModulesLibraryMixin, EmailMixin
 from multiprocessing import Process, Queue
 from will.backends.io_adapters.base import Event, Message
 from multiprocessing.queues import Empty
@@ -33,7 +36,7 @@ UNSURE_REPLIES = [
 ]
 
 
-class HipChatBackend(IOBackend):
+class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
     friendly_name = "HipChat"
     internal_name = "will.backends.io_adapters.hipchat"
 
@@ -147,20 +150,37 @@ class HipChatBackend(IOBackend):
         if event.type in ["say", "reply"]: 
             event.content = re.sub(r'>\s+<', '><', event.content)
 
-            if event.source_message.hipchat_message.type == "groupchat":
-                self.send_room_message(
-                    event.source_message.hipchat_message.room.room_id,
-                    event.content,
-                    **kwargs
-                )
+            if hasattr(event, "source_message") and event.source_message:
+                if event.source_message.hipchat_message.type == "groupchat":
+                    self.send_room_message(
+                        event.source_message.hipchat_message.room.room_id,
+                        event.content,
+                        **kwargs
+                    )
+                else:
+                    event.source_message
+                    user_id = event.source_message.hipchat_message.sender["hipchat_id"]
+                    self.send_direct_message(
+                        user_id,
+                        event.content,
+                        **kwargs
+                    )
             else:
-                event.source_message
-                user_id = event.source_message.hipchat_message.sender["hipchat_id"]
-                self.send_direct_message(
-                    user_id,
-                    event.content,
-                    **kwargs
-                )
+                # Came from webhook/etc
+                if "room" in kwargs:
+                    print kwargs
+                    self.send_room_message(
+                        kwargs["room"],
+                        event.content,
+                        **kwargs
+                    )
+                else:
+                    default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
+                    self.send_room_message(
+                        default_room,
+                        event.content,
+                        **kwargs
+                    )
 
         elif event.type == "no_response" and event.source_message.is_direct:
             if event.source_message.hipchat_message.type == "groupchat":

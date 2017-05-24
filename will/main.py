@@ -748,7 +748,7 @@ To set your %(name)s:
         bootstrapped = False
         try:
             for cls, function_name in self.bottle_routes:
-                instantiated_cls = cls()
+                instantiated_cls = cls(bot=self)
                 instantiated_fn = getattr(instantiated_cls, function_name)
                 bottle_route_args = {}
                 for k, v in instantiated_fn.will_fn_metadata.items():
