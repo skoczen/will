@@ -12,11 +12,21 @@ from multiprocessing.queues import Empty
 from multiprocessing import Process
 
 
+def clean_message_content(s):
+    # Clear out 'smart' quotes and the like.
+    s = s.replace("’", "'").replace("‘", "'").replace('“', '"').replace('”', '"')
+    s = s.replace(u"\u2018", "'").replace(u"\u2019", "'")
+    s = s.replace(u"\u201c", '"').replace(u"\u201d", '"')
+    return s
+
+
 class IOBackend(object):
     is_will_iobackend = True
 
     def bootstrap(self):
-        """Bootstrap must provide a way to to have:
+        raise NotImplemented("""A .bootstrap() method was not provided.
+
+        Bootstrap must provide a way to to have:
         a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
         b) any necessary threads running for a)
         c) self.handle (string) defined
@@ -26,8 +36,7 @@ class IOBackend(object):
            Note that Channel asks for members, a list of People.
         g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
            with a maximum lag of 60 seconds.
-        """
-        raise NotImplemented
+        """)
 
     def handle_incoming_event(self, event):
         raise NotImplemented
@@ -106,32 +115,22 @@ class StdInOutIOBackend(IOBackend):
     stdin_process = True
 
 
-MESSAGE_REQUIRED_FIELDS = [
-    # TODO: make sure we have all the context we need for ACL/etc.
-    "is_direct",
-    "is_private_chat",
-    "is_group_chat",
-    "will_is_mentioned",
-    "will_said_it",
-    "sender",
-    "backend_supports_acl",
-    "content",
-    "backend",
-    "source",
-]
-
-
-def clean_message_content(s):
-    s = s.replace("’", "'").replace("‘", "'").replace('“', '"').replace('”', '"')
-    s = s.replace(u"\u2018", "'").replace(u"\u2019", "'")
-    s = s.replace(u"\u201c", '"').replace(u"\u201d", '"')
-    return s
-
-
 class Message(object):
+    REQUIRED_FIELDS = [
+        "is_direct",
+        "is_private_chat",
+        "is_group_chat",
+        "will_is_mentioned",
+        "will_said_it",
+        "sender",
+        "backend_supports_acl",
+        "content",
+        "backend",
+        "source",
+    ]
 
     def __init__(self, *args, **kwargs):
-        for f in MESSAGE_REQUIRED_FIELDS:
+        for f in self.REQUIRED_FIELDS:
             if not f in kwargs:
                 raise Exception("Missing %s in Message construction." % f)
 
@@ -168,18 +167,16 @@ class Message(object):
         return self.__unicode__(*args, **kwargs)
 
 
-EVENT_REQUIRED_FIELDS = [
-    "type",
-    "content",
-]
-
-
 class Event(Bunch):
+    REQUIRED_FIELDS = [
+        "type",
+        "content",
+    ]
 
     def __init__(self, *args, **kwargs):
         super(Event, self).__init__(*args, **kwargs)
 
-        for f in EVENT_REQUIRED_FIELDS:
+        for f in self.REQUIRED_FIELDS:
             if not f in kwargs:
                 raise Exception("Missing %s in Event construction." % f)
         for f in kwargs:
@@ -191,18 +188,16 @@ class Event(Bunch):
             self.timestamp = datetime.datetime.now()
 
 
-PERSON_REQUIRED_FIELDS = [
-    "id",
-    "handle",
-    "source",
-    "name",
-    "first_name"
-    # "timezone",
-]
-
-
 class Person(Bunch):
     will_is_person = True
+    REQUIRED_FIELDS = [
+        "id",
+        "handle",
+        "source",
+        "name",
+        "first_name"
+        # "timezone",
+    ]
 
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
@@ -214,7 +209,7 @@ class Person(Bunch):
         if "first_name" not in kwargs:
             self.first_name = self.name.split(" ")[0]
 
-        for f in PERSON_REQUIRED_FIELDS:
+        for f in self.REQUIRED_FIELDS:
             if not hasattr(self, f):
                 raise Exception("Missing %s in Person construction." % f)
 
@@ -232,19 +227,18 @@ class Person(Bunch):
         return self.handle
 
 
-CHANNEL_REQUIRED_FIELDS = [
-    "id",
-    "name",
-    "source",
-    "members",
-]
-
-
 class Channel(Bunch):
+    REQUIRED_FIELDS = [
+        "id",
+        "name",
+        "source",
+        "members",
+    ]
+
     def __init__(self, *args, **kwargs):
         super(Channel, self).__init__(*args, **kwargs)
 
-        for f in CHANNEL_REQUIRED_FIELDS:
+        for f in self.REQUIRED_FIELDS:
             if not f in kwargs:
                 raise Exception("Missing %s in Channel construction." % f)
         for f in kwargs:

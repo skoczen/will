@@ -19,7 +19,7 @@ from multiprocessing.queues import Empty
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from will.mixins import RosterMixin, RoomMixin, StorageMixin
 
-
+# TODO: Cleanup unused urls
 ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
 ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 ROOM_URL = "https://%(server)s/v2/room/%(room_id)s/?auth_token=%(token)s"
@@ -57,6 +57,8 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
         self.rooms = []
         self.default_room = settings.DEFAULT_ROOM
 
+        # TODO: Clean this up, and pass it in from the controlling thread,
+        # then nuke RoomsMixin
         # Property boostraps the list
         self.available_rooms
         for r in settings.ROOMS:
@@ -94,6 +96,7 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
         self.get_roster()
 
     def join_rooms(self, event):
+        # TODO: Pull this and related.
         # self.update_will_roster_and_rooms()
 
         for r in self.rooms:
@@ -102,7 +105,8 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
 
     def update_will_roster_and_rooms(self):
         people = self.load('will_hipchat_people', {})
-        # Loop through the connected rooms
+
+        # Loop through the connected rooms (self.roster comes from ClientXMPP)
         for roster_id in self.roster:
 
             cur_roster = self.roster[roster_id]
@@ -156,36 +160,13 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
         return msg["from"]
 
     def _handle_message_listeners(self, msg):
-        # print("_handle_message_listeners")
-
-        # return
-
-        # is_direct = False
-        # body = msg["body"]
-        # if body[:len(self.handle) + 1].lower() == ("@%s" % self.handle).lower():
-        #     body = body[len(self.handle) + 1:].strip()
-        #     msg["body"] = body
-        #     is_direct = True
-
-        # # print msg["type"]
-        # if msg["type"] in ('chat', 'normal'):
-        #     is_direct = True
-
-        # # print 'msg["body"]'
-        # # print msg["body"]
-        # msg.room = self.get_room_from_message(msg)
-        # # TODO HERE: Right now I'm using self.save for cross-thread communication, and
-        # # it's just inconsistent.  Find a better way.
-        # msg.sender = self.get_user_from_message(msg)
-        # # print msg
-
         stripped_msg = Bunch()
+        # TODO: Find a faster way to do this - this is crazy.
         for k, v in msg.__dict__.items():
             try:
                 pickle.dumps(v)
                 stripped_msg[k] = v
             except:
-                # print "failed to parse %s" % k
                 pass
         for k in msg.xml.keys():
             try:
@@ -352,8 +333,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         return self._channels
 
     def handle_incoming_event(self, event):
-        # print "handle_incoming_event"
-        # print event
+        print "hipchat: handle_incoming_event - %s" % event
 
         if event["type"] in ("chat", "normal", "groupchat") and "from_jid" in event:
             # Sample of group message
@@ -406,20 +386,6 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             )
             self.input_queue.put(m)
 
-            # self.input_queue.put(Message(
-            #         backend=self.backend_name,
-            #         is_direct=is_direct,
-            #         is_private_chat=event['type'] != 'groupchat',
-            #         is_group_chat=event['type'] == 'groupchat',
-            #         content=event["body"],
-            #         source=stripped_event,
-            #         will_is_mentioned=("@%s" % self.handle) in event["body"],
-            #         will_said_it=False,
-            #         # will_said_it=self.real_sender_jid(event) == self.me.jid,
-            #         sender=eventsender,
-            #         backend_supports_acl=True,
-            #     )
-            # )
         else:
             # print "Unknown event type"
             # print event
@@ -504,12 +470,11 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         # Bootstrap must provide a way to to have:
         # a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
         # b) any necessary threads running for a)
-        # c) self.handle (string) defined
-        # d) self.me (Person) defined, with Will's info
-        # e) self.people (dict of People) defined, with everyone in an organization/backend
-        # f) self.channels (dict of Channels) defined, with all available channels/rooms.
+        # c) self.me (Person) defined, with Will's info
+        # d) self.people (dict of People) defined, with everyone in an organization/backend
+        # e) self.channels (dict of Channels) defined, with all available channels/rooms.
         #    Note that Channel asks for members, a list of People.
-        # g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
+        # f) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
         self.client = HipchatXMPPClient("%s/bot" % settings.USERNAME, settings.PASSWORD)
         self.xmpp_bridge_queue = Queue()
@@ -519,7 +484,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             backend_name=self.internal_name,
         )
         self.client.connect()
-        # Property, get/sets
+        # Even though these are properties, they do some gets and self-fillings.
         self.people
         self.channels
 

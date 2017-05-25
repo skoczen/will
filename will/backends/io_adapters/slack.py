@@ -32,7 +32,12 @@ class SlackBackend(IOBackend):
     internal_name = "will.backends.io_adapters.slack"
 
     def handle_incoming_event(self, event):
-        if event["type"] == "message":
+        print "slack: handle_incoming_event - %s" % event
+
+        if (
+            event["type"] == "message" and
+            ("subtype" not in event or event["subtype"] != "message_changed")
+        ):
             # Sample of group message
             # {u'source_team': u'T5ACF70KV', u'text': u'test',
             # u'ts': u'1495661121.838366', u'user': u'U5ACF70RH',
@@ -67,9 +72,6 @@ class SlackBackend(IOBackend):
 
             if event["user"] == self.me.id:
                 will_said_it = True
-
-            # print "incoming"
-            # print event
 
             m = Message(
                 content=event["text"],
@@ -145,25 +147,7 @@ class SlackBackend(IOBackend):
                         {
                             "fallback": event.content,
                             "color": self._map_color(event.kwargs["color"]),
-                            # "pretext": "Optional text that appears above the attachment block",
-                            # "author_name": "Bobby Tables",
-                            # "author_link": "http://flickr.com/bobby/",
-                            # "author_icon": "http://flickr.com/icons/bobby.jpg",
-                            # "title": "Slack API Documentation",
-                            # "title_link": "https://api.slack.com/",
                             "text": event.content,
-                            # "fields": [
-                            #     {
-                            #         "title": "Priority",
-                            #         "value": "High",
-                            #         "short": false
-                            #     }
-                            # ],
-                            # "image_url": "http://my-website.com/path/to/image.jpg",
-                            # "thumb_url": "http://example.com/path/to/thumb.png",
-                            # "footer": "Slack API",
-                            # "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-                            # "ts": 123456789
                         }
                     ]),
                 })
@@ -186,7 +170,6 @@ class SlackBackend(IOBackend):
                 "parse": "full",
             })
 
-        # print data
         headers = {'Accept': 'text/plain'}
         r = requests.post(
             SLACK_SEND_URL,
@@ -196,7 +179,7 @@ class SlackBackend(IOBackend):
         )
         resp_json = r.json()
         if not resp_json["ok"]:
-            # print resp_json
+            print resp_json
             assert resp_json["ok"]
 
     def _map_color(self, color):
@@ -280,12 +263,11 @@ class SlackBackend(IOBackend):
         # Bootstrap must provide a way to to have:
         # a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
         # b) any necessary threads running for a)
-        # c) self.handle (string) defined
-        # d) self.me (Person) defined, with Will's info
-        # e) self.people (dict of People) defined, with everyone in an organization/backend
-        # f) self.channels (dict of Channels) defined, with all available channels/rooms.
+        # c) self.me (Person) defined, with Will's info
+        # d) self.people (dict of People) defined, with everyone in an organization/backend
+        # e) self.channels (dict of Channels) defined, with all available channels/rooms.
         #    Note that Channel asks for members, a list of People.
-        # g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
+        # f) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
         self.client = SlackClient(settings.SLACK_API_TOKEN)
 

@@ -71,12 +71,11 @@ class ShellBackend(StdInOutIOBackend):
         # Bootstrap must provide a way to to have:
         # a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
         # b) any necessary threads running for a)
-        # c) self.handle (string) defined
-        # d) self.me (Person) defined, with Will's info
-        # e) self.people (dict of People) defined, with everyone in an organization/backend
-        # f) self.channels (dict of Channels) defined, with all available channels/rooms.
+        # c) self.me (Person) defined, with Will's info
+        # d) self.people (dict of People) defined, with everyone in an organization/backend
+        # e) self.channels (dict of Channels) defined, with all available channels/rooms.
         #    Note that Channel asks for members, a list of People.
-        # g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
+        # f) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
         self.people = {}
         self.channels = {}
