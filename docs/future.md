@@ -75,6 +75,7 @@ class AIOSApp(*args, **kwargs):
 Structure:
 
 app.py
+spec.yml - sample responses that help will decide if it's a reasonable thing to say.
 tests.yml (?  py?)  - Would love to see a conversation here.
 
 Me:  Will, image me ___ 
