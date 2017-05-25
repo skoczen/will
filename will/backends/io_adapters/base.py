@@ -175,6 +175,8 @@ EVENT_REQUIRED_FIELDS = [
 class Event(Bunch):
 
     def __init__(self, *args, **kwargs):
+        super(Event, self).__init__(*args, **kwargs)
+
         for f in EVENT_REQUIRED_FIELDS:
             if not f in kwargs:
                 raise Exception("Missing %s in Event construction." % f)
@@ -186,13 +188,13 @@ class Event(Bunch):
         else:
             self.timestamp = datetime.datetime.now()
 
-        super(Event, self).__init__(*args, **kwargs)
 
 PERSON_REQUIRED_FIELDS = [
     "id",
     "handle",
     "source",
     "name",
+    "first_name"
     # "timezone",
 ]
 
@@ -201,11 +203,18 @@ class Person(Bunch):
     will_is_person = True
 
     def __init__(self, *args, **kwargs):
-        for f in PERSON_REQUIRED_FIELDS:
-            if not f in kwargs:
-                raise Exception("Missing %s in Person construction." % f)
+        super(Person, self).__init__(*args, **kwargs)
+
         for f in kwargs:
             self.__dict__[f] = kwargs[f]
+
+        # Provide first_name
+        if "first_name" not in kwargs:
+            self.first_name = self.name.split(" ")[0]
+
+        for f in PERSON_REQUIRED_FIELDS:
+            if not hasattr(self, f):
+                raise Exception("Missing %s in Person construction." % f)
 
         # Set TZ offset.
         if self.timezone:
@@ -215,7 +224,10 @@ class Person(Bunch):
             self.timezone = False
             self.utc_offset = False
 
-        super(Person, self).__init__(*args, **kwargs)
+    @property
+    def nick(self):
+        logging.warn("sender.nick is deprecated, and will be removed at the end of 2017")
+        return self.handle
 
 CHANNEL_REQUIRED_FIELDS = [
     "id",
@@ -227,6 +239,8 @@ CHANNEL_REQUIRED_FIELDS = [
 
 class Channel(Bunch):
     def __init__(self, *args, **kwargs):
+        super(Channel, self).__init__(*args, **kwargs)
+
         for f in CHANNEL_REQUIRED_FIELDS:
             if not f in kwargs:
                 raise Exception("Missing %s in Channel construction." % f)
@@ -237,4 +251,3 @@ class Channel(Bunch):
             if not m.will_is_person:
                 raise Exception("Someone in the member list is not a Person instance.\n%s" % m)
 
-        super(Channel, self).__init__(*args, **kwargs)

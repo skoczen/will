@@ -7,19 +7,10 @@ import requests
 import threading
 import readline
 import traceback
-from will.utils import Bunch
+from will.utils import Bunch, UNSURE_REPLIES
 from .base import StdInOutIOBackend, Message
 
 from will import settings
-
-UNSURE_REPLIES = [
-    "Hmm.  I'm not sure what to say.",
-    "Hm. I didn't understand that.",
-    "I heard you, but I'm not sure what to do.",
-    "Darn.  I'm not sure what that means.  Maybe you can teach me?",
-    "I really wish I knew how to do that.",
-    "Hm. I understood you, but I'm not sure what to do.",
-]
 
 
 class ShellBackend(StdInOutIOBackend):

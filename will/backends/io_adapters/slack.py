@@ -12,23 +12,13 @@ from markdownify import MarkdownConverter
 from will import settings
 from .base import IOBackend
 from will.mixins import RoomMixin, StorageMixin
-from will.utils import Bunch
+from will.utils import Bunch, UNSURE_REPLIES
 from multiprocessing import Process, Queue
 from will.backends.io_adapters.base import Event, Message, Person, Channel
 from multiprocessing.queues import Empty
 from slackclient import SlackClient
 
 SLACK_SEND_URL = "https://slack.com/api/chat.postMessage"
-
-
-UNSURE_REPLIES = [
-    "Hmm.  I'm not sure what to say.",
-    "I didn't understand that.",
-    "I heard you, but I'm not sure what to do.",
-    "Darn.  I'm not sure what that means.  Maybe you can teach me?",
-    "I really wish I knew how to do that.",
-    "Hm. I understood you, but I'm not sure what to do.",
-]
 
 
 class SlackMarkdownConverter(MarkdownConverter):
@@ -77,7 +67,7 @@ class SlackBackend(IOBackend):
             # u'ts': u'1495662397.335424', u'user': u'U5ACF70RH',
             # u'team': u'T5ACF70KV', u'type': u'message', u'channel': u'D5HGP0YE7'}
 
-            sender = clean_for_pickling(self.people[event["user"]])
+            sender = self.people[event["user"]]
             channel = clean_for_pickling(self.channels[event["channel"]])
             interpolated_handle = "<@%s>" % self.me.id
             will_is_mentioned = False
@@ -102,8 +92,8 @@ class SlackBackend(IOBackend):
             if event["user"] == self.me.id:
                 will_said_it = True
 
-            print "incoming"
-            print event
+            # print "incoming"
+            # print event
 
             m = Message(
                 content=event["text"],
@@ -119,15 +109,14 @@ class SlackBackend(IOBackend):
                 backend_supports_acl=True,
                 source=clean_for_pickling(event),
             )
-            print m.__dict__
             self.input_queue.put(m)
         else:
             # An event type the shell has no idea how to handle.
             pass
 
     def handle_outgoing_event(self, event):
-        print "handle_outgoing_event"
-        print event
+        # print "handle_outgoing_event"
+        # print event
 
         if event.type in ["say", "reply"]:
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
@@ -141,6 +130,7 @@ class SlackBackend(IOBackend):
                 self.send_message(event)
             else:
                 # Came from webhook/etc
+                # TODO: finish this.
                 kwargs = {}
                 if "kwargs" in event:
                     kwargs.update(**event.kwargs)
@@ -205,6 +195,10 @@ class SlackBackend(IOBackend):
                 data.update({
                     "text": event.content,
                 })
+        else:
+            data.update({
+                "text": event.content,
+            })
 
         data.update({
             "token": settings.SLACK_API_TOKEN,
@@ -216,7 +210,7 @@ class SlackBackend(IOBackend):
                 "parse": "full",
             })
 
-        print data
+        # print data
         headers = {'Accept': 'text/plain'}
         r = requests.post(
             SLACK_SEND_URL,
@@ -226,7 +220,7 @@ class SlackBackend(IOBackend):
         )
         resp_json = r.json()
         if not resp_json["ok"]:
-            print resp_json
+            # print resp_json
             assert resp_json["ok"]
 
     def _map_color(self, color):
@@ -280,7 +274,7 @@ class SlackBackend(IOBackend):
                     timezone=user_timezone,
                 )
         self.people = people
-        # print self.people
+        print self.people
 
     def _update_backend_metadata(self):
         self._update_people()
