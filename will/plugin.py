@@ -32,7 +32,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_message(message), ]
             else:
                 rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
-        print rooms
         return rooms
 
     def say(self, content, message=None, room=None, **kwargs):

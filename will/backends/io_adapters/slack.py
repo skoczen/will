@@ -70,6 +70,8 @@ class SlackBackend(IOBackend):
             sender = clean_for_pickling(self.client.server.users[event["user"]])
             channel = clean_for_pickling(self.channels[event["channel"]])
             interpolated_handle = "<@%s>" % self.user.id
+            will_is_mentioned=False
+            will_said_it=False
 
             is_private_chat = False
             if len(channel.members) == 0:
@@ -83,6 +85,12 @@ class SlackBackend(IOBackend):
             if event["text"].startswith(interpolated_handle):
                 event["text"] = event["text"][len(interpolated_handle):].strip()
 
+            if interpolated_handle in event["text"]:
+                will_is_mentioned = True
+
+            if event["user"] == self.user.id:
+                will_said_it = True
+
             print "incoming"
             print event
 
@@ -95,12 +103,12 @@ class SlackBackend(IOBackend):
                 backend=self.name,
                 sender=sender,
                 channel=channel,
-                will_is_mentioned=False,
-                will_said_it=False,
-                backend_supports_acl=False,
+                will_is_mentioned=will_is_mentioned,
+                will_said_it=will_said_it,
+                backend_supports_acl=True,
                 slack_message=clean_for_pickling(event),
             )
-
+            print m.__dict__
             self.input_queue.put(m)
         else:
             # An event type the shell has no idea how to handle.
@@ -134,7 +142,11 @@ class SlackBackend(IOBackend):
                         **kwargs
                     )
 
-        elif event.type == "no_response" and event.source_message.is_direct:
+        elif (
+            event.type == "no_response" and
+            event.source_message.is_direct and 
+            event.source_message.will_said_it is False
+        ):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)
 
@@ -149,7 +161,6 @@ class SlackBackend(IOBackend):
             "text": event.content,
             "as_user": True,
         })
-        print data
         headers = {'Accept': 'text/plain'}
         r = requests.post(
             SLACK_SEND_URL,
@@ -158,9 +169,7 @@ class SlackBackend(IOBackend):
             **settings.REQUESTS_OPTIONS
         )
         resp_json = r.json()
-        print resp_json
         assert resp_json["ok"]
-
 
     def __watch_slack_rtm(self):
         if self.client.rtm_connect():

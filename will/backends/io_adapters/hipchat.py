@@ -182,7 +182,11 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                         **kwargs
                     )
 
-        elif event.type == "no_response" and event.source_message.is_direct:
+        elif (
+            event.type == "no_response" and
+            event.source_message.is_direct and 
+            event.source_message.will_said_it is False
+        ):
             if event.source_message.hipchat_message.type == "groupchat":
                 self.send_room_message(
                     event.source_message.hipchat_message.room.room_id,
