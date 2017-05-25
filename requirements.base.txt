@@ -12,6 +12,7 @@ parsedatetime==1.1.2
 pyasn1-modules==0.0.5
 pyasn1==0.1.7
 pygerduty==0.28
+pytz==2017.2
 PyYAML==3.10
 requests==2.4.1
 slackclient==1.0.5

@@ -1,6 +1,9 @@
 import datetime
 import hashlib
+from pytz import timezone as pytz_timezone
 import time
+
+
 from will import settings
 from will.utils import Bunch
 from multiprocessing.queues import Empty
@@ -101,6 +104,7 @@ MESSAGE_REQUIRED_FIELDS = [
     "backend_supports_acl",
     "content",
     "backend",
+    "source",
 ]
 
 
@@ -162,3 +166,54 @@ class Event(Bunch):
             self.timestamp = datetime.datetime.now()
 
         super(Event, self).__init__(*args, **kwargs)
+
+PERSON_REQUIRED_FIELDS = [
+    "id",
+    "handle",
+    "source",
+    "name",
+    # "timezone",
+]
+
+
+class Person(Bunch):
+    will_is_person = True
+
+    def __init__(self, *args, **kwargs):
+        for f in PERSON_REQUIRED_FIELDS:
+            if not f in kwargs:
+                raise Exception("Missing %s in Person construction." % f)
+        for f in kwargs:
+            self.__dict__[f] = kwargs[f]
+
+        # Set TZ offset.
+        if self.timezone:
+            self.timezone = pytz_timezone(self.timezone)
+            self.utc_offset = self.timezone._utcoffset
+        else:
+            self.timezone = False
+            self.utc_offset = False
+
+        super(Person, self).__init__(*args, **kwargs)
+
+CHANNEL_REQUIRED_FIELDS = [
+    "id",
+    "name",
+    "source",
+    "members",
+]
+
+
+class Channel(Bunch):
+    def __init__(self, *args, **kwargs):
+        for f in CHANNEL_REQUIRED_FIELDS:
+            if not f in kwargs:
+                raise Exception("Missing %s in Channel construction." % f)
+        for f in kwargs:
+            self.__dict__[f] = kwargs[f]
+
+        for id, m in self.members.items():
+            if not m.will_is_person:
+                raise Exception("Someone in the member list is not a Person instance.\n%s" % m)
+
+        super(Channel, self).__init__(*args, **kwargs)

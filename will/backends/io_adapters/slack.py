@@ -12,7 +12,7 @@ from .base import IOBackend
 from will.mixins import RoomMixin, StorageMixin
 from will.utils import Bunch
 from multiprocessing import Process, Queue
-from will.backends.io_adapters.base import Event, Message
+from will.backends.io_adapters.base import Event, Message, Person, Channel
 from multiprocessing.queues import Empty
 from slackclient import SlackClient
 
@@ -67,11 +67,11 @@ class SlackBackend(IOBackend):
             # u'ts': u'1495662397.335424', u'user': u'U5ACF70RH',
             # u'team': u'T5ACF70KV', u'type': u'message', u'channel': u'D5HGP0YE7'}
 
-            sender = clean_for_pickling(self.client.server.users[event["user"]])
+            sender = clean_for_pickling(self.people[event["user"]])
             channel = clean_for_pickling(self.channels[event["channel"]])
-            interpolated_handle = "<@%s>" % self.user.id
-            will_is_mentioned=False
-            will_said_it=False
+            interpolated_handle = "<@%s>" % self.me.id
+            will_is_mentioned = False
+            will_said_it = False
 
             is_private_chat = False
             if len(channel.members) == 0:
@@ -88,7 +88,7 @@ class SlackBackend(IOBackend):
             if interpolated_handle in event["text"]:
                 will_is_mentioned = True
 
-            if event["user"] == self.user.id:
+            if event["user"] == self.me.id:
                 will_said_it = True
 
             print "incoming"
@@ -106,7 +106,7 @@ class SlackBackend(IOBackend):
                 will_is_mentioned=will_is_mentioned,
                 will_said_it=will_said_it,
                 backend_supports_acl=True,
-                slack_message=clean_for_pickling(event),
+                source=clean_for_pickling(event),
             )
             print m.__dict__
             self.input_queue.put(m)
@@ -144,7 +144,7 @@ class SlackBackend(IOBackend):
 
         elif (
             event.type == "no_response" and
-            event.source_message.is_direct and 
+            event.source_message.is_direct and
             event.source_message.will_said_it is False
         ):
             event.content = random.choice(UNSURE_REPLIES)
@@ -171,21 +171,70 @@ class SlackBackend(IOBackend):
         resp_json = r.json()
         assert resp_json["ok"]
 
+    # # Abstract / Require all backends to set:
+    # self.handle = ""
+    # self.me = Person()
+
+    # # channels/rooms
+    # self.channels = {
+    #     'channel_id': Channel()
+    # }
+    # # people/roster
+    # self.people = {
+    #     'person_id': Person()
+    # }
+    def __update_channels(self):
+        channels = {}
+        members = {}
+        for c in self.client.server.channels:
+            for m in c.members:
+                members[m] = self.people[m]
+
+            channels[c.id] = Channel(
+                id=c.id,
+                name=c.name,
+                source=clean_for_pickling(c),
+                members=members
+            )
+        self.channels = channels
+
+    def __update_people(self):
+        people = {}
+
+        self.username = self.client.server.username
+
+        for k, v in self.client.server.users.items():
+            user_timezone = None
+            if v.tz:
+                user_timezone = v.tz
+            people[k] = Person(
+                id=v.id,
+                handle=v.name,
+                source=clean_for_pickling(v),
+                name=v.real_name,
+                timezone=user_timezone,
+            )
+            if v.name == self.username:
+                self.me = Person(
+                    id=v.id,
+                    handle=v.name,
+                    source=clean_for_pickling(v),
+                    name=v.real_name,
+                    timezone=user_timezone,
+                )
+        self.people = people
+        # print self.people
+
+    def __update_backend_metadata(self):
+        self.__update_people()
+        self.__update_channels()
+
     def __watch_slack_rtm(self):
         if self.client.rtm_connect():
+            self.__update_backend_metadata()
 
-            self.username = self.client.server.username
-
-            self.channels = {}
-            for c in self.client.server.channels:
-                self.channels[c.id] = c
-
-            self.users = {}
-            for k, v in self.client.server.users.items():
-                self.users[k] = v
-                if v.name == self.username:
-                    self.user = v
-
+            num_polls_between_updates = 20
+            current_poll_count = 0
             while True:
                 events = self.client.rtm_read()
                 if len(events) > 0:
@@ -193,7 +242,12 @@ class SlackBackend(IOBackend):
                     for e in events:
                         self.handle_incoming_event(e)
 
-                # TODO: update channels/users/username/etc every 10s or so.
+                # Update channels/people/me/etc every 10s or so.
+                current_poll_count += 1
+                if current_poll_count < num_polls_between_updates:
+                    self.__update_backend_metadata()
+                    current_poll_count = 0
+
                 time.sleep(0.5)
 
     def bootstrap(self):
