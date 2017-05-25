@@ -14,5 +14,5 @@ class HelloPlugin(WillPlugin):
         self.reply(message, "hi!")
 
     @respond_to("^bonjour$")
-    def hello(self, message):
+    def bonjour(self, message):
         self.reply(message, "bonjour!")

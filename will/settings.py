@@ -75,7 +75,10 @@ def import_settings(quiet=True):
                      "Defaulting to '%s', the first one." % settings["ROOMS"][0])
             settings["DEFAULT_ROOM"] = settings["ROOMS"][0]
 
-        if "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and settings["IO_BACKENDS"] and len(settings["IO_BACKENDS"]) > 0:
+        if (
+            "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
+            settings["IO_BACKENDS"] and len(settings["IO_BACKENDS"]) > 0
+        ):
             if not quiet:
                 warn("no DEFAULT_BACKEND found in the environment or config.  "
                      "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])

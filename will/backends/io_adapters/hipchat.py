@@ -32,7 +32,6 @@ ALL_ROOMS_URL = ("https://%(server)s/v2/room?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s&expand=items")
 
 
-
 class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
 
     def start_xmpp_client(self, input_queue=None, output_queue=None, backend_name=""):
@@ -117,14 +116,6 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
 
                     hipchat_id = user_id.split("@")[0].split("_")[1]
                     # Update their info
-                    person = Person(
-                        id=v["id"],
-                        handle=v.name,
-                        source=clean_for_pickling(v),
-                        name=user_data["name"],
-                        timezone=user_timezone,
-                        hipchat_id=hipchat_id
-                    )
                     people[user_id].update({
                         "name": user_data["name"],
                         "jid": user_id,
@@ -258,7 +249,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 "notify": notify,
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
 
         except:
             logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())
@@ -516,7 +507,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         # c) self.handle (string) defined
         # d) self.me (Person) defined, with Will's info
         # e) self.people (dict of People) defined, with everyone in an organization/backend
-        # f) self.channels (dict of Channels) defined, with all available channels/rooms.  
+        # f) self.channels (dict of Channels) defined, with all available channels/rooms.
         #    Note that Channel asks for members, a list of People.
         # g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
@@ -529,11 +520,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         )
         self.client.connect()
         # Property, get/sets
-        try:
-            self.people
-            self.channels
-        except:
-            import traceback; traceback.print_exc();
+        self.people
+        self.channels
 
         self.bridge_thread = Process(target=self.__handle_bridge_queue)
         self.bridge_thread.start()

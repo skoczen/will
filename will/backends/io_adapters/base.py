@@ -1,6 +1,7 @@
 # -- coding: utf-8 -
 import datetime
 import hashlib
+import logging
 from pytz import timezone as pytz_timezone
 import time
 
@@ -119,10 +120,11 @@ MESSAGE_REQUIRED_FIELDS = [
     "source",
 ]
 
+
 def clean_message_content(s):
-    s = s.replace("’", "'").replace("‘", "'").replace('“','"').replace('”','"')
+    s = s.replace("’", "'").replace("‘", "'").replace('“', '"').replace('”', '"')
     s = s.replace(u"\u2018", "'").replace(u"\u2019", "'")
-    s = s.replace(u"\u201c",'"').replace(u"\u201d", '"')
+    s = s.replace(u"\u201c", '"').replace(u"\u201d", '"')
     return s
 
 
@@ -229,6 +231,7 @@ class Person(Bunch):
         logging.warn("sender.nick is deprecated, and will be removed at the end of 2017")
         return self.handle
 
+
 CHANNEL_REQUIRED_FIELDS = [
     "id",
     "name",
@@ -250,4 +253,3 @@ class Channel(Bunch):
         for id, m in self.members.items():
             if not m.will_is_person:
                 raise Exception("Someone in the member list is not a Person instance.\n%s" % m)
-
