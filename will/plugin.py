@@ -91,7 +91,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             # print message.backend
             # print "self.bot"
             # print self.bot.queues.io.output
-            # TODO HERE: connect to bot / main thread to push out.
             self.bot.queues.io.output[message.backend].put(Event(
                 type="reply",
                 content=content,

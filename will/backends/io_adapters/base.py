@@ -217,7 +217,7 @@ class Person(Bunch):
                 raise Exception("Missing %s in Person construction." % f)
 
         # Set TZ offset.
-        if self.timezone:
+        if hasattr(self, "timezone") and self.timezone:
             self.timezone = pytz_timezone(self.timezone)
             self.utc_offset = self.timezone._utcoffset
         else:

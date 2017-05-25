@@ -13,6 +13,15 @@ UNSURE_REPLIES = [
     "Hm. I understood you, but I'm not sure what to do.",
 ]
 
+DO_NOT_PICKLE = [
+    "api_requester",
+    "dnapi_requester",
+    "websocket",
+    "parse_channel_data",
+    "server",
+    "send_message",
+]
+
 
 class Bunch(dict):
     def __init__(self, **kw):
@@ -25,6 +34,20 @@ class Bunch(dict):
     def __setstate__(self, state):
         self.update(state)
         self.__dict__ = self
+
+
+def clean_for_pickling(d):
+    cleaned_obj = Bunch()
+    if hasattr(d, "items"):
+        for k, v in d.items():
+            if k not in DO_NOT_PICKLE and "__" not in k:
+                cleaned_obj[k] = v
+    else:
+        for k in dir(d):
+            if k not in DO_NOT_PICKLE and "__" not in k:
+                cleaned_obj[k] = getattr(d, k)
+
+    return cleaned_obj
 
 
 # Via http://stackoverflow.com/a/925630

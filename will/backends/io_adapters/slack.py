@@ -12,7 +12,7 @@ from markdownify import MarkdownConverter
 from will import settings
 from .base import IOBackend
 from will.mixins import RoomMixin, StorageMixin
-from will.utils import Bunch, UNSURE_REPLIES
+from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from multiprocessing import Process, Queue
 from will.backends.io_adapters.base import Event, Message, Person, Channel
 from multiprocessing.queues import Empty
@@ -25,30 +25,6 @@ class SlackMarkdownConverter(MarkdownConverter):
 
     def convert_strong(self, el, text):
         return '*%s*' % text if text else ''
-
-
-DO_NOT_PICKLE = [
-    "api_requester",
-    "dnapi_requester",
-    "websocket",
-    "parse_channel_data",
-    "server",
-    "send_message",
-]
-
-
-def clean_for_pickling(d):
-    cleaned_obj = Bunch()
-    if hasattr(d, "items"):
-        for k, v in d.items():
-            if k not in DO_NOT_PICKLE and "__" not in k:
-                cleaned_obj[k] = v
-    else:
-        for k in dir(d):
-            if k not in DO_NOT_PICKLE and "__" not in k:
-                cleaned_obj[k] = getattr(d, k)
-
-    return cleaned_obj
 
 
 class SlackBackend(IOBackend):
@@ -274,7 +250,6 @@ class SlackBackend(IOBackend):
                     timezone=user_timezone,
                 )
         self.people = people
-        print self.people
 
     def _update_backend_metadata(self):
         self._update_people()
