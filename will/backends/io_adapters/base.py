@@ -1,3 +1,4 @@
+# -- coding: utf-8 -
 import datetime
 import hashlib
 from pytz import timezone as pytz_timezone
@@ -14,7 +15,18 @@ class IOBackend(object):
     is_will_iobackend = True
 
     def bootstrap(self):
-        pass
+        """Bootstrap must provide a way to to have:
+        a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
+        b) any necessary threads running for a)
+        c) self.handle (string) defined
+        d) self.me (Person) defined, with Will's info
+        e) self.people (list of People) defined, with everyone in an organization/backend
+        f) self.channels (list of Channels) defined, with all available channels/rooms.
+           Note that Channel asks for members, a list of People.
+        g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
+           with a maximum lag of 60 seconds.
+        """
+        raise NotImplemented
 
     def handle_incoming_event(self, event):
         raise NotImplemented
@@ -107,6 +119,12 @@ MESSAGE_REQUIRED_FIELDS = [
     "source",
 ]
 
+def clean_message_content(s):
+    s = s.replace("’", "'").replace("‘", "'").replace('“','"').replace('”','"')
+    s = s.replace(u"\u2018", "'").replace(u"\u2019", "'")
+    s = s.replace(u"\u201c",'"').replace(u"\u201d", '"')
+    return s
+
 
 class Message(object):
 
@@ -122,6 +140,9 @@ class Message(object):
             self.timestamp = kwargs["timestamp"]
         else:
             self.timestamp = datetime.datetime.now()
+
+        # Clean content.
+        self.content = clean_message_content(self.content)
 
         h = hashlib.md5()
         h.update(self.timestamp.strftime("%s"))

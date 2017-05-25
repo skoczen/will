@@ -15,5 +15,3 @@ pygerduty==0.28
 pytz==2017.2
 PyYAML==3.10
 requests==2.4.1
-slackclient==1.0.5
-sleekxmpp==1.3.1

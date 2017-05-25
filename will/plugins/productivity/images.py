@@ -14,7 +14,7 @@ class ImagesPlugin(WillPlugin):
         if not (getattr(settings, "GOOGLE_API_KEY", False) and getattr("GOOGLE_CUSTOM_SEARCH_KEY", False)):
             self.say(
                 "Sorry, I'm missing my GOOGLE_API_KEY and GOOGLE_CUSTOM_SEARCH_KEY."
-                " Can someone give them to me?", color="red"
+                " Can someone give them to me?", color="red", message=message
             )
             return
 

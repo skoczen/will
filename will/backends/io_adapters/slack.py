@@ -7,6 +7,8 @@ import sys
 import time
 import traceback
 
+from markdownify import MarkdownConverter
+
 from will import settings
 from .base import IOBackend
 from will.mixins import RoomMixin, StorageMixin
@@ -27,6 +29,14 @@ UNSURE_REPLIES = [
     "I really wish I knew how to do that.",
     "Hm. I understood you, but I'm not sure what to do.",
 ]
+
+
+class SlackMarkdownConverter(MarkdownConverter):
+
+    def convert_strong(self, el, text):
+        return '*%s*' % text if text else ''
+
+
 DO_NOT_PICKLE = [
     "api_requester",
     "dnapi_requester",
@@ -74,11 +84,12 @@ class SlackBackend(IOBackend):
             will_said_it = False
 
             is_private_chat = False
-            if len(channel.members) == 0:
+
+            if len(channel.members.keys()) == 0:
                 is_private_chat = True
 
-            is_direct = False
             # <@U5GUL9D9N> hi
+            is_direct = False
             if is_private_chat or event["text"].startswith(interpolated_handle):
                 is_direct = True
 
@@ -100,7 +111,7 @@ class SlackBackend(IOBackend):
                 is_direct=is_direct,
                 is_private_chat=is_private_chat,
                 is_group_chat=not is_private_chat,
-                backend=self.name,
+                backend=self.internal_name,
                 sender=sender,
                 channel=channel,
                 will_is_mentioned=will_is_mentioned,
@@ -119,6 +130,12 @@ class SlackBackend(IOBackend):
         print event
 
         if event.type in ["say", "reply"]:
+            if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
+                event.content = SlackMarkdownConverter().convert(event.content)
+
+            event.content = event.content.replace("&", "&amp;")
+            event.content = event.content.replace("<", "&lt;")
+            event.content = event.content.replace(">", "&gt;")
 
             if hasattr(event, "source_message") and event.source_message:
                 self.send_message(event)
@@ -155,12 +172,51 @@ class SlackBackend(IOBackend):
         if hasattr(event, "kwargs"):
             data.update(event.kwargs)
 
+            if "color" in event.kwargs:
+
+                data.update({
+                    "attachments": json.dumps([
+                        {
+                            "fallback": event.content,
+                            "color": self._map_color(event.kwargs["color"]),
+                            # "pretext": "Optional text that appears above the attachment block",
+                            # "author_name": "Bobby Tables",
+                            # "author_link": "http://flickr.com/bobby/",
+                            # "author_icon": "http://flickr.com/icons/bobby.jpg",
+                            # "title": "Slack API Documentation",
+                            # "title_link": "https://api.slack.com/",
+                            "text": event.content,
+                            # "fields": [
+                            #     {
+                            #         "title": "Priority",
+                            #         "value": "High",
+                            #         "short": false
+                            #     }
+                            # ],
+                            # "image_url": "http://my-website.com/path/to/image.jpg",
+                            # "thumb_url": "http://example.com/path/to/thumb.png",
+                            # "footer": "Slack API",
+                            # "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+                            # "ts": 123456789
+                        }
+                    ]),
+                })
+            else:
+                data.update({
+                    "text": event.content,
+                })
+
         data.update({
             "token": settings.SLACK_API_TOKEN,
             "channel": event.source_message.channel.id,
-            "text": event.content,
             "as_user": True,
         })
+        if hasattr(event, "kwargs") and "html" in event.kwargs and event.kwargs["html"]:
+            data.update({
+                "parse": "full",
+            })
+
+        print data
         headers = {'Accept': 'text/plain'}
         r = requests.post(
             SLACK_SEND_URL,
@@ -169,24 +225,25 @@ class SlackBackend(IOBackend):
             **settings.REQUESTS_OPTIONS
         )
         resp_json = r.json()
-        assert resp_json["ok"]
+        if not resp_json["ok"]:
+            print resp_json
+            assert resp_json["ok"]
 
-    # # Abstract / Require all backends to set:
-    # self.handle = ""
-    # self.me = Person()
+    def _map_color(self, color):
+        # Turn colors into hex values, handling old slack colors, etc
+        if color == "red":
+            return "danger"
+        elif color == "yellow":
+            return "warning"
+        elif color == "green":
+            return "good"
 
-    # # channels/rooms
-    # self.channels = {
-    #     'channel_id': Channel()
-    # }
-    # # people/roster
-    # self.people = {
-    #     'person_id': Person()
-    # }
-    def __update_channels(self):
+        return color
+
+    def _update_channels(self):
         channels = {}
-        members = {}
         for c in self.client.server.channels:
+            members = {}
             for m in c.members:
                 members[m] = self.people[m]
 
@@ -198,10 +255,10 @@ class SlackBackend(IOBackend):
             )
         self.channels = channels
 
-    def __update_people(self):
+    def _update_people(self):
         people = {}
 
-        self.username = self.client.server.username
+        self.handle = self.client.server.username
 
         for k, v in self.client.server.users.items():
             user_timezone = None
@@ -214,7 +271,7 @@ class SlackBackend(IOBackend):
                 name=v.real_name,
                 timezone=user_timezone,
             )
-            if v.name == self.username:
+            if v.name == self.handle:
                 self.me = Person(
                     id=v.id,
                     handle=v.name,
@@ -225,13 +282,13 @@ class SlackBackend(IOBackend):
         self.people = people
         # print self.people
 
-    def __update_backend_metadata(self):
-        self.__update_people()
-        self.__update_channels()
+    def _update_backend_metadata(self):
+        self._update_people()
+        self._update_channels()
 
-    def __watch_slack_rtm(self):
+    def _watch_slack_rtm(self):
         if self.client.rtm_connect():
-            self.__update_backend_metadata()
+            self._update_backend_metadata()
 
             num_polls_between_updates = 20
             current_poll_count = 0
@@ -245,15 +302,25 @@ class SlackBackend(IOBackend):
                 # Update channels/people/me/etc every 10s or so.
                 current_poll_count += 1
                 if current_poll_count < num_polls_between_updates:
-                    self.__update_backend_metadata()
+                    self._update_backend_metadata()
                     current_poll_count = 0
 
                 time.sleep(0.5)
 
     def bootstrap(self):
+        # Bootstrap must provide a way to to have:
+        # a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
+        # b) any necessary threads running for a)
+        # c) self.handle (string) defined
+        # d) self.me (Person) defined, with Will's info
+        # e) self.people (list of People) defined, with everyone in an organization/backend
+        # f) self.channels (list of Channels) defined, with all available channels/rooms.  
+        #    Note that Channel asks for members, a list of People.
+        # g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
+        #    with a maximum lag of 60 seconds.
         self.client = SlackClient(settings.SLACK_API_TOKEN)
 
-        self.rtm_thread = Process(target=self.__watch_slack_rtm)
+        self.rtm_thread = Process(target=self._watch_slack_rtm)
         self.rtm_thread.start()
 
     def terminate(self):
