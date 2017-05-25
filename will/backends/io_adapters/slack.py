@@ -282,8 +282,8 @@ class SlackBackend(IOBackend):
         # b) any necessary threads running for a)
         # c) self.handle (string) defined
         # d) self.me (Person) defined, with Will's info
-        # e) self.people (list of People) defined, with everyone in an organization/backend
-        # f) self.channels (list of Channels) defined, with all available channels/rooms.  
+        # e) self.people (dict of People) defined, with everyone in an organization/backend
+        # f) self.channels (dict of Channels) defined, with all available channels/rooms.  
         #    Note that Channel asks for members, a list of People.
         # g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.

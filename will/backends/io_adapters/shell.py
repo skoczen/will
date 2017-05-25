@@ -8,7 +8,7 @@ import threading
 import readline
 import traceback
 from will.utils import Bunch, UNSURE_REPLIES
-from .base import StdInOutIOBackend, Message
+from .base import StdInOutIOBackend, Message, Person, Channel
 
 from will import settings
 
@@ -16,6 +16,12 @@ from will import settings
 class ShellBackend(StdInOutIOBackend):
     friendly_name = "Interactive Shell"
     internal_name = "will.backends.io_adapters.shell"
+    partner = Person(
+        id="you",
+        handle="you",
+        source=Bunch(),
+        name="Friend",
+    )
 
     def send_direct_message(self, message_body, **kwargs):
         print("Will: %s" % message_body)
@@ -29,13 +35,13 @@ class ShellBackend(StdInOutIOBackend):
     def handle_incoming_event(self, event):
         if event.type == "message":
             m = Message(
-                content=event.content,
+                content=event.content.strip(),
                 type=event.type,
                 is_direct=True,
                 is_private_chat=True,
                 is_group_chat=False,
                 backend=self.name,
-                sender=Bunch(nick="You"),
+                sender=self.partner,
                 will_is_mentioned=False,
                 will_said_it=False,
                 backend_supports_acl=False,
@@ -62,6 +68,25 @@ class ShellBackend(StdInOutIOBackend):
         sys.stdout.flush()
 
     def bootstrap(self):
+        # Bootstrap must provide a way to to have:
+        # a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
+        # b) any necessary threads running for a)
+        # c) self.handle (string) defined
+        # d) self.me (Person) defined, with Will's info
+        # e) self.people (dict of People) defined, with everyone in an organization/backend
+        # f) self.channels (dict of Channels) defined, with all available channels/rooms.  
+        #    Note that Channel asks for members, a list of People.
+        # g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
+        #    with a maximum lag of 60 seconds.
+        self.people = {}
+        self.channels = {}
+        self.me = Person(
+            id="will",
+            handle="will",
+            source=Bunch(),
+            name="William T. Botterton",
+        )
+
         # Do this to get the first "you" prompt.
         self.input_queue.put(Message(
                 content="",
@@ -69,8 +94,8 @@ class ShellBackend(StdInOutIOBackend):
                 is_direct=True,
                 is_private_chat=True,
                 is_group_chat=False,
-                backend=self.name,
-                sender=Bunch(nick="You"),
+                backend=self.internal_name,
+                sender=self.partner,
                 will_is_mentioned=False,
                 will_said_it=False,
                 backend_supports_acl=False,
