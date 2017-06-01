@@ -14,11 +14,12 @@ class AllBackend(ExecutionBackend):
         try:
             had_one_reply = False
             for m in message.generation_options:
-                # print "bot_fn"
-                # print m
-                # print m.__dict__
-                # print m.context.full_method_name
-                # print self.bot
+                print "bot_fn"
+                print m
+                print m.__dict__
+                print m.context.full_method_name
+                print self.bot
+                print self.bot.pubsub
                 live_listener = self.bot.message_listeners[m.context.full_method_name]
 
                 thread_args = [message, ] + m.context["args"]
@@ -26,11 +27,12 @@ class AllBackend(ExecutionBackend):
                 # print "did stuff"
                 had_one_reply = True
             if not had_one_reply:
-                self.bot.queues.io.output[message.backend].put(Event(
-                    type="no_response",
-                    content=None,
-                    source_message=message,
-                ))
+                self.bot.pubsub.publish("no_response", {}, reference_message=message)
+                # self.bot.queues.io.output[message.backend].put(Event(
+                #     type="no_response",
+                #     content=None,
+                #     source_message=message,
+                # ))
 
             return {}
         except:

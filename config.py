@@ -162,6 +162,11 @@ QUEUE_INTERVAL = 0.025
 # STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
 
 
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# PUBSUB_BACKEND = "redis"  # "redis", or "zeromq".
+
+
 # Disable SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
 

@@ -16,7 +16,7 @@ class PubSubMixin(object):
                 # zeromq => will.pubsub.zeromq_backend
                 # etc...
                 module_name = ''.join([
-                    'will.pubsub.',
+                    'will.backends.pubsub.',
                     getattr(settings, 'PUBSUB_BACKEND', 'redis'),
                     '_pubsub'
                 ])

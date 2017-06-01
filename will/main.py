@@ -23,7 +23,7 @@ import bottle
 from listener import ListenerMixin
 
 from mixins import ScheduleMixin, StorageMixin, ErrorMixin,\
-    RoomMixin, PluginModulesLibraryMixin, EmailMixin
+    RoomMixin, PluginModulesLibraryMixin, EmailMixin, PubSubMixin
 from backends import analysis, execution, generation, io_adapters
 from backends.io_adapters.base import Event
 from scheduler import Scheduler
@@ -48,7 +48,7 @@ sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.join(PROJECT_ROOT, "will"))
 
 
-class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
+class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
               ErrorMixin, RoomMixin, ListenerMixin, PluginModulesLibraryMixin):
 
     def __init__(self, **kwargs):
@@ -110,6 +110,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
         self.verify_environment()
         self.verify_rooms()
         self.bootstrap_storage_mixin()
+        self.bootstrap_pubsub_mixin()
         self.bootstrap_plugins()
         self.verify_plugin_settings()
         self.verify_io()
@@ -140,6 +141,9 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
             # Incoming message queue
             incoming_message_thread = Process(target=self.bootstrap_message_handler)
 
+            # Event handler
+            incoming_event_thread = Process(target=self.bootstrap_event_handler)
+
             self.io_threads = []
             self.analysis_threads = []
             self.generation_threads = []
@@ -154,6 +158,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                 scheduler_thread.start()
                 bottle_thread.start()
                 incoming_message_thread.start()
+                incoming_event_thread.start()
 
                 errors = self.get_startup_errors()
                 if len(errors) > 0:
@@ -188,6 +193,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
             scheduler_thread.terminate()
             bottle_thread.terminate()
             incoming_message_thread.terminate()
+            incoming_event_thread.terminate()
 
             if self.stdin_listener_thread:
                 self.stdin_listener_thread.terminate()
@@ -215,6 +221,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin,
                 scheduler_thread.is_alive() or
                 bottle_thread.is_alive() or
                 incoming_message_thread.is_alive() or
+                incoming_event_thread.is_alive() or
                 self.stdin_listener_thread.is_alive() or
                 any([t.is_alive() for t in self.stdin_io_threads]) or
                 any([t.is_alive() for t in self.stdin_io_threads]) or
@@ -618,33 +625,151 @@ To set your %(name)s:
             except Empty:
                 pass
 
+    def bootstrap_event_handler(self):
+        self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)
+        self.generation_timeout = getattr(settings, "GENERATION_TIMEOUT_MS", 2000)
+        self.message_handler_threads = []
+        self.pubsub.subscribe(["message.incoming", "analysis.*", "generation.*"])
+
+        # TODO: change this to the number of running analysis threads
+        num_analysis_queues = len(self.queues.analysis.input)
+        num_generation_queues = len(self.queues.generation.input)
+        analysis_queues = {}
+        generation_queues = {}
+        # execution_queues = {}
+
+        while True:
+            try:
+                event = self.pubsub.get_message()
+                if event:
+                    # and hasattr(event, "type"):
+                    print "--- MAIN got event (%s)" % event.type
+                    print event
+                    # print event.__dict__
+                    if hasattr(event, "source"):
+                        print "event.data.source.__dict__"
+                        print event.data.source.__dict__
+                    # print "type" in event
+                    print type(event)
+                    if hasattr(event, "type"):
+                        print "event.type"
+                        print event.type
+                        print event.type == "message.incoming"
+
+                        # TOOD: Order by most common.
+                        if event.type == "message.incoming":
+                            # A message just got dropped off one of the IO Backends.
+                            # Send it to analysis.
+
+                            # elif event.type == "analysis.start":
+                            analysis_queues[event.source_hash] = {
+                                "count": 0,
+                                "timeout_end": datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000),
+                                "source": event,
+                            }
+                            self.pubsub.publish("analysis.start", event.data.source, reference_message=event)
+
+                        elif event.type == "analysis.complete":
+                            print analysis_queues
+                            q = analysis_queues[event.source_hash]
+                            q["source"].update({"analysis": event.data})
+                            q["count"] += 1
+                            print q["count"]
+                            print num_analysis_queues
+                            print q["count"] >= num_analysis_queues
+                            print datetime.datetime.now() > q["timeout_end"]
+
+                            if q["count"] >= num_analysis_queues or datetime.datetime.now() > q["timeout_end"]:
+                                # done, move on.
+                                generation_queues[event.source_hash] = {
+                                    "count": 0,
+                                    "timeout_end": datetime.datetime.now() + datetime.timedelta(seconds=self.generation_timeout/1000),
+                                    "source": q["source"],
+                                }
+                                print "generation_queues"
+                                print generation_queues
+                                del analysis_queues[event.source_hash]
+                                self.pubsub.publish("generation.start", q["source"], reference_message=q["source"])
+
+                        elif event.type == "generation.complete":
+                            q = generation_queues[event.source_hash]
+                            print "TODO: FIx this properly."
+                            if not hasattr(q["source"], "generation_options"):
+                                q["source"].generation_options = []
+                            if hasattr(event, "data") and len(event.data) > 0:
+                                q["source"].generation_options.append(*event.data)
+                            q["count"] += 1
+                            print q["count"]
+                            print num_generation_queues
+
+                            if q["count"] >= num_generation_queues or datetime.datetime.now() > q["timeout_end"]:
+                                # done, move on.
+                                # self.pubsub.publish("execution.start", q["source"])
+                                print self.execution_backends
+                                for b in self.execution_backends:
+                                    try:
+                                        b.execute(q["source"])
+                                    except:
+                                        break
+                                del generation_queues[event.source_hash]
+                        time.sleep(settings.QUEUE_INTERVAL)
+            except:
+                logging.exception("Error handling message")
+
+            # try:
+            #     message = self.queues.io._incoming.get(timeout=settings.QUEUE_INTERVAL)
+            #     t = Process(target=self.handle_message, args=(message,))
+            #     t.start()
+            #     self.message_handler_threads.append(t)
+            # except Empty:
+            #     pass
+
     def handle_message(self, message):
 
         # Send to analyze
         # Analysis (Understand, add metadata)
         # Now: Run each analyze syncrhonously, add info to message.
         # Later: Fire up analyze threads for each, with queues for output
+        message_id = message.hash
+        self.pubsub.subscribe("analysis")
+        return
+
         try:
             message.analysis = Bunch()
 
-            num_queues = len(self.queues.analysis.input)
             queues_heard_from = 0
             timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000)
-            for name, q in self.queues.analysis.input.items():
-                q.put(message)
+            self.pubsub.publish("analysis.start", message)
+            # for name, q in self.queues.analysis.input.items():
+            #     q.put(message)
 
             # Grab results from all the queues, give up on timeout after
             while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
-                for name, q in self.queues.analysis.output.items():
-                    try:
-                        context = q.get(timeout=settings.QUEUE_INTERVAL)
-                        # TODO: Last one wins right now - this should not
-                        # allow conflicts.
-                        message.analysis.update(context)
+                m = self.pubsub.get_message()
+                if (
+                    m and
+                    hasattr(m, "type") and
+                    m.type == "analysis.complete" and
+                    m.hash == message_id
+                ):
+                    # TODO: Last one wins right now - this should not
+                    #         # allow conflicts.
+                    message.analysis.update(m)
+                    queues_heard_from += 1
+                else:
+                    time.sleep(settings.QUEUE_INTERVAL)
 
-                        queues_heard_from += 1
-                    except Empty:
-                        pass
+                # for name, q in self.queues.analysis.output.items():
+                #     try:
+                #         context = q.get(timeout=settings.QUEUE_INTERVAL)
+                #         # TODO: Last one wins right now - this should not
+                #         # allow conflicts.
+                #         message.analysis.update(context)
+
+                #         queues_heard_from += 1
+                #     except Empty:
+                #         pass
+
             if datetime.datetime.now() > timeout_end:
                 print "timed out"
 
@@ -706,6 +831,23 @@ To set your %(name)s:
             sys.exit(1)
         except Exception, e:
             error("Unable to bootstrap storage!")
+            puts(traceback.format_exc(e))
+            sys.exit(1)
+
+    def bootstrap_pubsub_mixin(self):
+        puts("Bootstrapping storage...")
+        try:
+            self.bootstrap_pubsub()
+            with indent(2):
+                show_valid("Bootstrapped!")
+            puts("")
+        except ImportError, e:
+            module_name = traceback.format_exc(e).split(" ")[-1]
+            error("Unable to bootstrap pubsub - attempting to load %s" % module_name)
+            puts(traceback.format_exc(e))
+            sys.exit(1)
+        except Exception, e:
+            error("Unable to bootstrap pubsub!")
             puts(traceback.format_exc(e))
             sys.exit(1)
 

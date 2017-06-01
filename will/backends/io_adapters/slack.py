@@ -11,10 +11,9 @@ from markdownify import MarkdownConverter
 
 from will import settings
 from .base import IOBackend
-from will.mixins import RoomMixin, StorageMixin
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from multiprocessing import Process, Queue
-from will.backends.io_adapters.base import Event, Message, Person, Channel
+from will.abstractions import Event, Message, Person, Channel
 from multiprocessing.queues import Empty
 from slackclient import SlackClient
 
@@ -31,13 +30,13 @@ class SlackBackend(IOBackend):
     friendly_name = "Slack"
     internal_name = "will.backends.io_adapters.slack"
 
-    def handle_incoming_event(self, event):
-        print "slack: handle_incoming_event - %s" % event
+    def normalize_incoming_event(self, event):
 
         if (
             event["type"] == "message" and
             ("subtype" not in event or event["subtype"] != "message_changed")
         ):
+            print "slack: normalize_incoming_event - %s" % event
             # Sample of group message
             # {u'source_team': u'T5ACF70KV', u'text': u'test',
             # u'ts': u'1495661121.838366', u'user': u'U5ACF70RH',
@@ -87,9 +86,10 @@ class SlackBackend(IOBackend):
                 backend_supports_acl=True,
                 source=clean_for_pickling(event),
             )
-            self.input_queue.put(m)
+            return m
+            # self.input_queue.put(m)
         else:
-            # An event type the shell has no idea how to handle.
+            # An event type the slack ba has no idea how to handle.
             pass
 
     def handle_outgoing_event(self, event):
@@ -248,6 +248,7 @@ class SlackBackend(IOBackend):
                 events = self.client.rtm_read()
                 if len(events) > 0:
                     # TODO: only handle events that are new.
+                    print len(events)
                     for e in events:
                         self.handle_incoming_event(e)
 
@@ -261,7 +262,7 @@ class SlackBackend(IOBackend):
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:
-        # a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
+        # a) self.normalize_incoming_event fired, or incoming events put into self.incoming_queue
         # b) any necessary threads running for a)
         # c) self.me (Person) defined, with Will's info
         # d) self.people (dict of People) defined, with everyone in an organization/backend

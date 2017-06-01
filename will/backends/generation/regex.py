@@ -7,13 +7,13 @@ from .base import GenerationBackend, GeneratedOption
 
 class RegexBackend(GenerationBackend):
 
-    def do_generate(self, message):
+    def do_generate(self, event):
         exclude_list = ["fn", ]
         matches = []
 
         self.handle_regex = re.compile("@%s" % settings.HANDLE)
+        message = event.data
         for name, l in self.bot.message_listeners.items():
-
             search_matches = l["regex"].search(message.content)
             if (
                     # The search regex matches and

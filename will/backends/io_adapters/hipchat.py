@@ -14,7 +14,7 @@ from sleekxmpp import ClientXMPP
 from will import settings
 from .base import IOBackend
 from multiprocessing import Process, Queue
-from will.backends.io_adapters.base import Event, Message, Person, Channel
+from will.abstractions import Event, Message, Person, Channel
 from multiprocessing.queues import Empty
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from will.mixins import RosterMixin, RoomMixin, StorageMixin
@@ -332,8 +332,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             self._channels = all_rooms
         return self._channels
 
-    def handle_incoming_event(self, event):
-        print "hipchat: handle_incoming_event - %s" % event
+    def normalize_incoming_event(self, event):
+        print "hipchat: normalize_incoming_event - %s" % event
 
         if event["type"] in ("chat", "normal", "groupchat") and "from_jid" in event:
             # Sample of group message
@@ -468,7 +468,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:
-        # a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
+        # a) self.normalize_incoming_event fired, or incoming events put into self.incoming_queue
         # b) any necessary threads running for a)
         # c) self.me (Person) defined, with Will's info
         # d) self.people (dict of People) defined, with everyone in an organization/backend

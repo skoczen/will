@@ -8,26 +8,20 @@ import time
 
 from will import settings
 from will.utils import Bunch
+from will.mixins import PubSubMixin
+from will.abstractions import Message, Event
 from multiprocessing.queues import Empty
 from multiprocessing import Process
 
 
-def clean_message_content(s):
-    # Clear out 'smart' quotes and the like.
-    s = s.replace("’", "'").replace("‘", "'").replace('“', '"').replace('”', '"')
-    s = s.replace(u"\u2018", "'").replace(u"\u2019", "'")
-    s = s.replace(u"\u201c", '"').replace(u"\u201d", '"')
-    return s
-
-
-class IOBackend(object):
+class IOBackend(PubSubMixin, object):
     is_will_iobackend = True
 
     def bootstrap(self):
         raise NotImplemented("""A .bootstrap() method was not provided.
 
         Bootstrap must provide a way to to have:
-        a) self.handle_incoming_event fired, or incoming events put into self.incoming_queue
+        a) self.normalize_incoming_event fired, or incoming events put into self.incoming_queue
         b) any necessary threads running for a)
         c) self.handle (string) defined
         d) self.me (Person) defined, with Will's info
@@ -38,8 +32,16 @@ class IOBackend(object):
            with a maximum lag of 60 seconds.
         """)
 
-    def handle_incoming_event(self, event):
+    def normalize_incoming_event(self, event):
+        # Takes a raw event, converts it into a Message, and returns the normalized Message.
         raise NotImplemented
+
+    def handle_incoming_event(self, event):
+        m = self.normalize_incoming_event(event)
+        if m:
+            print "\n\n\n\nhandle_incoming_event"
+            print m
+            self.pubsub.publish("message.incoming", m, reference_message=m)
 
     def handle_outgoing_event(self, event):
         raise NotImplemented
@@ -47,10 +49,28 @@ class IOBackend(object):
     def terminate(self):
         pass
 
+    def __publish_incoming_message(self, message):
+        print "__publish_incoming_message"
+        print message
+        return self.pubsub.publish("message.incoming", message, reference_message=message)
+
     def __start_event_listeners(self):
         running = True
         while running:
             try:
+                try:
+                    pubsub_event = self.pubsub.get_message()
+                    if pubsub_event:
+                        print "pubsub event %s" % (self.name)
+                        print pubsub_event
+                        if pubsub_event.type == "message.incoming":
+                            self.handle_incoming_event(pubsub_event)
+                        if pubsub_event.type == "message.outgoing":
+                            self.handle_outgoing_event(pubsub_event.data)
+                except:
+                    import traceback; traceback.print_exc();
+
+                # TODO: get rid of all of the below
                 try:
                     output_event = self.output_queue.get(timeout=settings.QUEUE_INTERVAL)
                     if output_event:
@@ -62,7 +82,7 @@ class IOBackend(object):
                 try:
                     input_event = self.input_queue.get(timeout=settings.QUEUE_INTERVAL)
                     if input_event:
-                        self.handle_incoming_event(input_event)
+                        m = self.normalize_incoming_event(input_event)
 
                 except Empty:
                     pass
@@ -71,7 +91,9 @@ class IOBackend(object):
                     try:
                         input_event = self.stdin_queue.get(timeout=settings.QUEUE_INTERVAL)
                         if input_event:
-                            self.handle_incoming_event(input_event)
+                            m = self.normalize_incoming_event(input_event)
+                            # self.__publish_incoming_message(m)
+                            # TODO: handle this as an event
 
                     except Empty:
                         pass
@@ -100,6 +122,9 @@ class IOBackend(object):
         self.input_queue = input_queue
         self.output_queue = output_queue
         self.terminate_queue = terminate_queue
+        self.bootstrap_pubsub()
+        self.pubsub.subscribe(["message.incoming.stdin", "message.outgoing"])
+
         if stdin_queue:
             self.stdin_queue = stdin_queue
 
@@ -113,137 +138,3 @@ class IOBackend(object):
 
 class StdInOutIOBackend(IOBackend):
     stdin_process = True
-
-
-class Message(object):
-    REQUIRED_FIELDS = [
-        "is_direct",
-        "is_private_chat",
-        "is_group_chat",
-        "will_is_mentioned",
-        "will_said_it",
-        "sender",
-        "backend_supports_acl",
-        "content",
-        "backend",
-        "source",
-    ]
-
-    def __init__(self, *args, **kwargs):
-        for f in self.REQUIRED_FIELDS:
-            if not f in kwargs:
-                raise Exception("Missing %s in Message construction." % f)
-
-        for f in kwargs:
-            self.__dict__[f] = kwargs[f]
-
-        if "timestamp" in kwargs:
-            self.timestamp = kwargs["timestamp"]
-        else:
-            self.timestamp = datetime.datetime.now()
-
-        # Clean content.
-        self.content = clean_message_content(self.content)
-
-        h = hashlib.md5()
-        h.update(self.timestamp.strftime("%s"))
-        h.update(self.content)
-        self.hash = h.hexdigest()
-
-        self.metadata = Bunch()
-
-    def __unicode__(self, *args, **kwargs):
-        if len(self.content) > 20:
-            content_str = "%s..." % self.content[:20]
-        else:
-            content_str = self.content
-        return u"Message: \"%s\"\n  %s (%s) " % (
-            content_str,
-            self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            self.backend,
-        )
-
-    def __str__(self, *args, **kwargs):
-        return self.__unicode__(*args, **kwargs)
-
-
-class Event(Bunch):
-    REQUIRED_FIELDS = [
-        "type",
-        "content",
-    ]
-
-    def __init__(self, *args, **kwargs):
-        super(Event, self).__init__(*args, **kwargs)
-
-        for f in self.REQUIRED_FIELDS:
-            if not f in kwargs:
-                raise Exception("Missing %s in Event construction." % f)
-        for f in kwargs:
-            self.__dict__[f] = kwargs[f]
-
-        if "timestamp" in kwargs:
-            self.timestamp = kwargs["timestamp"]
-        else:
-            self.timestamp = datetime.datetime.now()
-
-
-class Person(Bunch):
-    will_is_person = True
-    REQUIRED_FIELDS = [
-        "id",
-        "handle",
-        "source",
-        "name",
-        "first_name"
-        # "timezone",
-    ]
-
-    def __init__(self, *args, **kwargs):
-        super(Person, self).__init__(*args, **kwargs)
-
-        for f in kwargs:
-            self.__dict__[f] = kwargs[f]
-
-        # Provide first_name
-        if "first_name" not in kwargs:
-            self.first_name = self.name.split(" ")[0]
-
-        for f in self.REQUIRED_FIELDS:
-            if not hasattr(self, f):
-                raise Exception("Missing %s in Person construction." % f)
-
-        # Set TZ offset.
-        if hasattr(self, "timezone") and self.timezone:
-            self.timezone = pytz_timezone(self.timezone)
-            self.utc_offset = self.timezone._utcoffset
-        else:
-            self.timezone = False
-            self.utc_offset = False
-
-    @property
-    def nick(self):
-        logging.warn("sender.nick is deprecated, and will be removed at the end of 2017")
-        return self.handle
-
-
-class Channel(Bunch):
-    REQUIRED_FIELDS = [
-        "id",
-        "name",
-        "source",
-        "members",
-    ]
-
-    def __init__(self, *args, **kwargs):
-        super(Channel, self).__init__(*args, **kwargs)
-
-        for f in self.REQUIRED_FIELDS:
-            if not f in kwargs:
-                raise Exception("Missing %s in Channel construction." % f)
-        for f in kwargs:
-            self.__dict__[f] = kwargs[f]
-
-        for id, m in self.members.items():
-            if not m.will_is_person:
-                raise Exception("Someone in the member list is not a Person instance.\n%s" % m)

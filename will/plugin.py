@@ -4,13 +4,13 @@ import logging
 import settings
 from bottle import request
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
-    EmailMixin
+    EmailMixin, PubSubMixin
 from utils import html_to_text
-from will.backends.io_adapters.base import Event, Message
+from will.abstractions import Event, Message
 
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin,
-                 ScheduleMixin, SettingsMixin):
+                 ScheduleMixin, SettingsMixin, PubSubMixin):
     is_will_plugin = True
     request = request
 
@@ -83,20 +83,27 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 sender = message.sender
             self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
-    def reply(self, message, content, **kwargs):
+    def reply(self, event, content, **kwargs):
         # Be smart about backend.
+        message = event.data
 
         if hasattr(message, "backend"):
-            # print "message.backend"
-            # print message.backend
+            print "message.backend"
+            print message.backend
             # print "self.bot"
             # print self.bot.queues.io.output
-            self.bot.queues.io.output[message.backend].put(Event(
+            self.publish("message.outgoing", Event(
                 type="reply",
                 content=content,
                 source_message=message,
                 kwargs=kwargs,
             ))
+            # self.bot.queues.io.output[message.backend].put(Event(
+            #     type="reply",
+            #     content=content,
+            #     source_message=message,
+            #     kwargs=kwargs,
+            # ))
 
         # # Valid kwargs:
         # # color: yellow, red, green, purple, gray, random.  Default is green.

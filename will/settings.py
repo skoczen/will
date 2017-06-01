@@ -98,7 +98,10 @@ def import_settings(quiet=True):
         if "STORAGE_BACKEND" not in settings:
             settings["STORAGE_BACKEND"] = "redis"
 
-        if settings["STORAGE_BACKEND"] == "redis":
+        if "PUBSUB_BACKEND" not in settings:
+            settings["PUBSUB_BACKEND"] = "redis"
+
+        if settings["STORAGE_BACKEND"] == "redis" or settings["PUBSUB_BACKEND"] == "redis":
             if "REDIS_URL" not in settings:
                 # For heroku
                 if "REDISCLOUD_URL" in os.environ:

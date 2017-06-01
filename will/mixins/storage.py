@@ -3,6 +3,7 @@ import logging
 import dill as pickle
 import functools
 from will import settings
+from will.abstractions import Person, Event, Channel, Message
 
 
 class StorageMixin(object):

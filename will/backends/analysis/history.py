@@ -10,13 +10,19 @@ class HistoryAnalysis(AnalysisBackend, StorageMixin):
 
     def do_analyze(self, message):
         # Load the last few messages, add it to the context under "history"
-
+        print "history analysize"
+        print message
         history = self.load("message_history", [])
         max_history_context = getattr(settings, "HISTORY_CONTEXT_LENGTH", 20)
 
-        context = {
-            "history": history[:max_history_context]
-        }
+        if history:
+            context = {
+                "history": history[:max_history_context]
+            }
+        else:
+            context = {
+                "history": [],
+            }
 
         history.append(message)
         self.save("message_history", history)
