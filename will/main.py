@@ -117,7 +117,6 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
         self.verify_analysis()
         self.verify_generate()
         self.verify_execution()
-        self.bootstrap_execution()
 
         puts("Bootstrapping complete.")
         puts("\nStarting core processes:")
@@ -154,6 +153,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                 self.bootstrap_io()
                 self.bootstrap_analysis()
                 self.bootstrap_generation()
+                self.bootstrap_execution()
 
                 scheduler_thread.start()
                 bottle_thread.start()
@@ -216,6 +216,9 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
             for t in self.message_handler_threads:
                 t.terminate()
 
+            for t in self.running_execution_threads:
+                t.terminate()
+
             print '\n\nReceived keyboard interrupt, quitting threads.',
             while (
                 scheduler_thread.is_alive() or
@@ -227,6 +230,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                 any([t.is_alive() for t in self.stdin_io_threads]) or
                 any([t.is_alive() for t in self.analysis_threads]) or
                 any([t.is_alive() for t in self.generation_threads]) or
+                any([t.is_alive() for t in self.running_execution_threads]) or
                 any([t.is_alive() for t in self.message_handler_threads])
                 # or
                 # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
@@ -533,6 +537,7 @@ To set your %(name)s:
     def bootstrap_execution(self):
         missing_setting_error_messages = []
         self.execution_backends = []
+        self.running_execution_threads = []
         execution_backends = getattr(settings, "EXECUTION_BACKENDS", ["will.backends.execution.all", ])
         for b in execution_backends:
             module = import_module(b)
@@ -705,10 +710,10 @@ To set your %(name)s:
                             if q["count"] >= num_generation_queues or datetime.datetime.now() > q["timeout_end"]:
                                 # done, move on.
                                 # self.pubsub.publish("execution.start", q["source"])
-                                print self.execution_backends
+                                # print self.execution_backends
                                 for b in self.execution_backends:
                                     try:
-                                        b.execute(q["source"])
+                                        b.handle_execution(q["source"])
                                     except:
                                         break
                                 del generation_queues[event.source_hash]

@@ -1,12 +1,23 @@
 from will import settings
 from will.decorators import require_settings
+from multiprocessing import Process
 
 
 class ExecutionBackend(object):
     is_will_execution_backend = True
 
-    def execute(self, message, context):
+    def handle_execution(self, message, context):
         raise NotImplemented
+
+    def execute(self, target, *args, **kwargs):
+
+        t = Process(
+            target=target,
+            args=args,
+            kwargs=kwargs,
+        )
+        self.bot.running_execution_threads.append(t)
+        t.start()
 
     def __init__(self, bot=None, *args, **kwargs):
         self.bot = bot

@@ -17,7 +17,7 @@ from multiprocessing import Process, Queue
 from will.abstractions import Event, Message, Person, Channel
 from multiprocessing.queues import Empty
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
-from will.mixins import RosterMixin, RoomMixin, StorageMixin
+from will.mixins import RosterMixin, RoomMixin, StorageMixin, PubSubMixin
 
 # TODO: Cleanup unused urls
 ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
@@ -32,14 +32,14 @@ ALL_ROOMS_URL = ("https://%(server)s/v2/room?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s&expand=items")
 
 
-class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
+class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSubMixin):
 
-    def start_xmpp_client(self, input_queue=None, output_queue=None, backend_name=""):
+    def start_xmpp_client(self, xmpp_bridge_queue=None, output_queue=None, backend_name=""):
         logger = logging.getLogger(__name__)
-        if not input_queue or not output_queue:
+        if not xmpp_bridge_queue or not output_queue:
             logger.error("Missing required input and output queues")
 
-        self.input_queue = input_queue
+        self.xmpp_bridge_queue = xmpp_bridge_queue
         self.output_queue = output_queue
         self.backend_name = backend_name
 
@@ -141,11 +141,11 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
         self.update_available_rooms()
 
     def room_message(self, msg):
-        self._handle_message_listeners(msg)
+        self._send_to_backend(msg)
 
     def message_recieved(self, msg):
         if msg['type'] in ('chat', 'normal'):
-            self._handle_message_listeners(msg)
+            self._send_to_backend(msg)
 
     def real_sender_jid(self, msg):
         # There's a bug in sleekXMPP where it doesn't set the "from_jid" properly.
@@ -159,7 +159,7 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
 
         return msg["from"]
 
-    def _handle_message_listeners(self, msg):
+    def _send_to_backend(self, msg):
         stripped_msg = Bunch()
         # TODO: Find a faster way to do this - this is crazy.
         for k, v in msg.__dict__.items():
@@ -180,7 +180,8 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin):
 
         stripped_msg.xmpp_jid = msg.getMucroom()
         stripped_msg.body = msg["body"]
-        self.input_queue.put(stripped_msg)
+        print "putting in bridge queue"
+        self.xmpp_bridge_queue.put(stripped_msg)
 
 
 class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
@@ -384,12 +385,14 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 backend_supports_acl=True,
                 source=clean_for_pickling(event),
             )
-            self.input_queue.put(m)
+            print "normalized:"
+            print m.__dict__
+            return m
 
         else:
             # print "Unknown event type"
             # print event
-            pass
+            return None
 
     def handle_outgoing_event(self, event):
         kwargs = {}
@@ -479,7 +482,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         self.client = HipchatXMPPClient("%s/bot" % settings.USERNAME, settings.PASSWORD)
         self.xmpp_bridge_queue = Queue()
         self.client.start_xmpp_client(
-            input_queue=self.xmpp_bridge_queue,
+            xmpp_bridge_queue=self.xmpp_bridge_queue,
             output_queue=self.output_queue,
             backend_name=self.internal_name,
         )

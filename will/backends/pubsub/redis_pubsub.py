@@ -36,7 +36,7 @@ class RedisPubSub(BasePubSub):
     def publish_to_backend(self, topic, body_str):
         return self.redis.publish(topic, body_str)
 
-    def subscribe(self, topic):
+    def do_subscribe(self, topic):
         print "subscribed to %s" % topic
         return self._pubsub.psubscribe(topic)
 

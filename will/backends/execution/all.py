@@ -10,7 +10,7 @@ from .base import ExecutionBackend
 
 class AllBackend(ExecutionBackend):
 
-    def execute(self, message):
+    def handle_execution(self, message):
         try:
             had_one_reply = False
             for m in message.generation_options:
@@ -21,18 +21,17 @@ class AllBackend(ExecutionBackend):
                 print self.bot
                 print self.bot.pubsub
                 live_listener = self.bot.message_listeners[m.context.full_method_name]
-
                 thread_args = [message, ] + m.context["args"]
-                live_listener["fn"](*thread_args, **m.context.search_matches)
+
+                self.execute(
+                    live_listener["fn"],
+                    *thread_args,
+                    **m.context.search_matches
+                )
                 # print "did stuff"
                 had_one_reply = True
             if not had_one_reply:
                 self.bot.pubsub.publish("no_response", {}, reference_message=message)
-                # self.bot.queues.io.output[message.backend].put(Event(
-                #     type="no_response",
-                #     content=None,
-                #     source_message=message,
-                # ))
 
             return {}
         except:
