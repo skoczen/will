@@ -37,7 +37,7 @@ class RedisPubSub(BasePubSub):
         return self.redis.publish(topic, body_str)
 
     def do_subscribe(self, topic):
-        print "subscribed to %s" % topic
+        # print "subscribed to %s" % topic
         return self._pubsub.psubscribe(topic)
 
     def unsubscribe(self, topic):

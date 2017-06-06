@@ -9,7 +9,7 @@ import time
 from will import settings
 from will.utils import Bunch
 from will.mixins import PubSubMixin
-from will.abstractions import Message, Event
+from will.abstractions import Message, Event, Person
 from multiprocessing.queues import Empty
 from multiprocessing import Process
 
@@ -39,8 +39,8 @@ class IOBackend(PubSubMixin, object):
     def handle_incoming_event(self, event):
         m = self.normalize_incoming_event(event)
         if m:
-            print "\n\n\n\nhandle_incoming_event"
-            print m
+            # print "\n\n\n\nhandle_incoming_event"
+            # print m
             self.pubsub.publish("message.incoming", m, reference_message=m)
 
     def handle_outgoing_event(self, event):
@@ -65,8 +65,11 @@ class IOBackend(PubSubMixin, object):
                         # print pubsub_event
                         if pubsub_event.type == "message.incoming":
                             self.handle_incoming_event(pubsub_event)
-                        if pubsub_event.type == "message.outgoing.%s" % self.name:
+                        elif pubsub_event.type == "message.outgoing.%s" % self.name:
                             self.handle_outgoing_event(pubsub_event.data)
+                        elif pubsub_event.type == "message.incoming.stdin":
+                            self.handle_incoming_event(pubsub_event)
+
                 except:
                     import traceback; traceback.print_exc();
 
@@ -123,7 +126,9 @@ class IOBackend(PubSubMixin, object):
         self.output_queue = output_queue
         self.terminate_queue = terminate_queue
         self.bootstrap_pubsub()
-        self.pubsub.subscribe(["message.incoming.stdin", "message.outgoing.%s" % self.name])
+        self.pubsub.subscribe(["message.incoming", "message.outgoing.%s" % self.name])
+        if hasattr(self, "stdin_process") and self.stdin_process:
+            self.pubsub.subscribe(["message.incoming.stdin", ])
 
         if stdin_queue:
             self.stdin_queue = stdin_queue

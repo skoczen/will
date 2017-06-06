@@ -184,6 +184,13 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                         for line in sys.stdin.readline():
                             if "\n" in line:
                                 self.queues.io.stdin_input.put(self.current_line)
+                                self.publish(
+                                    "message.incoming.stdin",
+                                    Event(
+                                        type="message.incoming.stdin",
+                                        content=self.current_line,
+                                    )
+                                )
                                 self.current_line = ""
                             else:
                                 self.current_line += line
@@ -648,8 +655,8 @@ To set your %(name)s:
                 event = self.pubsub.get_message()
                 if event:
                     # and hasattr(event, "type"):
-                    print "--- MAIN got event (%s)" % event.type
-                    print event
+                    # print "--- MAIN got event (%s)" % event.type
+                    # print event
 
                     if hasattr(event, "type"):
                         # print "event.type"
@@ -693,7 +700,7 @@ To set your %(name)s:
 
                         elif event.type == "generation.complete":
                             q = generation_queues[event.source_hash]
-                            print "TODO: FIx this properly."
+                            # "TODO: FIx this properly."
                             if not hasattr(q["source"], "generation_options"):
                                 q["source"].generation_options = []
                             if hasattr(event, "data") and len(event.data) > 0:

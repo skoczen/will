@@ -88,8 +88,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         message = event.data
 
         if hasattr(message, "backend"):
-            print "message.backend"
-            print message.backend
             # print "self.bot"
             # print self.bot.queues.io.output
             self.publish("message.outgoing.%s" % message.backend, Event(

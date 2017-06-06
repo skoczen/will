@@ -92,7 +92,7 @@ class BasePubSub(object):
         and conforming to the protocol.  Handles pickling for the wire, etc.
         This method should *not* be subclassed.
         """
-        print "-> publishing to %s" % topic
+        # print "-> publishing to %s" % topic
         # print obj
         e = Event(
             data=obj,

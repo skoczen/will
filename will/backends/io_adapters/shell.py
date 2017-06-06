@@ -34,9 +34,9 @@ class ShellBackend(StdInOutIOBackend):
         print("Will: Setting the Topic to %s" & topic)
 
     def normalize_incoming_event(self, event):
-        if event["type"] == "message":
+        if event["type"] == "message.incoming.stdin":
             m = Message(
-                content=event.content.strip(),
+                content=event.data.content.strip(),
                 type=event.type,
                 is_direct=True,
                 is_private_chat=True,
@@ -53,7 +53,7 @@ class ShellBackend(StdInOutIOBackend):
             return m
         else:
             # An event type the shell has no idea how to handle.
-            pass
+            return None
 
     def handle_outgoing_event(self, event):
         # Print any replies.
