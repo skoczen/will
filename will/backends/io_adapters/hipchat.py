@@ -180,7 +180,7 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
 
         stripped_msg.xmpp_jid = msg.getMucroom()
         stripped_msg.body = msg["body"]
-        print "putting in bridge queue"
+        # print "putting in bridge queue"
         self.xmpp_bridge_queue.put(stripped_msg)
 
 
@@ -334,7 +334,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         return self._channels
 
     def normalize_incoming_event(self, event):
-        print "hipchat: normalize_incoming_event - %s" % event
+        # print "hipchat: normalize_incoming_event - %s" % event
 
         if event["type"] in ("chat", "normal", "groupchat") and "from_jid" in event:
             # Sample of group message
@@ -385,8 +385,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 backend_supports_acl=True,
                 source=clean_for_pickling(event),
             )
-            print "normalized:"
-            print m.__dict__
+            # print "normalized:"
+            # print m.__dict__
             return m
 
         else:

@@ -92,7 +92,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             print message.backend
             # print "self.bot"
             # print self.bot.queues.io.output
-            self.publish("message.outgoing", Event(
+            self.publish("message.outgoing.%s" % message.backend, Event(
                 type="reply",
                 content=content,
                 source_message=message,

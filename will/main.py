@@ -650,16 +650,11 @@ To set your %(name)s:
                     # and hasattr(event, "type"):
                     print "--- MAIN got event (%s)" % event.type
                     print event
-                    # print event.__dict__
-                    if hasattr(event, "source"):
-                        print "event.data.source.__dict__"
-                        print event.data.source.__dict__
-                    # print "type" in event
-                    print type(event)
+
                     if hasattr(event, "type"):
-                        print "event.type"
-                        print event.type
-                        print event.type == "message.incoming"
+                        # print "event.type"
+                        # print event.type
+                        # print event.type == "message.incoming"
 
                         # TOOD: Order by most common.
                         if event.type == "message.incoming":
@@ -675,14 +670,14 @@ To set your %(name)s:
                             self.pubsub.publish("analysis.start", event.data.source, reference_message=event)
 
                         elif event.type == "analysis.complete":
-                            print analysis_queues
+                            # print analysis_queues
                             q = analysis_queues[event.source_hash]
                             q["source"].update({"analysis": event.data})
                             q["count"] += 1
-                            print q["count"]
-                            print num_analysis_queues
-                            print q["count"] >= num_analysis_queues
-                            print datetime.datetime.now() > q["timeout_end"]
+                            # print q["count"]
+                            # print num_analysis_queues
+                            # print q["count"] >= num_analysis_queues
+                            # print datetime.datetime.now() > q["timeout_end"]
 
                             if q["count"] >= num_analysis_queues or datetime.datetime.now() > q["timeout_end"]:
                                 # done, move on.
@@ -691,8 +686,8 @@ To set your %(name)s:
                                     "timeout_end": datetime.datetime.now() + datetime.timedelta(seconds=self.generation_timeout/1000),
                                     "source": q["source"],
                                 }
-                                print "generation_queues"
-                                print generation_queues
+                                # print "generation_queues"
+                                # print generation_queues
                                 del analysis_queues[event.source_hash]
                                 self.pubsub.publish("generation.start", q["source"], reference_message=q["source"])
 
@@ -704,8 +699,8 @@ To set your %(name)s:
                             if hasattr(event, "data") and len(event.data) > 0:
                                 q["source"].generation_options.append(*event.data)
                             q["count"] += 1
-                            print q["count"]
-                            print num_generation_queues
+                            # print q["count"]
+                            # print num_generation_queues
 
                             if q["count"] >= num_generation_queues or datetime.datetime.now() > q["timeout_end"]:
                                 # done, move on.

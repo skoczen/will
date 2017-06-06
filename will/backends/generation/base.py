@@ -18,8 +18,8 @@ class GenerationBackend(PubSubMixin, object):
                 # and then it's back to the event loop in main.py and moving that over.
                 # Also, poke at the settings.QUEUE_INTERVAL. :) 
                 if m:
-                    print "got generate message (this is busted.)"
-                    print m
+                    # print "got generate message (this is busted.)"
+                    # print m
                     self.__generate(m.data)
                 time.sleep(settings.QUEUE_INTERVAL)
                 # message = self.__input_queue.get(timeout=settings.QUEUE_INTERVAL)
@@ -34,7 +34,7 @@ class GenerationBackend(PubSubMixin, object):
         ret = self.do_generate(message)
         try:
             self.pubsub.publish("generation.complete", ret, reference_message=message)
-            print "published generation.complete"
+            # print "published generation.complete"
         except:
             import traceback; traceback.print_exc();
         # self.__output_queue.put(ret)

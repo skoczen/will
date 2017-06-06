@@ -14,8 +14,8 @@ class AnalysisBackend(PubSubMixin, object):
             try:
                 m = self.pubsub.get_message()
                 if m:
-                    print "about to __analyze"
-                    print m
+                    # print "about to __analyze"
+                    # print m
                     self.__analyze(m)
                 time.sleep(settings.QUEUE_INTERVAL)
 

@@ -14,12 +14,12 @@ class AllBackend(ExecutionBackend):
         try:
             had_one_reply = False
             for m in message.generation_options:
-                print "bot_fn"
-                print m
-                print m.__dict__
-                print m.context.full_method_name
-                print self.bot
-                print self.bot.pubsub
+                # print "bot_fn"
+                # print m
+                # print m.__dict__
+                # print m.context.full_method_name
+                # print self.bot
+                # print self.bot.pubsub
                 live_listener = self.bot.message_listeners[m.context.full_method_name]
                 thread_args = [message, ] + m.context["args"]
 

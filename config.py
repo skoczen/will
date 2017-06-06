@@ -133,6 +133,12 @@ QUEUE_INTERVAL = 0.025
 # DEFAULT_ROOM = 'Testing, Will Kahuna'
 
 
+# A secret key, used to specify this instance of will and secure pubsub contents.
+# Do *NOT* keep it in config.py.  *DO* set it in the environment, in a secured session.
+# TODO: Move this to config.untracked.py
+SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
+
+
 # Fully-qualified folders to look for templates in, beyond the two that
 # are always included: core will's templates folder, your project's templates folder, and
 # all templates folders in included plugins, if they exist.

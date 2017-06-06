@@ -93,7 +93,7 @@ class BasePubSub(object):
         This method should *not* be subclassed.
         """
         print "-> publishing to %s" % topic
-        print obj
+        # print obj
         e = Event(
             data=obj,
             type=topic,
@@ -140,7 +140,7 @@ class BasePubSub(object):
             m = self.get_from_backend()
             if m and m["type"] not in SKIP_TYPES:
                 loaded_message = unpack_from_wire(m["data"])
-                print loaded_message
+                # print loaded_message
                 # loaded_message = pickle.loads(
                 #     dec
                 # )

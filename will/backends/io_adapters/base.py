@@ -50,8 +50,8 @@ class IOBackend(PubSubMixin, object):
         pass
 
     def __publish_incoming_message(self, message):
-        print "__publish_incoming_message"
-        print message
+        # print "__publish_incoming_message"
+        # print message
         return self.pubsub.publish("message.incoming", message, reference_message=message)
 
     def __start_event_listeners(self):
@@ -61,11 +61,11 @@ class IOBackend(PubSubMixin, object):
                 try:
                     pubsub_event = self.pubsub.get_message()
                     if pubsub_event:
-                        print "pubsub event %s" % (self.name)
-                        print pubsub_event
+                        # print "pubsub event %s" % (self.name)
+                        # print pubsub_event
                         if pubsub_event.type == "message.incoming":
                             self.handle_incoming_event(pubsub_event)
-                        if pubsub_event.type == "message.outgoing":
+                        if pubsub_event.type == "message.outgoing.%s" % self.name:
                             self.handle_outgoing_event(pubsub_event.data)
                 except:
                     import traceback; traceback.print_exc();
@@ -123,7 +123,7 @@ class IOBackend(PubSubMixin, object):
         self.output_queue = output_queue
         self.terminate_queue = terminate_queue
         self.bootstrap_pubsub()
-        self.pubsub.subscribe(["message.incoming.stdin", "message.outgoing"])
+        self.pubsub.subscribe(["message.incoming.stdin", "message.outgoing.%s" % self.name])
 
         if stdin_queue:
             self.stdin_queue = stdin_queue
