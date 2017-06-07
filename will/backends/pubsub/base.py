@@ -2,9 +2,10 @@ import binascii
 import base64
 import codecs
 import dill as pickle
+import hashlib
+import os
 import redis
 import urlparse
-import hashlib
 from Crypto.Cipher import AES
 import random
 from will.abstractions import Event
@@ -12,8 +13,9 @@ from will import settings
 
 SKIP_TYPES = ["psubscribe", "punsubscribe", ]
 
-BS = 16
-key = hashlib.sha256(settings.SECRET_KEY).digest()
+if settings.ENABLE_INTERNAL_ENCRYPTION:
+    BS = 16
+    key = hashlib.sha256(settings.SECRET_KEY).digest()
 
 
 def pad(s):
@@ -28,24 +30,28 @@ def unpad(s):
 
 
 def pack_for_wire(raw):
-    iv = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
-    cipher = AES.new(key, AES.MODE_CBC, iv)
     try:
-        raw = pad(binascii.b2a_base64(pickle.dumps(raw, -1)))
-        enc = binascii.b2a_base64(cipher.encrypt(raw))
-        return "%s/%s" % (iv, enc)
+        enc = binascii.b2a_base64(pickle.dumps(raw, -1))
+        if settings.ENABLE_INTERNAL_ENCRYPTION:
+            iv = binascii.b2a_hex(os.urandom(8))
+            cipher = AES.new(key, AES.MODE_CBC, iv)
+            enc = binascii.b2a_base64(cipher.encrypt(pad(enc)))
+            return "%s/%s" % (iv, enc)
+        else:
+            return enc
     except:
-        # import traceback; traceback.print_exc();
+        import traceback; traceback.print_exc();
         return None
 
 
 def unpack_from_wire(enc):
-    iv = enc[:BS]
-    enc = enc[BS+1:]
-    cipher = AES.new(key, AES.MODE_CBC, iv)
     try:
-        raw = unpad(cipher.decrypt(binascii.a2b_base64(enc)))
-        obj = pickle.loads(binascii.a2b_base64(raw))
+        if settings.ENABLE_INTERNAL_ENCRYPTION:
+            iv = enc[:BS]
+            enc = enc[BS+1:]
+            cipher = AES.new(key, AES.MODE_CBC, iv)
+            enc = unpad(cipher.decrypt(binascii.a2b_base64(enc)))
+        obj = pickle.loads(binascii.a2b_base64(enc))
         return obj
     except:
         # import traceback; traceback.print_exc();

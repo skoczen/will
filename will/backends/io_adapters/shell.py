@@ -57,11 +57,13 @@ class ShellBackend(StdInOutIOBackend):
 
     def handle_outgoing_event(self, event):
         # Print any replies.
+        # print "handle_outgoing_event"
+        # print event
         if event.type in ["say", "reply"]:
             self.send_direct_message(event.content)
 
-        elif event.type == "no_response":
-            if len(event.source_message.content) > 0:
+        elif event.type == "message.no_response":
+            if event.data and hasattr(event.data, "content") and len(event.data.content) > 0:
                 self.send_direct_message(random.choice(UNSURE_REPLIES))
 
         # Regardless of whether or not we had something to say,

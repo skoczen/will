@@ -183,7 +183,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                     while True:
                         for line in sys.stdin.readline():
                             if "\n" in line:
-                                self.queues.io.stdin_input.put(self.current_line)
+                                # self.queues.io.stdin_input.put(self.current_line)
                                 self.publish(
                                     "message.incoming.stdin",
                                     Event(
@@ -641,7 +641,7 @@ To set your %(name)s:
         self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)
         self.generation_timeout = getattr(settings, "GENERATION_TIMEOUT_MS", 2000)
         self.message_handler_threads = []
-        self.pubsub.subscribe(["message.incoming", "analysis.*", "generation.*"])
+        self.pubsub.subscribe(["message.*", "analysis.*", "generation.*"])
 
         # TODO: change this to the number of running analysis threads
         num_analysis_queues = len(self.queues.analysis.input)
@@ -690,7 +690,10 @@ To set your %(name)s:
                                 # done, move on.
                                 generation_queues[event.source_hash] = {
                                     "count": 0,
-                                    "timeout_end": datetime.datetime.now() + datetime.timedelta(seconds=self.generation_timeout/1000),
+                                    "timeout_end": (
+                                        datetime.datetime.now() +
+                                        datetime.timedelta(seconds=self.generation_timeout / 1000)
+                                    ),
                                     "source": q["source"],
                                 }
                                 # print "generation_queues"
@@ -711,7 +714,7 @@ To set your %(name)s:
 
                             if q["count"] >= num_generation_queues or datetime.datetime.now() > q["timeout_end"]:
                                 # done, move on.
-                                # self.pubsub.publish("execution.start", q["source"])
+                                # print 'self.pubsub.publish("execution.start", q["source"])'
                                 # print self.execution_backends
                                 for b in self.execution_backends:
                                     try:
@@ -719,6 +722,8 @@ To set your %(name)s:
                                     except:
                                         break
                                 del generation_queues[event.source_hash]
+                        elif event.type == "message.no_response":
+                            self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
                         time.sleep(settings.QUEUE_INTERVAL)
             except:
                 logging.exception("Error handling message")

@@ -1,4 +1,3 @@
-import dill as pickle
 import redis
 import urlparse
 from .base import BasePubSub

@@ -69,6 +69,8 @@ class IOBackend(PubSubMixin, object):
                             self.handle_outgoing_event(pubsub_event.data)
                         elif pubsub_event.type == "message.incoming.stdin":
                             self.handle_incoming_event(pubsub_event)
+                        elif pubsub_event.type == "message.no_response.%s" % self.name:
+                            self.handle_outgoing_event(pubsub_event)
 
                 except:
                     import traceback; traceback.print_exc();
@@ -126,7 +128,11 @@ class IOBackend(PubSubMixin, object):
         self.output_queue = output_queue
         self.terminate_queue = terminate_queue
         self.bootstrap_pubsub()
-        self.pubsub.subscribe(["message.incoming", "message.outgoing.%s" % self.name])
+        self.pubsub.subscribe([
+            "message.incoming",
+            "message.outgoing.%s" % self.name,
+            "message.no_response.%s" % self.name,
+        ])
         if hasattr(self, "stdin_process") and self.stdin_process:
             self.pubsub.subscribe(["message.incoming.stdin", ])
 

@@ -84,7 +84,11 @@ def import_settings(quiet=True):
                      "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
             settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
 
+        if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
+            settings["ENABLE_INTERNAL_ENCRYPTION"] = False
+
         print "TODO: check slack and hipchat tokens if they're in the backends"
+        print "TODO: ensure zeromq/redis for pubsub"
 
         if "HTTPSERVER_PORT" not in settings:
             # For heroku

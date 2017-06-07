@@ -93,8 +93,7 @@ class SlackBackend(IOBackend):
             pass
 
     def handle_outgoing_event(self, event):
-        # print "handle_outgoing_event"
-        # print event
+
 
         if event.type in ["say", "reply"]:
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
@@ -128,9 +127,9 @@ class SlackBackend(IOBackend):
                     )
 
         elif (
-            event.type == "no_response" and
-            event.source_message.is_direct and
-            event.source_message.will_said_it is False
+            event.type == "message.no_response" and
+            event.data["source"].data.is_direct and
+            event.data["source"].data.will_said_it is False
         ):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)
@@ -160,9 +159,14 @@ class SlackBackend(IOBackend):
                 "text": event.content,
             })
 
+        if "source_message" in event:
+            channel_id = event.source_message.channel.id
+        else:
+            channel_id = event.data["source"].data.channel.id
+
         data.update({
             "token": settings.SLACK_API_TOKEN,
-            "channel": event.source_message.channel.id,
+            "channel": channel_id,
             "as_user": True,
         })
         if hasattr(event, "kwargs") and "html" in event.kwargs and event.kwargs["html"]:

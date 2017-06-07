@@ -438,7 +438,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                     )
 
         elif (
-            event.type == "no_response" and
+            event.type == "message.no_response" and
             event.source_message.is_direct and
             event.source_message.will_said_it is False
         ):

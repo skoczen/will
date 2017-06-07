@@ -170,11 +170,16 @@ SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 
 # Sets a different storage backend.  If unset, defaults to redis.
 # If you use a different backend, make sure to add their required settings.
-# PUBSUB_BACKEND = "redis"  # "redis", or "zeromq".
+# PUBSUB_BACKEND = "zeromq"  # "redis", or "zeromq" (beta).
+ZEROMQ_URL = "tcp://127.0.0.1:15555"
 
 
 # Disable SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
+
+# Turn on encryption in the pub/sub layer.  Causes a small speed bump,
+# but secures messages in an untrusted environment.
+ENABLE_INTERNAL_ENCRYPTION = True
 
 # Mailgun config, if you'd like will to send emails.
 # DEFAULT_FROM_EMAIL="will@example.com"
