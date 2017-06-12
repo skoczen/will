@@ -119,6 +119,10 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
         self.verify_execution()
 
         puts("Bootstrapping complete.")
+
+        # Save help modules.
+        self.save("help_modules", self.help_modules)
+
         puts("\nStarting core processes:")
         self.queues = Bunch()
         self.queues.io = Bunch()
@@ -166,7 +170,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                     error_message = "FYI, I ran into some problems while starting up:"
                     for err in errors:
                         error_message += "\n%s\n" % err
-                    self.send_room_message(default_room, error_message, color="yellow")
+                    # self.send_room_message(default_room, error_message, color="yellow")
                     puts(colored.red(error_message))
 
                 signal.signal(signal.SIGINT, self.handle_sys_exit)
@@ -1255,4 +1259,6 @@ To set your %(name)s:
                             show_valid(plugin_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
+
+
         puts("")
