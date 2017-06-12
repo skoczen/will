@@ -85,8 +85,8 @@ CHAT_BACKENDS = ["", ]
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    "will.backends.io_adapters.hipchat",
-    "will.backends.io_adapters.shell",
+    # "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.shell",
     "will.backends.io_adapters.slack",
 ]
 

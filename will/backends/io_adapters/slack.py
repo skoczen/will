@@ -94,7 +94,6 @@ class SlackBackend(IOBackend):
 
     def handle_outgoing_event(self, event):
 
-
         if event.type in ["say", "reply"]:
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
                 event.content = SlackMarkdownConverter().convert(event.content)
@@ -102,6 +101,7 @@ class SlackBackend(IOBackend):
             event.content = event.content.replace("&", "&amp;")
             event.content = event.content.replace("<", "&lt;")
             event.content = event.content.replace(">", "&gt;")
+            event.content = event.content.replace("\_", "_")
 
             if hasattr(event, "source_message") and event.source_message:
                 self.send_message(event)
@@ -159,8 +159,9 @@ class SlackBackend(IOBackend):
                 "text": event.content,
             })
 
-        if "source_message" in event:
-            channel_id = event.source_message.channel.id
+        # TODO: resolve this with a fresh brain.
+        if "source_message" in event and hasattr(event.source_message, "data"):
+            channel_id = event.source_message.data.channel.id
         else:
             channel_id = event.data["source"].data.channel.id
 

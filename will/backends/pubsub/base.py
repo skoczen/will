@@ -104,6 +104,11 @@ class BasePubSub(object):
             data=obj,
             type=topic,
         )
+        # TODO: Decide on this.  It's hacky, but it makes backwards 
+        # compatability easier.
+        if hasattr(obj, "sender"):
+            e.sender = obj.sender
+
         if reference_message:
             source_hash = None
             if hasattr(reference_message, "source_hash"):

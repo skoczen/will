@@ -46,7 +46,7 @@ class ShellBackend(StdInOutIOBackend):
                 will_is_mentioned=False,
                 will_said_it=False,
                 backend_supports_acl=False,
-                source=Bunch()
+                source=event
             )
 
             # self.input_queue.put(m)

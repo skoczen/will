@@ -723,7 +723,10 @@ To set your %(name)s:
                                         break
                                 del generation_queues[event.source_hash]
                         elif event.type == "message.no_response":
-                            self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
+                            try:
+                                self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
+                            except:
+                                pass
                         time.sleep(settings.QUEUE_INTERVAL)
             except:
                 logging.exception("Error handling message")
