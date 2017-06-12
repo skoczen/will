@@ -160,8 +160,11 @@ class SlackBackend(IOBackend):
             })
 
         # TODO: resolve this with a fresh brain.
-        if "source_message" in event and hasattr(event.source_message, "data"):
-            channel_id = event.source_message.data.channel.id
+        if "source_message" in event:
+            if hasattr(event.source_message, "data"):
+                channel_id = event.source_message.data.channel.id
+            else:
+                channel_id = event.source_message.channel.id
         else:
             channel_id = event.data["source"].data.channel.id
 
