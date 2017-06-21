@@ -230,7 +230,6 @@ class SlackBackend(IOBackend):
                 handle=v.name,
                 source=clean_for_pickling(v),
                 name=v.real_name,
-                timezone=user_timezone,
             )
             if v.name == self.handle:
                 self.me = Person(
@@ -238,8 +237,11 @@ class SlackBackend(IOBackend):
                     handle=v.name,
                     source=clean_for_pickling(v),
                     name=v.real_name,
-                    timezone=user_timezone,
                 )
+            if user_timezone and user_timezone != 'unknown':
+                people[k].timezone = user_timezone
+                if v.name == self.handle:
+                    self.me.timezone = user_timezone
         self.people = people
 
     def _update_backend_metadata(self):
