@@ -75,22 +75,22 @@ class IOBackend(PubSubMixin, object):
                 except:
                     import traceback; traceback.print_exc();
 
-                # TODO: get rid of all of the below
-                try:
-                    output_event = self.output_queue.get(timeout=settings.QUEUE_INTERVAL)
-                    if output_event:
-                        self.handle_outgoing_event(output_event)
+                # # TODO: get rid of all of the below
+                # try:
+                #     output_event = self.output_queue.get(timeout=settings.QUEUE_INTERVAL)
+                #     if output_event:
+                #         self.handle_outgoing_event(output_event)
 
-                except Empty:
-                    pass
+                # except Empty:
+                #     pass
 
-                try:
-                    input_event = self.input_queue.get(timeout=settings.QUEUE_INTERVAL)
-                    if input_event:
-                        m = self.normalize_incoming_event(input_event)
+                # try:
+                #     input_event = self.input_queue.get(timeout=settings.QUEUE_INTERVAL)
+                #     if input_event:
+                #         m = self.normalize_incoming_event(input_event)
 
-                except Empty:
-                    pass
+                # except Empty:
+                #     pass
 
                 if hasattr(self, "stdin_queue") and self.stdin_queue:
                     try:

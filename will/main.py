@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import copy
 import datetime
 import imp
 import inspect
@@ -657,81 +658,62 @@ To set your %(name)s:
         while True:
             try:
                 event = self.pubsub.get_message()
-                if event:
-                    # and hasattr(event, "type"):
-                    # print "--- MAIN got event (%s)" % event.type
-                    # print event
+                if event and hasattr(event, "type"):
+                    logging.info("Event (%s): %s" % (event.type, event))
 
-                    if hasattr(event, "type"):
-                        # print "event.type"
-                        # print event.type
-                        # print event.type == "message.incoming"
+                    # TOOD: Order by most common.
+                    if event.type == "message.incoming":
+                        # A message just got dropped off one of the IO Backends.
+                        # Send it to analysis.
 
-                        # TOOD: Order by most common.
-                        if event.type == "message.incoming":
-                            # A message just got dropped off one of the IO Backends.
-                            # Send it to analysis.
+                        analysis_queues[event.source_hash] = {
+                            "count": 0,
+                            "timeout_end": datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000),
+                            "source": event,
+                        }
+                        self.pubsub.publish("analysis.start", event.data.source, reference_message=event)
 
-                            # elif event.type == "analysis.start":
-                            analysis_queues[event.source_hash] = {
+                    elif event.type == "analysis.complete":
+                        q = analysis_queues[event.source_hash]
+                        q["source"].update({"analysis": event.data})
+                        q["count"] += 1
+
+                        if q["count"] >= num_analysis_queues or datetime.datetime.now() > q["timeout_end"]:
+                            # done, move on.
+                            generation_queues[event.source_hash] = {
                                 "count": 0,
-                                "timeout_end": datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000),
-                                "source": event,
+                                "timeout_end": (
+                                    datetime.datetime.now() +
+                                    datetime.timedelta(seconds=self.generation_timeout / 1000)
+                                ),
+                                "source": q["source"],
                             }
-                            self.pubsub.publish("analysis.start", event.data.source, reference_message=event)
+                            del analysis_queues[event.source_hash]
+                            self.pubsub.publish("generation.start", q["source"], reference_message=q["source"])
 
-                        elif event.type == "analysis.complete":
-                            # print analysis_queues
-                            q = analysis_queues[event.source_hash]
-                            q["source"].update({"analysis": event.data})
-                            q["count"] += 1
-                            # print q["count"]
-                            # print num_analysis_queues
-                            # print q["count"] >= num_analysis_queues
-                            # print datetime.datetime.now() > q["timeout_end"]
+                    elif event.type == "generation.complete":
+                        q = generation_queues[event.source_hash]
+                        if not hasattr(q["source"], "generation_options"):
+                            q["source"].generation_options = []
+                        if hasattr(event, "data") and len(event.data) > 0:
+                            q["source"].generation_options.append(*event.data)
+                        q["count"] += 1
 
-                            if q["count"] >= num_analysis_queues or datetime.datetime.now() > q["timeout_end"]:
-                                # done, move on.
-                                generation_queues[event.source_hash] = {
-                                    "count": 0,
-                                    "timeout_end": (
-                                        datetime.datetime.now() +
-                                        datetime.timedelta(seconds=self.generation_timeout / 1000)
-                                    ),
-                                    "source": q["source"],
-                                }
-                                # print "generation_queues"
-                                # print generation_queues
-                                del analysis_queues[event.source_hash]
-                                self.pubsub.publish("generation.start", q["source"], reference_message=q["source"])
+                        if q["count"] >= num_generation_queues or datetime.datetime.now() > q["timeout_end"]:
+                            # done, move on to execution.
+                            for b in self.execution_backends:
+                                try:
+                                    b.handle_execution(q["source"])
+                                except:
+                                    break
+                            del generation_queues[event.source_hash]
 
-                        elif event.type == "generation.complete":
-                            q = generation_queues[event.source_hash]
-                            # "TODO: FIx this properly."
-                            if not hasattr(q["source"], "generation_options"):
-                                q["source"].generation_options = []
-                            if hasattr(event, "data") and len(event.data) > 0:
-                                q["source"].generation_options.append(*event.data)
-                            q["count"] += 1
-                            # print q["count"]
-                            # print num_generation_queues
-
-                            if q["count"] >= num_generation_queues or datetime.datetime.now() > q["timeout_end"]:
-                                # done, move on.
-                                # print 'self.pubsub.publish("execution.start", q["source"])'
-                                # print self.execution_backends
-                                for b in self.execution_backends:
-                                    try:
-                                        b.handle_execution(q["source"])
-                                    except:
-                                        break
-                                del generation_queues[event.source_hash]
-                        elif event.type == "message.no_response":
-                            try:
-                                self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
-                            except:
-                                pass
-                        time.sleep(settings.QUEUE_INTERVAL)
+                    elif event.type == "message.no_response":
+                        try:
+                            self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
+                        except:
+                            pass
+                    time.sleep(settings.QUEUE_INTERVAL)
             except:
                 logging.exception("Error handling message")
 
@@ -1130,6 +1112,7 @@ To set your %(name)s:
                                         "module": module,
                                         "full_module_name": name,
                                         "parent_name": plugin_modules_library[name]["parent_name"],
+                                        "parent_path": plugin_modules_library[name]["file_path"],
                                         "parent_module_name": plugin_modules_library[name]["parent_module_name"],
                                         "parent_help_text": plugin_modules_library[name]["parent_help_text"],
                                         "blacklisted": plugin_modules_library[name]["blacklisted"],
@@ -1224,6 +1207,9 @@ To set your %(name)s:
                                                     plugin_instances[plugin_info["class"]] = instance
 
                                                 full_method_name = "%s.%s" % (plugin_info["name"], function_name)
+                                                cleaned_info = copy.copy(plugin_info)
+                                                del cleaned_info["module"]
+                                                del cleaned_info["class"]
                                                 self.message_listeners[full_method_name] = {
                                                     "full_method_name": full_method_name,
                                                     "function_name": function_name,
@@ -1236,6 +1222,7 @@ To set your %(name)s:
                                                     "direct_mentions_only": meta["listens_only_to_direct_mentions"],
                                                     "admin_only": meta["listens_only_to_admin"],
                                                     "acl": meta["listeners_acl"],
+                                                    "plugin_info": cleaned_info,
                                                 }
                                                 if meta["listener_includes_me"]:
                                                     self.some_listeners_include_me = True

@@ -1,3 +1,4 @@
+import imp
 import logging
 import traceback
 import requests
@@ -14,21 +15,33 @@ class AllBackend(ExecutionBackend):
         try:
             had_one_reply = False
             for m in message.generation_options:
-                # print "bot_fn"
-                # print m
-                # print m.__dict__
-                # print m.context.full_method_name
-                # print self.bot
-                # print self.bot.pubsub
-                live_listener = self.bot.message_listeners[m.context.full_method_name]
+                logging.info("handle_execution")
+                logging.info(m)
+                logging.info(m.__dict__)
+                logging.info(m.context)
+                logging.info(m.context.full_method_name)
+                logging.info(self.bot)
+                logging.info(self.bot.pubsub)
+
+                # Question: do we need to do this via self.bot, or can we re-instantiate
+                # the execution thread (and in the process, magically provide/handle self.message)?
+                module = imp.load_source(m.context.plugin_info["parent_name"], m.context.plugin_info["parent_path"])
+                logging.info(module)
+                cls = getattr(module, m.context.plugin_info["name"])
+                # Do we need self.bot?
+                instantiated_module = cls(message=message, bot=self.bot)
+                logging.info(instantiated_module)
+                method = getattr(instantiated_module, m.context.function_name)
+
+                # live_listener = self.bot.message_listeners[m.context.full_method_name]
                 thread_args = [message, ] + m.context["args"]
 
                 self.execute(
-                    live_listener["fn"],
+                    method,
                     *thread_args,
                     **m.context.search_matches
                 )
-                # print "did stuff"
+                logging.info("Executed")
                 had_one_reply = True
             if not had_one_reply:
                 self.bot.pubsub.publish("message.no_response", {'source': message}, reference_message=message)
@@ -37,7 +50,7 @@ class AllBackend(ExecutionBackend):
         except:
             logging.critical(
                 "Error running %s.  \n\n%s\nContinuing...\n" % (
-                    live_listener["function_name"],
+                    m.context.function_name,
                     traceback.format_exc()
                 )
             )

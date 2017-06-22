@@ -139,6 +139,9 @@ QUEUE_INTERVAL = 0.025
 SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 
 
+# Turn up or down Will's logging level
+# LOGLEVEL = "INFO"
+
 # Fully-qualified folders to look for templates in, beyond the two that
 # are always included: core will's templates folder, your project's templates folder, and
 # all templates folders in included plugins, if they exist.
@@ -187,9 +190,6 @@ ENABLE_INTERNAL_ENCRYPTION = True
 # export WILL_MAILGUN_API_KEY="key-12398912329381"
 # export WILL_MAILGUN_API_URL="example.com"
 
-
-# Logging level
-# LOGLEVEL = "DEBUG"
 
 # Proxy settings
 # Use proxy to access hipchat servers

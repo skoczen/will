@@ -18,6 +18,10 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         if "bot" in kwargs:
             self.bot = kwargs["bot"]
             del kwargs["bot"]
+        if "message" in kwargs:
+            self.message = kwargs["message"]
+            del kwargs["message"]
+
         super(WillPlugin, self).__init__(*args, **kwargs)
 
     # TODO: pull all the hipchat-specific logic out of this,
@@ -39,10 +43,17 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
+        logging.info("self.say")
+        logging.info(content)
+
         if not "room" in kwargs and room:
             kwargs["room"] = room
 
         backend = False
+        if not message:
+            message = self.message
+        logging.info(message)
+
         if hasattr(message, "backend"):
             # Events, content/type/timestamp
             # {
@@ -51,15 +62,29 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             # }
             backend = message.backend
         else:
-            backend = settings.DEFAULT_BACKEND
+            # TODO: need a clear, documented spec for this.
+            if hasattr(message, "data") and hasattr(message.data, "backend"):
+                logging.info(message.data)
+                logging.info(message.data.__dict__)
+                backend = message.data.backend
+            else:
+                backend = settings.DEFAULT_BACKEND
 
+        logging.info("backend: %s" % backend)
         if backend:
-            self.bot.queues.io.output[backend].put(Event(
+            logging.info("putting in queue: %s" % content)
+            self.publish("message.outgoing.%s" % backend, Event(
                 type="say",
                 content=content,
                 source_message=message,
                 kwargs=kwargs,
             ))
+            # self.bot.queues.io.output[backend].put(Event(
+            #     type="say",
+            #     content=content,
+            #     source_message=message,
+            #     kwargs=kwargs,
+            # ))
 
         return
 
