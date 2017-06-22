@@ -284,12 +284,21 @@
 <h4 id="image-me">Image me</h4>
 <p>Sometimes, a picture is worth a thousand words.</p>
 <p><img alt="Image me a crazy squirrel" src="../../img/image_me.gif" /></p>
-<p>To get image me running, you'll need to have a Google API key, and custom search key, set in <code>config.py</code>.</p>
-<pre><code class="python"># config.py
-GOOGLE_API_KEY = &quot;FILL THIS IN&quot;
-GOOGLE_CUSTOM_SEARCH_KEY = &quot;FILL THIS IN&quot;
-</code></pre>
-
+<p>To configure <code>image me</code>, you'll need to set the following two variables in <code>config.py</code> or <a href="http://skoczen.github.io/will/config/">in your environment with the appropriate <code>WILL_</code> prefix</a>. Here are some instructions on where to obtain both.</p>
+<ul>
+<li><code>GOOGLE_API_KEY</code></li>
+<li>Go to the <a href="https://console.developers.google.com">Google Developers Console</a>.</li>
+<li>From the menu in the top left, choose <code>API Manager -&gt; Credentials</code>.</li>
+<li>Click <code>Create credentials</code> from the drop down, then <code>API Key</code>, that's the key you need here.</li>
+<li>Optionally, give the key a suitable human-readable name so it looks nice in the list e.g. <code>will-api</code>.</li>
+<li><code>GOOGLE_CUSTOM_SEARCH_ENGINE_ID</code></li>
+<li><a href="https://support.google.com/customsearch/answer/2630963?hl=en">Setup a custom search engine</a> (CSE) if you don't already have one.</li>
+<li>You'll need to provide a site for the CSE to search - just input anything, so the wizard can create the CSE.</li>
+<li>Type something useful like <code>Will</code> in the name field and create the CSE.</li>
+<li>Edit the settings for the CSE you just created, and in the <code>Sites to search</code> section, change the drop-down to <code>Search the entire web but emphasize included sites</code>.</li>
+<li>Delete the "anything" site you added two steps ago, to clean it up.</li>
+<li>In the <code>Details</code> section, click the <code>Search engine ID</code> button, and copy the ID which you need here.</li>
+</ul>
 <h4 id="remind-me">Remind me</h4>
 <p>This saves our bacon every day. Timeboxes meetings, helps people remember appointments, and enforces self-control.</p>
 <p><img alt="Remind me" src="../../img/remind_food.gif" /></p>

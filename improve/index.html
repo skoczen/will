@@ -180,7 +180,7 @@
 <p>This doesn't mean we don't have honest, spirited discussions about the direction to move will forward, or how to implement a feature.  We do.  We just respect one other while we do it.  Not so bad, right? :)</p>
 <h2 id="improve-wills-core">Improve will's core</h2>
 <p>For big core features, you're probably best off opening an issue, and discussing it with one of the core developers <em>before</em> you hack your nights and weekends away.</p>
-<p>Core changes to will are very much welcome.  In some cases, proposed changes have already been thought through, and there may be gotchas or sticking points we couldn't get past.  In other cases, it might be a direction we've purposely decided not to take will.  In most cases, we simply haven't thought of it, and would love the improvement! </p>
+<p>Core changes to will are very much welcome.  In some cases, proposed changes have already been thought through, and there may be gotchas or sticking points we couldn't get past.  In other cases, it might be a direction we've purposely decided not to take will.  In most cases, we simply haven't thought of it, and would love the improvement!</p>
 <p>It's always great to get a heads up of what's coming down the pipe, and have an open dialog.  Thanks for reaching out and starting one!</p>
 <p>In terms of the mechanics, you'll just want to:</p>
 <ol>
@@ -227,6 +227,7 @@
 <ul>
 <li><a href="https://github.com/adamcin">adamcin</a> gave you html support in 1-1 chats, using the new v2 API, and made bootstrapping more reliable.</li>
 <li><a href="https://github.com/adamgilman">adamgilman</a> gave you the friendly error messages when the hipchat key was invalid.</li>
+<li><a href="https://github.com/antgel">antgel</a> fixed the image plugin, for reals and added awesome documentation.</li>
 <li><a href="https://github.com/amckinley">amckinley</a> fixed a bug in the hipchat user list from missing params.</li>
 <li><a href="https://github.com/bfhenderson">bfhenderson</a> removed dependence on the v1 token, and made help more friendly.</li>
 <li><a href="https://github.com/borgstrom">borgstrom</a> gave you beautifully architected storage backends, including support for couchbase and local storage.</li>
@@ -259,7 +260,7 @@
 <li><a href="https://github.com/michaeljoseph">michaeljoseph</a> suggested improvements to setup and requirements.txt format.</li>
 <li><a href="https://github.com/mrgrue">mrgrue</a> added support for the hipchat server beta.</li>
 <li><a href="https://github.com/mvanbaak">mvanbaak</a> brought you support for bitbucket uptime.</li>
-<li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module, added an expire parameter to <code>self.save()</code>, and added support for will watching hipchat's status.</li>
+<li><a href="https://github.com/netjunki">netjunkie</a> fixed a duplicated help module, added an expire parameter to <code>self.save()</code>, added support for will watching hipchat's status. and fixed some redis config bugs.</li>
 <li><a href="https://github.com/pcurry">pcurry</a> added travis support.</li>
 <li><a href="https://github.com/pepedocs">pepedocs</a> added friendly timestamps to the default logging output.</li>
 <li><a href="https://github.com/PrideRage">PrideRage</a> gave you access to a room's entire history, and suggested a better talkback regex.</li>
@@ -284,7 +285,12 @@
 </ul>
 <p><strong>Note:</strong> Have a will you've open-sourced? Please send it in a PR or Issue!  This list is tiny!</p>
 <h2 id="releases">Releases</h2>
-<h4 id="094-april-25-2017-scheduled-please-test-on-master-and-report">0.9.4 - April 25, 2017 (scheduled, please test on master and report!)</h4>
+<h4 id="095-june-23-2017">0.9.5 - June 23, 2017</h4>
+<p>Quick bugfix release before the big changeover to 1.0, pluggable backends (Slack support), and more.</p>
+<ul>
+<li>Fixed: <code>@will image me</code> actually works again thanks to <a href="https://github.com/antgel">antgel</a>.</li>
+</ul>
+<h4 id="094-april-25-2017">0.9.4 - April 25, 2017</h4>
 <p>New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience with it being merged in.</p>
 <ul>
 <li>New: <code>self.append()</code> and <code>self.pop()</code> methods to support list storage, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
@@ -416,7 +422,7 @@
 </ul>
 <h4 id="063-december-30-2014">0.6.3 - December 30, 2014</h4>
 <ul>
-<li>Better error handling for weirdly formatted messages. </li>
+<li>Better error handling for weirdly formatted messages.</li>
 <li>Better generated README, thanks to <a href="https://github.com/bsvetchine">bsvetchine</a>.</li>
 </ul>
 <h4 id="062-september-23-2014">0.6.2 - September 23, 2014</h4>
@@ -465,7 +471,7 @@
 <li>Big, big release, with backwards-incompatble changes.  Please read all the notes on this one!</li>
 <li>All-new config and environment setup, including an all-new <code>config.py</code> for plugin configuration, and all non-sensitive settings.</li>
 <li>Much, much improved bootstrapping code that validates settings, gives helpful output, and generally helps you get will running.</li>
-<li>Documentation!  Real-live documentation! </li>
+<li>Documentation!  Real-live documentation!</li>
 <li><strong>Breaking</strong>: <code>WILL_TOKEN</code> has been renamed <code>WILL_V1_TOKEN</code>.</li>
 <li>New <code>@require_settings</code> decorator for plugins to request validation that needed settings are present.</li>
 <li>Will now has a concept of modules (groups of plugins), and groups help output according.</li>
@@ -491,11 +497,11 @@
 </ul>
 <h4 id="046-may-5-2014">0.4.6 - May 5, 2014</h4>
 <ul>
-<li><code>@route</code> decorators now honor all bottle arguments, most helpfully <code>method</code>! </li>
+<li><code>@route</code> decorators now honor all bottle arguments, most helpfully <code>method</code>!</li>
 </ul>
 <h4 id="045-may-2-2014">0.4.5 - May 2, 2014</h4>
 <ul>
-<li>Awesome new help system by <a href="https://github.com/quixeybrian">quixeybrian</a>.  </li>
+<li>Awesome new help system by <a href="https://github.com/quixeybrian">quixeybrian</a>.</li>
 <li>"@will help" now only displays functions with docstrings, and formats them nicely.</li>
 <li>Old help (regexes and all) is available at "@will programmer help"</li>
 </ul>
