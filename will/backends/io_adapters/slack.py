@@ -249,26 +249,29 @@ class SlackBackend(IOBackend):
         self._update_channels()
 
     def _watch_slack_rtm(self):
-        if self.client.rtm_connect():
-            self._update_backend_metadata()
+        try:
+            if self.client.rtm_connect():
+                self._update_backend_metadata()
 
-            num_polls_between_updates = 20
-            current_poll_count = 0
-            while True:
-                events = self.client.rtm_read()
-                if len(events) > 0:
-                    # TODO: only handle events that are new.
-                    # print len(events)
-                    for e in events:
-                        self.handle_incoming_event(e)
+                num_polls_between_updates = 20
+                current_poll_count = 0
+                while True:
+                    events = self.client.rtm_read()
+                    if len(events) > 0:
+                        # TODO: only handle events that are new.
+                        # print len(events)
+                        for e in events:
+                            self.handle_incoming_event(e)
 
-                # Update channels/people/me/etc every 10s or so.
-                current_poll_count += 1
-                if current_poll_count < num_polls_between_updates:
-                    self._update_backend_metadata()
-                    current_poll_count = 0
+                    # Update channels/people/me/etc every 10s or so.
+                    current_poll_count += 1
+                    if current_poll_count < num_polls_between_updates:
+                        self._update_backend_metadata()
+                        current_poll_count = 0
 
-                time.sleep(0.5)
+                    time.sleep(0.5)
+        except:
+            import traceback; traceback.print_exc();
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:
