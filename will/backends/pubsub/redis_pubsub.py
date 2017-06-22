@@ -24,7 +24,7 @@ class RedisPubSub(BasePubSub):
             db = url.path[1:]
         else:
             db = 0
-        max_connections = getattr(settings, 'REDIS_MAX_CONNECTIONS', None)
+        max_connections = int(getattr(settings, 'REDIS_MAX_CONNECTIONS', None))
         connection_pool = redis.ConnectionPool(
             max_connections=max_connections, host=url.hostname,
             port=url.port, db=db, password=url.password
