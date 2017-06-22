@@ -11,9 +11,10 @@ class ImagesPlugin(WillPlugin):
     def image_me(self, message, search_query):
         """image me ___ : Search google images for ___, and post a random one."""
 
-        if not (getattr(settings, "GOOGLE_API_KEY", False) and getattr("GOOGLE_CUSTOM_SEARCH_KEY", False)):
+        if not (getattr(settings, "GOOGLE_API_KEY", False) and
+                getattr(settings, "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", False)):
             self.say(
-                "Sorry, I'm missing my GOOGLE_API_KEY and GOOGLE_CUSTOM_SEARCH_KEY."
+                "Sorry, I'm missing my GOOGLE_API_KEY and GOOGLE_CUSTOM_SEARCH_ENGINE_ID."
                 " Can someone give them to me?", color="red"
             )
             return
@@ -22,7 +23,7 @@ class ImagesPlugin(WillPlugin):
         data = {
             "q": search_query,
             "key": settings.GOOGLE_API_KEY,
-            "cx": settings.GOOGLE_CUSTOM_SEARCH_KEY,
+            "cx": settings.GOOGLE_CUSTOM_SEARCH_ENGINE_ID,
             "safe": "medium",
             "num": 8,
             "searchType": "image",
@@ -31,7 +32,7 @@ class ImagesPlugin(WillPlugin):
         r.raise_for_status()
         try:
             response = r.json()
-            results = [result["link"] for result in response["items"] if "image" in r.json()]
+            results = [result["link"] for result in response["items"] if "items" in r.json()]
         except TypeError:
             results = []
         if results:

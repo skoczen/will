@@ -22,7 +22,7 @@ This doesn't mean we don't have honest, spirited discussions about the direction
 
 For big core features, you're probably best off opening an issue, and discussing it with one of the core developers *before* you hack your nights and weekends away.
 
-Core changes to will are very much welcome.  In some cases, proposed changes have already been thought through, and there may be gotchas or sticking points we couldn't get past.  In other cases, it might be a direction we've purposely decided not to take will.  In most cases, we simply haven't thought of it, and would love the improvement! 
+Core changes to will are very much welcome.  In some cases, proposed changes have already been thought through, and there may be gotchas or sticking points we couldn't get past.  In other cases, it might be a direction we've purposely decided not to take will.  In most cases, we simply haven't thought of it, and would love the improvement!
 
 It's always great to get a heads up of what's coming down the pipe, and have an open dialog.  Thanks for reaching out and starting one!
 
@@ -85,6 +85,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [adamcin](https://github.com/adamcin) gave you html support in 1-1 chats, using the new v2 API, and made bootstrapping more reliable.
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
+- [antgel](https://github.com/antgel/) fixed and documented setup for the new image plugin.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [borgstrom](https://github.com/borgstrom) gave you beautifully architected storage backends, including support for couchbase and local storage.
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Improved the docs all over, too.
@@ -286,7 +287,7 @@ Thanks for your patience on this long-delayed release!  Here's what's new:
 
 #### 0.6.3 - December 30, 2014
 
-* Better error handling for weirdly formatted messages. 
+* Better error handling for weirdly formatted messages.
 * Better generated README, thanks to [bsvetchine](https://github.com/bsvetchine).
 
 
@@ -345,7 +346,7 @@ Thanks for your patience on this long-delayed release!  Here's what's new:
 * Big, big release, with backwards-incompatble changes.  Please read all the notes on this one!
 * All-new config and environment setup, including an all-new `config.py` for plugin configuration, and all non-sensitive settings.
 * Much, much improved bootstrapping code that validates settings, gives helpful output, and generally helps you get will running.
-* Documentation!  Real-live documentation! 
+* Documentation!  Real-live documentation!
 * **Breaking**: `WILL_TOKEN` has been renamed `WILL_V1_TOKEN`.
 * New `@require_settings` decorator for plugins to request validation that needed settings are present.
 * Will now has a concept of modules (groups of plugins), and groups help output according.
@@ -376,12 +377,12 @@ Thanks for your patience on this long-delayed release!  Here's what's new:
 
 #### 0.4.6 - May 5, 2014
 
-* `@route` decorators now honor all bottle arguments, most helpfully `method`! 
+* `@route` decorators now honor all bottle arguments, most helpfully `method`!
 
 
 #### 0.4.5 - May 2, 2014
 
-* Awesome new help system by [quixeybrian](https://github.com/quixeybrian).  
+* Awesome new help system by [quixeybrian](https://github.com/quixeybrian).
 * "@will help" now only displays functions with docstrings, and formats them nicely.
 * Old help (regexes and all) is available at "@will programmer help"
 
