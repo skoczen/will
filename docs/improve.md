@@ -84,8 +84,8 @@ Will's also has had help from lots of coders. Alphabetically:
 
 - [adamcin](https://github.com/adamcin) gave you html support in 1-1 chats, using the new v2 API, and made bootstrapping more reliable.
 - [adamgilman](https://github.com/adamgilman) gave you the friendly error messages when the hipchat key was invalid.
+- [antgel](https://github.com/antgel) fixed the image plugin, for reals and added awesome documentation.
 - [amckinley](https://github.com/amckinley) fixed a bug in the hipchat user list from missing params.
-- [antgel](https://github.com/antgel/) fixed and documented setup for the new image plugin.
 - [bfhenderson](https://github.com/bfhenderson) removed dependence on the v1 token, and made help more friendly.
 - [borgstrom](https://github.com/borgstrom) gave you beautifully architected storage backends, including support for couchbase and local storage.
 - [brandonsturgeon](https://github.com/brandonsturgeon) jumped on hipchat's API-breaking change, and made will immune in a flash.  Improved the docs all over, too.
@@ -117,7 +117,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
 - [mrgrue](https://github.com/mrgrue) added support for the hipchat server beta.
 - [mvanbaak](https://github.com/mvanbaak) brought you support for bitbucket uptime.
-- [netjunkie](https://github.com/netjunki) fixed a duplicated help module, added an expire parameter to `self.save()`, and added support for will watching hipchat's status.
+- [netjunkie](https://github.com/netjunki) fixed a duplicated help module, added an expire parameter to `self.save()`, added support for will watching hipchat's status. and fixed some redis config bugs.
 - [pcurry](https://github.com/pcurry) added travis support.
 - [pepedocs](https://github.com/pepedocs) added friendly timestamps to the default logging output.
 - [PrideRage](https://github.com/PrideRage) gave you access to a room's entire history, and suggested a better talkback regex.
@@ -146,7 +146,15 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
-#### 0.9.4 - April 25, 2017 (scheduled, please test on master and report!)
+
+#### 0.9.5 - June 23, 2017
+
+Quick bugfix release before the big changeover to 1.0, pluggable backends (Slack support), and more.
+
+* Fixed: `@will image me` actually works again thanks to [antgel](https://github.com/antgel).
+
+
+#### 0.9.4 - April 25, 2017
 
 New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience with it being merged in.
 
