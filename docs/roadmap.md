@@ -55,7 +55,7 @@ Here's the nuts and bolts of how, today, we see this rolling out.
 
 1.6 - App specs for AIOS and `AIOSApp` class released.
 
-1.7 - Release of first five apps. TBD, but considered: (Image me, Remind me, Groceries, News Summary, Scattegories, Stale Package Finder)
+1.7 - Release of first five apps. TBD, but considered: (Image me, Remind me, Groceries, News Summary, Word Game, Stale Package Finder)
 
 2.0 - App Marketplace released, Git library integration released, and all existing Will plugins released as AIOS apps.
 
