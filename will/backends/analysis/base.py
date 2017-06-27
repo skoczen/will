@@ -36,6 +36,7 @@ class AnalysisBackend(PubSubMixin, object):
             )
             # print "published"
         except:
+            # TODO: replace these with proper will error handling.
             import traceback; traceback.print_exc();
         # self.__output_queue.put(ret)
 

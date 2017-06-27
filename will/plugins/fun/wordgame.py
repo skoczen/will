@@ -202,7 +202,6 @@ WORD_GAME_TOPICS = [
 ]
 
 
-
 class WordGamePlugin(WillPlugin):
     @respond_to("^(play a word game|scattegories)(\!\.)?$")
     def word_game_round(self, message):

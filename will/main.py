@@ -171,7 +171,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                     error_message = "FYI, I ran into some problems while starting up:"
                     for err in errors:
                         error_message += "\n%s\n" % err
-                    # self.send_room_message(default_room, error_message, color="yellow")
+                    self.send_room_message(default_room, error_message, color="yellow")
                     puts(colored.red(error_message))
 
                 signal.signal(signal.SIGINT, self.handle_sys_exit)
@@ -659,6 +659,7 @@ To set your %(name)s:
             try:
                 event = self.pubsub.get_message()
                 if event and hasattr(event, "type"):
+                    now = datetime.datetime.now()
                     logging.info("Event (%s): %s" % (event.type, event))
 
                     # TOOD: Order by most common.
@@ -668,7 +669,7 @@ To set your %(name)s:
 
                         analysis_queues[event.source_hash] = {
                             "count": 0,
-                            "timeout_end": datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000),
+                            "timeout_end": now + datetime.timedelta(seconds=self.analysis_timeout / 1000),
                             "source": event,
                         }
                         self.pubsub.publish("analysis.start", event.data.source, reference_message=event)
@@ -678,12 +679,12 @@ To set your %(name)s:
                         q["source"].update({"analysis": event.data})
                         q["count"] += 1
 
-                        if q["count"] >= num_analysis_queues or datetime.datetime.now() > q["timeout_end"]:
+                        if q["count"] >= num_analysis_queues or now > q["timeout_end"]:
                             # done, move on.
                             generation_queues[event.source_hash] = {
                                 "count": 0,
                                 "timeout_end": (
-                                    datetime.datetime.now() +
+                                    now +
                                     datetime.timedelta(seconds=self.generation_timeout / 1000)
                                 ),
                                 "source": q["source"],
@@ -699,7 +700,7 @@ To set your %(name)s:
                             q["source"].generation_options.append(*event.data)
                         q["count"] += 1
 
-                        if q["count"] >= num_generation_queues or datetime.datetime.now() > q["timeout_end"]:
+                        if q["count"] >= num_generation_queues or now > q["timeout_end"]:
                             # done, move on to execution.
                             for b in self.execution_backends:
                                 try:
@@ -745,6 +746,8 @@ To set your %(name)s:
             #     q.put(message)
 
             # Grab results from all the queues, give up on timeout after
+            # TODO: num_queues not defined - I think this code needs pulled after the refactor
+            # (all that should be needed is that pubsub.publish("analysis.start")) above, but double check this
             while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
                 m = self.pubsub.get_message()
                 if (

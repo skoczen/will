@@ -160,6 +160,7 @@ class SlackBackend(IOBackend):
             })
 
         # TODO: resolve this with a fresh brain.
+        # Also handle threaded messages.
         if "source_message" in event:
             if hasattr(event.source_message, "data"):
                 channel_id = event.source_message.data.channel.id
