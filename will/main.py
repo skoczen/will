@@ -25,7 +25,7 @@ from will.utils import show_valid, error, warn, print_head
 
 # Force UTF8
 if sys.version_info < (3, 0):
-    reload(sys)
+    reload(sys)  # flake8: noqa
     sys.setdefaultencoding('utf8')
 else:
     raw_input = input
