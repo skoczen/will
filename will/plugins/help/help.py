@@ -20,7 +20,7 @@ class HelpPlugin(WillPlugin):
 
         for k in sorted(selected_modules, key=lambda x: x[0]):
             help_data = selected_modules[k]
-            if help_data and len(help_data) > 0:
+            if help_data:
                 help_text += "<br/><br/><b>%s</b>:" % k
                 for line in help_data:
                     if line:

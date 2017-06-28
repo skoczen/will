@@ -126,7 +126,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                 scheduler_thread.start()
                 bottle_thread.start()
                 errors = self.get_startup_errors()
-                if len(errors) > 0:
+                if errors:
                     default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
                     error_message = "FYI, I ran into some problems while starting up:"
                     for err in errors:

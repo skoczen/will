@@ -69,7 +69,7 @@ def import_settings(quiet=True):
                      "This is ok - Will will just join all available rooms.")
                 settings["ROOMS"] = None
 
-        if "DEFAULT_ROOM" not in settings and "ROOMS" in settings and settings["ROOMS"] and len(settings["ROOMS"]) > 0:
+        if "DEFAULT_ROOM" not in settings and "ROOMS" in settings and settings["ROOMS"]:
             if not quiet:
                 warn("no DEFAULT_ROOM found in the environment or config.  "
                      "Defaulting to '%s', the first one." % settings["ROOMS"][0])

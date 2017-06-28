@@ -32,7 +32,7 @@ class TimePlugin(WillPlugin):
                     (place, settings.WORLD_WEATHER_ONLINE_KEY)
                 )
             resp = r.json()
-            if "request" in resp["data"] and len(resp["data"]["request"]) > 0:
+            if "request" in resp["data"] and resp["data"]["request"]:
                 place = resp["data"]["request"][0]["query"]
                 current_time = self.parse_natural_time(resp["data"]["time_zone"][0]["localtime"])
 
