@@ -5,7 +5,7 @@ import time
 import traceback
 import threading
 
-from mixins import ScheduleMixin, PluginModulesLibraryMixin
+from will.mixins import ScheduleMixin, PluginModulesLibraryMixin
 
 
 class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):

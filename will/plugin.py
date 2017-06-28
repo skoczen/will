@@ -1,11 +1,10 @@
 import re
 import logging
 
-import settings
+from will import settings
 from bottle import request
-from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin, \
-    EmailMixin
-from utils import html_to_text
+from will.mixins import NaturalTimeMixin, RosterMixin, RoomMixin, \
+    ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin, EmailMixin
 
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin,

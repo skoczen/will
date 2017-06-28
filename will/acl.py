@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from . import settings
+from will import settings
 
 
 def get_acl_members(acl):

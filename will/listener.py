@@ -4,9 +4,9 @@ import threading
 import traceback
 from sleekxmpp import ClientXMPP
 
-import settings
-from utils import Bunch
-from mixins import RosterMixin, RoomMixin, HipChatMixin
+from will import settings
+from will.utils import Bunch
+from will.mixins import RosterMixin, RoomMixin, HipChatMixin
 
 
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):

@@ -2,7 +2,7 @@ import unittest
 
 from will.mixins.roster import RosterMixin
 from will import settings
-from will.acl import get_acl_members, is_acl_allowed
+from will.acl import is_acl_allowed
 from mock import patch
 
 

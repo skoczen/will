@@ -1,5 +1,5 @@
 import os
-from utils import show_valid, warn, note
+from will.utils import show_valid, warn, note
 from clint.textui import puts, indent
 from six.moves.urllib import parse
 

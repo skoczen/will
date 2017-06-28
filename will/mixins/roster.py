@@ -1,5 +1,5 @@
-from ..utils import is_admin
-from ..acl import is_acl_allowed
+from will.utils import is_admin
+from will.acl import is_acl_allowed
 
 
 class RosterMixin(object):

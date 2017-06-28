@@ -15,12 +15,12 @@ from multiprocessing import Process, Queue
 
 import bottle
 
-from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
+from will.listener import WillXMPPClientMixin
+from will.mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin
-from scheduler import Scheduler
-import settings
-from utils import show_valid, error, warn, print_head
+from will.scheduler import Scheduler
+from will import settings
+from will.utils import show_valid, error, warn, print_head
 
 
 # Force UTF8

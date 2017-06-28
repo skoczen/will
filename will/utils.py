@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from clint.textui import puts, indent
-from clint.textui import colored
+from clint.textui import puts, colored
 from six.moves import html_parser
 
 
@@ -40,7 +39,7 @@ def html_to_text(html):
 
 
 def is_admin(nick):
-    from . import settings
+    from will import settings
     return settings.ADMINS == '*' or nick.lower() in settings.ADMINS
 
 
