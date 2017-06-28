@@ -501,7 +501,7 @@ To set your %(name)s:
                             plugin_instances = {}
                             for function_name, fn in inspect.getmembers(
                                 plugin_info["class"],
-                                predicate=inspect.ismethod
+                                predicate=lambda x: inspect.ismethod(x) or inspect.isfunction(x)
                             ):
                                 try:
                                     # Check for required_settings
