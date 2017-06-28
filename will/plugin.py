@@ -24,7 +24,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
         return rooms
 
-    def _prepared_content(self, content, message, kwargs):
+    def _prepared_content(self, content):
         content = re.sub(r'>\s+<', '><', content)
         return content
 
@@ -34,7 +34,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
 
-        content = self._prepared_content(content, message, kwargs)
+        content = self._prepared_content(content)
         rooms = []
         if room is not None:
             try:
@@ -56,7 +56,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
 
-        content = self._prepared_content(content, message, kwargs)
+        content = self._prepared_content(content)
         if message is None or message["type"] == "groupchat":
             # Reply, speaking to the room.
             try:
@@ -85,7 +85,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
 
     def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
 
-        content = self._prepared_content(content, message, kwargs)
+        content = self._prepared_content(content)
         if message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:

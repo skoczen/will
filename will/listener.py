@@ -28,7 +28,6 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.default_room = settings.DEFAULT_ROOM
 
         # Property boostraps the list
-        self.available_rooms
         for r in settings.ROOMS:
             if r != "":
                 if not hasattr(self, "default_room"):

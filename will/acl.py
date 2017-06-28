@@ -9,7 +9,7 @@ def get_acl_members(acl):
     if getattr(settings, "ACL", None):
         try:
             # Case-insensitive checks
-            for k, v in settings.ACL.items():
+            for k in settings.ACL.keys():
                 if k.lower() == acl:
                     acl_members = settings.ACL[k]
                     break

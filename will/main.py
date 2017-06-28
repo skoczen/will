@@ -148,7 +148,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                         sys.stdout.flush()
                         time.sleep(0.5)
 
-    def verify_individual_setting(self, test_setting, quiet=False):
+    def verify_individual_setting(self, test_setting):
         if not test_setting.get("only_if", True):
             return True
 
