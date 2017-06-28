@@ -72,5 +72,5 @@ def deploy_docs():
         local("git commit -m 'Auto-update of docs: %s'" % last_commit)
         local("git push")
     else:
-        print "No changes to the docs."
+        print("No changes to the docs.")
     local("git checkout %s" % current_branch)

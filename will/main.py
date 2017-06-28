@@ -140,7 +140,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                 scheduler_thread.terminate()
                 bottle_thread.terminate()
                 xmpp_thread.terminate()
-                print '\n\nReceived keyboard interrupt, quitting threads.',
+                print('\n\nReceived keyboard interrupt, quitting threads.')
                 while (scheduler_thread.is_alive() or
                        bottle_thread.is_alive() or
                        xmpp_thread.is_alive()):
