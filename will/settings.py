@@ -1,7 +1,7 @@
 import os
 from utils import show_valid, warn, note
 from clint.textui import puts, indent
-from urlparse import urlparse
+from six.moves.urllib import parse
 
 
 def import_settings(quiet=True):
@@ -167,7 +167,7 @@ def import_settings(quiet=True):
                 settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
 
         if "PROXY_URL" in settings:
-            parsed_proxy_url = urlparse(settings["PROXY_URL"])
+            parsed_proxy_url = parse.urlparse(settings["PROXY_URL"])
             settings["USE_PROXY"] = True
             settings["PROXY_HOSTNAME"] = parsed_proxy_url.hostname
             settings["PROXY_USERNAME"] = parsed_proxy_url.username

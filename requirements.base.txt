@@ -15,3 +15,4 @@ Markdown==2.3.1
 MarkupSafe==0.23
 PyYAML==3.10
 pygerduty==0.28
+six==1.10.0
