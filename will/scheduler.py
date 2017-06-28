@@ -72,7 +72,9 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
                 except:
                     logging.critical(
                         "Error running task %s.  \n\n%s\n"
-                        "Trying to delete it and recover...\n" % (item, traceback.format_exc())
+                        "Trying to delete it and recover...\n",
+                        item,
+                        traceback.format_exc()
                     )
 
                 if running_task:
@@ -81,7 +83,9 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
                     except:
                         logging.critical(
                             "Unable to remove task. Leaving it in, you'll have to clean it out by hand."
-                            "Sorry! \n\n%s\nContinuing...\n" % (traceback.format_exc(),))
+                            "Sorry! \n\n%s\nContinuing...\n",
+                            traceback.format_exc()
+                        )
 
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
@@ -112,7 +116,7 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
                 self._run_applicable_actions_in_list(now, periodic_list=True)
                 self.bot.save("scheduler_lock", False)
         except:
-            logging.critical("Scheduler run blew up.\n\n%s\nContinuing...\n" % (traceback.format_exc(), ))
+            logging.critical("Scheduler run blew up.\n\n%s\nContinuing...\n", traceback.format_exc())
 
     def run_action(self, task):
         if task["type"] == "room_message":

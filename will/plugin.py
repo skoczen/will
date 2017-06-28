@@ -40,7 +40,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             try:
                 room_id = room["room_id"]
             except KeyError:
-                logging.error(u'"{0}" is not a room object.'.format(room))
+                logging.error(u'"%s" is not a room object.', room)
             else:
                 self.send_room_message(room_id, content, **kwargs)
         elif message is None or message["type"] == "groupchat":
