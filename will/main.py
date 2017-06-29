@@ -13,11 +13,11 @@ import sys
 import threading
 import time
 import traceback
+from cStringIO import StringIO
 from importlib import import_module
 from clint.textui import colored, puts, indent
 from os.path import abspath, dirname
 from multiprocessing import Process, Queue
-from multiprocessing.queues import Empty
 
 import bottle
 
@@ -64,6 +64,8 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
             format='%(asctime)s [%(levelname)s] %(message)s',
             datefmt='%a, %d %b %Y %H:%M:%S',
         )
+        # Bootstrap exit code.
+        self.exiting = False
 
         # Find all the PLUGINS modules
         plugins = settings.PLUGINS
@@ -125,45 +127,37 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
         self.save("help_modules", self.help_modules)
 
         puts("\nStarting core processes:")
-        self.queues = Bunch()
-        self.queues.io = Bunch()
-        self.queues.io._incoming = Queue()
-        self.queues.analysis = Bunch()
-        self.queues.generation = Bunch()
 
-        # self.queues.stdin = Queue()
+        # try:
+        # Exit handlers.
+        # signal.signal(signal.SIGINT, self.handle_sys_exit)
+        # # TODO this hangs for some reason.
+        # signal.signal(signal.SIGTERM, self.handle_sys_exit)
 
-        try:
-            # Scheduler
-            scheduler_thread = Process(target=self.bootstrap_scheduler)
-            # scheduler_thread.daemon = True
+        # Scheduler
+        self.scheduler_thread = Process(target=self.bootstrap_scheduler)
 
-            # Bottle
-            bottle_thread = Process(target=self.bootstrap_bottle)
-            # bottle_thread.daemon = True
+        # Bottle
+        self.bottle_thread = Process(target=self.bootstrap_bottle)
 
-            # Incoming message queue
-            incoming_message_thread = Process(target=self.bootstrap_message_handler)
+        # Event handler
+        self.incoming_event_thread = Process(target=self.bootstrap_event_handler)
 
-            # Event handler
-            incoming_event_thread = Process(target=self.bootstrap_event_handler)
+        self.io_threads = []
+        self.analysis_threads = []
+        self.generation_threads = []
 
-            self.io_threads = []
-            self.analysis_threads = []
-            self.generation_threads = []
-            self.message_handler_threads = []
-
-            with indent(2):
+        with indent(2):
+            try:
                 # Start up threads.
                 self.bootstrap_io()
                 self.bootstrap_analysis()
                 self.bootstrap_generation()
                 self.bootstrap_execution()
 
-                scheduler_thread.start()
-                bottle_thread.start()
-                incoming_message_thread.start()
-                incoming_event_thread.start()
+                self.scheduler_thread.start()
+                self.bottle_thread.start()
+                self.incoming_event_thread.start()
 
                 errors = self.get_startup_errors()
                 if len(errors) > 0:
@@ -174,21 +168,14 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                     self.send_room_message(default_room, error_message, color="yellow")
                     puts(colored.red(error_message))
 
-                signal.signal(signal.SIGINT, self.handle_sys_exit)
-                # TODO this hangs for some reason.
-                # signal.signal(signal.SIGTERM, self.handle_sys_exit)
-
                 self.stdin_listener_thread = False
                 if self.has_stdin_io_backend:
-                    self.queues.io.stdin_input = Queue()
-                    self.stdin_listener_thread = Process(target=self.handle_main_stdin_queue)
-                    self.stdin_listener_thread.start()
 
                     self.current_line = ""
                     while True:
                         for line in sys.stdin.readline():
                             if "\n" in line:
-                                # self.queues.io.stdin_input.put(self.current_line)
+                                print "line: %s" % line
                                 self.publish(
                                     "message.incoming.stdin",
                                     Event(
@@ -199,58 +186,12 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                                 self.current_line = ""
                             else:
                                 self.current_line += line
-                while True:
-                    time.sleep(100)
-        except (KeyboardInterrupt, SystemExit):
-            scheduler_thread.terminate()
-            bottle_thread.terminate()
-            incoming_message_thread.terminate()
-            incoming_event_thread.terminate()
-
-            if self.stdin_listener_thread:
-                self.stdin_listener_thread.terminate()
-
-            # for t in self.stdin_io_threads:
-            #     t.terminate()
-
-            # for t in self.io_threads:
-            #     t.terminate()
-
-            for q in self.queues.io.terminate:
-                q.put({"type": "terminate"})
-
-            for t in self.analysis_threads:
-                t.terminate()
-
-            for t in self.generation_threads:
-                t.terminate()
-
-            for t in self.message_handler_threads:
-                t.terminate()
-
-            for t in self.running_execution_threads:
-                t.terminate()
-
-            print '\n\nReceived keyboard interrupt, quitting threads.',
-            while (
-                scheduler_thread.is_alive() or
-                bottle_thread.is_alive() or
-                incoming_message_thread.is_alive() or
-                incoming_event_thread.is_alive() or
-                self.stdin_listener_thread.is_alive() or
-                any([t.is_alive() for t in self.stdin_io_threads]) or
-                any([t.is_alive() for t in self.stdin_io_threads]) or
-                any([t.is_alive() for t in self.analysis_threads]) or
-                any([t.is_alive() for t in self.generation_threads]) or
-                any([t.is_alive() for t in self.running_execution_threads]) or
-                any([t.is_alive() for t in self.message_handler_threads])
-                # or
-                # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
-            ):
-                    sys.stdout.write(".")
-                    sys.stdout.flush()
-                    time.sleep(0.5)
-            print ". done.\n"
+                else:
+                    while True:
+                        print "true"
+                        time.sleep(100)
+            except (KeyboardInterrupt, SystemExit):
+                self.handle_sys_exit()
 
     def verify_individual_setting(self, test_setting, quiet=False):
         if not test_setting.get("only_if", True):
@@ -323,30 +264,31 @@ To set your %(name)s:
         else:
             puts("")
 
-        if "hipchat" in settings.CHAT_BACKENDS:
+        # TODO: move this into the hipchat backend, and get it working again.
+        # if "hipchat" in settings.CHAT_BACKENDS:
 
-            puts("Verifying credentials...")
-            # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.
-            user_id = settings.USERNAME.split('@')[0].split('_')[1]
+        #     puts("Verifying credentials...")
+        #     # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.
+        #     user_id = settings.USERNAME.split('@')[0].split('_')[1]
 
-            # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
-            # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
-            q = Queue()
-            p = Process(target=self.get_user, args=(user_id,), kwargs={"q": q, })
-            p.start()
-            user_data = q.get()
-            p.join()
+        #     # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
+        #     # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
+        #     q = Queue()
+        #     p = Process(target=self.get_user, args=(user_id,), kwargs={"q": q, })
+        #     p.start()
+        #     user_data = q.get()
+        #     p.join()
 
-            if "error" in user_data:
-                error("We ran into trouble: '%(message)s'" % user_data["error"])
-                sys.exit(1)
-            with indent(2):
-                show_valid("%s authenticated" % user_data["name"])
-                os.environ["WILL_NAME"] = user_data["name"]
-                show_valid("@%s verified as handle" % user_data["mention_name"])
-                os.environ["WILL_HANDLE"] = user_data["mention_name"]
+        #     if "error" in user_data:
+        #         error("We ran into trouble: '%(message)s'" % user_data["error"])
+        #         sys.exit(1)
+        #     with indent(2):
+        #         show_valid("%s authenticated" % user_data["name"])
+        #         os.environ["WILL_NAME"] = user_data["name"]
+        #         show_valid("@%s verified as handle" % user_data["mention_name"])
+        #         os.environ["WILL_HANDLE"] = user_data["mention_name"]
 
-            puts("")
+        #     puts("")
 
     def load_config(self):
         puts("Loading configuration...")
@@ -355,28 +297,30 @@ To set your %(name)s:
         puts("")
 
     def verify_rooms(self):
-        if "hipchat" in settings.CHAT_BACKENDS:
-            puts("Verifying rooms...")
-            # If we're missing ROOMS, join all of them.
-            with indent(2):
-                if settings.ROOMS is None:
-                    # Yup. Thanks, BSDs.
-                    q = Queue()
-                    p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
-                    p.start()
-                    rooms_list = q.get()
-                    show_valid("Joining all %s known rooms." % len(rooms_list))
-                    os.environ["WILL_ROOMS"] = ";".join(rooms_list)
-                    p.join()
-                    settings.import_settings()
-                else:
-                    show_valid(
-                        "Joining the %s room%s specified." % (
-                            len(settings.ROOMS),
-                            "s" if len(settings.ROOMS) > 1 else ""
-                        )
-                    )
-            puts("")
+        pass
+        # TODO: Move this to the hipchat backend
+        # if "hipchat" in settings.CHAT_BACKENDS:
+        #     puts("Verifying rooms...")
+        #     # If we're missing ROOMS, join all of them.
+        #     with indent(2):
+        #         if settings.ROOMS is None:
+        #             # Yup. Thanks, BSDs.
+        #             q = Queue()
+        #             p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
+        #             p.start()
+        #             rooms_list = q.get()
+        #             show_valid("Joining all %s known rooms." % len(rooms_list))
+        #             os.environ["WILL_ROOMS"] = ";".join(rooms_list)
+        #             p.join()
+        #             settings.import_settings()
+        #         else:
+        #             show_valid(
+        #                 "Joining the %s room%s specified." % (
+        #                     len(settings.ROOMS),
+        #                     "s" if len(settings.ROOMS) > 1 else ""
+        #                 )
+        #             )
+        #     puts("")
 
     def verify_io(self):
         puts("Verifying IO backends...")
@@ -612,48 +556,83 @@ To set your %(name)s:
                 puts("")
 
     def handle_sys_exit(self, *args, **kwargs):
+        # if not self.exiting:
+        try:
+            print '\n\nReceived keyboard interrupt, quitting threads.',
+            self.exiting = True
+
+            if self.scheduler_thread:
+                try:
+                    self.scheduler_thread.terminate()
+                except KeyboardInterrupt:
+                    pass
+            if self.bottle_thread:
+                try:
+                    self.bottle_thread.terminate()
+                except KeyboardInterrupt:
+                    pass
+            if self.incoming_event_thread:
+                try:
+                    self.incoming_event_thread.terminate()
+                except KeyboardInterrupt:
+                    pass
+
+            # if self.stdin_listener_thread:
+            #     self.stdin_listener_thread.terminate()
+
+            self.publish("system.terminate", {})
+
+            for t in self.analysis_threads:
+                try:
+                    t.terminate()
+                except KeyboardInterrupt:
+                    pass
+
+            for t in self.generation_threads:
+                try:
+                    t.terminate()
+                except KeyboardInterrupt:
+                    pass
+
+            for t in self.running_execution_threads:
+                try:
+                    t.terminate()
+                except KeyboardInterrupt:
+                    pass
+        except:
+            print "\n\n\nException while exiting!!"
+            import traceback; traceback.print_exc();
+            sys.exit(1)
+
+        while (
+            (self.scheduler_thread and self.scheduler_thread.is_alive()) or
+            (self.bottle_thread and self.bottle_thread.is_alive()) or
+            (self.incoming_event_thread and self.incoming_event_thread.is_alive()) or
+            # self.stdin_listener_thread.is_alive() or
+            any([t.is_alive() for t in self.io_threads]) or
+            any([t.is_alive() for t in self.analysis_threads]) or
+            any([t.is_alive() for t in self.generation_threads]) or
+            any([t.is_alive() for t in self.running_execution_threads])
+            # or
+            # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
+        ):
+                sys.stdout.write(".")
+                sys.stdout.flush()
+                time.sleep(0.5)
+        print ". done.\n"
         sys.exit(1)
 
-    def handle_main_stdin_queue(self):
-        while True:
-            try:
-                line = self.queues.io.stdin_input.get(timeout=settings.QUEUE_INTERVAL)
-                for name, q in self.queues.io.stdin_backend_queues.items():
-                    q.put(Event(
-                        type="message",
-                        source="stdin",
-                        content=line,
-                    ))
-            except:
-                # import traceback; traceback.print_exc();
-                pass
-
-    def bootstrap_message_handler(self):
-        self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)
-        self.generation_timeout = getattr(settings, "GENERATION_TIMEOUT_MS", 2000)
-        self.message_handler_threads = []
-
-        while True:
-            try:
-                message = self.queues.io._incoming.get(timeout=settings.QUEUE_INTERVAL)
-                t = Process(target=self.handle_message, args=(message,))
-                t.start()
-                self.message_handler_threads.append(t)
-            except Empty:
-                pass
 
     def bootstrap_event_handler(self):
         self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)
         self.generation_timeout = getattr(settings, "GENERATION_TIMEOUT_MS", 2000)
-        self.message_handler_threads = []
         self.pubsub.subscribe(["message.*", "analysis.*", "generation.*"])
 
         # TODO: change this to the number of running analysis threads
-        num_analysis_queues = len(self.queues.analysis.input)
-        num_generation_queues = len(self.queues.generation.input)
-        analysis_queues = {}
-        generation_queues = {}
-        # execution_queues = {}
+        num_analysis_threads = len(settings.ANALYZE_BACKENDS)
+        num_generation_threads = len(settings.GENERATION_BACKENDS)
+        analysis_threads = {}
+        generation_threads = {}
 
         while True:
             try:
@@ -667,7 +646,7 @@ To set your %(name)s:
                         # A message just got dropped off one of the IO Backends.
                         # Send it to analysis.
 
-                        analysis_queues[event.source_hash] = {
+                        analysis_threads[event.source_hash] = {
                             "count": 0,
                             "timeout_end": now + datetime.timedelta(seconds=self.analysis_timeout / 1000),
                             "source": event,
@@ -675,13 +654,13 @@ To set your %(name)s:
                         self.pubsub.publish("analysis.start", event.data.source, reference_message=event)
 
                     elif event.type == "analysis.complete":
-                        q = analysis_queues[event.source_hash]
+                        q = analysis_threads[event.source_hash]
                         q["source"].update({"analysis": event.data})
                         q["count"] += 1
 
-                        if q["count"] >= num_analysis_queues or now > q["timeout_end"]:
+                        if q["count"] >= num_analysis_threads or now > q["timeout_end"]:
                             # done, move on.
-                            generation_queues[event.source_hash] = {
+                            generation_threads[event.source_hash] = {
                                 "count": 0,
                                 "timeout_end": (
                                     now +
@@ -689,137 +668,34 @@ To set your %(name)s:
                                 ),
                                 "source": q["source"],
                             }
-                            del analysis_queues[event.source_hash]
+                            del analysis_threads[event.source_hash]
                             self.pubsub.publish("generation.start", q["source"], reference_message=q["source"])
 
                     elif event.type == "generation.complete":
-                        q = generation_queues[event.source_hash]
+                        q = generation_threads[event.source_hash]
                         if not hasattr(q["source"], "generation_options"):
                             q["source"].generation_options = []
                         if hasattr(event, "data") and len(event.data) > 0:
                             q["source"].generation_options.append(*event.data)
                         q["count"] += 1
 
-                        if q["count"] >= num_generation_queues or now > q["timeout_end"]:
+                        if q["count"] >= num_generation_threads or now > q["timeout_end"]:
                             # done, move on to execution.
                             for b in self.execution_backends:
                                 try:
                                     b.handle_execution(q["source"])
                                 except:
                                     break
-                            del generation_queues[event.source_hash]
+                            del generation_threads[event.source_hash]
 
                     elif event.type == "message.no_response":
                         try:
                             self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
                         except:
                             pass
-                    time.sleep(settings.QUEUE_INTERVAL)
+                    time.sleep(settings.EVENT_LOOP_INTERVAL)
             except:
                 logging.exception("Error handling message")
-
-            # try:
-            #     message = self.queues.io._incoming.get(timeout=settings.QUEUE_INTERVAL)
-            #     t = Process(target=self.handle_message, args=(message,))
-            #     t.start()
-            #     self.message_handler_threads.append(t)
-            # except Empty:
-            #     pass
-
-    def handle_message(self, message):
-
-        # Send to analyze
-        # Analysis (Understand, add metadata)
-        # Now: Run each analyze syncrhonously, add info to message.
-        # Later: Fire up analyze threads for each, with queues for output
-        message_id = message.hash
-        self.pubsub.subscribe("analysis")
-        return
-
-        try:
-            message.analysis = Bunch()
-
-            queues_heard_from = 0
-            timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.analysis_timeout/1000)
-            self.pubsub.publish("analysis.start", message)
-            # for name, q in self.queues.analysis.input.items():
-            #     q.put(message)
-
-            # Grab results from all the queues, give up on timeout after
-            # TODO: num_queues not defined - I think this code needs pulled after the refactor
-            # (all that should be needed is that pubsub.publish("analysis.start")) above, but double check this
-            while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
-                m = self.pubsub.get_message()
-                if (
-                    m and
-                    hasattr(m, "type") and
-                    m.type == "analysis.complete" and
-                    m.hash == message_id
-                ):
-                    # TODO: Last one wins right now - this should not
-                    #         # allow conflicts.
-                    message.analysis.update(m)
-                    queues_heard_from += 1
-                else:
-                    time.sleep(settings.QUEUE_INTERVAL)
-
-                # for name, q in self.queues.analysis.output.items():
-                #     try:
-                #         context = q.get(timeout=settings.QUEUE_INTERVAL)
-                #         # TODO: Last one wins right now - this should not
-                #         # allow conflicts.
-                #         message.analysis.update(context)
-
-                #         queues_heard_from += 1
-                #     except Empty:
-                #         pass
-
-            if datetime.datetime.now() > timeout_end:
-                print "timed out"
-
-            # Generate (make a list of possible responses)
-            message.generation_options = []
-
-            num_queues = len(self.queues.generation.input)
-            queues_heard_from = 0
-            timeout_end = datetime.datetime.now() + datetime.timedelta(seconds=self.generation_timeout/1000)
-            for name, q in self.queues.generation.input.items():
-                q.put(message)
-
-            # Grab results from all the queues, give up on timeout after
-            while queues_heard_from < num_queues and datetime.datetime.now() < timeout_end:
-                for name, q in self.queues.generation.output.items():
-                    try:
-                        options = q.get(timeout=settings.QUEUE_INTERVAL)
-                        # TODO: Last one wins right now - this should not
-                        # allow conflicts.
-                        for o in options:
-                            message.generation_options.append(o)
-
-                        queues_heard_from += 1
-                    except Empty:
-                        pass
-            if datetime.datetime.now() > timeout_end:
-                print "timed out"
-
-            # print "generation done."
-
-            # print "ready for execution"
-            # Execute (choose from the possible responses based on the highest score.)
-            # Possibly do some analysis to post-check and re-decide an outcome.
-            # Take an action.
-            for b in self.execution_backends:
-                try:
-                    b.execute(message)
-                except:
-                    break
-        except:
-            logging.critical(
-                "Error running %s.  \n\n%s\nContinuing...\n" % (
-                    message,
-                    traceback.format_exc()
-                )
-            )
 
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")
@@ -912,11 +788,7 @@ To set your %(name)s:
         # puts("Bootstrapping IO...")
         self.has_stdin_io_backend = False
         self.io_backends = []
-        self.queues.io.stdin_queue = []
-        self.queues.io.stdin_backend_queues = {}
-        self.queues.io.terminate = []
-        self.queues.io.output = {}
-        self.stdin_io_threads = []
+        self.io_threads = []
         self.stdin_io_backends = []
         for b in settings.IO_BACKENDS:
             module = import_module(b)
@@ -929,37 +801,20 @@ To set your %(name)s:
                         class_name != "StdInOutIOBackend"
                     ):
                         c = cls()
-                        my_output_queue = Queue()
-                        self.queues.io.output[b] = my_output_queue
-                        my_stdin_queue = Queue()
-                        my_terminate_queue = Queue()
-                        self.queues.io.terminate.append(my_terminate_queue)
 
                         if hasattr(c, "stdin_process") and c.stdin_process:
-                            self.queues.io.stdin_backend_queues[b] = my_stdin_queue
                             thread = Process(
                                 target=c._start,
-                                args=(
-                                    b,
-                                    self.queues.io._incoming,
-                                    self.queues.io.output[b],
-                                    my_terminate_queue,
-                                ),
-                                kwargs={
-                                    "stdin_queue": self.queues.io.stdin_backend_queues[b],
-                                },
+                                args=(b,),
                             )
                             thread.start()
                             self.has_stdin_io_backend = True
-                            self.stdin_io_threads.append(thread)
+                            self.io_threads.append(thread)
                         else:
                             thread = Process(
                                 target=c._start,
                                 args=(
                                     b,
-                                    self.queues.io._incoming,
-                                    self.queues.io.output[b],
-                                    my_terminate_queue
                                 )
                             )
                             thread.start()
@@ -975,8 +830,6 @@ To set your %(name)s:
 
         self.analysis_backends = []
         self.analysis_threads = []
-        self.queues.analysis.input = {}
-        self.queues.analysis.output = {}
 
         for b in settings.ANALYZE_BACKENDS:
             module = import_module(b)
@@ -988,17 +841,9 @@ To set your %(name)s:
                         class_name != "AnalysisBackend"
                     ):
                         c = cls()
-                        my_analysis_input_queue = Queue()
-                        my_analysis_output_queue = Queue()
-                        self.queues.analysis.input[b] = my_analysis_input_queue
-                        self.queues.analysis.output[b] = my_analysis_output_queue
                         thread = Process(
                             target=c.start,
-                            args=(
-                                b,
-                                self.queues.analysis.input[b],
-                                self.queues.analysis.output[b],
-                            ),
+                            args=(b,),
                             kwargs={"bot": self},
                         )
                         thread.start()
@@ -1013,8 +858,6 @@ To set your %(name)s:
     def bootstrap_generation(self):
         self.generation_backends = []
         self.generation_threads = []
-        self.queues.generation.input = {}
-        self.queues.generation.output = {}
 
         for b in settings.GENERATION_BACKENDS:
             module = import_module(b)
@@ -1026,17 +869,9 @@ To set your %(name)s:
                         class_name != "GenerationBackend"
                     ):
                         c = cls()
-                        my_generation_input_queue = Queue()
-                        my_generation_output_queue = Queue()
-                        self.queues.generation.input[b] = my_generation_input_queue
-                        self.queues.generation.output[b] = my_generation_output_queue
                         thread = Process(
                             target=c.start,
-                            args=(
-                                b,
-                                self.queues.generation.input[b],
-                                self.queues.generation.output[b],
-                            ),
+                            args=(b,),
                             kwargs={"bot": self},
                         )
                         thread.start()
@@ -1249,6 +1084,5 @@ To set your %(name)s:
                             show_valid(plugin_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
-
 
         puts("")

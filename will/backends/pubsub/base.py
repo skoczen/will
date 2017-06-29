@@ -3,8 +3,10 @@ import base64
 import codecs
 import dill as pickle
 import hashlib
+import logging
 import os
 import redis
+import traceback
 import urlparse
 from Crypto.Cipher import AES
 import random
@@ -40,7 +42,7 @@ def pack_for_wire(raw):
         else:
             return enc
     except:
-        import traceback; traceback.print_exc();
+        logging.critical("Error preparing message for the wire: \n%s" % traceback.format_exc())
         return None
 
 
@@ -53,8 +55,10 @@ def unpack_from_wire(enc):
             enc = unpad(cipher.decrypt(binascii.a2b_base64(enc)))
         obj = pickle.loads(binascii.a2b_base64(enc))
         return obj
+    except (KeyboardInterrupt, SystemExit):
+        pass
     except:
-        # import traceback; traceback.print_exc();
+        logging.critical("Error unpacking message from the wire: \n%s" % traceback.format_exc())
         return None
 
 
@@ -100,11 +104,12 @@ class BasePubSub(object):
         """
         # print "-> publishing to %s" % topic
         # print obj
+        logging.info("Publishing topic (%s): \n%s" % (topic, obj))
         e = Event(
             data=obj,
             type=topic,
         )
-        # TODO: Decide on this.  It's hacky, but it makes backwards 
+        # TODO: Decide on this.  It's hacky, but it makes backwards
         # compatability easier.
         if hasattr(obj, "sender"):
             e.sender = obj.sender
@@ -158,10 +163,12 @@ class BasePubSub(object):
                 return loaded_message
         except AttributeError:
             raise Exception("Tried to call get message without having subscribed first!")
+        except (KeyboardInterrupt, SystemExit):
+            pass
         except:
-            import traceback; traceback.print_exc();
+            logging.critical("Error in watching pubsub get message: \n%s" % traceback.format_exc())
         return None
 
 
 def bootstrap(settings):
-    return RedisPubSub(settings)
+    return BasePubSub(settings)

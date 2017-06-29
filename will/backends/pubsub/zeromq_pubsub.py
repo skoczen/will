@@ -1,4 +1,5 @@
 import logging
+import traceback
 import zmq
 from .base import BasePubSub
 
@@ -67,8 +68,12 @@ class ZeroMQPubSub(BasePubSub):
         except zmq.Again:
             return None
 
+        except (KeyboardInterrupt, SystemExit):
+            pass
         except:
-            import traceback; traceback.print_exc();
+            logging.critical(
+                "Error getting message from ZeroMQ backend: \n%s" % traceback.format_exc()
+            )
         return None
 
 

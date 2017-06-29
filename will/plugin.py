@@ -79,13 +79,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 source_message=message,
                 kwargs=kwargs,
             ))
-            # self.bot.queues.io.output[backend].put(Event(
-            #     type="say",
-            #     content=content,
-            #     source_message=message,
-            #     kwargs=kwargs,
-            # ))
-
         return
 
         content = self._prepared_content(content, message, kwargs)
@@ -113,20 +106,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         message = event.data
 
         if hasattr(message, "backend"):
-            # print "self.bot"
-            # print self.bot.queues.io.output
             self.publish("message.outgoing.%s" % message.backend, Event(
                 type="reply",
                 content=content,
                 source_message=message,
                 kwargs=kwargs,
             ))
-            # self.bot.queues.io.output[message.backend].put(Event(
-            #     type="reply",
-            #     content=content,
-            #     source_message=message,
-            #     kwargs=kwargs,
-            # ))
 
         # # Valid kwargs:
         # # color: yellow, red, green, purple, gray, random.  Default is green.

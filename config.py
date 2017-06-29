@@ -125,7 +125,7 @@ ROOMS = ['Will Testing', ]
 
 # The interval will checks his internal cross-thread messaging queues, in seconds.
 # Increasing the value will make will slower, but consume fewer resources.
-QUEUE_INTERVAL = 0.025
+EVENT_LOOP_INTERVAL = 0.025
 
 # The backend and room will will talk to if the trigger is a webhook and he isn't told
 # a specific one.  Default is the first of IO_BACKENDS and ROOMS.

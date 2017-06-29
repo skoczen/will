@@ -203,9 +203,10 @@ WORD_GAME_TOPICS = [
 
 
 class WordGamePlugin(WillPlugin):
+
     @respond_to("^(play a word game|scattegories)(\!\.)?$")
     def word_game_round(self, message):
-        "Play a game where you think of words that start with a letter and fit a topic."
+        "play a word game: Play a game where you think of words that start with a letter and fit a topic."
 
         letter = random.choice(string.letters).upper()
         topics = []

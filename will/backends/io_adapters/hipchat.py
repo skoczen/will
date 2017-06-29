@@ -34,13 +34,12 @@ ALL_ROOMS_URL = ("https://%(server)s/v2/room?auth_token=%(token)s&start-index"
 
 class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSubMixin):
 
-    def start_xmpp_client(self, xmpp_bridge_queue=None, output_queue=None, backend_name=""):
+    def start_xmpp_client(self, xmpp_bridge_queue=None, backend_name=""):
         logger = logging.getLogger(__name__)
-        if not xmpp_bridge_queue or not output_queue:
-            logger.error("Missing required input and output queues")
+        if not xmpp_bridge_queue:
+            logger.error("Missing required bridge queue")
 
         self.xmpp_bridge_queue = xmpp_bridge_queue
-        self.output_queue = output_queue
         self.backend_name = backend_name
 
         ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
@@ -459,7 +458,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         while True:
             try:
                 try:
-                    input_event = self.xmpp_bridge_queue.get(timeout=settings.QUEUE_INTERVAL)
+                    input_event = self.xmpp_bridge_queue.get(timeout=settings.EVENT_LOOP_INTERVAL)
                     if input_event:
                         self.handle_incoming_event(input_event)
 
@@ -483,7 +482,6 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         self.xmpp_bridge_queue = Queue()
         self.client.start_xmpp_client(
             xmpp_bridge_queue=self.xmpp_bridge_queue,
-            output_queue=self.output_queue,
             backend_name=self.internal_name,
         )
         self.client.connect()

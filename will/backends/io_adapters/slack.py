@@ -12,9 +12,8 @@ from markdownify import MarkdownConverter
 from will import settings
 from .base import IOBackend
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
-from multiprocessing import Process, Queue
+from multiprocessing import Process
 from will.abstractions import Event, Message, Person, Channel
-from multiprocessing.queues import Empty
 from slackclient import SlackClient
 
 SLACK_SEND_URL = "https://slack.com/api/chat.postMessage"
@@ -87,7 +86,6 @@ class SlackBackend(IOBackend):
                 source=clean_for_pickling(event),
             )
             return m
-            # self.input_queue.put(m)
         else:
             # An event type the slack ba has no idea how to handle.
             pass
@@ -271,8 +269,10 @@ class SlackBackend(IOBackend):
                         current_poll_count = 0
 
                     time.sleep(0.5)
+        except (KeyboardInterrupt, SystemExit):
+            pass
         except:
-            import traceback; traceback.print_exc();
+            logging.critical("Error in watching slack RTM: \n%s" % traceback.format_exc())
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:

@@ -194,8 +194,8 @@ def import_settings(quiet=True):
         else:
             settings["USE_PROXY"] = False
 
-        if "QUEUE_INTERVAL" not in settings:
-            settings["QUEUE_INTERVAL"] = 0.025
+        if "EVENT_LOOP_INTERVAL" not in settings:
+            settings["EVENT_LOOP_INTERVAL"] = 0.025
 
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):

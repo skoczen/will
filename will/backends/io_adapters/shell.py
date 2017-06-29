@@ -2,7 +2,6 @@ import cmd
 import random
 import sys
 import logging
-from multiprocessing.queues import Empty
 import requests
 import threading
 import readline
@@ -48,8 +47,6 @@ class ShellBackend(StdInOutIOBackend):
                 backend_supports_acl=False,
                 source=event
             )
-
-            # self.input_queue.put(m)
             return m
         else:
             # An event type the shell has no idea how to handle.
@@ -91,7 +88,7 @@ class ShellBackend(StdInOutIOBackend):
         )
 
         # Do this to get the first "you" prompt.
-        self.input_queue.put(Message(
+        self.pubsub.publish('message.input.stdin', (Message(
                 content="",
                 type="chat",
                 is_direct=True,
@@ -102,4 +99,6 @@ class ShellBackend(StdInOutIOBackend):
                 will_is_mentioned=False,
                 will_said_it=False,
                 backend_supports_acl=False,
+                source={}
             ))
+        )

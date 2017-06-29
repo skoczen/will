@@ -1,3 +1,6 @@
+import logging
+import signal
+import traceback
 from will import settings
 from will.decorators import require_settings
 from multiprocessing import Process
@@ -10,14 +13,18 @@ class ExecutionBackend(object):
         raise NotImplemented
 
     def execute(self, target, *args, **kwargs):
-
-        t = Process(
-            target=target,
-            args=args,
-            kwargs=kwargs,
-        )
-        self.bot.running_execution_threads.append(t)
-        t.start()
+        try:
+            t = Process(
+                target=target,
+                args=args,
+                kwargs=kwargs,
+            )
+            self.bot.running_execution_threads.append(t)
+            t.start()
+        except (KeyboardInterrupt, SystemExit):
+            pass
+        except:
+            logging.critical("Error running %s: \n%s" % (target, traceback.format_exc()))
 
     def __init__(self, bot=None, *args, **kwargs):
         self.bot = bot
