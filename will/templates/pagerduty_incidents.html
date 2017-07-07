@@ -1,0 +1,16 @@
+<table>
+<tr>
+    <th>Status</th>
+    <th>Incident</th>
+    <th>Assignees</th>
+    <th>Created</th>
+</tr>
+{% for incident in incidents %}
+<tr>
+    <td>{% if incident['status'] == 'triggered' %}Trig{% elif incident['status'] == 'acknowledged' %}Ack{% else %}{{ incident['status']|capitalize }}{% endif %}</td>
+    <td><a href="{{ incident['html_url'] }}">{{ incident['summary'] }}</a></td>
+    <td>{{ incident['assignees'] }}</td>
+    <td>{{ incident['created_at'] }}</td>
+</tr>
+{% endfor %}
+</table>
