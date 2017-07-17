@@ -75,6 +75,21 @@ def import_settings(quiet=True):
                      "Defaulting to '%s', the first one." % settings["ROOMS"][0])
             settings["DEFAULT_ROOM"] = settings["ROOMS"][0]
 
+        if (
+            "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
+            settings["IO_BACKENDS"] and len(settings["IO_BACKENDS"]) > 0
+        ):
+            if not quiet:
+                warn("no DEFAULT_BACKEND found in the environment or config.  "
+                     "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
+            settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
+
+        if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
+            settings["ENABLE_INTERNAL_ENCRYPTION"] = False
+
+        print "TODO: check slack and hipchat tokens if they're in the backends"
+        print "TODO: ensure zeromq/redis for pubsub"
+
         if "HTTPSERVER_PORT" not in settings:
             # For heroku
             if "PORT" in os.environ:
@@ -87,7 +102,10 @@ def import_settings(quiet=True):
         if "STORAGE_BACKEND" not in settings:
             settings["STORAGE_BACKEND"] = "redis"
 
-        if settings["STORAGE_BACKEND"] == "redis":
+        if "PUBSUB_BACKEND" not in settings:
+            settings["PUBSUB_BACKEND"] = "redis"
+
+        if settings["STORAGE_BACKEND"] == "redis" or settings["PUBSUB_BACKEND"] == "redis":
             if "REDIS_URL" not in settings:
                 # For heroku
                 if "REDISCLOUD_URL" in os.environ:
@@ -175,6 +193,9 @@ def import_settings(quiet=True):
             settings["PROXY_PORT"] = parsed_proxy_url.port
         else:
             settings["USE_PROXY"] = False
+
+        if "EVENT_LOOP_INTERVAL" not in settings:
+            settings["EVENT_LOOP_INTERVAL"] = 0.025
 
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):

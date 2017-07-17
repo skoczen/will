@@ -4,6 +4,25 @@ from clint.textui import colored
 from HTMLParser import HTMLParser
 
 
+UNSURE_REPLIES = [
+    "Hmm.  I'm not sure what to say.",
+    "I didn't understand that.",
+    "I heard you, but I'm not sure what to do.",
+    "Darn.  I'm not sure what that means.  Maybe you can teach me?",
+    "I really wish I knew how to do that.",
+    "Hm. I understood you, but I'm not sure what to do.",
+]
+
+DO_NOT_PICKLE = [
+    "api_requester",
+    "dnapi_requester",
+    "websocket",
+    "parse_channel_data",
+    "server",
+    "send_message",
+]
+
+
 class Bunch(dict):
     def __init__(self, **kw):
         dict.__init__(self, kw)
@@ -15,6 +34,20 @@ class Bunch(dict):
     def __setstate__(self, state):
         self.update(state)
         self.__dict__ = self
+
+
+def clean_for_pickling(d):
+    cleaned_obj = Bunch()
+    if hasattr(d, "items"):
+        for k, v in d.items():
+            if k not in DO_NOT_PICKLE and "__" not in k:
+                cleaned_obj[k] = v
+    else:
+        for k in dir(d):
+            if k not in DO_NOT_PICKLE and "__" not in k:
+                cleaned_obj[k] = getattr(d, k)
+
+    return cleaned_obj
 
 
 # Via http://stackoverflow.com/a/925630

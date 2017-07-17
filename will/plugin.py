@@ -3,15 +3,28 @@ import logging
 
 import settings
 from bottle import request
-from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin, \
-    EmailMixin
+from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
+    EmailMixin, PubSubMixin
 from utils import html_to_text
+from will.abstractions import Event, Message
 
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin,
-                 ScheduleMixin, HipChatMixin, SettingsMixin):
+                 ScheduleMixin, SettingsMixin, PubSubMixin):
     is_will_plugin = True
     request = request
+
+    def __init__(self, *args, **kwargs):
+        if "bot" in kwargs:
+            self.bot = kwargs["bot"]
+            del kwargs["bot"]
+        if "message" in kwargs:
+            self.message = kwargs["message"]
+            del kwargs["message"]
+
+        super(WillPlugin, self).__init__(*args, **kwargs)
+
+    # TODO: pull all the hipchat-specific logic out of this,
 
     def _rooms_from_message_and_room(self, message, room):
         if room == "ALL_ROOMS":
@@ -25,15 +38,48 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
         return rooms
 
-    def _prepared_content(self, content, message, kwargs):
-        content = re.sub(r'>\s+<', '><', content)
-        return content
-
     def say(self, content, message=None, room=None, **kwargs):
         # Valid kwargs:
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
+        logging.info("self.say")
+        logging.info(content)
+
+        if not "room" in kwargs and room:
+            kwargs["room"] = room
+
+        backend = False
+        if not message:
+            message = self.message
+        logging.info(message)
+
+        if hasattr(message, "backend"):
+            # Events, content/type/timestamp
+            # {
+            #   message: message,
+            #   type: "reply/say/topic_change/emoji/etc"
+            # }
+            backend = message.backend
+        else:
+            # TODO: need a clear, documented spec for this.
+            if hasattr(message, "data") and hasattr(message.data, "backend"):
+                logging.info(message.data)
+                logging.info(message.data.__dict__)
+                backend = message.data.backend
+            else:
+                backend = settings.DEFAULT_BACKEND
+
+        logging.info("backend: %s" % backend)
+        if backend:
+            logging.info("putting in queue: %s" % content)
+            self.publish("message.outgoing.%s" % backend, Event(
+                type="say",
+                content=content,
+                source_message=message,
+                kwargs=kwargs,
+            ))
+        return
 
         content = self._prepared_content(content, message, kwargs)
         rooms = []
@@ -49,28 +95,45 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             for r in rooms:
                 self.send_room_message(r["room_id"], content, **kwargs)
         else:
-            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
+            if "sender" in message:
+                sender = message["sender"]
+            else:
+                sender = message.sender
+            self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
-    def reply(self, message, content, **kwargs):
-        # Valid kwargs:
-        # color: yellow, red, green, purple, gray, random.  Default is green.
-        # html: Display HTML or not. Default is False
-        # notify: Ping everyone. Default is False
+    def reply(self, event, content, **kwargs):
+        # Be smart about backend.
+        message = event.data
 
-        content = self._prepared_content(content, message, kwargs)
-        if message is None or message["type"] == "groupchat":
-            # Reply, speaking to the room.
-            try:
-                content = "@%s %s" % (message.sender["nick"], content)
-            except TypeError:
-                content = "%s\nNote: I was told to reply, but this message didn't come from a person!" % (content,)
+        if hasattr(message, "backend"):
+            self.publish("message.outgoing.%s" % message.backend, Event(
+                type="reply",
+                content=content,
+                source_message=message,
+                kwargs=kwargs,
+            ))
 
-            self.say(content, message=message, **kwargs)
+        # # Valid kwargs:
+        # # color: yellow, red, green, purple, gray, random.  Default is green.
+        # # html: Display HTML or not. Default is False
+        # # notify: Ping everyone. Default is False
+        # content = self._prepared_content(content, message, kwargs)
+        # if message is None or message["type"] == "groupchat":
+        #     # Reply, speaking to the room.
+        #     try:
+        #         content = "@%s %s" % (message.sender["nick"], content)
+        #     except TypeError:
+        #         content = "%s\nNote: I was told to reply, but this message didn't come from a person!" % (content,)
 
-        elif message['type'] in ('chat', 'normal'):
-            # Reply to the user (1-1 chat)
+        #     self.say(content, message=message, **kwargs)
 
-            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
+        # elif message['type'] in ('chat', 'normal'):
+        #     # Reply to the user (1-1 chat)
+        #     if "sender" in message:
+        #         sender = message["sender"]
+        #     else:
+        #         sender = message.sender
+        #     self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
     def set_topic(self, topic, message=None, room=None):
 

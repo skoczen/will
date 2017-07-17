@@ -18,4 +18,4 @@ class ItsLovePlugin(WillPlugin):
 
     @respond_to("you(?: are|'re)? (?:awesome|rock)")
     def hear_you_are_awesome(self, message):
-        self.say("Takes one to know one, %s." % message.sender.nick, message=message)
+        self.say("Takes one to know one, %s." % message.sender.first_name, message=message)

@@ -80,19 +80,67 @@ PLUGIN_BLACKLIST = [
 # Set > 1024 to run without elevated permission.
 # HTTPSERVER_PORT = "9000"
 
+# Deprectated, about to die.
+CHAT_BACKENDS = ["", ]
+
+# Platforms and mediums messages can come in and go out on.
+IO_BACKENDS = [
+    # "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.shell",
+    # "will.backends.io_adapters.slack",
+]
+
+# Backends to analyze messages and generate useful metadata
+ANALYZE_BACKENDS = [
+    "will.backends.analysis.nothing",
+    "will.backends.analysis.history",
+]
+
+# Backends to generate possible actions, and metadata about them.
+GENERATION_BACKENDS = [
+    "will.backends.generation.regex",
+]
+
+# The "decision making" backends that look among the generated choices,
+# and decide which to follow. Backends are executed in order, and any
+# backend can stop further evaluation.
+EXECUTION_BACKENDS = [
+    # "will.backends.execution.highest",
+    "will.backends.execution.all",
+]
+
 
 # ------------------------------------------------------------------------------------
 # Optional settings
 # ------------------------------------------------------------------------------------
 
 # The list of rooms will should join.  Default is all rooms.
-# ROOMS = ['Testing, Will Kahuna',]
+ROOMS = ['Will Testing', ]
 
+# The maximum number of milliseconds to wait for an analysis backend to finish
+# ANALYSIS_TIMEOUT_MS = 2000
 
-# The room will will talk to if the trigger is a webhook and he isn't told a specific room.
-# Default is the first of ROOMS.
+# The maximum number of milliseconds to wait for a generation backend to finish
+# GENERATION_TIMEOUT_MS = 2000
+
+# The interval will checks his internal cross-thread messaging queues, in seconds.
+# Increasing the value will make will slower, but consume fewer resources.
+EVENT_LOOP_INTERVAL = 0.025
+
+# The backend and room will will talk to if the trigger is a webhook and he isn't told
+# a specific one.  Default is the first of IO_BACKENDS and ROOMS.
+# DEFAULT_BACKEND = "will.backends.io_adapters.hipchat"
 # DEFAULT_ROOM = 'Testing, Will Kahuna'
 
+
+# A secret key, used to specify this instance of will and secure pubsub contents.
+# Do *NOT* keep it in config.py.  *DO* set it in the environment, in a secured session.
+# TODO: Move this to config.untracked.py
+SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
+
+
+# Turn up or down Will's logging level
+# LOGLEVEL = "INFO"
 
 # Fully-qualified folders to look for templates in, beyond the two that
 # are always included: core will's templates folder, your project's templates folder, and
@@ -110,6 +158,7 @@ PLUGIN_BLACKLIST = [
 #     "admins": ["steven", "will"]
 # }
 
+HANDLE = 'will'
 
 # Deprecated - please use ACL, above, instead:  User handles who are allowed to perform
 # `admin_only` plugins.  Defaults to everyone.
@@ -123,8 +172,18 @@ PLUGIN_BLACKLIST = [
 # STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
 
 
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# PUBSUB_BACKEND = "zeromq"  # "redis", or "zeromq" (beta).
+ZEROMQ_URL = "tcp://127.0.0.1:15555"
+
+
 # Disable SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
+
+# Turn on encryption in the pub/sub layer.  Causes a small speed bump,
+# but secures messages in an untrusted environment.
+ENABLE_INTERNAL_ENCRYPTION = True
 
 # Mailgun config, if you'd like will to send emails.
 # DEFAULT_FROM_EMAIL="will@example.com"
@@ -132,9 +191,6 @@ PLUGIN_BLACKLIST = [
 # export WILL_MAILGUN_API_KEY="key-12398912329381"
 # export WILL_MAILGUN_API_URL="example.com"
 
-
-# Logging level
-# LOGLEVEL = "DEBUG"
 
 # Proxy settings
 # Use proxy to access hipchat servers
