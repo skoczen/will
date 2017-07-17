@@ -1,2 +1,2 @@
-from .hipchat import HipChatBackend
+# from .hipchat import HipChatBackend
 from .shell import ShellBackend

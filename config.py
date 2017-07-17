@@ -85,9 +85,9 @@ CHAT_BACKENDS = ["", ]
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.hipchat",
     "will.backends.io_adapters.shell",
-    "will.backends.io_adapters.slack",
+    # "will.backends.io_adapters.slack",
 ]
 
 # Backends to analyze messages and generate useful metadata
@@ -158,6 +158,7 @@ SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 #     "admins": ["steven", "will"]
 # }
 
+HANDLE = 'will'
 
 # Deprecated - please use ACL, above, instead:  User handles who are allowed to perform
 # `admin_only` plugins.  Defaults to everyone.
