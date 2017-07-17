@@ -3,6 +3,8 @@ from utils import show_valid, warn, note
 from clint.textui import puts, indent
 from urlparse import urlparse
 
+HANDLE = 'Will'
+
 
 def import_settings(quiet=True):
     """This method takes care of importing settings from the environment, and config.py file.
