@@ -85,7 +85,7 @@ CHAT_BACKENDS = ["", ]
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.hipchat",
     "will.backends.io_adapters.shell",
     "will.backends.io_adapters.slack",
 ]
@@ -125,7 +125,7 @@ ROOMS = ['Will Testing', ]
 
 # The interval will checks his internal cross-thread messaging queues, in seconds.
 # Increasing the value will make will slower, but consume fewer resources.
-EVENT_LOOP_INTERVAL = 0.025
+EVENT_LOOP_INTERVAL = 0.05
 
 # The backend and room will will talk to if the trigger is a webhook and he isn't told
 # a specific one.  Default is the first of IO_BACKENDS and ROOMS.

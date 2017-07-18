@@ -175,7 +175,6 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin,
                     while True:
                         for line in sys.stdin.readline():
                             if "\n" in line:
-                                print "line: %s" % line
                                 self.publish(
                                     "message.incoming.stdin",
                                     Event(
