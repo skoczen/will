@@ -3,6 +3,7 @@ import re
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
+from sleekxmpp.exceptions import IqError, IqTimeout
 
 import settings
 from utils import Bunch
@@ -61,7 +62,15 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def session_start(self, event):
         self.send_presence()
-        self.get_roster()
+        try:
+            self.get_roster()
+        except IqError as err:
+            logging.error('There was an error getting the roster')
+            logging.error(err.iq['error']['condition'])
+            self.disconnect()
+        except IqTimeout:
+            logging.error('Server is taking too long to respond. Disconnecting.')
+            self.disconnect()
 
     def join_rooms(self, event):
         self.update_will_roster_and_rooms()
