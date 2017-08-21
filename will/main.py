@@ -52,7 +52,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
         log_level = getattr(settings, 'LOGLEVEL', logging.ERROR)
         logging.basicConfig(
             level=log_level,
-            format='%(levelname)-8s %(message)s'
+            format='%(asctime)s [%(levelname)s] %(message)s',
+            datefmt='%a, %d %b %Y %H:%M:%S',
         )
 
         # Find all the PLUGINS modules
@@ -413,14 +414,9 @@ To set your %(name)s:
                                     if b in combined_name:
                                         blacklisted = True
 
-                                try:
+                                # Don't even *try* to load a blacklisted module.
+                                if not blacklisted:
                                     plugin_modules[full_module_name] = imp.load_source(module_name, module_path)
-                                except:
-                                    # If it's blacklisted, don't worry if this blows up.
-                                    if blacklisted:
-                                        pass
-                                    else:
-                                        raise
 
                                 parent_mod = path_components[-2].split("/")[-1]
                                 parent_help_text = parent_mod.title()

@@ -142,3 +142,7 @@ PLUGIN_BLACKLIST = [
 # PROXY_URL = "http://user:pass@corpproxy.example.com:3128"
 # or
 # PROXY_URL = "http://myproxy:80
+
+# Google Application key for "image me" command
+# GOOGLE_API_KEY = "FILL THIS IN"
+# GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"

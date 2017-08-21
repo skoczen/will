@@ -110,7 +110,7 @@ def import_settings(quiet=True):
             if not settings["REDIS_URL"].startswith("redis://"):
                 settings["REDIS_URL"] = "redis://%s" % settings["REDIS_URL"]
 
-            if "REDIS_MAX_CONNECTIONS" not in settings:
+            if "REDIS_MAX_CONNECTIONS" not in settings or not settings["REDIS_MAX_CONNECTIONS"]:
                 settings["REDIS_MAX_CONNECTIONS"] = 4
                 if not quiet:
                     note("REDIS_MAX_CONNECTIONS not set. Defaulting to 4.")
@@ -181,5 +181,6 @@ def import_settings(quiet=True):
             if not quiet:
                 show_valid(k)
             globals()[k] = settings[k]
+
 
 import_settings()

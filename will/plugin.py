@@ -26,15 +26,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         return rooms
 
     def _prepared_content(self, content, message, kwargs):
-        if kwargs is None:
-            kwargs = {}
-
-        if kwargs.get("html", False) and (message and message['type'] in ('chat', 'normal')):
-            # 1-1 can't have HTML.
-            content = html_to_text(content)
-        elif kwargs.get("html", True):
-            # Hipchat is weird about spaces between tags.
-            content = re.sub(r'>\s+<', '><', content)
+        content = re.sub(r'>\s+<', '><', content)
         return content
 
     def say(self, content, message=None, room=None, **kwargs):

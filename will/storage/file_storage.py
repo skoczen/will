@@ -66,7 +66,7 @@ class FileStorage(object):
 
         if expire is not None:
             with open(expire_path, 'w') as f:
-                f.write(expire)
+                f.write(str(int(time.time() + expire)))
         elif os.path.exists(expire_path):
             os.unlink(expire_path)
 
