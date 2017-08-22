@@ -216,7 +216,7 @@ To set your %(name)s:
     def verify_environment(self):
         missing_settings = False
         required_settings = []
-        if "hipchat" in settings.CHAT_BACKENDS:
+        if "will.backends.io_adapters.hipchat" in settings.IO_BACKENDS:
             required_settings = [
                 {
                     "name": "WILL_USERNAME",
@@ -247,6 +247,24 @@ To set your %(name)s:
                 },
             ]
 
+        if "will.backends.io_adapters.rocketchat" in settings.IO_BACKENDS:
+            required_settings = [
+                {
+                    "name": "WILL_USERNAME",
+                    "obtain_at": "Will username as configured in RC.",
+                },
+                {
+                    "name": "WILL_PASSWORD",
+                    "obtain_at": "Will password as configured in RC.",
+                },
+                {
+                    "name": "WILL_ROCKETCHAT_URL",
+                    "obtain_at": (
+                        "Including protocol and port if not 80 e.g. "
+                        "http://localhost:3000"
+                        ),
+                },
+            ]
         puts("")
         puts("Verifying environment...")
 
@@ -600,7 +618,8 @@ To set your %(name)s:
                     pass
         except:
             print "\n\n\nException while exiting!!"
-            import traceback; traceback.print_exc();
+            import traceback
+            traceback.print_exc()
             sys.exit(1)
 
         while (
@@ -620,7 +639,6 @@ To set your %(name)s:
                 time.sleep(0.5)
         print ". done.\n"
         sys.exit(1)
-
 
     def bootstrap_event_handler(self):
         self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)

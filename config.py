@@ -80,12 +80,13 @@ PLUGIN_BLACKLIST = [
 # Set > 1024 to run without elevated permission.
 # HTTPSERVER_PORT = "9000"
 
-# Deprectated, about to die.
+# Deprecated, about to die.
 CHAT_BACKENDS = ["", ]
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
     # "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
     "will.backends.io_adapters.slack",
 ]
@@ -115,6 +116,8 @@ EXECUTION_BACKENDS = [
 # ------------------------------------------------------------------------------------
 
 # The list of rooms will should join.  Default is all rooms.
+# FIXME: Appears to be Hipchat-specific, should be renamed or
+# deprecated.
 ROOMS = ['Will Testing', ]
 
 # The maximum number of milliseconds to wait for an analysis backend to finish
@@ -201,3 +204,6 @@ ENABLE_INTERNAL_ENCRYPTION = True
 # Google Application key for "image me" command
 # GOOGLE_API_KEY = "FILL THIS IN"
 # GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"
+
+# Rocket.Chat server URL and port as necessary
+# ROCKETCHAT_URL = "http://localhost:3000"
