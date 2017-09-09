@@ -82,7 +82,7 @@ Will is packaged with a Dockerfile and docker-compose files to allow deploying i
 You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you must start the image via the docker command with the correct arguments.
 
 ### Step 1: Configure your container's environment variables
-In will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:
+In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:
 ```bash 
 WILL_USERNAME
 WILL_PASSWORD
