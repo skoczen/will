@@ -16,6 +16,6 @@ class HipChatIsUpPlugin(WillPlugin):
                     self.say("FYI everyone, HipChat is having trouble: %s" % r.json()["status"]["description"])
                 else:
                     self.say("Looks like HipChat's back up!")
-                self.save("last_hipchat_status", r.json()["status"]["indicator"])
+            self.save("last_hipchat_status", r.json()["status"]["indicator"])
         except:
             pass

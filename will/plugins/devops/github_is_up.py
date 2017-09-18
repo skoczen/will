@@ -16,6 +16,6 @@ class GithubIsUpPlugin(WillPlugin):
                     self.say("FYI everyone, github is having trouble: %s" % r.json()["body"])
                 else:
                     self.say("Looks like github's back up!")
-                self.save("last_github_status", r.json()["status"])
+            self.save("last_github_status", r.json()["status"])
         except:
             pass

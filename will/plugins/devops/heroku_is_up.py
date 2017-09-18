@@ -20,6 +20,6 @@ class HerokuIsUpPlugin(WillPlugin):
                     )
                 else:
                     self.say("Looks like heroku's back up!")
-                self.save("last_heroku_status", r.json()["status"])
+            self.save("last_heroku_status", r.json()["status"])
         except:
             pass
