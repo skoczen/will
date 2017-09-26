@@ -1,4 +1,4 @@
-def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
+def respond_to(regex, include_me=True, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
     def wrap(f):
         passed_args = []
 
@@ -34,7 +34,7 @@ def periodic(*sched_args, **sched_kwargs):
     return wrap
 
 
-def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
+def hear(regex, include_me=True, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
     def wrap(f):
         passed_args = []
 

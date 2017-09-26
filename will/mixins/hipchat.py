@@ -6,6 +6,7 @@ import traceback
 from will import settings
 
 ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
+ROOM_MESSAGE_URL = "https://%(server)s/v2/room/%(room_id)s/message?auth_token=%(token)s"
 ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 PRIVATE_MESSAGE_URL = "https://%(server)s/v2/user/%(user_id)s/message?auth_token=%(token)s"
 SET_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
@@ -68,6 +69,25 @@ class HipChatMixin(object):
             requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
         except:
             logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())
+
+    def send_room_message_normal(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
+        if kwargs:
+            logging.warn("Unknown keyword args for send_room_message: %s" % kwargs)
+
+        format = "text"
+
+        try:
+            url = ROOM_MESSAGE_URL % {"server": settings.HIPCHAT_SERVER,
+                                           "room_id": room_id,
+                                           "token": settings.V2_TOKEN}
+            data = {
+                "message": message_body,
+            }
+            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+        except:
+            logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())
+
 
     def set_room_topic(self, room_id, topic):
         try:

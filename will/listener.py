@@ -1,5 +1,5 @@
 import logging
-import re
+import re, os
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
@@ -175,12 +175,12 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                                         traceback.format_exc(),
                                     )
 
-                                    if msg is None or msg["type"] == "groupchat":
-                                        if msg.sender and "nick" in msg.sender:
-                                            content = "@%s %s" % (msg.sender["nick"], content)
-                                        self.send_room_message(msg.room["room_id"], content, color="red")
-                                    elif msg['type'] in ('chat', 'normal'):
-                                        self.send_direct_message(msg.sender["hipchat_id"], content)
+#                                    if msg is None or msg["type"] == "groupchat":
+#                                        if msg.sender and "nick" in msg.sender:
+#                                            content = "@%s %s" % (msg.sender["nick"], content)
+#                                        self.send_room_message(msg.room["room_id"], content, color="red")
+#                                    elif msg['type'] in ('chat', 'normal'):
+                                    self.send_direct_message(os.environ['errormsg_user'], content)
 
                             thread = threading.Thread(target=fn, args=(l, thread_args, search_matches.groupdict()))
                             thread.start()
