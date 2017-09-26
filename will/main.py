@@ -131,7 +131,8 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                     error_message = "FYI, I ran into some problems while starting up:"
                     for err in errors:
                         error_message += "\n%s\n" % err
-                    self.send_room_message(default_room, error_message, color="yellow")
+#                    self.send_room_message(default_room, error_message, color="yellow")
+                    self.send_direct_message(os.environ['errormsg_user'], error_message)
                     puts(colored.red(error_message))
 
                 while True:
