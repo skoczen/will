@@ -15,4 +15,5 @@ pycrypto==2.6.1
 pygerduty==0.28
 pytz==2017.2
 PyYAML==3.10
+redis==2.10.6
 requests==2.4.1

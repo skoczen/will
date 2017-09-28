@@ -88,7 +88,7 @@ IO_BACKENDS = [
     # "will.backends.io_adapters.hipchat",
     # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
-    # "will.backends.io_adapters.slack",
+    "will.backends.io_adapters.slack",
 ]
 
 # Backends to analyze messages and generate useful metadata
@@ -116,7 +116,7 @@ EXECUTION_BACKENDS = [
 # ------------------------------------------------------------------------------------
 
 # The list of rooms will should join.  Default is all rooms.
-# FIXME: Appears to be Hipchat-specific, should be renamed or
+# TODO: Appears to be Hipchat-specific, should be renamed or
 # deprecated.
 ROOMS = ['Will Testing', ]
 

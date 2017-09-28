@@ -56,7 +56,7 @@ class RocketChatBackend(IOBackend):
 
                 # Create a "Channel" to align with Rocket.Chat DM
                 # paradigm. There might well be a better way of doing
-                # this. See FIXME in _rest_channels_list.
+                # this. See TODO in _rest_channels_list.
                 sender_id = event['u']['_id']
                 ids = [sender_id, self.me.id]
                 ids.sort()
@@ -105,7 +105,7 @@ class RocketChatBackend(IOBackend):
                 logging.debug('Will didnt say it')
                 will_said_it = False
 
-            # FIXME: Find out where backend_supports_acl is used.
+            # TODO: Find out where backend_supports_acl is used.
             # Perhaps it's useful.
             m = Message(
                 content=event['msg'],
@@ -141,7 +141,7 @@ class RocketChatBackend(IOBackend):
             if hasattr(event, "source_message") and event.source_message:
                 self.send_message(event)
             else:
-                # FIXME: Here lies stuff that:
+                # TODO: Here lies stuff that:
                 # a) may not be needed or supported with Rocket.Chat, or
                 # b) that may need to be fixed in order to work.
                 # send_room_message() was removed as it doesn't appear
@@ -361,7 +361,7 @@ class RocketChatBackend(IOBackend):
             ws_proto = 'wss'
         self.rc = DDPClient('{}://{}/websocket'.format(ws_proto, up.netloc))
         self.rc.connect()
-        # FIXME: Argh. This needs to be here because if we continue
+        # TODO: Argh. This needs to be here because if we continue
         # before the connection is ready, stuff fails with no errors
         # to the console. This will take some debug effort.
         time.sleep(5)
@@ -439,7 +439,7 @@ class RocketChatBackend(IOBackend):
             logging.exception('_get_rooms_callback error: {}'.format(error))
             return
 
-        # FIXME: When we leave a room, we don't delete it from
+        # TODO: When we leave a room, we don't delete it from
         # self.subscribed_rooms. Not a problem in practice -
         # subscriptions to the room won't fire, but messy.
         for room in result:
