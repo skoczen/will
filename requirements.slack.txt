@@ -1,2 +1,3 @@
+-r requirements.base.txt
 slackclient==1.0.5
 markdownify==0.4
