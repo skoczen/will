@@ -4,3 +4,4 @@ redis==2.10.3
 -r requirements.base.txt
 -r requirements.slack.txt
 -r requirements.hipchat.txt
+-r requirements.rocketchat.txt

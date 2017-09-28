@@ -78,7 +78,7 @@ class IOBackend(PubSubMixin, object):
 
     def __handle_terminate(self):
         if hasattr(self, "__event_listener_thread"):
-            print "__event_listener_thread"
+            logging.debug("__event_listener_thread")
             try:
                 self.__event_listener_thread.terminate()
                 while self.__event_listener_thread.is_alive():
