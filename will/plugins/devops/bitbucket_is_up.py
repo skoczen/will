@@ -16,6 +16,6 @@ class BitBucketIsUpPlugin(WillPlugin):
                     self.say("FYI everyone, Bitbucket is having trouble: %s" % r.json()["status"]["description"])
                 else:
                     self.say("Looks like Bitbucket's back up!")
-                self.save("last_bb_status", r.json()["status"]["indicator"])
+            self.save("last_bb_status", r.json()["status"]["indicator"])
         except:
             pass
