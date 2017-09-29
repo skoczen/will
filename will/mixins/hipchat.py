@@ -45,7 +45,7 @@ class HipChatMixin(object):
         except:
             logging.critical("Error in send_direct_message_reply: \n%s" % traceback.format_exc())
 
-    def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
+    def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, card=None, **kwargs):
         if kwargs:
             logging.warn("Unknown keyword args for send_room_message: %s" % kwargs)
 
@@ -63,9 +63,11 @@ class HipChatMixin(object):
                 "message_format": format,
                 "color": color,
                 "notify": notify,
+                "card": card
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r.raise_for_status()
         except:
             logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())
 
