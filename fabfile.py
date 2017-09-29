@@ -60,7 +60,7 @@ def deploy_docs():
                 os.remove(os.path.join(root, name))
         for name in dirs:
             if name not in WHITELIST_DIRS and not any([r in WHITELIST_DIRS for r in _splitpath(root)]):
-                # print "removing %s" % (os.path.join(root, name))
+                print "removing %s" % (os.path.join(root, name))
                 os.rmdir(os.path.join(root, name))
 
     local("cp -rv %s/* ." % tempdir)
