@@ -29,11 +29,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         content = re.sub(r'>\s+<', '><', content)
         return content
 
-    def say(self, content, message=None, room=None, **kwargs):
+    def say(self, content, message=None, room=None, card=None, **kwargs):
         # Valid kwargs:
         # color: yellow, red, green, purple, gray, random.  Default is green.
         # html: Display HTML or not. Default is False
         # notify: Ping everyone. Default is False
+        # card: Card see: https://developer.atlassian.com/hipchat/guide/sending-messages
 
         content = self._prepared_content(content, message, kwargs)
         rooms = []
@@ -43,11 +44,11 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
             except KeyError:
                 logging.error(u'"{0}" is not a room object.'.format(room))
             else:
-                self.send_room_message(room_id, content, **kwargs)
+                self.send_room_message(room_id, content, card=card, **kwargs)
         elif message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
-                self.send_room_message(r["room_id"], content, **kwargs)
+                self.send_room_message(r["room_id"], content, card=card, **kwargs)
         else:
             self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
 

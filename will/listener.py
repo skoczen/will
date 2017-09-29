@@ -3,6 +3,7 @@ import re
 import threading
 import traceback
 from sleekxmpp import ClientXMPP
+from sleekxmpp.exceptions import IqError, IqTimeout
 
 import settings
 from utils import Bunch
@@ -61,7 +62,15 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
 
     def session_start(self, event):
         self.send_presence()
-        self.get_roster()
+        try:
+            self.get_roster()
+        except IqError as err:
+            logging.error('There was an error getting the roster')
+            logging.error(err.iq['error']['condition'])
+            self.disconnect()
+        except IqTimeout:
+            logging.error('Server is taking too long to respond. Disconnecting.')
+            self.disconnect()
 
     def join_rooms(self, event):
         self.update_will_roster_and_rooms()
@@ -128,11 +137,11 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
     def _handle_message_listeners(self, msg):
         if (
             # I've been asked to listen to my own messages
-            self.some_listeners_include_me
+            self.some_listeners_include_me or
             # or we're in a 1 on 1 chat and I didn't send it
-            or (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid)
+            (msg['type'] in ('chat', 'normal') and self.real_sender_jid(msg) != self.me.jid) or
             # we're in group chat and I didn't send it
-            or (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
+            (msg["type"] == "groupchat" and msg['mucnick'] != self.nick)
         ):
                 body = msg["body"].strip()
 
@@ -151,16 +160,17 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                 for l in self.message_listeners:
                     search_matches = l["regex"].search(body)
                     if (
-                            search_matches  # The search regex matches and
+                            # The search regex matches and
+                            search_matches and
                             # It's not from me, or this search includes me, and
-                            and (msg['mucnick'] != self.nick or l["include_me"])
+                            (msg['mucnick'] != self.nick or l["include_me"]) and
                             # I'm mentioned, or this is an overheard, or we're in a 1-1
-                            and (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or
-                                 self.handle_regex.search(body) or sent_directly_to_me)
+                            (msg['type'] in ('chat', 'normal') or not l["direct_mentions_only"] or
+                                self.handle_regex.search(body) or sent_directly_to_me) and
                             # It's from admins only and sender is an admin, or it's not from admins only
-                            and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
+                            ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only'])) and
                             # It's available only to the members of one or more ACLs, or no ACL in use
-                            and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
+                            ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
                     ):
                         try:
                             thread_args = [msg, ] + l["args"]
