@@ -25,6 +25,13 @@ def import_settings(quiet=True):
     if "ROOMS" in settings:
         settings["ROOMS"] = settings["ROOMS"].split(";")
 
+    if "PLUGINS" in settings:
+        settings["PLUGINS"] = settings["PLUGINS"].split(";")
+
+    if 'PLUGIN_BLACKLIST' in settings:
+        settings["PLUGIN_BLACKLIST"] = (settings["PLUGIN_BLACKLIST"].split(";")
+                                        if settings["PLUGIN_BLACKLIST"] else [])
+
     # If HIPCHAT_SERVER is set, we need to change the USERNAME slightly
     # for XMPP to work.
     if "HIPCHAT_SERVER" in settings:

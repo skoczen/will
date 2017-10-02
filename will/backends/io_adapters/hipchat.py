@@ -10,6 +10,7 @@ import threading
 import traceback
 
 from sleekxmpp import ClientXMPP
+from sleekxmpp.exceptions import IqError, IqTimeout
 
 from will import settings
 from .base import IOBackend
@@ -92,7 +93,15 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
 
     def session_start(self, event):
         self.send_presence()
-        self.get_roster()
+        try:
+            self.get_roster()
+        except IqError as err:
+            logging.error('There was an error getting the roster')
+            logging.error(err.iq['error']['condition'])
+            self.disconnect()
+        except IqTimeout:
+            logging.error('Server is taking too long to respond. Disconnecting.')
+            self.disconnect()
 
     def join_rooms(self, event):
         # TODO: Pull this and related.
@@ -210,7 +219,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         except:
             logging.critical("Error in send_direct_message: \n%s" % traceback.format_exc())
 
-    def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
+    def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, card=None, **kwargs):
         if kwargs:
             logging.warn("Unknown keyword args for send_room_message: %s" % kwargs)
 
@@ -230,7 +239,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 "notify": notify,
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r.rasie_for_status()
 
         except:
             logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())

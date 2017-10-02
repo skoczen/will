@@ -146,7 +146,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
-#### 1.0 - ???
+#### 2.0 - ???
 
 TODO: Finish these
 Huge rewrite, adding pluggable backends for chat systems as well as Will's internal brains.  A huge number of really smart people gave their thoughts and suggestions throughout the process, not least @hobson, @woohgit, @netjunki, @sivy, @antgel, @shadow7412, @brandonsturgeon, @pepedocs, @tophsic
@@ -162,7 +162,16 @@ This release addresses a number of bugs and smaller features, including:
 
 * Chatoms support fixed by [bykof](https://github.com/bykof).
 
+#### 1.0.0 - September 29, 2017
 
+This is the end of major feature development for the hipchat-only version of Will.  Future development will be on 2.x, and while backwards compatability will be aimed for, it's not 100% guaranteed.  
+
+Fixes and features in this release:
+
+* Makes ACLs be case-insensitive, thanks to [woohgit](https://github.com/woohgit).
+* Adds Hipchat card support, also thanks to [woohgit](https://github.com/woohgit).
+* Gets Chatoms random topics working again, thanks to [bykof](https://github.com/bykof).
+* Environment overrides for `PLUGINS` and `PLUGIN_BLACKLIST` (semicolon separated) are now possible, thanks to [mark-adams](https://github.com/mark-adams).
 
 #### 0.9.5 - June 23, 2017
 
