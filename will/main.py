@@ -129,6 +129,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
         self.bootstrap_storage_mixin()
         self.bootstrap_pubsub_mixin()
         self.bootstrap_plugins()
+        print "bootstrap_plugins done"
         self.verify_plugin_settings()
         self.verify_io()
         self.verify_analysis()
@@ -678,7 +679,7 @@ To set your %(name)s:
                 event = self.pubsub.get_message()
                 if event and hasattr(event, "type"):
                     now = datetime.datetime.now()
-                    logging.info("Event (%s): %s" % (event.type, event))
+                    logging.debug("Event (%s): %s" % (event.type, event))
 
                     # TODO: Order by most common.
                     if event.type == "message.incoming":
@@ -757,7 +758,7 @@ To set your %(name)s:
 
     @yappi.profile(return_callback=yappi_aggregate)
     def bootstrap_pubsub_mixin(self):
-        puts("Bootstrapping storage...")
+        puts("Bootstrapping pubsub...")
         try:
             self.bootstrap_pubsub()
             with indent(2):

@@ -88,8 +88,8 @@ ANALYZE_BACKENDS = [
 
 # Backends to generate possible actions, and metadata about them.
 GENERATION_BACKENDS = [
-    "will.backends.generation.fuzzy_best_match",
-    # "will.backends.generation.fuzzy_all_matches",
+    # "will.backends.generation.fuzzy_best_match",
+    "will.backends.generation.fuzzy_all_matches",
     # "will.backends.generation.strict_regex",
 ]
 
@@ -155,7 +155,7 @@ SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 
 
 # Turn up or down Will's logging level
-# LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 # Turn on or off Will's profiling
 PROFILING_ENABLED = True
