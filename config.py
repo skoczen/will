@@ -69,19 +69,8 @@ PLUGIN_BLACKLIST = [
 ]
 
 # ------------------------------------------------------------------------------------
-# Potentially required settings
+# Platform and Decision-making
 # ------------------------------------------------------------------------------------
-
-# If will isn't accessible at localhost, you must set this for his keepalive to work.
-# Note no trailing slash.
-# PUBLIC_URL = "http://my-will.herokuapp.com"
-
-# Port to bind the web server to (defaults to $PORT, then 80.)
-# Set > 1024 to run without elevated permission.
-# HTTPSERVER_PORT = "9000"
-
-# Deprecated, about to die.
-CHAT_BACKENDS = ["", ]
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
@@ -99,7 +88,9 @@ ANALYZE_BACKENDS = [
 
 # Backends to generate possible actions, and metadata about them.
 GENERATION_BACKENDS = [
-    "will.backends.generation.regex",
+    "will.backends.generation.fuzzy_best_match",
+    # "will.backends.generation.fuzzy_all_matches",
+    # "will.backends.generation.strict_regex",
 ]
 
 # The "decision making" backends that look among the generated choices,
@@ -110,6 +101,27 @@ EXECUTION_BACKENDS = [
     "will.backends.execution.all",
 ]
 
+# ------------------------------------------------------------------------------------
+# Backend-specific settings
+# ------------------------------------------------------------------------------------
+
+# Confidence fuzzy generation backends require before Will responds
+# https://pypi.python.org/pypi/fuzzywuzzy
+FUZZY_MINIMUM_MATCH_CONFIDENCE = 90
+FUZZY_REGEX_ALLOWABLE_ERRORS = 3
+
+
+# ------------------------------------------------------------------------------------
+# Potentially required settings
+# ------------------------------------------------------------------------------------
+
+# If will isn't accessible at localhost, you must set this for his keepalive to work.
+# Note no trailing slash.
+# PUBLIC_URL = "http://my-will.herokuapp.com"
+
+# Port to bind the web server to (defaults to $PORT, then 80.)
+# Set > 1024 to run without elevated permission.
+# HTTPSERVER_PORT = "9000"
 
 # ------------------------------------------------------------------------------------
 # Optional settings
@@ -143,7 +155,10 @@ SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 
 
 # Turn up or down Will's logging level
-# LOGLEVEL = "INFO"
+# LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+# Turn on or off Will's profiling
+PROFILING_ENABLED = True
 
 # Fully-qualified folders to look for templates in, beyond the two that
 # are always included: core will's templates folder, your project's templates folder, and
@@ -178,7 +193,7 @@ HANDLE = 'will'
 # Sets a different storage backend.  If unset, defaults to redis.
 # If you use a different backend, make sure to add their required settings.
 # PUBSUB_BACKEND = "zeromq"  # "redis", or "zeromq" (beta).
-ZEROMQ_URL = "tcp://127.0.0.1:15555"
+# ZEROMQ_URL = "tcp://127.0.0.1:15555"
 
 
 # Disable SSL checks.  Strongly reccomended this is not set to True.

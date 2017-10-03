@@ -12,6 +12,7 @@ from markdownify import MarkdownConverter
 from will import settings
 from .base import IOBackend
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
+from will.mixins import SleepMixin
 from multiprocessing import Process
 from will.abstractions import Event, Message, Person, Channel
 from slackclient import SlackClient
@@ -25,7 +26,7 @@ class SlackMarkdownConverter(MarkdownConverter):
         return '*%s*' % text if text else ''
 
 
-class SlackBackend(IOBackend):
+class SlackBackend(IOBackend, SleepMixin):
     friendly_name = "Slack"
     internal_name = "will.backends.io_adapters.slack"
 
@@ -268,7 +269,7 @@ class SlackBackend(IOBackend):
                         self._update_backend_metadata()
                         current_poll_count = 0
 
-                    time.sleep(0.5)
+                    self.sleep_for_event_loop()
         except (KeyboardInterrupt, SystemExit):
             pass
         except:

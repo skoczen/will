@@ -477,6 +477,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
 
             except (KeyboardInterrupt, SystemExit):
                 pass
+            self.sleep_for_event_loop()
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:

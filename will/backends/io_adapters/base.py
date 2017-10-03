@@ -9,12 +9,12 @@ import traceback
 
 from will import settings
 from will.utils import Bunch
-from will.mixins import PubSubMixin
+from will.mixins import PubSubMixin, SleepMixin
 from will.abstractions import Message, Event, Person
 from multiprocessing import Process
 
 
-class IOBackend(PubSubMixin, object):
+class IOBackend(PubSubMixin, SleepMixin, object):
     is_will_iobackend = True
 
     def bootstrap(self):
@@ -72,9 +72,9 @@ class IOBackend(PubSubMixin, object):
                     elif pubsub_event.type == "system.terminate":
                         self.__handle_terminate()
                         running = False
-
             except (KeyboardInterrupt, SystemExit):
                 pass
+            self.sleep_for_event_loop()
 
     def __handle_terminate(self):
         if hasattr(self, "__event_listener_thread"):
@@ -82,7 +82,7 @@ class IOBackend(PubSubMixin, object):
             try:
                 self.__event_listener_thread.terminate()
                 while self.__event_listener_thread.is_alive():
-                    time.sleep(settings.EVENT_LOOP_INTERVAL)
+                    self.sleep_for_event_loop()
             except (KeyboardInterrupt, SystemExit):
                 pass
         if hasattr(self, "terminate"):

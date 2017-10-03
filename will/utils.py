@@ -10,7 +10,7 @@ UNSURE_REPLIES = [
     "I heard you, but I'm not sure what to do.",
     "Darn.  I'm not sure what that means.  Maybe you can teach me?",
     "I really wish I knew how to do that.",
-    "Hm. I understood you, but I'm not sure what to do.",
+    "Hm. I heard you, but I'm not sure what to do.",
 ]
 
 DO_NOT_PICKLE = [

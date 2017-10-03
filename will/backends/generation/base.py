@@ -1,14 +1,15 @@
 import logging
+import random
 import time
 import traceback
 import dill as pickle
 from will import settings
 from will.decorators import require_settings
-from will.mixins import PubSubMixin
+from will.mixins import PubSubMixin, SleepMixin
 from will.abstractions import Event
 
 
-class GenerationBackend(PubSubMixin, object):
+class GenerationBackend(PubSubMixin, SleepMixin, object):
     is_will_generationbackend = True
 
     def __watch_pubsub(self):
@@ -17,9 +18,9 @@ class GenerationBackend(PubSubMixin, object):
                 m = self.pubsub.get_message()
                 if m:
                     self.__generate(m.data)
-                time.sleep(settings.EVENT_LOOP_INTERVAL)
             except (KeyboardInterrupt, SystemExit):
                 pass
+            self.sleep_for_event_loop()
 
     def __generate(self, message):
         ret = self.do_generate(message)

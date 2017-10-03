@@ -50,3 +50,6 @@ source/logo.psd
 # redis source for build, install, deploy
 redis-stable/
 redis-stable.tar.gz
+
+# Profiling files
+will_profiles/*

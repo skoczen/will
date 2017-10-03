@@ -1,15 +1,16 @@
 import logging
+import random
 import signal
 import time
 import traceback
 from multiprocessing.queues import Empty
 from will import settings
 from will.decorators import require_settings
-from will.mixins import PubSubMixin
+from will.mixins import PubSubMixin, SleepMixin
 from will.abstractions import Event
 
 
-class AnalysisBackend(PubSubMixin, object):
+class AnalysisBackend(PubSubMixin, SleepMixin, object):
     is_will_analysisbackend = True
 
     def __watch_pubsub(self):
@@ -18,12 +19,12 @@ class AnalysisBackend(PubSubMixin, object):
                 m = self.pubsub.get_message()
                 if m:
                     self.__analyze(m)
-                time.sleep(settings.EVENT_LOOP_INTERVAL)
 
             except AttributeError:
                 pass
             except (KeyboardInterrupt, SystemExit):
                 pass
+            self.sleep_for_event_loop()
 
     def __analyze(self, data):
         try:
