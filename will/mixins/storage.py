@@ -27,9 +27,6 @@ class StorageMixin(object):
                 # from within the import
                 self.storage = storage_module.bootstrap(settings)
 
-                # Verify that it has the required settings.
-                self.storage.verify_settings()
-
     def save(self, key, value, expire=None):
         self.bootstrap_storage()
         try:

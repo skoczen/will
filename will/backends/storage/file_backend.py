@@ -39,7 +39,7 @@ Examples:
      * ~will/settings/
     """
     def __init__(self, settings):
-        self.verify_settings()
+        self.verify_settings(quiet=True)
         self.dirname = os.path.abspath(os.path.expanduser(settings.FILE_DIR))
         self.dotfile = os.path.join(self.dirname, ".will_settings")
         logging.debug("Using %s for local setting storage", self.dirname)

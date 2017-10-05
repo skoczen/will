@@ -26,8 +26,6 @@ class PubSubMixin(object):
                 # from within the import
                 self.pubsub = pubsub_module.bootstrap(settings)
 
-                # Verify that it has the required settings.
-                self.pubsub.verify_settings()
 
     def subscribe(self, topic):
         self.bootstrap_pubsub()

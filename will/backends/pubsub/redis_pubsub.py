@@ -32,7 +32,7 @@ Examples:
 
 
     def __init__(self, settings, *args, **kwargs):
-        self.verify_settings()
+        self.verify_settings(quiet=True)
         super(RedisPubSub, self).__init__(*args, **kwargs)
         url = urlparse.urlparse(settings.REDIS_URL)
 

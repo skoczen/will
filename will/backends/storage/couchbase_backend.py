@@ -35,7 +35,7 @@ Examples:
     ]
 
     def __init__(self, settings):
-        self.verify_settings()
+        self.verify_settings(quiet=True)
         url = urlparse.urlparse(settings.COUCHBASE_URL)
         params = dict([
             param.split('=')

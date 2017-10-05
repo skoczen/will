@@ -27,7 +27,7 @@ Examples:
     * redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
     """
     def __init__(self, settings):
-        self.verify_settings()
+        self.verify_settings(quiet=True)
         url = urlparse.urlparse(settings.REDIS_URL)
 
         if hasattr(url, "path"):

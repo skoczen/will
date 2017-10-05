@@ -716,6 +716,8 @@ To set your %(name)s:
         puts("Bootstrapping storage...")
         try:
             self.bootstrap_storage()
+            # Make sure settings are there.
+            self.storage.verify_settings()
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
@@ -734,6 +736,8 @@ To set your %(name)s:
         puts("Bootstrapping pubsub...")
         try:
             self.bootstrap_pubsub()
+            # Make sure settings are there.
+            self.pubsub.verify_settings()
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
