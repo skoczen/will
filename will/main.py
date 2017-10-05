@@ -30,7 +30,7 @@ from backends import analysis, execution, generation, io_adapters
 from backends.io_adapters.base import Event
 from scheduler import Scheduler
 import settings
-from utils import show_valid, error, warn, print_head, Bunch
+from utils import show_valid, error, warn, note, print_head, Bunch
 
 
 # Force UTF8
@@ -198,7 +198,6 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
                                 self.current_line = ""
                             else:
                                 self.current_line += line
-                        self.sleep_for_event_loop()
                 else:
                     while True:
                         time.sleep(100)
@@ -418,7 +417,7 @@ To set your %(name)s:
         one_valid_backend = False
 
         if not hasattr(settings, "GENERATION_BACKENDS"):
-            settings.GENERATION_BACKENDS = ["will.backends.generation.regex", ]
+            settings.GENERATION_BACKENDS = ["will.backends.generation.strict_regex", ]
         # Try to import them all, catch errors and output trouble if we hit it.
         for b in settings.GENERATION_BACKENDS:
             with indent(2):
@@ -648,7 +647,7 @@ To set your %(name)s:
                 event = self.pubsub.get_message()
                 if event and hasattr(event, "type"):
                     now = datetime.datetime.now()
-                    logging.debug("Event (%s): %s" % (event.type, event))
+                    logging.debug("\n\n *** Event (%s): %s\n\n" % (event.type, event))
 
                     # TODO: Order by most common.
                     if event.type == "message.incoming":
@@ -677,7 +676,10 @@ To set your %(name)s:
                                 ),
                                 "source": q["source"],
                             }
-                            # del analysis_threads[event.source_hash]
+                            try:
+                                del analysis_threads[event.source_hash]
+                            except:
+                                pass
                             self.pubsub.publish("generation.start", q["source"], reference_message=q["source"])
 
                     elif event.type == "generation.complete":
@@ -696,14 +698,17 @@ To set your %(name)s:
                                     b.handle_execution(q["source"])
                                 except:
                                     break
-                            # del generation_threads[event.source_hash]
+                            try:
+                                del generation_threads[event.source_hash]
+                            except:
+                                pass
 
                     elif event.type == "message.no_response":
                         try:
                             self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
                         except:
                             pass
-                    self.sleep_for_event_loop()
+                    # self.sleep_for_event_loop()
             except:
                 logging.exception("Error handling message")
 
@@ -835,7 +840,7 @@ To set your %(name)s:
                             thread.start()
                             self.io_threads.append(thread)
 
-                        show_valid("%s Backend started." % cls.friendly_name)
+                        show_valid("IO: %s Backend started." % cls.friendly_name)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
@@ -864,7 +869,7 @@ To set your %(name)s:
                         )
                         thread.start()
                         self.analysis_threads.append(thread)
-                        show_valid("%s Backend started." % cls.__name__)
+                        show_valid("Analysis: %s Backend started." % cls.__name__)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
@@ -893,7 +898,7 @@ To set your %(name)s:
                         )
                         thread.start()
                         self.generation_threads.append(thread)
-                        show_valid("%s Backend started." % cls.__name__)
+                        show_valid("Generation: %s Backend started." % cls.__name__)
                 except Exception, e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 

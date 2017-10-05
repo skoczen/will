@@ -7,6 +7,7 @@ from will import settings
 from will.decorators import require_settings
 from will.mixins import PubSubMixin, SleepMixin
 from will.abstractions import Event
+from will.utils import Bunch
 
 
 class GenerationBackend(PubSubMixin, SleepMixin, object):
@@ -48,6 +49,7 @@ class GenerationBackend(PubSubMixin, SleepMixin, object):
 OPTION_REQUIRED_FIELDS = [
     "backend",
     "context",
+    "score",
 ]
 
 
@@ -55,10 +57,16 @@ class GeneratedOption(object):
 
     def __init__(self, *args, **kwargs):
         for o in OPTION_REQUIRED_FIELDS:
-            if not o in kwargs:
+            if o not in kwargs:
                 raise Exception("Missing '%s' argument to the generator backend." % o)
-            else:
-                self.__dict__[o] = kwargs[o]
-                del kwargs[o]
 
-        super(GeneratedOption, self).__init__(*args, **kwargs)
+        for k, v in kwargs.items():
+            self.__dict__[k] = v
+
+        return super(GeneratedOption, self).__init__()
+
+    def __unicode__(self):
+        return "%s - %s" % (self.score, self.context)
+
+    def __str__(self):
+        return "%s - %s" % (self.score, self.context)

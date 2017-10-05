@@ -62,7 +62,7 @@ PLUGINS = [
 # Don't load any of the plugins in this list.  Same options as above.
 PLUGIN_BLACKLIST = [
     "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
-    "will.plugins.productivity.world_time",   # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
+    # "will.plugins.productivity.world_time",   # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
     "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
     "will.plugins.devops.bitbucket_is_up",   # Because most folks use github.
     "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
@@ -74,10 +74,10 @@ PLUGIN_BLACKLIST = [
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.hipchat",
     # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
-    "will.backends.io_adapters.slack",
+    # "will.backends.io_adapters.slack",
 ]
 
 # Backends to analyze messages and generate useful metadata
@@ -90,15 +90,15 @@ ANALYZE_BACKENDS = [
 GENERATION_BACKENDS = [
     # "will.backends.generation.fuzzy_best_match",
     "will.backends.generation.fuzzy_all_matches",
-    # "will.backends.generation.strict_regex",
+    "will.backends.generation.strict_regex",
 ]
 
 # The "decision making" backends that look among the generated choices,
 # and decide which to follow. Backends are executed in order, and any
 # backend can stop further evaluation.
 EXECUTION_BACKENDS = [
-    # "will.backends.execution.highest",
-    "will.backends.execution.all",
+    "will.backends.execution.best_score",
+    # "will.backends.execution.all",
 ]
 
 # ------------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ ROOMS = ['Will Testing', ]
 
 # The interval will checks his internal cross-thread messaging queues, in seconds.
 # Increasing the value will make will slower, but consume fewer resources.
-EVENT_LOOP_INTERVAL = 0.05
+EVENT_LOOP_INTERVAL = 0.025
 
 # The backend and room will will talk to if the trigger is a webhook and he isn't told
 # a specific one.  Default is the first of IO_BACKENDS and ROOMS.
@@ -172,10 +172,11 @@ SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 
 
 # Turn up or down Will's logging level
-LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+# LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+# LOGLEVEL = "DEBUG"
 
 # Turn on or off Will's profiling
-PROFILING_ENABLED = True
+# PROFILING_ENABLED = False
 
 # Fully-qualified folders to look for templates in, beyond the two that
 # are always included: core will's templates folder, your project's templates folder, and

@@ -1,6 +1,7 @@
 import cmd
 import random
 import sys
+import time
 import logging
 import requests
 import threading
@@ -54,8 +55,6 @@ class ShellBackend(StdInOutIOBackend):
 
     def handle_outgoing_event(self, event):
         # Print any replies.
-        # print "handle_outgoing_event"
-        # print event
         if event.type in ["say", "reply"]:
             self.send_direct_message(event.content)
 
@@ -90,9 +89,9 @@ class ShellBackend(StdInOutIOBackend):
         )
 
         # Do this to get the first "you" prompt.
-        self.pubsub.publish('message.input.stdin', (Message(
+        self.pubsub.publish('message.incoming.stdin', (Message(
                 content="",
-                type="chat",
+                type="message.incoming",
                 is_direct=True,
                 is_private_chat=True,
                 is_group_chat=False,

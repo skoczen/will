@@ -72,6 +72,8 @@ class BasePubSub(object):
     - get_from_backend()
 
     """
+    def __init__(self, *args, **kwargs):
+        self.recent_hashes = []
 
     def do_subscribe(self, topic):
         """
@@ -104,7 +106,7 @@ class BasePubSub(object):
         """
         # print "-> publishing to %s" % topic
         # print obj
-        logging.info("Publishing topic (%s): \n%s" % (topic, obj))
+        logging.debug("Publishing topic (%s): \n%s" % (topic, obj))
         e = Event(
             data=obj,
             type=topic,
@@ -156,11 +158,16 @@ class BasePubSub(object):
             m = self.get_from_backend()
             if m and m["type"] not in SKIP_TYPES:
                 loaded_message = unpack_from_wire(m["data"])
+                # Handling inconsistent backends, but appears to no longer be an issue.
+                # if not loaded_message["hash"] in self.recent_hashes:
+                #     self.recent_hashes.append(loaded_message["hash"])
+                #     if len(self.recent_hashes) > 100:
+                #         self.recent_hashes = self.recent_hashes[1:]
+                return loaded_message
                 # print loaded_message
                 # loaded_message = pickle.loads(
                 #     dec
                 # )
-                return loaded_message
         except AttributeError:
             raise Exception("Tried to call get message without having subscribed first!")
         except (KeyboardInterrupt, SystemExit):

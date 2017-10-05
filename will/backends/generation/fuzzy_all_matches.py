@@ -8,7 +8,7 @@ from will.utils import Bunch
 from .base import GenerationBackend, GeneratedOption
 
 
-class FuzzyBestMatchBackend(GenerationBackend):
+class FuzzyAllMatchesBackend(GenerationBackend):
 
     def _generate_compiled_regex(self, method_meta):
         if not hasattr(self, "cached_regex"):
@@ -65,49 +65,52 @@ class FuzzyBestMatchBackend(GenerationBackend):
                 self.match_choices.append(l["regex_pattern"])
 
         search_matches = fuzz_process.extract(message.content, self.match_choices)
-        # logging.info(search_matches)
+        logging.info("search_matches")
+        logging.info(search_matches)
         for match_str, confidence in search_matches:
             l = self.match_methods[match_str]
             logging.info(" Match (%s) - %s" % (confidence, match_str))
-            if confidence >= settings.FUZZY_MINIMUM_MATCH_CONFIDENCE:
-                regex_matches = l["regex"].search(message.content)
-                if (
-                        # The search regex matches and
-                        # regex_matches
+            regex_matches = l["regex"].search(message.content)
+            if (
+                    # The search regex matches and
+                    # regex_matches
 
-                        # It's not from me, or this search includes me, and
-                        (
-                            message.will_said_it is False or
-                            ("include_me" in l and l["include_me"])
-                        )
+                    # We're confident enough
+                    (confidence >= settings.FUZZY_MINIMUM_MATCH_CONFIDENCE)
 
-                        # I'm mentioned, or this is an overheard, or we're in a 1-1
-                        and (
-                            message.is_private_chat or
-                            ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
-                            self.handle_regex.search(message.content)
-                            or message.is_direct
-                        )
+                    # It's not from me, or this search includes me, and
+                    and (
+                        message.will_said_it is False or
+                        ("include_me" in l and l["include_me"])
+                    )
 
-                        # TODO: Get ACL working again.
-                        # It's from admins only and sender is an admin, or it's not from admins only
-                        # and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
-                        # # It's available only to the members of one or more ACLs, or no ACL in use
-                        # and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
-                ):
-                    fuzzy_regex = self._generate_compiled_regex(l)
+                    # I'm mentioned, or this is an overheard, or we're in a 1-1
+                    and (
+                        message.is_private_chat or
+                        ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
+                        self.handle_regex.search(message.content)
+                        or message.is_direct
+                    )
 
-                    regex_matches = fuzzy_regex.search(message.content)
-                    context = Bunch()
-                    for k, v in l.items():
-                        if k not in exclude_list:
-                            context[k] = v
-                    if regex_matches and hasattr(regex_matches, "groupdict"):
-                        context.search_matches = regex_matches.groupdict()
-                    else:
-                        context.search_matches = {}
+                    # TODO: Get ACL working again.
+                    # It's from admins only and sender is an admin, or it's not from admins only
+                    # and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
+                    # # It's available only to the members of one or more ACLs, or no ACL in use
+                    # and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
+            ):
+                fuzzy_regex = self._generate_compiled_regex(l)
 
-                    o = GeneratedOption(context=context, backend="regex")
-                    matches.append(o)
+                regex_matches = fuzzy_regex.search(message.content)
+                context = Bunch()
+                for k, v in l.items():
+                    if k not in exclude_list:
+                        context[k] = v
+                if regex_matches and hasattr(regex_matches, "groupdict"):
+                    context.search_matches = regex_matches.groupdict()
+                else:
+                    context.search_matches = {}
+
+                o = GeneratedOption(context=context, backend="regex", score=confidence)
+                matches.append(o)
 
         return matches

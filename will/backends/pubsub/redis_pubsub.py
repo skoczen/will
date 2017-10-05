@@ -33,6 +33,7 @@ class RedisPubSub(BasePubSub):
         self._pubsub = self.redis.pubsub()
 
     def publish_to_backend(self, topic, body_str):
+        # print "publishing %s" % (topic,)
         return self.redis.publish(topic, body_str)
 
     def do_subscribe(self, topic):

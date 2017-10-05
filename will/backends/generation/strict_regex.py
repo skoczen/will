@@ -45,7 +45,7 @@ class RegexBackend(GenerationBackend):
                         context[k] = v
                 context.search_matches = search_matches.groupdict()
 
-                o = GeneratedOption(context=context, backend="regex")
+                o = GeneratedOption(context=context, backend="regex", score=100)
                 matches.append(o)
 
         return matches

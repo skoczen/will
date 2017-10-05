@@ -5,7 +5,7 @@ from will.decorators import require_settings
 from .base import AnalysisBackend
 
 
-class NoAnalysisBackend(AnalysisBackend):
+class NoAnalysis(AnalysisBackend):
 
     def do_analyze(self, message):
         return {}

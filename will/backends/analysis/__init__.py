@@ -1,1 +1,2 @@
-from .nothing import NoAnalysisBackend
+from .nothing import NoAnalysis
+from .history import HistoryAnalysis

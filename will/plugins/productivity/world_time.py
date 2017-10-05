@@ -32,13 +32,21 @@ class TimePlugin(WillPlugin):
                     (place, settings.WORLD_WEATHER_ONLINE_KEY)
                 )
             resp = r.json()
-            if "request" in resp["data"] and len(resp["data"]["request"]) > 0:
-                place = resp["data"]["request"][0]["query"]
-                current_time = self.parse_natural_time(resp["data"]["time_zone"][0]["localtime"])
+            if r.status_code is not 200:
+                if "data" in resp and "error" in resp["data"]:
+                    self.say("Looks like my Weather Online key isn't working. I got '%s' when I tried to search." % resp["data"]["error"][0]["msg"])
+                else:
+                    self.say("Sorry, the website I use to find that out looks like it's down.")
+                self.say("Maybe update WORLD_WEATHER_ONLINE_V2_KEY?.")
 
-                self.say("It's %s in %s." % (self.to_natural_day_and_time(current_time), place), message=message)
             else:
-                self.say("I couldn't find anywhere named %s." % (place, ), message=message)
+                if "request" in resp["data"] and len(resp["data"]["request"]) > 0:
+                    place = resp["data"]["request"][0]["query"]
+                    current_time = self.parse_natural_time(resp["data"]["time_zone"][0]["localtime"])
+
+                    self.say("It's %s in %s." % (self.to_natural_day_and_time(current_time), place), message=message)
+                else:
+                    self.say("I couldn't find anywhere named %s." % (place, ), message=message)
 
     @respond_to("what time is it(\?)?$", multiline=False)
     def what_time_is_it(self, message):

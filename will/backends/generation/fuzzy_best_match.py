@@ -7,7 +7,7 @@ from will.utils import Bunch
 from .base import GenerationBackend, GeneratedOption
 
 
-class FuzzyBestMatchBackend(GenerationBackend):
+class FuzzyBestMatch(GenerationBackend):
 
     def _generate_compiled_regex(self, method_meta):
         if not hasattr(self, "cached_regex"):
@@ -103,7 +103,7 @@ class FuzzyBestMatchBackend(GenerationBackend):
                 else:
                     context.search_matches = {}
 
-                o = GeneratedOption(context=context, backend="regex")
+                o = GeneratedOption(context=context, backend="regex", score=confidence)
                 matches.append(o)
 
         return matches
