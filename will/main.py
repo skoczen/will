@@ -132,9 +132,6 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
         print "bootstrap_plugins done"
         self.verify_plugin_settings()
         self.verify_io()
-        self.verify_analysis()
-        self.verify_generate()
-        self.verify_execution()
 
         puts("Bootstrapping complete.")
 
@@ -176,7 +173,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
 
                 errors = self.get_startup_errors()
                 if len(errors) > 0:
-                    default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
+                    default_room = self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
                     error_message = "FYI, I ran into some problems while starting up:"
                     for err in errors:
                         error_message += "\n%s\n" % err
@@ -232,29 +229,9 @@ To set your %(name)s:
     def verify_environment(self):
         missing_settings = False
         required_settings = []
+        # TODO: verify pubsub and storage.
         if "will.backends.io_adapters.hipchat" in settings.IO_BACKENDS:
             required_settings = [
-                {
-                    "name": "WILL_USERNAME",
-                    "obtain_at": """1. Go to hipchat, and create a new user for will.
-    2. Log into will, and go to Account settings>XMPP/Jabber Info.
-    3. On that page, the 'Jabber ID' is the value you want to use.""",
-                },
-                {
-                    "name": "WILL_PASSWORD",
-                    "obtain_at": (
-                        "1. Go to hipchat, and create a new user for will.  "
-                        "Note that password - this is the value you want. "
-                        "It's used for signing in via XMPP."
-                    ),
-                },
-                {
-                    "name": "WILL_V2_TOKEN",
-                    "obtain_at": """1. Log into hipchat using will's user.
-    2. Go to https://your-org.hipchat.com/account/api
-    3. Create a token.
-    4. Copy the value - this is the WILL_V2_TOKEN.""",
-                },
                 {
                     "name": "WILL_REDIS_URL",
                     "only_if": getattr(settings, "STORAGE_BACKEND", "redis") == "redis",
@@ -302,7 +279,7 @@ To set your %(name)s:
 
         #     puts("Verifying credentials...")
         #     # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.
-        #     user_id = settings.USERNAME.split('@')[0].split('_')[1]
+        #     user_id = settings.HIPCHAT_USERNAME.split('@')[0].split('_')[1]
 
         #     # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
         #     # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
@@ -336,7 +313,7 @@ To set your %(name)s:
         #     puts("Verifying rooms...")
         #     # If we're missing ROOMS, join all of them.
         #     with indent(2):
-        #         if settings.ROOMS is None:
+        #         if settings.HIPCHAT_ROOMS is None:
         #             # Yup. Thanks, BSDs.
         #             q = Queue()
         #             p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
@@ -349,8 +326,8 @@ To set your %(name)s:
         #         else:
         #             show_valid(
         #                 "Joining the %s room%s specified." % (
-        #                     len(settings.ROOMS),
-        #                     "s" if len(settings.ROOMS) > 1 else ""
+        #                     len(settings.HIPCHAT_ROOMS),
+        #                     "s" if len(settings.HIPCHAT_ROOMS) > 1 else ""
         #                 )
         #             )
         #     puts("")
@@ -375,8 +352,19 @@ To set your %(name)s:
                         file_name, path_name, description = imp.find_module(mod, path_name)
 
                     one_valid_backend = True
-                    show_valid("%s" % b)
-                except ImportError, e:
+                    # show_valid("%s" % b)
+                    module = import_module(b)
+                    for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
+                        if (
+                            hasattr(cls, "is_will_iobackend") and
+                            cls.is_will_iobackend and
+                            class_name != "IOBackend" and
+                            class_name != "StdInOutIOBackend"
+                        ):
+                            c = cls()
+                            show_valid(c.friendly_name)
+                            c.verify_backend()
+                except:
                     error_message = (
                         "IO backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_IO_BACKENDS, or provide it somehow (pip install, etc)."
@@ -1071,7 +1059,7 @@ To set your %(name)s:
                                                     regex = "(?i)%s" % regex
                                                 help_regex = meta["listener_regex"]
                                                 if meta["listens_only_to_direct_mentions"]:
-                                                    help_regex = "@%s %s" % (settings.HANDLE, help_regex)
+                                                    help_regex = "@%s %s" % (settings.HIPCHAT_HANDLE, help_regex)
                                                 self.all_listener_regexes.append(help_regex)
                                                 if meta["__doc__"]:
                                                     pht = plugin_info.get("parent_help_text", None)

@@ -28,7 +28,7 @@ class HipChatMixin(object):
             # https://www.hipchat.com/docs/apiv2/method/private_message_user
             url = PRIVATE_MESSAGE_URL % {"server": settings.HIPCHAT_SERVER,
                                          "user_id": user_id,
-                                         "token": settings.V2_TOKEN}
+                                         "token": settings.HIPCHAT_V2_TOKEN}
             data = {
                 "message": message_body,
                 "message_format": format,
@@ -57,7 +57,7 @@ class HipChatMixin(object):
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
             url = ROOM_NOTIFICATION_URL % {"server": settings.HIPCHAT_SERVER,
                                            "room_id": room_id,
-                                           "token": settings.V2_TOKEN}
+                                           "token": settings.HIPCHAT_V2_TOKEN}
             data = {
                 "message": message_body,
                 "message_format": format,
@@ -76,7 +76,7 @@ class HipChatMixin(object):
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
             url = ROOM_TOPIC_URL % {"server": settings.HIPCHAT_SERVER,
                                     "room_id": room_id,
-                                    "token": settings.V2_TOKEN}
+                                    "token": settings.HIPCHAT_V2_TOKEN}
             data = {
                 "topic": topic,
             }
@@ -88,7 +88,7 @@ class HipChatMixin(object):
     def get_hipchat_user(self, user_id, q=None):
         url = USER_DETAILS_URL % {"server": settings.HIPCHAT_SERVER,
                                   "user_id": user_id,
-                                  "token": settings.V2_TOKEN}
+                                  "token": settings.HIPCHAT_V2_TOKEN}
         r = requests.get(url, **settings.REQUESTS_OPTIONS)
         if q:
             q.put(r.json())
@@ -102,7 +102,7 @@ class HipChatMixin(object):
 
             # Grab the first roster page, and populate full_roster
             url = ALL_USERS_URL % {"server": settings.HIPCHAT_SERVER,
-                                   "token": settings.V2_TOKEN,
+                                   "token": settings.HIPCHAT_V2_TOKEN,
                                    "start_index": 0,
                                    "max_results": 1000}
             r = requests.get(url, **settings.REQUESTS_OPTIONS)
@@ -111,7 +111,7 @@ class HipChatMixin(object):
 
             # Keep going through the next pages until we're out of pages.
             while 'next' in r.json()['links']:
-                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.V2_TOKEN)
+                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.HIPCHAT_V2_TOKEN)
                 r = requests.get(url, **settings.REQUESTS_OPTIONS)
 
                 for user in r.json()['items']:

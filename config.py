@@ -74,7 +74,7 @@ PLUGIN_BLACKLIST = [
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    # "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.hipchat",
     # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
     "will.backends.io_adapters.slack",
@@ -110,6 +110,23 @@ EXECUTION_BACKENDS = [
 FUZZY_MINIMUM_MATCH_CONFIDENCE = 90
 FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
+
+# ------------------------------------------------------------------------------------
+# Hipchat settings
+# ------------------------------------------------------------------------------------
+
+# Ideally, set these in the environment with the WILL_ prefix.
+# HIPCHAT_HANDLE = 'will'
+
+
+# ------------------------------------------------------------------------------------
+# Slack settings
+# ------------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------------
+# Rocket.chat settings
+# ------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------
 # Potentially required settings
@@ -176,7 +193,6 @@ PROFILING_ENABLED = True
 #     "admins": ["steven", "will"]
 # }
 
-HANDLE = 'will'
 
 # Deprecated - please use ACL, above, instead:  User handles who are allowed to perform
 # `admin_only` plugins.  Defaults to everyone.

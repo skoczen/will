@@ -43,7 +43,7 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
         self.xmpp_bridge_queue = xmpp_bridge_queue
         self.backend_name = backend_name
 
-        ClientXMPP.__init__(self, "%s/bot" % settings.USERNAME, settings.PASSWORD)
+        ClientXMPP.__init__(self, "%s/bot" % settings.HIPCHAT_USERNAME, settings.HIPCHAT_PASSWORD)
 
         if settings.USE_PROXY:
             self.use_proxy = True
@@ -55,13 +55,13 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
             }
 
         self.rooms = []
-        self.default_room = settings.DEFAULT_ROOM
+        self.default_room = settings.HIPCHAT_DEFAULT_ROOM
 
         # TODO: Clean this up, and pass it in from the controlling thread,
         # then nuke RoomsMixin
         # Property boostraps the list
         self.available_rooms
-        for r in settings.ROOMS:
+        for r in settings.HIPCHAT_ROOMS:
             if r != "":
                 if not hasattr(self, "default_room"):
                     self.default_room = r
@@ -72,10 +72,10 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
                     logger.error(
                         u'"{0}" is not an available room, ask'
                         ' "@{1} what are the rooms?" for the full list.'
-                        .format(r, settings.HANDLE))
+                        .format(r, settings.HIPCHAT_HANDLE))
 
-        self.nick = settings.NAME
-        self.handle = settings.HANDLE
+        self.nick = settings.HIPCHAT_NAME
+        self.handle = settings.HIPCHAT_HANDLE
         self.handle_regex = re.compile("@%s" % self.handle)
 
         self.whitespace_keepalive = True
@@ -195,6 +195,34 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
 class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
     friendly_name = "HipChat"
     internal_name = "will.backends.io_adapters.hipchat"
+    required_settings = [
+        {
+            "name": "HIPCHAT_USERNAME",
+            "obtain_at": """1. Go to hipchat, and create a new user for will.
+2. Log into will, and go to Account settings>XMPP/Jabber Info.
+3. On that page, the 'Jabber ID' is the value you want to use.""",
+        },
+        {
+            "name": "HIPCHAT_PASSWORD",
+            "obtain_at": (
+                "1. Go to hipchat, and create a new user for will.  "
+                "Note that password - this is the value you want. "
+                "It's used for signing in via XMPP."
+            ),
+        },
+        {
+            "name": "HIPCHAT_V2_TOKEN",
+            "obtain_at": """1. Log into hipchat using will's user.
+2. Go to https://your-org.hipchat.com/account/api
+3. Create a token.
+4. Copy the value - this is the HIPCHAT_V2_TOKEN.""",
+        },
+        {
+            "name": "HIPCHAT_HANDLE",
+            "obtain_at": """1. Log into hipchat using will's user.
+2. Set HIPCHAT_HANDLE to Will's users' mention name without the @, i.e. @will becomes will.""",
+        },
+    ]
 
     def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
         if kwargs:
@@ -208,7 +236,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             # https://www.hipchat.com/docs/apiv2/method/private_message_user
             url = PRIVATE_MESSAGE_URL % {"server": settings.HIPCHAT_SERVER,
                                          "user_id": user_id,
-                                         "token": settings.V2_TOKEN}
+                                         "token": settings.HIPCHAT_V2_TOKEN}
             data = {
                 "message": message_body,
                 "message_format": format,
@@ -231,7 +259,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
             url = ROOM_NOTIFICATION_URL % {"server": settings.HIPCHAT_SERVER,
                                            "room_id": room_id,
-                                           "token": settings.V2_TOKEN}
+                                           "token": settings.HIPCHAT_V2_TOKEN}
             data = {
                 "message": message_body,
                 "message_format": format,
@@ -250,7 +278,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             # https://www.hipchat.com/docs/apiv2/method/send_room_notification
             url = ROOM_TOPIC_URL % {"server": settings.HIPCHAT_SERVER,
                                     "room_id": room_id,
-                                    "token": settings.V2_TOKEN}
+                                    "token": settings.HIPCHAT_V2_TOKEN}
             data = {
                 "topic": topic,
             }
@@ -262,7 +290,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
     def get_hipchat_user(self, user_id, q=None):
         url = USER_DETAILS_URL % {"server": settings.HIPCHAT_SERVER,
                                   "user_id": user_id,
-                                  "token": settings.V2_TOKEN}
+                                  "token": settings.HIPCHAT_V2_TOKEN}
         r = requests.get(url, **settings.REQUESTS_OPTIONS)
         if q:
             q.put(r.json())
@@ -276,7 +304,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
 
             # Grab the first roster page, and populate full_roster
             url = ALL_USERS_URL % {"server": settings.HIPCHAT_SERVER,
-                                   "token": settings.V2_TOKEN,
+                                   "token": settings.HIPCHAT_V2_TOKEN,
                                    "start_index": 0,
                                    "max_results": 1000}
             r = requests.get(url, **settings.REQUESTS_OPTIONS)
@@ -289,7 +317,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 )
             # Keep going through the next pages until we're out of pages.
             while 'next' in r.json()['links']:
-                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.V2_TOKEN)
+                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.HIPCHAT_V2_TOKEN)
                 r = requests.get(url, **settings.REQUESTS_OPTIONS)
 
                 for user in r.json()['items']:
@@ -302,7 +330,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
 
             self._people = full_roster
             for k, u in full_roster.items():
-                if u.handle == settings.HANDLE:
+                if u.handle == settings.HIPCHAT_HANDLE:
                     self.me = u
         return self._people
 
@@ -313,7 +341,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
 
             # Grab the first roster page, and populate all_rooms
             url = ALL_ROOMS_URL % {"server": settings.HIPCHAT_SERVER,
-                                   "token": settings.V2_TOKEN,
+                                   "token": settings.HIPCHAT_V2_TOKEN,
                                    "start_index": 0,
                                    "max_results": 1000}
             r = requests.get(url, **settings.REQUESTS_OPTIONS)
@@ -328,7 +356,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
 
             # Keep going through the next pages until we're out of pages.
             while 'next' in r.json()['links']:
-                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.V2_TOKEN)
+                url = "%s&auth_token=%s" % (r.json()['links']['next'], settings.HIPCHAT_V2_TOKEN)
                 r = requests.get(url, **settings.REQUESTS_OPTIONS)
 
                 for room in r.json()['items']:
@@ -439,7 +467,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                         **kwargs
                     )
                 else:
-                    default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
+                    default_room = self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
                     self.send_room_message(
                         default_room,
                         event.content,
@@ -489,7 +517,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         #    Note that Channel asks for members, a list of People.
         # f) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
-        self.client = HipchatXMPPClient("%s/bot" % settings.USERNAME, settings.PASSWORD)
+        self.client = HipchatXMPPClient("%s/bot" % settings.HIPCHAT_USERNAME, settings.HIPCHAT_PASSWORD)
         self.xmpp_bridge_queue = Queue()
         self.client.start_xmpp_client(
             xmpp_bridge_queue=self.xmpp_bridge_queue,

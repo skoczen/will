@@ -1,5 +1,5 @@
 import os
-from utils import show_valid, warn, note
+from utils import show_valid, warn, note, error
 from clint.textui import puts, indent
 from urlparse import urlparse
 
@@ -69,18 +69,44 @@ def import_settings(quiet=True):
         puts("Verifying settings... ")
 
     with indent(2):
-        # Set defaults
-        if "ROOMS" not in settings:
-            if not quiet:
-                warn("no ROOMS list found in the environment or config.  "
-                     "This is ok - Will will just join all available rooms.")
-                settings["ROOMS"] = None
+        # Deprecation and backwards-compatability for Will 1.x-> 2.x
+        DEPRECATED_BUT_MAPPED_SETTINGS = {
+            "USERNAME": "HIPCHAT_USERNAME",
+            "PASSWORD": "HIPCHAT_PASSWORD",
+            "V1_TOKEN": "HIPCHAT_V1_TOKEN",
+            "V2_TOKEN": "HIPCHAT_V2_TOKEN",
+            "TOKEN": "HIPCHAT_V1_TOKEN",
+            "ROOMS": "HIPCHAT_ROOMS",
+            "NAME": "HIPCHAT_NAME",
+            "HANDLE": "HIPCHAT_HANDLE",
+            "DEFAULT_ROOM": "HIPCHAT_DEFAULT_ROOM",
+        }
+        deprecation_warn_shown = False
+        for k, v in DEPRECATED_BUT_MAPPED_SETTINGS.items():
+            if not v in settings and k in settings:
+                if not deprecation_warn_shown and not quiet:
+                    error("Deprecated settings. The following settings will stop working in Will 2.2:")
+                    deprecation_warn_shown = True
+                if not quiet:
+                    warn("Please update %s to %s.  " % (k, v))
+                settings[v] = settings[k]
+                del settings[k]
 
-        if "DEFAULT_ROOM" not in settings and "ROOMS" in settings and settings["ROOMS"] and len(settings["ROOMS"]) > 0:
+        # Set defaults
+        if "HIPCHAT_ROOMS" not in settings:
             if not quiet:
-                warn("no DEFAULT_ROOM found in the environment or config.  "
-                     "Defaulting to '%s', the first one." % settings["ROOMS"][0])
-            settings["DEFAULT_ROOM"] = settings["ROOMS"][0]
+                warn("no HIPCHAT_ROOMS list found in the environment or config.  "
+                     "This is ok - Will will just join all available HIPCHAT_rooms.")
+                settings["HIPCHAT_ROOMS"] = None
+
+        if (
+            "HIPCHAT_DEFAULT_ROOM" not in settings and "HIPCHAT_ROOMS" in settings and
+            settings["HIPCHAT_ROOMS"] and len(settings["HIPCHAT_ROOMS"]) > 0
+        ):
+            if not quiet:
+                warn("no HIPCHAT_DEFAULT_ROOM found in the environment or config.  "
+                     "Defaulting to '%s', the first one." % settings["HIPCHAT_ROOMS"][0])
+            settings["HIPCHAT_DEFAULT_ROOM"] = settings["HIPCHAT_ROOMS"][0]
 
         if (
             "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
@@ -93,9 +119,6 @@ def import_settings(quiet=True):
 
         if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
             settings["ENABLE_INTERNAL_ENCRYPTION"] = False
-
-        print "TODO: check slack and hipchat tokens if they're in the backends"
-        print "TODO: ensure zeromq/redis for pubsub"
 
         if "HTTPSERVER_PORT" not in settings:
             # For heroku
@@ -158,20 +181,13 @@ def import_settings(quiet=True):
             if not quiet:
                 warn("no PUBLIC_URL found in the environment or config.  Defaulting to '%s'." % default_public)
 
-        if "V1_TOKEN" not in settings:
-            if not quiet:
-                warn(
-                    "no V1_TOKEN found in the environment or config."
-                    "This is generally ok, but if you have more than 30 rooms, "
-                    "you may recieve rate-limit errors without one."
-                )
-
         if "TEMPLATE_DIRS" not in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:
                 # All good
                 pass
             else:
                 settings["TEMPLATE_DIRS"] = []
+
         if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and\
                 (settings["ALLOW_INSECURE_HIPCHAT_SERVER"] is True or
                  settings["ALLOW_INSECURE_HIPCHAT_SERVER"].lower() == "true"):

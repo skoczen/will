@@ -29,6 +29,14 @@ class SlackMarkdownConverter(MarkdownConverter):
 class SlackBackend(IOBackend, SleepMixin):
     friendly_name = "Slack"
     internal_name = "will.backends.io_adapters.slack"
+    required_settings = [
+        {
+            "name": "SLACK_API_TOKEN",
+            "obtain_at": """1. Go to https://api.slack.com/tokens, and sign in.
+2. Search for Will, and then add will.
+3. Generate a new token (These instructions are incorrect!).""",
+        },
+    ]
 
     def normalize_incoming_event(self, event):
 
@@ -118,7 +126,7 @@ class SlackBackend(IOBackend, SleepMixin):
                         **kwargs
                     )
                 else:
-                    default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
+                    default_room = self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
                     self.send_room_message(
                         default_room,
                         event.content,

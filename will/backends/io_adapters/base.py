@@ -1,4 +1,5 @@
 # -- coding: utf-8 -
+from clint.textui import indent, puts
 import datetime
 import hashlib
 import logging
@@ -8,7 +9,7 @@ import time
 import traceback
 
 from will import settings
-from will.utils import Bunch
+from will.utils import Bunch, show_valid, error, warn
 from will.mixins import PubSubMixin, SleepMixin
 from will.abstractions import Message, Event, Person
 from multiprocessing import Process
@@ -16,6 +17,7 @@ from multiprocessing import Process
 
 class IOBackend(PubSubMixin, SleepMixin, object):
     is_will_iobackend = True
+    required_settings = []
 
     def bootstrap(self):
         raise NotImplemented("""A .bootstrap() method was not provided.
@@ -31,6 +33,25 @@ class IOBackend(PubSubMixin, SleepMixin, object):
         g) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
            with a maximum lag of 60 seconds.
         """)
+
+    def verify_backend(self):
+        passed = True
+        for s in self.required_settings:
+            if not hasattr(settings, s["name"]):
+                meta = s
+                meta["friendly_name"] = self.friendly_name
+                error("%(name)s is missing. It's required by the %(friendly_name)s backend." % meta)
+                with indent(2):
+                    error_message = (
+                        "To obtain a %(name)s: \n%(obtain_at)s"
+                    ) % meta
+                    puts(error_message)
+                passed = False
+                # raise Exception(error_message)
+            else:
+                with indent(2):
+                    show_valid(s["name"])
+        return passed
 
     def normalize_incoming_event(self, event):
         # Takes a raw event, converts it into a Message, and returns the normalized Message.

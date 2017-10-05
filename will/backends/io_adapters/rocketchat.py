@@ -159,7 +159,7 @@ class RocketChatBackend(IOBackend):
                 #         **kwargs
                 #     )
                 # else:
-                #     default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
+                #     default_room = self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
                 #     self.send_room_message(
                 #         default_room,
                 #         event.content,
@@ -227,8 +227,8 @@ class RocketChatBackend(IOBackend):
     # https://rocket.chat/docs/developer-guides/rest-api/
 
     def _rest_login(self):
-        params = {'username': settings.USERNAME,
-                  'password': settings.PASSWORD}
+        params = {'username': settings.HIPCHAT_USERNAME,
+                  'password': settings.HIPCHAT_PASSWORD}
         r = requests.post('{}login'.format(self.rcapi),
                           data=params)
         rj = r.json()
@@ -249,7 +249,7 @@ class RocketChatBackend(IOBackend):
         # TODO: Why do I need to set handle here as done in slack.py?
         # It should have been set as an envvar (otherwise how did
         # we get this far?).
-        self.handle = settings.USERNAME
+        self.handle = settings.HIPCHAT_USERNAME
 
         people = {}
 
@@ -367,7 +367,7 @@ class RocketChatBackend(IOBackend):
         time.sleep(5)
 
     def _realtime_login(self):
-        params = [{'user': {'username': settings.USERNAME}, 'password': settings.PASSWORD}]
+        params = [{'user': {'username': settings.HIPCHAT_USERNAME}, 'password': settings.HIPCHAT_PASSWORD}]
         self.rc.call('login', params, self._login_callback)
 
     def _login_callback(self, error, result):

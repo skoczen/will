@@ -28,7 +28,7 @@ class Room(Bunch):
 
     @property
     def history(self):
-        payload = {"auth_token": settings.V2_TOKEN}
+        payload = {"auth_token": settings.HIPCHAT_V2_TOKEN}
         response = requests.get("https://{1}/v2/room/{0}/history".format(str(self.id),
                                                                          settings.HIPCHAT_SERVER),
                                 params=payload, **settings.REQUESTS_OPTIONS)
@@ -39,7 +39,7 @@ class Room(Bunch):
 
     @property
     def participants(self):
-        payload = {"auth_token": settings.V2_TOKEN}
+        payload = {"auth_token": settings.HIPCHAT_V2_TOKEN}
         response = requests.get(
             "https://{1}/v2/room/{0}/participant".format(
                 str(self.id),
@@ -62,7 +62,7 @@ class RoomMixin(object):
         # Use v1 token to grab a full room list if we can (good to avoid rate limiting)
         if hasattr(settings, "V1_TOKEN"):
             url = V1_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
-                                  "token": settings.V1_TOKEN}
+                                  "token": settings.HIPCHAT_V1_TOKEN}
             r = requests.get(url, **settings.REQUESTS_OPTIONS)
             if r.status_code == requests.codes.unauthorized:
                 raise Exception("V1_TOKEN authentication failed with HipChat")
@@ -77,7 +77,7 @@ class RoomMixin(object):
             params['start-index'] = 0
             max_results = params['max-results'] = 1000
             url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
-                                  "token": settings.V2_TOKEN}
+                                  "token": settings.HIPCHAT_V2_TOKEN}
             while True:
                 resp = requests.get(url, params=params,
                                     **settings.REQUESTS_OPTIONS)
