@@ -230,34 +230,15 @@ To set your %(name)s:
         missing_settings = False
         required_settings = []
         # TODO: verify pubsub and storage.
-        if "will.backends.io_adapters.hipchat" in settings.IO_BACKENDS:
-            required_settings = [
-                {
-                    "name": "WILL_REDIS_URL",
-                    "only_if": getattr(settings, "STORAGE_BACKEND", "redis") == "redis",
-                    "obtain_at": """1. Set up an accessible redis host locally or in production
-    2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
-                },
-            ]
+        required_settings = [
+            {
+                "name": "WILL_REDIS_URL",
+                "only_if": getattr(settings, "STORAGE_BACKEND", "redis") == "redis",
+                "obtain_at": """1. Set up an accessible redis host locally or in production
+2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
+            },
+        ]
 
-        if "will.backends.io_adapters.rocketchat" in settings.IO_BACKENDS:
-            required_settings = [
-                {
-                    "name": "WILL_USERNAME",
-                    "obtain_at": "Will username as configured in RC.",
-                },
-                {
-                    "name": "WILL_PASSWORD",
-                    "obtain_at": "Will password as configured in RC.",
-                },
-                {
-                    "name": "WILL_ROCKETCHAT_URL",
-                    "obtain_at": (
-                        "Including protocol and port if not 80 e.g. "
-                        "http://localhost:3000"
-                        ),
-                },
-            ]
         puts("")
         puts("Verifying environment...")
 

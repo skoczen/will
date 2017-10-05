@@ -23,6 +23,23 @@ from .base import IOBackend
 class RocketChatBackend(IOBackend):
     friendly_name = "RocketChat"
     internal_name = "will.backends.io_adapters.rocketchat"
+    required_settings = [
+        {
+            "name": "ROCKETCHAT_USERNAME",
+            "obtain_at": "Will username as configured in Rocket.Chat.",
+        },
+        {
+            "name": "ROCKETCHAT_PASSWORD",
+            "obtain_at": "Will password as configured in Rocket.Chat.",
+        },
+        {
+            "name": "ROCKETCHAT__URL",
+            "obtain_at": (
+                "Including protocol and port if not 80 e.g. "
+                "http://localhost:3000"
+            ),
+        },
+    ]
 
     pp = pprint.PrettyPrinter(indent=4)
 
