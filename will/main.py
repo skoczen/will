@@ -129,7 +129,6 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
         self.bootstrap_storage_mixin()
         self.bootstrap_pubsub_mixin()
         self.bootstrap_plugins()
-        print "bootstrap_plugins done"
         self.verify_plugin_settings()
         self.verify_io()
 
@@ -343,8 +342,8 @@ To set your %(name)s:
                         ):
                             c = cls()
                             show_valid(c.friendly_name)
-                            c.verify_backend()
-                except:
+                            c.verify_settings()
+                except Exception, e:
                     error_message = (
                         "IO backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_IO_BACKENDS, or provide it somehow (pip install, etc)."

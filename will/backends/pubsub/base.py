@@ -12,6 +12,7 @@ from Crypto.Cipher import AES
 import random
 from will.abstractions import Event
 from will import settings
+from will.mixins import SettingsMixin
 
 SKIP_TYPES = ["psubscribe", "punsubscribe", ]
 
@@ -62,7 +63,7 @@ def unpack_from_wire(enc):
         return None
 
 
-class BasePubSub(object):
+class BasePubSub(SettingsMixin):
     """
     The base pubsub backend.
     Subclassing methods must implement:

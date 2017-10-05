@@ -16,7 +16,23 @@ class RedisPubSub(BasePubSub):
     * redis://localhost:6379/7
     * redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
     """
+
+    required_settings = [
+        {
+            "name": "REDIS_URL",
+            "obtain_at": """You must supply a REDIS_URL setting that is passed through urlparse.
+
+Examples:
+
+* redis://localhost:6379/7
+* redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345""",
+        },
+    ]
+
+
+
     def __init__(self, settings, *args, **kwargs):
+        self.verify_settings()
         super(RedisPubSub, self).__init__(*args, **kwargs)
         url = urlparse.urlparse(settings.REDIS_URL)
 

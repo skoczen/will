@@ -19,7 +19,21 @@ class ZeroMQPubSub(BasePubSub):
     * zeromq://localhost:63797
     * zeromq://ZeroMQ:asdfkjaslkdjflasdf@pub-zeromq-12345.us-east-1-1.2.ec2.zeromq.com:12345
     """
+
+    required_settings = [
+        {
+            "name": "ZEROMQ_URL",
+            "obtain_at": """You must supply a ZEROMQ_URL setting that is passed through urlparse.
+
+Examples:
+
+* zeromq://localhost:63797
+* zeromq://ZeroMQ:asdfkjaslkdjflasdf@pub-zeromq-12345.us-east-1-1.2.ec2.zeromq.com:12345""",
+        },
+    ]
+
     def __init__(self, settings, *args, **kwargs):
+        self.verify_settings()
         logging.warning(
             "The ZeroMQ Backend isn't ready for prime-time yet. Please "
             "test closely, and report any problems at Will's github page!"

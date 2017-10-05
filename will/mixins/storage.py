@@ -17,15 +17,18 @@ class StorageMixin(object):
                 # couchbase => will.storage.couchbase_backend
                 # etc...
                 module_name = ''.join([
-                    'will.storage.',
+                    'will.backends.storage.',
                     getattr(settings, 'STORAGE_BACKEND', 'redis'),
-                    '_storage'
+                    '_backend'
                 ])
                 storage_module = importlib.import_module(module_name)
 
                 # Now create our storage object using the bootstrap function
                 # from within the import
                 self.storage = storage_module.bootstrap(settings)
+
+                # Verify that it has the required settings.
+                self.storage.verify_settings()
 
     def save(self, key, value, expire=None):
         self.bootstrap_storage()
