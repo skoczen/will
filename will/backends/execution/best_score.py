@@ -32,7 +32,11 @@ class BestScoreBackend(ExecutionBackend):
             **option.context.search_matches
         )
 
+    def _publish_fingerprint(self, option, message):
+        return "%s - %s" % (option.context.plugin_info["full_module_name"], option.context.full_method_name)
+
     def handle_execution(self, message):
+        published_list = []
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             try:
@@ -48,8 +52,11 @@ class BestScoreBackend(ExecutionBackend):
                 logging.debug(top_score)
                 for m in message.generation_options:
                     if m.score >= top_score:
-                        self.do_execute(message, m)
-                        had_one_reply = True
+                        s = self._publish_fingerprint(m, message)
+                        if not s in published_list:
+                            published_list.append(s)
+                            self.do_execute(message, m)
+                            had_one_reply = True
                 if not had_one_reply:
                     self.bot.pubsub.publish("message.no_response", {'source': message}, reference_message=message)
 
