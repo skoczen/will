@@ -124,8 +124,6 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
     def bootstrap(self):
         print_head()
         self.load_config()
-        self.verify_environment()
-        self.verify_rooms()
         self.bootstrap_storage_mixin()
         self.bootstrap_pubsub_mixin()
         self.bootstrap_plugins()
@@ -224,92 +222,11 @@ To set your %(name)s:
 """ % test_setting)
             return False
 
-    def verify_environment(self):
-        missing_settings = False
-        required_settings = []
-        # TODO: verify pubsub and storage.
-        required_settings = [
-            {
-                "name": "WILL_REDIS_URL",
-                "only_if": getattr(settings, "STORAGE_BACKEND", "redis") == "redis",
-                "obtain_at": """1. Set up an accessible redis host locally or in production
-2. Set WILL_REDIS_URL to its full value, i.e. redis://localhost:6379/7""",
-            },
-        ]
-
-        puts("")
-        puts("Verifying environment...")
-
-        for r in required_settings:
-            if not self.verify_individual_setting(r):
-                missing_settings = True
-
-        if missing_settings:
-            error(
-                "Will was unable to start because some required environment "
-                "variables are missing.  Please fix them and try again!"
-            )
-            sys.exit(1)
-        else:
-            puts("")
-
-        # TODO: move this into the hipchat backend, and get it working again.
-        # if "hipchat" in settings.CHAT_BACKENDS:
-
-        #     puts("Verifying credentials...")
-        #     # Parse 11111_222222@chat.hipchat.com into id, where 222222 is the id.
-        #     user_id = settings.HIPCHAT_USERNAME.split('@')[0].split('_')[1]
-
-        #     # Splitting into a thread. Necessary because *BSDs (including OSX) don't have threadsafe DNS.
-        #     # http://stackoverflow.com/questions/1212716/python-interpreter-blocks-multithreaded-dns-requests
-        #     q = Queue()
-        #     p = Process(target=self.get_user, args=(user_id,), kwargs={"q": q, })
-        #     p.start()
-        #     user_data = q.get()
-        #     p.join()
-
-        #     if "error" in user_data:
-        #         error("We ran into trouble: '%(message)s'" % user_data["error"])
-        #         sys.exit(1)
-        #     with indent(2):
-        #         show_valid("%s authenticated" % user_data["name"])
-        #         os.environ["WILL_NAME"] = user_data["name"]
-        #         show_valid("@%s verified as handle" % user_data["mention_name"])
-        #         os.environ["WILL_HANDLE"] = user_data["mention_name"]
-
-        #     puts("")
-
     def load_config(self):
         puts("Loading configuration...")
         with indent(2):
             settings.import_settings(quiet=False)
         puts("")
-
-    def verify_rooms(self):
-        pass
-        # TODO: Move this to the hipchat backend
-        # if "hipchat" in settings.CHAT_BACKENDS:
-        #     puts("Verifying rooms...")
-        #     # If we're missing ROOMS, join all of them.
-        #     with indent(2):
-        #         if settings.HIPCHAT_ROOMS is None:
-        #             # Yup. Thanks, BSDs.
-        #             q = Queue()
-        #             p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
-        #             p.start()
-        #             rooms_list = q.get()
-        #             show_valid("Joining all %s known rooms." % len(rooms_list))
-        #             os.environ["WILL_ROOMS"] = ";".join(rooms_list)
-        #             p.join()
-        #             settings.import_settings()
-        #         else:
-        #             show_valid(
-        #                 "Joining the %s room%s specified." % (
-        #                     len(settings.HIPCHAT_ROOMS),
-        #                     "s" if len(settings.HIPCHAT_ROOMS) > 1 else ""
-        #                 )
-        #             )
-        #     puts("")
 
     @yappi.profile(return_callback=yappi_aggregate)
     def verify_io(self):
@@ -707,7 +624,8 @@ To set your %(name)s:
                             self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
                         except:
                             pass
-                    # self.sleep_for_event_loop()
+                else:
+                    self.sleep_for_event_loop()
             except:
                 logging.exception("Error handling message")
 

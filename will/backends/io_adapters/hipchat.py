@@ -74,6 +74,30 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
                         ' "@{1} what are the rooms?" for the full list.'
                         .format(r, settings.HIPCHAT_HANDLE))
 
+        # TODO: Move this to the hipchat backend
+        # if "hipchat" in settings.CHAT_BACKENDS:
+        #     puts("Verifying rooms...")
+        #     # If we're missing ROOMS, join all of them.
+        #     with indent(2):
+        #         if settings.HIPCHAT_ROOMS is None:
+        #             # Yup. Thanks, BSDs.
+        #             q = Queue()
+        #             p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
+        #             p.start()
+        #             rooms_list = q.get()
+        #             show_valid("Joining all %s known rooms." % len(rooms_list))
+        #             os.environ["WILL_ROOMS"] = ";".join(rooms_list)
+        #             p.join()
+        #             settings.import_settings()
+        #         else:
+        #             show_valid(
+        #                 "Joining the %s room%s specified." % (
+        #                     len(settings.HIPCHAT_ROOMS),
+        #                     "s" if len(settings.HIPCHAT_ROOMS) > 1 else ""
+        #                 )
+        #             )
+        #     puts("")
+
         self.nick = settings.HIPCHAT_NAME
         self.handle = settings.HIPCHAT_HANDLE
         self.handle_regex = re.compile("@%s" % self.handle)

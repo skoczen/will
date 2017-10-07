@@ -19,14 +19,12 @@ class ScheduleMixin(object):
         return "will_schedule_list"
 
     def get_schedule_list(self, periodic_list=False):
-        # TODO: Clean this up.
         return self.load(self.schedule_key(periodic_list=periodic_list), {})
 
     def save_schedule_list(self, new_list, periodic_list=False):
         self.save(self.schedule_key(periodic_list=periodic_list), new_list)
 
     def get_times_list(self, periodic_list=False):
-        # TODO: Clean this up.
         return self.load(self.times_key(periodic_list=periodic_list), {})
 
     def save_times_list(self, new_list, periodic_list=False):
