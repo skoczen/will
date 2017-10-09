@@ -127,6 +127,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [rbp](https://github.com/rbp) added the `admin_only` argument, and fixed a bug with `room` not being passed along properly to messages.
 - [shadow7412](https://github/shadow7412) cleaned up a bunch of regex, and fixed up `image me` after google pulled the free API.
 - [sivy](https://github.com/sivy) added a config flag for disabling SSL, and the ability to look up a user by nickname.
+- [tenzer](https://github.com/tenzer) added python 3 support!
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [tophsic](https://github.com/tophsic) made help friendlier, including plugin-specific help.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
@@ -151,8 +152,9 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 Fixes and features in this release:
 
-* Fixes up time plugin to not require World Weather's old API, thanks to [woohgit](https://github.com/woohgit).
-* Adds docker support, thanks to [mike-love](https://github.com/mike-love).
+* Fixes what time plugin to not require World Weather's old API, thanks to [woohgit](https://github.com/woohgit).
+* Adds Docker support, thanks to [mike-love](https://github.com/mike-love).
+* Adds Python 3 support, thanks to [tenzer](https://github.com/tenzer).
 
 
 #### 1.0.0 - September 29, 2017

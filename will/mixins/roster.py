@@ -1,5 +1,5 @@
-from ..utils import is_admin
-from ..acl import is_acl_allowed
+from will.utils import is_admin
+from will.acl import is_acl_allowed
 
 
 class RosterMixin(object):
@@ -10,13 +10,13 @@ class RosterMixin(object):
         return self._internal_roster
 
     def get_user_by_full_name(self, name):
-        for jid, info in self.internal_roster.items():
+        for info in self.internal_roster.values():
             if info["name"] == name:
                 return info
         return None
 
     def get_user_by_nick(self, nick):
-        for jid, info in self.internal_roster.items():
+        for info in self.internal_roster.values():
             if info["nick"] == nick:
                 return info
         return None
@@ -45,7 +45,7 @@ class RosterMixin(object):
         return is_acl_allowed(nick, acl)
 
     def get_user_by_hipchat_id(self, id):
-        for jid, info in self.internal_roster.items():
+        for info in self.internal_roster.values():
             if info["hipchat_id"] == id:
                 return info
         return None
