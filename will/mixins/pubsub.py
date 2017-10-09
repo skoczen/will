@@ -26,7 +26,6 @@ class PubSubMixin(object):
                 # from within the import
                 self.pubsub = pubsub_module.bootstrap(settings)
 
-
     def subscribe(self, topic):
         self.bootstrap_pubsub()
         try:

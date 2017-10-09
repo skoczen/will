@@ -56,12 +56,16 @@ def deploy_docs():
     for root, dirs, files in os.walk(root_dir, topdown=False):
         for name in files:
             if name not in WHITELIST_FILES and not any([r in WHITELIST_DIRS for r in _splitpath(root)]):
-                # print "removing %s" % (os.path.join(root, name))
+                # print("removing %s" % (os.path.join(root, name)))
                 os.remove(os.path.join(root, name))
         for name in dirs:
             if name not in WHITELIST_DIRS and not any([r in WHITELIST_DIRS for r in _splitpath(root)]):
-                print "removing %s" % (os.path.join(root, name))
-                os.rmdir(os.path.join(root, name))
+                print("removing %s" % (os.path.join(root, name)))
+                try:
+                    os.rmdir(os.path.join(root, name))
+                except:
+                    # Handle symlinks
+                    os.remove(os.path.join(root, name))
 
     local("cp -rv %s/* ." % tempdir)
     with settings(warn_only=True):
@@ -72,5 +76,5 @@ def deploy_docs():
         local("git commit -m 'Auto-update of docs: %s'" % last_commit)
         local("git push")
     else:
-        print "No changes to the docs."
+        print("No changes to the docs.")
     local("git checkout %s" % current_branch)

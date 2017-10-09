@@ -105,8 +105,6 @@ class BasePubSub(SettingsMixin):
         and conforming to the protocol.  Handles pickling for the wire, etc.
         This method should *not* be subclassed.
         """
-        # print "-> publishing to %s" % topic
-        # print obj
         logging.debug("Publishing topic (%s): \n%s" % (topic, obj))
         e = Event(
             data=obj,
@@ -165,7 +163,7 @@ class BasePubSub(SettingsMixin):
                 #     if len(self.recent_hashes) > 100:
                 #         self.recent_hashes = self.recent_hashes[1:]
                 return loaded_message
-                # print loaded_message
+                # print(loaded_message)
                 # loaded_message = pickle.loads(
                 #     dec
                 # )

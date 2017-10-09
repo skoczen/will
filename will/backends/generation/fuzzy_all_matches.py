@@ -22,7 +22,8 @@ class FuzzyAllMatchesBackend(GenerationBackend):
                 regex_string = "(?i)%s" % regex_string
             help_regex = method_meta["regex_pattern"]
             if method_meta["direct_mentions_only"]:
-                help_regex = "@%s %s" % (settings.HIPCHAT_HANDLE, help_regex)
+                help_regex = "@%s %s" % (
+                    settings.HIPCHAT_HANDLE, help_regex)
             # self.all_listener_regexes.append(help_regex)
             # if method_meta["__doc__"]:
             #     pht = plugin_info.get("parent_help_text", None)
@@ -36,14 +37,26 @@ class FuzzyAllMatchesBackend(GenerationBackend):
 
             if method_meta["multiline"]:
                 try:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex_string, settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex_string,
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
                 except:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex.escape(regex_string), settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex.escape(regex_string),
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
             else:
                 try:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex_string, settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex_string,
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.ENHANCEMATCH)
                 except:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex.escape(regex_string), settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex.escape(regex_string),
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.ENHANCEMATCH)
 
         return self.cached_regex[method_path]
 
@@ -69,7 +82,8 @@ class FuzzyAllMatchesBackend(GenerationBackend):
         logging.info(search_matches)
         for match_str, confidence in search_matches:
             l = self.match_methods[match_str]
-            logging.info(" Match (%s) - %s" % (confidence, match_str))
+            logging.info(" Match (%s) - %s" % (
+                confidence, match_str))
             regex_matches = l["regex"].search(message.content)
             if (
                     # The search regex matches and

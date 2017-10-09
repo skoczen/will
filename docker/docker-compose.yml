@@ -1,0 +1,19 @@
+version: '3.2'
+
+services:
+    redis:
+        image: redis:alpine
+        volumes:
+            - ./data/redis:/data
+    will:
+        build: ./will/.
+        ports:
+            - 8080:8080
+        env_file:
+            - default.env
+        volumes:
+            - ./plugins:/opt/will/plugins
+            - ./templates:/opt/will/templates
+        depends_on:
+            - redis
+
