@@ -1,5 +1,5 @@
 import redis
-import urlparse
+from six.moves.urllib import parse
 from .base import BasePubSub
 
 SKIP_TYPES = ["psubscribe", "punsubscribe", ]
@@ -29,12 +29,10 @@ Examples:
         },
     ]
 
-
-
     def __init__(self, settings, *args, **kwargs):
         self.verify_settings(quiet=True)
         super(RedisPubSub, self).__init__(*args, **kwargs)
-        url = urlparse.urlparse(settings.REDIS_URL)
+        url = parse.urlparse(settings.REDIS_URL)
 
         if hasattr(url, "path"):
             db = url.path[1:]
@@ -49,11 +47,11 @@ Examples:
         self._pubsub = self.redis.pubsub()
 
     def publish_to_backend(self, topic, body_str):
-        # print "publishing %s" % (topic,)
+        # print("publishing %s" % (topic,))
         return self.redis.publish(topic, body_str)
 
     def do_subscribe(self, topic):
-        # print "subscribed to %s" % topic
+        # print("subscribed to %s" % topic)
         return self._pubsub.psubscribe(topic)
 
     def unsubscribe(self, topic):

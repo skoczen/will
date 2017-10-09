@@ -21,9 +21,7 @@ from os.path import abspath, dirname
 from multiprocessing import Process, Queue
 
 import bottle
-
 from listener import ListenerMixin
-
 from mixins import ScheduleMixin, StorageMixin, ErrorMixin, SleepMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin, PubSubMixin
 from backends import analysis, execution, generation, io_adapters
@@ -35,7 +33,7 @@ from utils import show_valid, error, warn, note, print_head, Bunch
 
 # Force UTF8
 if sys.version_info < (3, 0):
-    reload(sys)
+    reload(sys)  # flake8: noqa
     sys.setdefaultencoding('utf8')
 else:
     raw_input = input
@@ -260,7 +258,7 @@ To set your %(name)s:
                             c = cls()
                             show_valid(c.friendly_name)
                             c.verify_settings()
-                except Exception, e:
+                except Exception as e:
                     error_message = (
                         "IO backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_IO_BACKENDS, or provide it somehow (pip install, etc)."
@@ -303,7 +301,7 @@ To set your %(name)s:
 
                     one_valid_backend = True
                     show_valid("%s" % b)
-                except ImportError, e:
+                except ImportError as e:
                     error_message = (
                         "Analysis backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_ANALYZE_BACKENDS, or provide it somehow (pip install, etc)."
@@ -346,7 +344,7 @@ To set your %(name)s:
 
                     one_valid_backend = True
                     show_valid("%s" % b)
-                except ImportError, e:
+                except ImportError as e:
                     error_message = (
                         "Generation backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_GENERATION_BACKENDS, or provide it somehow (pip install, etc)."
@@ -389,7 +387,7 @@ To set your %(name)s:
 
                     one_valid_backend = True
                     show_valid("%s" % b)
-                except ImportError, e:
+                except ImportError as e:
                     error_message = (
                         "Execution backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_EXECUTION_BACKENDS, or provide it somehow (pip install, etc)."
@@ -428,7 +426,7 @@ To set your %(name)s:
                     ):
                         c = cls(bot=self)
                         self.execution_backends.append(c)
-                except ImportError, e:
+                except ImportError as e:
                     error_message = (
                         "Execution backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_EXECUTION_BACKENDS, or provide it somehow (pip install, etc)."
@@ -481,7 +479,7 @@ To set your %(name)s:
     def handle_sys_exit(self, *args, **kwargs):
         # if not self.exiting:
         try:
-            print '\n\nReceived keyboard interrupt, quitting threads.',
+            print('\n\nReceived keyboard interrupt, quitting threads.',)
             self.exiting = True
 
             if self.scheduler_thread:
@@ -523,7 +521,7 @@ To set your %(name)s:
                 except KeyboardInterrupt:
                     pass
         except:
-            print "\n\n\nException while exiting!!"
+            print("\n\n\nException while exiting!!")
             import traceback
             traceback.print_exc()
             sys.exit(1)
@@ -543,7 +541,7 @@ To set your %(name)s:
                 sys.stdout.write(".")
                 sys.stdout.flush()
                 time.sleep(0.5)
-        print ". done.\n"
+        print(". done.\n")
         sys.exit(1)
 
     @yappi.profile(return_callback=yappi_aggregate)
@@ -639,12 +637,12 @@ To set your %(name)s:
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
-        except ImportError, e:
+        except ImportError as e:
             module_name = traceback.format_exc(e).split(" ")[-1]
             error("Unable to bootstrap storage - attempting to load %s" % module_name)
             puts(traceback.format_exc(e))
             sys.exit(1)
-        except Exception, e:
+        except Exception as e:
             error("Unable to bootstrap storage!")
             puts(traceback.format_exc(e))
             sys.exit(1)
@@ -659,12 +657,12 @@ To set your %(name)s:
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
-        except ImportError, e:
+        except ImportError as e:
             module_name = traceback.format_exc(e).split(" ")[-1]
             error("Unable to bootstrap pubsub - attempting to load %s" % module_name)
             puts(traceback.format_exc(e))
             sys.exit(1)
-        except Exception, e:
+        except Exception as e:
             error("Unable to bootstrap pubsub!")
             puts(traceback.format_exc(e))
             sys.exit(1)
@@ -699,7 +697,7 @@ To set your %(name)s:
                     meta["num_times_per_day"]
                 )
             bootstrapped = True
-        except Exception, e:
+        except Exception as e:
             self.startup_error("Error bootstrapping scheduler", e)
         if bootstrapped:
             show_valid("Scheduler started.")
@@ -718,7 +716,7 @@ To set your %(name)s:
                         bottle_route_args[k[len("bottle_"):]] = v
                 bottle.route(instantiated_fn.will_fn_metadata["bottle_route"], **bottle_route_args)(instantiated_fn)
             bootstrapped = True
-        except Exception, e:
+        except Exception as e:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
             show_valid("Web server started.")
@@ -762,7 +760,7 @@ To set your %(name)s:
                             self.io_threads.append(thread)
 
                         show_valid("IO: %s Backend started." % cls.friendly_name)
-                except Exception, e:
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.io_backends.append(b)
@@ -791,7 +789,7 @@ To set your %(name)s:
                         thread.start()
                         self.analysis_threads.append(thread)
                         show_valid("Analysis: %s Backend started." % cls.__name__)
-                except Exception, e:
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.analysis_backends.append(b)
@@ -820,7 +818,7 @@ To set your %(name)s:
                         thread.start()
                         self.generation_threads.append(thread)
                         show_valid("Generation: %s Backend started." % cls.__name__)
-                except Exception, e:
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.generation_backends.append(b)
@@ -879,7 +877,7 @@ To set your %(name)s:
                                     "parent_help_text": parent_help_text,
                                     "blacklisted": blacklisted,
                                 }
-                            except Exception, e:
+                            except Exception as e:
                                 self.startup_error("Error loading %s" % (module_path,), e)
 
                 self.plugins = []
@@ -899,9 +897,9 @@ To set your %(name)s:
                                         "parent_help_text": plugin_modules_library[name]["parent_help_text"],
                                         "blacklisted": plugin_modules_library[name]["blacklisted"],
                                     })
-                            except Exception, e:
+                            except Exception as e:
                                 self.startup_error("Error bootstrapping %s" % (class_name,), e)
-                    except Exception, e:
+                    except Exception as e:
                         self.startup_error("Error bootstrapping %s" % (name,), e)
 
             self._plugin_modules_library = plugin_modules_library
@@ -941,7 +939,7 @@ To set your %(name)s:
                             plugin_instances = {}
                             for function_name, fn in inspect.getmembers(
                                 plugin_info["class"],
-                                predicate=inspect.ismethod
+                                predicate=lambda x: inspect.ismethod(x) or inspect.isfunction(x)
                             ):
                                 try:
                                     # Check for required_settings
@@ -1019,7 +1017,7 @@ To set your %(name)s:
                                             elif "bottle_route" in meta:
                                                 # puts("- %s" % function_name)
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
-                                except Exception, e:
+                                except Exception as e:
                                     error(plugin_name)
                                     self.startup_error(
                                         "Error bootstrapping %s.%s" % (
@@ -1028,7 +1026,7 @@ To set your %(name)s:
                                         ), e
                                     )
                             show_valid(plugin_name)
-                except Exception, e:
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
 
         puts("")

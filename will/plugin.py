@@ -1,7 +1,7 @@
 import re
 import logging
 
-import settings
+from will import settings
 from bottle import request
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
     EmailMixin, PubSubMixin
@@ -88,7 +88,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 source_message=message,
                 kwargs=kwargs,
             ))
- 
+
         # content = self._prepared_content(content, message, kwargs)
         # rooms = []
         # if room is not None:

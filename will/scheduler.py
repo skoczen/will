@@ -5,7 +5,7 @@ import time
 import traceback
 import threading
 
-from mixins import ScheduleMixin, PluginModulesLibraryMixin
+from will.mixins import ScheduleMixin, PluginModulesLibraryMixin
 
 
 class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
@@ -55,14 +55,14 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
 
         # Iterate through times_list first, before loading the full schedule_list into memory (big pickled stuff, etc)
         a_task_needs_run = False
-        for task_hash, task_time in times_list.items():
+        for task_time in times_list.values():
             if task_time < now:
                 a_task_needs_run = True
                 break
 
         if a_task_needs_run:
             sched_list = self.bot.get_schedule_list(periodic_list=periodic_list)
-            for item_hash, item in sched_list.items():
+            for item in sched_list.values():
                 running_task = False
                 try:
 
@@ -81,7 +81,8 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
                     except:
                         logging.critical(
                             "Unable to remove task. Leaving it in, you'll have to clean it out by hand."
-                            "Sorry! \n\n%s\nContinuing...\n" % (traceback.format_exc(),))
+                            "Sorry! \n\n%s\nContinuing...\n" % (traceback.format_exc(),)
+                        )
 
     def check_scheduled_actions(self):
         now = datetime.datetime.now()
