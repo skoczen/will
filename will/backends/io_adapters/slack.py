@@ -44,7 +44,7 @@ class SlackBackend(IOBackend, SleepMixin):
             event["type"] == "message" and
             ("subtype" not in event or event["subtype"] != "message_changed")
         ):
-            # print "slack: normalize_incoming_event - %s" % event
+            # print("slack: normalize_incoming_event - %s" % event)
             # Sample of group message
             # {u'source_team': u'T5ACF70KV', u'text': u'test',
             # u'ts': u'1495661121.838366', u'user': u'U5ACF70RH',
@@ -195,7 +195,7 @@ class SlackBackend(IOBackend, SleepMixin):
         )
         resp_json = r.json()
         if not resp_json["ok"]:
-            # print resp_json
+            # print(resp_json)
             assert resp_json["ok"]
 
     def _map_color(self, color):
@@ -267,7 +267,7 @@ class SlackBackend(IOBackend, SleepMixin):
                     events = self.client.rtm_read()
                     if len(events) > 0:
                         # TODO: only handle events that are new.
-                        # print len(events)
+                        # print(len(events))
                         for e in events:
                             self.handle_incoming_event(e)
 

@@ -67,7 +67,7 @@ class ShellBackend(StdInOutIOBackend):
 
         elif event.type == "message.no_response":
             # TODO: Seriously fix this. It's gross and confusing.
-            # print event.data["source"].data.content
+            # print(event.data["source"].data.content)
             if event.data and "source" in event.data and len(event.data["source"].data.content) > 0:
                 self.send_direct_message(random.choice(UNSURE_REPLIES))
 
