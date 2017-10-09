@@ -15,17 +15,17 @@ from multiprocessing import Process, Queue
 
 import bottle
 
-from listener import WillXMPPClientMixin
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
+from will.listener import WillXMPPClientMixin
+from will.mixins import ScheduleMixin, StorageMixin, ErrorMixin, HipChatMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin
-from scheduler import Scheduler
-import settings
-from utils import show_valid, error, warn, print_head
+from will.scheduler import Scheduler
+from will import settings
+from will.utils import show_valid, error, warn, print_head
 
 
 # Force UTF8
 if sys.version_info < (3, 0):
-    reload(sys)
+    reload(sys)  # flake8: noqa
     sys.setdefaultencoding('utf8')
 else:
     raw_input = input
@@ -126,7 +126,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                 scheduler_thread.start()
                 bottle_thread.start()
                 errors = self.get_startup_errors()
-                if len(errors) > 0:
+                if errors:
                     default_room = self.get_room_from_name_or_id(settings.DEFAULT_ROOM)["room_id"]
                     error_message = "FYI, I ran into some problems while starting up:"
                     for err in errors:
@@ -140,7 +140,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                 scheduler_thread.terminate()
                 bottle_thread.terminate()
                 xmpp_thread.terminate()
-                print '\n\nReceived keyboard interrupt, quitting threads.',
+                print('\n\nReceived keyboard interrupt, quitting threads.')
                 while (scheduler_thread.is_alive() or
                        bottle_thread.is_alive() or
                        xmpp_thread.is_alive()):
@@ -148,7 +148,7 @@ class WillBot(EmailMixin, WillXMPPClientMixin, StorageMixin, ScheduleMixin,
                         sys.stdout.flush()
                         time.sleep(0.5)
 
-    def verify_individual_setting(self, test_setting, quiet=False):
+    def verify_individual_setting(self, test_setting):
         if not test_setting.get("only_if", True):
             return True
 
@@ -305,12 +305,12 @@ To set your %(name)s:
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
-        except ImportError, e:
+        except ImportError as e:
             module_name = traceback.format_exc(e).split(" ")[-1]
             error("Unable to bootstrap storage - attempting to load %s" % module_name)
             puts(traceback.format_exc(e))
             sys.exit(1)
-        except Exception, e:
+        except Exception as e:
             error("Unable to bootstrap storage!")
             puts(traceback.format_exc(e))
             sys.exit(1)
@@ -344,7 +344,7 @@ To set your %(name)s:
                     meta["num_times_per_day"]
                 )
             bootstrapped = True
-        except Exception, e:
+        except Exception as e:
             self.startup_error("Error bootstrapping scheduler", e)
         if bootstrapped:
             show_valid("Scheduler started.")
@@ -362,7 +362,7 @@ To set your %(name)s:
                         bottle_route_args[k[len("bottle_"):]] = v
                 bottle.route(instantiated_fn.will_fn_metadata["bottle_route"], **bottle_route_args)(instantiated_fn)
             bootstrapped = True
-        except Exception, e:
+        except Exception as e:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
             show_valid("Web server started.")
@@ -380,7 +380,7 @@ To set your %(name)s:
             self.save("all_listener_regexes", self.all_listener_regexes)
             self.connect()
             bootstrapped = True
-        except Exception, e:
+        except Exception as e:
             self.startup_error("Error bootstrapping xmpp", e)
         if bootstrapped:
             show_valid("Chat client started.")
@@ -440,7 +440,7 @@ To set your %(name)s:
                                     "parent_help_text": parent_help_text,
                                     "blacklisted": blacklisted,
                                 }
-                            except Exception, e:
+                            except Exception as e:
                                 self.startup_error("Error loading %s" % (module_path,), e)
 
                 self.plugins = []
@@ -459,9 +459,9 @@ To set your %(name)s:
                                         "parent_help_text": plugin_modules_library[name]["parent_help_text"],
                                         "blacklisted": plugin_modules_library[name]["blacklisted"],
                                     })
-                            except Exception, e:
+                            except Exception as e:
                                 self.startup_error("Error bootstrapping %s" % (class_name,), e)
-                    except Exception, e:
+                    except Exception as e:
                         self.startup_error("Error bootstrapping %s" % (name,), e)
 
             self._plugin_modules_library = plugin_modules_library
@@ -501,7 +501,7 @@ To set your %(name)s:
                             plugin_instances = {}
                             for function_name, fn in inspect.getmembers(
                                 plugin_info["class"],
-                                predicate=inspect.ismethod
+                                predicate=lambda x: inspect.ismethod(x) or inspect.isfunction(x)
                             ):
                                 try:
                                     # Check for required_settings
@@ -571,7 +571,7 @@ To set your %(name)s:
                                             elif "bottle_route" in meta:
                                                 # puts("- %s" % function_name)
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
-                                except Exception, e:
+                                except Exception as e:
                                     error(plugin_name)
                                     self.startup_error(
                                         "Error bootstrapping %s.%s" % (
@@ -580,6 +580,6 @@ To set your %(name)s:
                                         ), e
                                     )
                             show_valid(plugin_name)
-                except Exception, e:
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
         puts("")

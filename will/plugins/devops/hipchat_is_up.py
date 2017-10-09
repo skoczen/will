@@ -11,7 +11,7 @@ class HipChatIsUpPlugin(WillPlugin):
         try:
             r = requests.get("https://status.hipchat.com/api/v2/status.json")
             last_status = self.load("last_hipchat_status")
-            if r.json()["status"]["indicator"] != last_status:
+            if last_status and r.json()["status"]["indicator"] != last_status:
                 if r.json()["status"]["indicator"] != "none":
                     self.say("FYI everyone, HipChat is having trouble: %s" % r.json()["status"]["description"])
                 else:
