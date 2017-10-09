@@ -34,23 +34,23 @@ def main():
     puts("Welcome to the will project generator.")
     puts("")
 
-    print "\nGenerating will scaffold..."
+    print("\nGenerating will scaffold...")
 
     current_dir = os.getcwd()
     plugins_dir = os.path.join(current_dir, "plugins")
     templates_dir = os.path.join(current_dir, "templates")
 
-    print "  /plugins"
+    print("  /plugins")
     # Set up the directories
     if not os.path.exists(plugins_dir):
         os.makedirs(plugins_dir)
 
-    print "     __init__.py"
+    print("     __init__.py")
     # Create the plugins __init__.py
     with open(os.path.join(plugins_dir, "__init__.py"), 'w+') as f:
         pass
 
-    print "     morning.py"
+    print("     morning.py")
     # Create the morning plugin
     morning_file_path = os.path.join(plugins_dir, "morning.py")
     if not os.path.exists(morning_file_path):
@@ -66,16 +66,16 @@ class MorningPlugin(WillPlugin):
         self.reply(message, "oh, g'morning!")
     """)
 
-    print "  /templates"
+    print("  /templates")
     if not os.path.exists(templates_dir):
         os.makedirs(templates_dir)
 
-    print "     blank.html"
+    print("     blank.html")
     # Create the plugins __init__.py
     with open(os.path.join(templates_dir, "blank.html"), 'w+') as f:
         pass
 
-    print "  .gitignore"
+    print("  .gitignore")
     # Create .gitignore, or at least add shelf.db
     gitignore_path = os.path.join(current_dir, ".gitignore")
     if not os.path.exists(gitignore_path):
@@ -94,7 +94,7 @@ shelf.db
                 f.write("\nshelf.db\n")
 
     # Create run_will.py
-    print "  run_will.py"
+    print("  run_will.py")
     run_will_path = os.path.join(current_dir, "run_will.py")
     if not os.path.exists(run_will_path):
         with open(run_will_path, 'w+') as f:
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     os.chmod("run_will.py", st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
     # Create config.py
-    print "  config.py"
+    print("  config.py")
     config_path = os.path.join(current_dir, "config.py")
     if not os.path.exists(config_path):
         with open(config_path, 'w+') as f:
@@ -253,21 +253,21 @@ PLUGIN_BLACKLIST = [
 
     """)
 
-    print "  requirements.txt"
+    print("  requirements.txt")
     # Create requirements.txt
     requirements_path = os.path.join(current_dir, "requirements.txt")
     if not os.path.exists(requirements_path):
         with open(requirements_path, 'w+') as f:
             f.write("will")
 
-    print "  Procfile"
+    print("  Procfile")
     # Create Procfile
     requirements_path = os.path.join(current_dir, "Procfile")
     if not os.path.exists(requirements_path):
         with open(requirements_path, 'w+') as f:
             f.write("web: python run_will.py")
 
-    print "  README.md"
+    print("  README.md")
     # Create the readme
     readme_path = os.path.join(current_dir, "README.md")
     if not os.path.exists(readme_path):
@@ -276,7 +276,7 @@ PLUGIN_BLACKLIST = [
 This is our bot, a [will](https://github.com/skoczen/will) bot.
 """)
 
-    print "\nDone."
+    print("\nDone.")
 
 
 if __name__ == '__main__':
