@@ -35,14 +35,26 @@ class FuzzyBestMatch(GenerationBackend):
 
             if method_meta["multiline"]:
                 try:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex_string, settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex_string,
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
                 except:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex.escape(regex_string), settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex.escape(regex_string),
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.MULTILINE | regex.DOTALL | regex.ENHANCEMATCH)
             else:
                 try:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex_string, settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex_string,
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.ENHANCEMATCH)
                 except:
-                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (regex.escape(regex_string), settings.FUZZY_REGEX_ALLOWABLE_ERRORS), regex.ENHANCEMATCH)
+                    self.cached_regex[method_path] = regex.compile("%s{e<=%s}" % (
+                        regex.escape(regex_string),
+                        settings.FUZZY_REGEX_ALLOWABLE_ERRORS
+                    ), regex.ENHANCEMATCH)
 
         return self.cached_regex[method_path]
 

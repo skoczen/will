@@ -37,5 +37,8 @@ class SettingsMixin(object):
                     with indent(2):
                         show_valid(s["name"])
         if not passed:
-            raise EnvironmentError("Missing required settings when starting up %s.  Please fix the error above and restart Will!" % (meta["friendly_name"], ))
+            raise EnvironmentError(
+                "Missing required settings when starting up %s."
+                "Please fix the error above and restart Will!" % (meta["friendly_name"], )
+            )
         return passed

@@ -19,7 +19,7 @@ Examples:
     """
     A storage backend using Redis.
 
-    You must supply a REDIS_URL setting that is passed through parse.
+    You must supply a REDIS_URL setting that is passed through urlparse.
 
     Examples:
 
@@ -28,7 +28,7 @@ Examples:
     """
     def __init__(self, settings):
         self.verify_settings(quiet=True)
-        url = parse(settings.REDIS_URL)
+        url = parse.urlparse(settings.REDIS_URL)
 
         if hasattr(url, "path"):
             db = url.path[1:]

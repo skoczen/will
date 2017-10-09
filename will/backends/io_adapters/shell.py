@@ -27,7 +27,6 @@ class ShellBackend(StdInOutIOBackend):
         name="Friend",
     )
 
-
     def send_direct_message(self, message_body, **kwargs):
         print("Will: %s" % html_to_text(message_body))
 
