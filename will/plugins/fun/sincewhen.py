@@ -17,7 +17,7 @@ class SinceWhenPlugin(WillPlugin):
         dt = datetime.now()
         ldt = self.load("last_hipchat_video")
         if ldt is not None:
-            t_diff = relativedelta(ldt, dt)
+            t_diff = relativedelta(dt, ldt)
             self.say("It's been %(days)s day(s) since any HipChat video was initiated." % {
                      'days': t_diff.days})
         else:
