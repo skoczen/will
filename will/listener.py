@@ -5,9 +5,9 @@ import traceback
 from sleekxmpp import ClientXMPP
 from sleekxmpp.exceptions import IqError, IqTimeout
 
-import settings
-from utils import Bunch
-from mixins import RosterMixin, RoomMixin, HipChatMixin
+from will import settings
+from will.utils import Bunch
+from will.mixins import RosterMixin, RoomMixin, HipChatMixin
 
 
 class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
@@ -29,7 +29,6 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
         self.default_room = settings.DEFAULT_ROOM
 
         # Property boostraps the list
-        self.available_rooms
         for r in settings.ROOMS:
             if r != "":
                 if not hasattr(self, "default_room"):
@@ -39,9 +38,11 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                     self.rooms.append(self.available_rooms[r])
                 except KeyError:
                     logger.error(
-                        u'"{0}" is not an available room, ask'
-                        ' "@{1} what are the rooms?" for the full list.'
-                        .format(r, settings.HANDLE))
+                        u'"%s" is not an available room, ask'
+                        ' "@%s what are the rooms?" for the full list.',
+                        r,
+                        settings.HANDLE,
+                    )
 
         self.nick = settings.NAME
         self.handle = settings.HANDLE
@@ -196,8 +197,7 @@ class WillXMPPClientMixin(ClientXMPP, RosterMixin, RoomMixin, HipChatMixin):
                             thread.start()
                         except:
                             logging.critical(
-                                "Error running %s.  \n\n%s\nContinuing...\n" % (
-                                    l["function_name"],
-                                    traceback.format_exc()
-                                )
+                                "Error running %s.  \n\n%s\nContinuing...\n",
+                                l["function_name"],
+                                traceback.format_exc()
                             )
