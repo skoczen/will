@@ -150,6 +150,8 @@
         
             <li><a href="#deploy-on-heroku">Deploy on Heroku</a></li>
         
+            <li><a href="#depoly-in-docker">Depoly in Docker</a></li>
+        
             <li><a href="#deploy-everywhere-else">Deploy Everywhere Else</a></li>
         
             <li><a href="#storage-backends">Storage Backends</a></li>
@@ -207,6 +209,37 @@ WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
 </code></pre>
 
 <p>Simple.  For best-practices, see our continuous deployment recommendations below.</p>
+<h2 id="depoly-in-docker">Depoly in Docker</h2>
+<p>Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis. </p>
+<h3 id="pre-requisites">Pre-requisites</h3>
+<p>You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you must start the image via the docker command with the correct arguments.</p>
+<h3 id="step-1-configure-your-containers-environment-variables">Step 1: Configure your container's environment variables</h3>
+<p>In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:</p>
+<pre><code class="bash">WILL_USERNAME
+WILL_PASSWORD
+WILL_V2_TOKEN
+</code></pre>
+
+<p>Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly. </p>
+<h3 id="step-2-deploy-your-plugins-and-templates">Step 2: Deploy your plugins and templates</h3>
+<p>If you have any custom templates, create directories for your plugins and templates, and load your plugins and templates they'll be mounted when the container starts up giving your contanerized bot access to your templates.</p>
+<pre><code class="bash">mkdir ./plugins ./templates
+</code></pre>
+
+<h3 id="step-3-build-will">Step 3: Build will.</h3>
+<p>Run build your docker image locally.</p>
+<pre><code class="bash">docker-compose build 
+</code></pre>
+
+<h3 id="step-4-start-the-container">Step 4: Start the container</h3>
+<p>Start your image from docker-compose using:</p>
+<pre><code class="bash">docker-compose up 
+</code></pre>
+
+<p>or to run the container in the background,</p>
+<pre><code class="bash">docker-compose up -d
+</code></pre>
+
 <h2 id="deploy-everywhere-else">Deploy Everywhere Else</h2>
 <h4 id="will-is-just-python">Will is Just Python</h4>
 <p>That says it all. Will is just python, and you can deploy him <em>anywhere</em> you have python, an open port, and access to redis.</p>
