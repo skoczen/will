@@ -72,8 +72,9 @@ class ScheduleMixin(object):
 
         except:
             logging.critical(
-                "Error adding to schedule at %s.  \n\n%s\nContinuing...\n" %
-                (when, traceback.format_exc())
+                "Error adding to schedule at %s.  \n\n%s\nContinuing...\n",
+                when,
+                traceback.format_exc()
             )
         self.save("scheduler_add_lock", False)
 

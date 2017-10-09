@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from clint.textui import puts, indent
-from clint.textui import colored
-from HTMLParser import HTMLParser
+from clint.textui import puts, colored
+from six.moves import html_parser
 
 
 UNSURE_REPLIES = [
@@ -51,7 +50,7 @@ def clean_for_pickling(d):
 
 
 # Via http://stackoverflow.com/a/925630
-class HTMLStripper(HTMLParser):
+class HTMLStripper(html_parser.HTMLParser):
     def __init__(self):
         self.reset()
         self.fed = []
@@ -73,7 +72,7 @@ def html_to_text(html):
 
 
 def is_admin(nick):
-    from . import settings
+    from will import settings
     return settings.ADMINS == '*' or nick.lower() in settings.ADMINS
 
 

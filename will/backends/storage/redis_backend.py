@@ -1,5 +1,5 @@
 import redis
-import urlparse
+from six.moves.urllib import parse
 from .base import BaseStorageBackend
 
 
@@ -19,7 +19,7 @@ Examples:
     """
     A storage backend using Redis.
 
-    You must supply a REDIS_URL setting that is passed through urlparse.
+    You must supply a REDIS_URL setting that is passed through parse.
 
     Examples:
 
@@ -28,7 +28,7 @@ Examples:
     """
     def __init__(self, settings):
         self.verify_settings(quiet=True)
-        url = urlparse.urlparse(settings.REDIS_URL)
+        url = parse(settings.REDIS_URL)
 
         if hasattr(url, "path"):
             db = url.path[1:]

@@ -1,7 +1,7 @@
 import re
 import logging
 
-import settings
+from will import settings
 from bottle import request
 from mixins import NaturalTimeMixin, RosterMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
     EmailMixin, PubSubMixin
@@ -38,7 +38,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM), ]
         return rooms
 
-    def _prepared_content(self, content, message, kwargs):
+    def _prepared_content(self, content):
         content = re.sub(r'>\s+<', '><', content)
         return content
 
@@ -88,7 +88,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 source_message=message,
                 kwargs=kwargs,
             ))
- 
+
         # content = self._prepared_content(content, message, kwargs)
         # rooms = []
         # if room is not None:
@@ -143,6 +143,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         #         sender = message.sender
         #     self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
+
     def set_topic(self, topic, message=None, room=None):
 
         if message is None or message["type"] == "groupchat":
@@ -157,7 +158,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
 
     def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
 
-        content = self._prepared_content(content, message, kwargs)
+        content = self._prepared_content(content)
         if message is None or message["type"] == "groupchat":
             rooms = self._rooms_from_message_and_room(message, room)
             for r in rooms:
