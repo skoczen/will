@@ -199,7 +199,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
             except (KeyboardInterrupt, SystemExit):
                 self.handle_sys_exit()
 
-    def verify_individual_setting(self, test_setting):
+    def verify_individual_setting(self, test_setting, quiet=False):
         if not test_setting.get("only_if", True):
             return True
 
@@ -521,7 +521,7 @@ To set your %(name)s:
                 except KeyboardInterrupt:
                     pass
         except:
-            print "\n\n\nException while exiting!!"
+            print("\n\n\nException while exiting!!")
             import traceback
             traceback.print_exc()
             sys.exit(1)
@@ -541,7 +541,7 @@ To set your %(name)s:
                 sys.stdout.write(".")
                 sys.stdout.flush()
                 time.sleep(0.5)
-        print ". done.\n"
+        print(". done.\n")
         sys.exit(1)
 
     @yappi.profile(return_callback=yappi_aggregate)

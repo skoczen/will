@@ -15,7 +15,7 @@ class RemindPlugin(WillPlugin):
             "reminder_text": reminder_text,
         }
         self.schedule_say(formatted_reminder_text, parsed_time, message=message)
-        self.say("%s %s. Got it." % (reminder_text, natural_datetime), message=message)
+        self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
 
     @respond_to("remind (?P<reminder_recipient>(?!me).*?) to (?P<reminder_text>.*?) (at|on|in) (?P<remind_time>.*)")
     def remind_somebody_at(self, message, reminder_recipient=None, reminder_text=None, remind_time=None):
@@ -31,4 +31,4 @@ class RemindPlugin(WillPlugin):
             }
 
         self.schedule_say(formatted_reminder_text, parsed_time, message=message)
-        self.say("%s %s. Got it." % (reminder_text, natural_datetime), message=message)
+        self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)

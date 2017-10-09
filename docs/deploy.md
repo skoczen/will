@@ -91,7 +91,7 @@ WILL_V2_TOKEN
 Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly. 
 
 ### Step 2: Deploy your plugins and templates
-If you have any custom templates, create directories for your plugins and templates, and load your plugins and templates they'll be mounted when the container starts up giving your contanerized bot access to your templates.
+If you have any custom templates, create directories for your plugins and templates, and load your plugins and templates they'll be mounted when the container starts up giving your containerized bot access to your templates.
 ```bash 
 mkdir ./plugins ./templates
 ```

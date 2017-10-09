@@ -202,17 +202,17 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
                 pass
         for k in msg.xml.keys():
             try:
-                # print k
-                # print msg.xml.get(k)
+                # print(k)
+                # print(msg.xml.get(k))
                 pickle.dumps(msg.xml.get(k))
                 stripped_msg[k] = msg.xml.get(k)
             except:
-                # print "failed to parse %s" % k
+                # print("failed to parse %s" % k)
                 pass
 
         stripped_msg.xmpp_jid = msg.getMucroom()
         stripped_msg.body = msg["body"]
-        # print "putting in bridge queue"
+        # print("putting in bridge queue")
         self.xmpp_bridge_queue.put(stripped_msg)
 
 
@@ -370,7 +370,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                                    "max_results": 1000}
             r = requests.get(url, **settings.REQUESTS_OPTIONS)
             for room in r.json()['items']:
-                # print room
+                # print(room)
                 all_rooms["%s" % (room['xmpp_jid'],)] = Channel(
                     id=room["id"],
                     name=room["name"],
@@ -395,7 +395,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         return self._channels
 
     def normalize_incoming_event(self, event):
-        # print "hipchat: normalize_incoming_event - %s" % event
+        # print("hipchat: normalize_incoming_event - %s" % event)
 
         if event["type"] in ("chat", "normal", "groupchat") and "from_jid" in event:
             # Sample of group message
@@ -446,13 +446,13 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 backend_supports_acl=True,
                 source=clean_for_pickling(event),
             )
-            # print "normalized:"
-            # print m.__dict__
+            # print("normalized:")
+            # print(m.__dict__)
             return m
 
         else:
-            # print "Unknown event type"
-            # print event
+            # print("Unknown event type")
+            # print(event)
             return None
 
     def handle_outgoing_event(self, event):
