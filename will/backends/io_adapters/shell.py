@@ -8,10 +8,9 @@ import threading
 import readline
 import traceback
 import warnings
-from bs4 import BeautifulSoup
 
 from will import settings
-from will.utils import Bunch, UNSURE_REPLIES
+from will.utils import Bunch, UNSURE_REPLIES, html_to_text
 from will.abstractions import Message, Person, Channel
 from .base import StdInOutIOBackend
 
@@ -28,14 +27,12 @@ class ShellBackend(StdInOutIOBackend):
         name="Friend",
     )
 
-    def _strip_html_tags(self, message_body):
-        return BeautifulSoup(message_body, 'html.parser').get_text()
 
     def send_direct_message(self, message_body, **kwargs):
-        print("Will: %s" % self._strip_html_tags(message_body))
+        print("Will: %s" % html_to_text(message_body))
 
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
-        print("Will: %s" % self._strip_html_tags(message_body))
+        print("Will: %s" % html_to_text(message_body))
 
     def set_room_topic(self, room_id, topic):
         print("Will: Setting the Topic to %s" & topic)
