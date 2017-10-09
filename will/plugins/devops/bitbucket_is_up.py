@@ -11,7 +11,7 @@ class BitBucketIsUpPlugin(WillPlugin):
         try:
             r = requests.get("http://bqlf8qjztdtr.statuspage.io/api/v2/status.json")
             last_status = self.load("last_bb_status")
-            if r.json()["status"]["indicator"] != last_status:
+            if last_status and r.json()["status"]["indicator"] != last_status:
                 if r.json()["status"]["indicator"] != "none":
                     self.say("FYI everyone, Bitbucket is having trouble: %s" % r.json()["status"]["description"])
                 else:

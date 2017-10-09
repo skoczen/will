@@ -232,10 +232,7 @@ You can also remind others as well.
 
 #### World time
 
-We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you,
-
-1. Get a free `WORLD_WEATHER_ONLINE_V2_KEY` from [world weather online](http://developer.worldweatheronline.com).
-2. Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.
+We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you, just ask Will to get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.
 
 ![World time](../img/world_time.gif)
 

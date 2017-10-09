@@ -9,3 +9,4 @@ mock
 nose
 coverage
 yappi
+tox

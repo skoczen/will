@@ -46,18 +46,18 @@ Examples:
 
         if not os.path.exists(self.dirname):
             # the directory doesn't exist, try to create it
-            os.makedirs(self.dirname, mode=0700)
+            os.makedirs(self.dirname, mode=0x700)
         elif not os.path.exists(self.dotfile):
             # the directory exists, but doesn't have our dot file in it
             # if it has any other files in it then we bail out since we want to
             # have full control over wiping out the contents of the directory
-            if len(self._all_setting_files()) > 0:
+            if self._all_setting_files():
                 raise FileStorageException("%s is not empty, "
                                            "will needs an empty directory for "
                                            "settings" % (self.dirname,))
 
         # update our dir & dotfile
-        os.chmod(self.dirname, 0700)
+        os.chmod(self.dirname, 0o700)
         with open(self.dotfile, 'a'):
             os.utime(self.dotfile, None)
 

@@ -1,4 +1,4 @@
-import urlparse
+from six.moves.urllib import parse
 
 from couchbase import Couchbase, exceptions as cb_exc
 from .base import BaseStorageBackend
@@ -8,7 +8,7 @@ class CouchbaseStorage(BaseStorageBackend):
     """
     A storage backend using Couchbase
 
-    You must supply a COUCHBASE_URL setting that is passed through urlparse.
+    You must supply a COUCHBASE_URL setting that is passed through parse.
     All parameters supplied get passed through to Couchbase
 
     Examples:
@@ -22,7 +22,7 @@ class CouchbaseStorage(BaseStorageBackend):
     required_settings = [
         {
             "name": "COUCHBASE_URL",
-            "obtain_at": """You must supply a COUCHBASE_URL setting that is passed through urlparse.
+            "obtain_at": """You must supply a COUCHBASE_URL setting that is passed through parse.
 All parameters supplied get passed through to Couchbase
 
 Examples:
@@ -36,7 +36,7 @@ Examples:
 
     def __init__(self, settings):
         self.verify_settings(quiet=True)
-        url = urlparse.urlparse(settings.COUCHBASE_URL)
+        url = parse(settings.COUCHBASE_URL)
         params = dict([
             param.split('=')
             for param in url.query.split('&')

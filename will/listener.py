@@ -3,7 +3,7 @@ import re
 import threading
 import traceback
 
-import settings
+from will import settings
 from utils import Bunch
 
 
