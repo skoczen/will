@@ -7,11 +7,15 @@ import requests
 import threading
 import readline
 import traceback
+import warnings
+from bs4 import BeautifulSoup
 
 from will import settings
 from will.utils import Bunch, UNSURE_REPLIES
 from will.abstractions import Message, Person, Channel
 from .base import StdInOutIOBackend
+
+warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
 
 class ShellBackend(StdInOutIOBackend):
@@ -24,11 +28,14 @@ class ShellBackend(StdInOutIOBackend):
         name="Friend",
     )
 
+    def _strip_html_tags(self, message_body):
+        return BeautifulSoup(message_body, 'html.parser').get_text()
+
     def send_direct_message(self, message_body, **kwargs):
-        print("Will: %s" % message_body)
+        print("Will: %s" % self._strip_html_tags(message_body))
 
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
-        print("Will: %s" % message_body)
+        print("Will: %s" % self._strip_html_tags(message_body))
 
     def set_room_topic(self, room_id, topic):
         print("Will: Setting the Topic to %s" & topic)
@@ -90,16 +97,16 @@ class ShellBackend(StdInOutIOBackend):
 
         # Do this to get the first "you" prompt.
         self.pubsub.publish('message.incoming.stdin', (Message(
-                content="",
-                type="message.incoming",
-                is_direct=True,
-                is_private_chat=True,
-                is_group_chat=False,
-                backend=self.internal_name,
-                sender=self.partner,
-                will_is_mentioned=False,
-                will_said_it=False,
-                backend_supports_acl=False,
-                source={}
-            ))
+            content="",
+            type="message.incoming",
+            is_direct=True,
+            is_private_chat=True,
+            is_group_chat=False,
+            backend=self.internal_name,
+            sender=self.partner,
+            will_is_mentioned=False,
+            will_said_it=False,
+            backend_supports_acl=False,
+            source={}
+        ))
         )
