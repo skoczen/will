@@ -1,5 +1,5 @@
 import redis
-import urlparse
+from six.moves.urllib import parse
 from .base import BasePubSub
 
 SKIP_TYPES = ["psubscribe", "punsubscribe", ]
@@ -29,12 +29,10 @@ Examples:
         },
     ]
 
-
-
     def __init__(self, settings, *args, **kwargs):
         self.verify_settings(quiet=True)
         super(RedisPubSub, self).__init__(*args, **kwargs)
-        url = urlparse.urlparse(settings.REDIS_URL)
+        url = parse.urlparse(settings.REDIS_URL)
 
         if hasattr(url, "path"):
             db = url.path[1:]

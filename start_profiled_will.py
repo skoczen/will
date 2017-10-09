@@ -11,5 +11,6 @@ def start_will():
     bot = WillBot()
     bot.bootstrap()
 
+
 if __name__ == '__main__':
     start_will()

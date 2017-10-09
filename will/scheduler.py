@@ -81,7 +81,7 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
                     except:
                         logging.critical(
                             "Unable to remove task. Leaving it in, you'll have to clean it out by hand."
-                            "Sorry! \n\n%s\nContinuing...\n" % (traceback.format_exc(),))
+                            "Sorry! \n\n%s\nContinuing...\n" % (traceback.format_exc(),)
                         )
 
     def check_scheduled_actions(self):

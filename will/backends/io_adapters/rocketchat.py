@@ -12,7 +12,7 @@ import traceback
 from DDPClient import DDPClient
 from multiprocessing import Manager
 from multiprocessing.dummy import Process
-from urlparse import urlparse
+from six.moves.urllib import parse
 
 from will import settings
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
@@ -371,7 +371,7 @@ class RocketChatBackend(IOBackend):
 
     def _realtime_connect(self):
         # TODO: Consider using auto_reconnect and debug options.
-        up = urlparse(settings.ROCKETCHAT_URL)
+        up = parse.urlparse(settings.ROCKETCHAT_URL)
         if up.scheme == 'http':
             ws_proto = 'ws'
         else:
