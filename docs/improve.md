@@ -112,6 +112,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [keNzi](https://github.com/keNzej) added shorten url function using bitly service.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
 - [mark-adams](https://github.com/mark-adams) cleaned up a Bitbucket typo.
+- [mike-love](https://github.com/mike-love) added Docker support to make running Will easier!
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
@@ -129,7 +130,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [tomokas](https://github.com/tomokas) fixed a bug in the `@randomly` decorator.
 - [tophsic](https://github.com/tophsic) made help friendlier, including plugin-specific help.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
-- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. And added `append` and `pop` list support. Yep.
+- [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. And added `append` and `pop` list support. And ditched WorldWeatherOnline when it started to hurt. Yep.
 - [woparry](https://github.com/woparry) made sure that Will could handle organizations with a massive (>2000) number of rooms.
 
 
@@ -146,9 +147,17 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
+#### 1.0.1 - October 10, 2017
+
+Fixes and features in this release:
+
+* Fixes up time plugin to not require World Weather's old API, thanks to [woohgit](https://github.com/woohgit).
+* Adds docker support, thanks to [mike-love](https://github.com/mike-love).
+
+
 #### 1.0.0 - September 29, 2017
 
-This is the end of major feature development for the hipchat-only version of Will.  Future development will be on 2.x, and while backwards compatability will be aimed for, it's not 100% guaranteed.  
+**This is the end of major feature development for the hipchat-only version of Will.  Future development will be on 2.x, and while backwards compatability will be aimed for, it's not 100% guaranteed.**
 
 Fixes and features in this release:
 
