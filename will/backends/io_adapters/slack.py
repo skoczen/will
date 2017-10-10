@@ -42,7 +42,10 @@ class SlackBackend(IOBackend, SleepMixin):
 
         if (
             event["type"] == "message" and
-            ("subtype" not in event or event["subtype"] != "message_changed")
+            ("subtype" not in event or event["subtype"] != "message_changed") and
+            # Ignore thread summary events (for now.)
+            # TODO: We should stack these into the history.
+            ("subtype" not in event or "thread_ts" not in event["message"])
         ):
             # print("slack: normalize_incoming_event - %s" % event)
             # Sample of group message
@@ -55,6 +58,17 @@ class SlackBackend(IOBackend, SleepMixin):
             # u'ts': u'1495662397.335424', u'user': u'U5ACF70RH',
             # u'team': u'T5ACF70KV', u'type': u'message', u'channel': u'D5HGP0YE7'}
 
+            # Threaded message
+            # {u'event_ts': u'1507601477.000073', u'ts': u'1507601477.000073',
+            # u'subtype': u'message_replied', u'message':
+            # {u'thread_ts': u'1507414046.000010', u'text': u'hello!',
+            # u'ts': u'1507414046.000010', u'unread_count': 2,
+            # u'reply_count': 2, u'user': u'U5GUL9D9N', u'replies':
+            # [{u'user': u'U5ACF70RH', u'ts': u'1507601449.000007'}, {
+            # u'user': u'U5ACF70RH', u'ts': u'1507601477.000063'}],
+            # u'type': u'message', u'bot_id': u'B5HL9ABFE'},
+            # u'type': u'message', u'hidden': True, u'channel': u'D5HGP0YE7'}
+
             sender = self.people[event["user"]]
             channel = clean_for_pickling(self.channels[event["channel"]])
             interpolated_handle = "<@%s>" % self.me.id
@@ -63,10 +77,15 @@ class SlackBackend(IOBackend, SleepMixin):
 
             is_private_chat = False
 
-            if len(channel.members.keys()) == 0:
+            thread = None
+            if "thread_ts" in event:
+                thread = event["thread_ts"]
+
+            if len(channel.members.keys()) == 0 and not thread:
                 is_private_chat = True
 
             # <@U5GUL9D9N> hi
+            # TODO: if there's a thread with just will and I on it, treat that as direct.
             is_direct = False
             if is_private_chat or event["text"].startswith(interpolated_handle):
                 is_direct = True
@@ -89,6 +108,7 @@ class SlackBackend(IOBackend, SleepMixin):
                 backend=self.internal_name,
                 sender=sender,
                 channel=channel,
+                thread=thread,
                 will_is_mentioned=will_is_mentioned,
                 will_said_it=will_said_it,
                 backend_supports_acl=True,
@@ -100,7 +120,6 @@ class SlackBackend(IOBackend, SleepMixin):
             pass
 
     def handle_outgoing_event(self, event):
-
         if event.type in ["say", "reply"]:
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
                 event.content = SlackMarkdownConverter().convert(event.content)
@@ -173,8 +192,19 @@ class SlackBackend(IOBackend, SleepMixin):
                 channel_id = event.source_message.data.channel.id
             else:
                 channel_id = event.source_message.channel.id
+            if hasattr(event.source_message, "thread"):
+                data.update({
+                    "thread_ts": event.source_message.thread
+                })
         else:
             channel_id = event.data["source"].data.channel.id
+
+        try:
+            data.update({
+                "thread_ts": event.data["source"].data.thread
+            })
+        except:
+            pass
 
         data.update({
             "token": settings.SLACK_API_TOKEN,

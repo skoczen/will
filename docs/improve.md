@@ -165,7 +165,7 @@ Here's what's new:
 This release addresses a number of bugs and smaller features, including:
 
 * Chatoms support fixed by [bykof](https://github.com/bykof).
-
+* Friendlier world time output.
 
 #### 1.0.1 - October 10, 2017
 
