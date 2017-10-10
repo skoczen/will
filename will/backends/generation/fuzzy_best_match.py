@@ -19,9 +19,9 @@ class FuzzyBestMatch(GenerationBackend):
             regex_string = method_meta["regex_pattern"]
             if "case_sensitive" in method_meta and not method_meta["case_sensitive"]:
                 regex_string = "(?i)%s" % regex_string
-            help_regex = method_meta["regex_pattern"]
-            if method_meta["direct_mentions_only"]:
-                help_regex = "@%s %s" % (settings.HIPCHAT_HANDLE, help_regex)
+            # help_regex = method_meta["regex_pattern"]
+            # if method_meta["direct_mentions_only"]:
+            #     help_regex = "@%s %s" % (settings.HIPCHAT_HANDLE, help_regex)
             # self.all_listener_regexes.append(help_regex)
             # if method_meta["__doc__"]:
             #     pht = plugin_info.get("parent_help_text", None)
@@ -93,8 +93,8 @@ class FuzzyBestMatch(GenerationBackend):
                     and (
                         message.is_private_chat or
                         ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
-                        self.handle_regex.search(message.content)
-                        or message.is_direct
+                        # self.handle_regex.search(message.content)
+                        message.is_direct
                     )
 
                     # TODO: Get ACL working again.

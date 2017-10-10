@@ -41,8 +41,8 @@ class BestScoreBackend(ExecutionBackend):
             warnings.simplefilter("ignore")
             try:
                 had_one_reply = False
-                logging.debug("message.generation_options")
-                logging.debug(message.generation_options)
+                logging.info("message.generation_options")
+                logging.info(message.generation_options)
                 top_score = -1
                 for m in message.generation_options:
                     logging.debug(m)

@@ -64,7 +64,7 @@ class FuzzyAllMatchesBackend(GenerationBackend):
         exclude_list = ["fn", ]
         matches = []
 
-        self.handle_regex = regex.compile("@%s" % settings.HIPCHAT_HANDLE)
+        # self.handle_regex = regex.compile("@%s" % settings.HIPCHAT_HANDLE)
         message = event.data
 
         # TODO: add token_sort_ratio
@@ -78,8 +78,9 @@ class FuzzyAllMatchesBackend(GenerationBackend):
                 self.match_choices.append(l["regex_pattern"])
 
         search_matches = fuzz_process.extract(message.content, self.match_choices)
-        logging.info("search_matches")
-        logging.info(search_matches)
+        # logging.info("search_matches")
+        # logging.info(search_matches)
+
         for match_str, confidence in search_matches:
             l = self.match_methods[match_str]
             logging.info(" Match (%s) - %s" % (
@@ -102,8 +103,8 @@ class FuzzyAllMatchesBackend(GenerationBackend):
                     and (
                         message.is_private_chat or
                         ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
-                        self.handle_regex.search(message.content)
-                        or message.is_direct
+                        # self.handle_regex.search(message.content)
+                        message.is_direct
                     )
 
                     # TODO: Get ACL working again.
