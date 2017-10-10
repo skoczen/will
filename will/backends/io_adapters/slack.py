@@ -71,6 +71,7 @@ class SlackBackend(IOBackend, SleepMixin):
 
             sender = self.people[event["user"]]
             channel = clean_for_pickling(self.channels[event["channel"]])
+            # print "channel: %s" % channel
             interpolated_handle = "<@%s>" % self.me.id
             will_is_mentioned = False
             will_said_it = False
@@ -81,7 +82,10 @@ class SlackBackend(IOBackend, SleepMixin):
             if "thread_ts" in event:
                 thread = event["thread_ts"]
 
-            if len(channel.members.keys()) == 0 and not thread:
+            # If the parent thread is a 1-1 between Will and I, also treat that as direct.
+            # Since members[] still comes in on the thread event, we can trust this, even if we're
+            # in a thread.
+            if len(channel.members.keys()) == 0:
                 is_private_chat = True
 
             # <@U5GUL9D9N> hi
@@ -120,6 +124,8 @@ class SlackBackend(IOBackend, SleepMixin):
             pass
 
     def handle_outgoing_event(self, event):
+        # print "outgoing"
+        # print event
         if event.type in ["say", "reply"]:
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
                 event.content = SlackMarkdownConverter().convert(event.content)
@@ -185,18 +191,25 @@ class SlackBackend(IOBackend, SleepMixin):
                 "text": event.content,
             })
 
-        # TODO: resolve this with a fresh brain.
-        # Also handle threaded messages.
+        # TODO: This is terrifingly ugly.  Yes, it works.  No, I will not have any idea how
+        # in a few months.  Abstract this stuff out!
         if "source_message" in event:
+            # Mentions that come back via self.say()
             if hasattr(event.source_message, "data"):
                 channel_id = event.source_message.data.channel.id
+                if hasattr(event.source_message.data, "thread"):
+                    data.update({
+                        "thread_ts": event.source_message.data.thread
+                    })
             else:
+                # Mentions that come back via self.say() with a specific room (I think)
                 channel_id = event.source_message.channel.id
-            if hasattr(event.source_message, "thread"):
-                data.update({
-                    "thread_ts": event.source_message.thread
-                })
+                if hasattr(event.source_message, "thread"):
+                    data.update({
+                        "thread_ts": event.source_message.thread
+                    })
         else:
+            # Mentions that come back via self.reply()
             channel_id = event.data["source"].data.channel.id
 
         try:
