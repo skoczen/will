@@ -24,7 +24,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
         return rooms
 
-    def _prepared_content(self, content):
+    @staticmethod
+    def _prepared_content(content):
         content = re.sub(r'>\s+<', '><', content)
         return content
 
@@ -36,7 +37,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # card: Card see: https://developer.atlassian.com/hipchat/guide/sending-messages
 
         content = self._prepared_content(content)
-        rooms = []
         if room is not None:
             try:
                 room_id = room["room_id"]
