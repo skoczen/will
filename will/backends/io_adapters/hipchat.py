@@ -244,7 +244,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         {
             "name": "HIPCHAT_HANDLE",
             "obtain_at": """1. Log into hipchat using will's user.
-2. Set HIPCHAT_HANDLE to Will's users' mention name without the @, i.e. @will becomes will.""",
+2. Set HIPCHAT_HANDLE to Will's users' mention name without the @, i.e. @will would be HIPCHAT_HANDLE='will'.""",
         },
     ]
 
