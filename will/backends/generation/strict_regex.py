@@ -11,7 +11,7 @@ class RegexBackend(GenerationBackend):
         exclude_list = ["fn", ]
         matches = []
 
-        self.handle_regex = re.compile("@%s" % settings.HIPCHAT_HANDLE)
+        # self.handle_regex = re.compile("@%s" % settings.HIPCHAT_HANDLE)
         message = event.data
         for name, l in self.bot.message_listeners.items():
             search_matches = l["regex"].search(message.content)
@@ -29,8 +29,7 @@ class RegexBackend(GenerationBackend):
                     and (
                         message.is_private_chat or
                         ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
-                        self.handle_regex.search(message.content)
-                        or message.is_direct
+                        message.is_direct
                     )
 
                     # TOOD: Get ACL working again.

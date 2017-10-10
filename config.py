@@ -172,7 +172,7 @@ SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 
 # Turn up or down Will's logging level
 # LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-# LOGLEVEL = "DEBUG"
+# LOGLEVEL = "INFO"
 
 # Turn on or off Will's profiling
 # PROFILING_ENABLED = False

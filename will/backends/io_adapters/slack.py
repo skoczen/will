@@ -35,7 +35,7 @@ class SlackBackend(IOBackend, SleepMixin):
             "obtain_at": """1. Go to https://api.slack.com/tokens, and sign in.
 2. Search for Will, and then add will.
 3. Generate a new token (These instructions are incorrect!).""",
-        },
+        }
     ]
 
     def normalize_incoming_event(self, event):
@@ -73,6 +73,7 @@ class SlackBackend(IOBackend, SleepMixin):
             channel = clean_for_pickling(self.channels[event["channel"]])
             # print "channel: %s" % channel
             interpolated_handle = "<@%s>" % self.me.id
+            real_handle = "@%s" % self.me.handle
             will_is_mentioned = False
             will_said_it = False
 
@@ -91,13 +92,16 @@ class SlackBackend(IOBackend, SleepMixin):
             # <@U5GUL9D9N> hi
             # TODO: if there's a thread with just will and I on it, treat that as direct.
             is_direct = False
-            if is_private_chat or event["text"].startswith(interpolated_handle):
+            if is_private_chat or event["text"].startswith(interpolated_handle) or event["text"].startswith(real_handle):
                 is_direct = True
 
             if event["text"].startswith(interpolated_handle):
                 event["text"] = event["text"][len(interpolated_handle):].strip()
 
-            if interpolated_handle in event["text"]:
+            if event["text"].startswith(real_handle):
+                event["text"] = event["text"][len(real_handle):].strip()
+
+            if interpolated_handle in event["text"] or real_handle in event["text"]:
                 will_is_mentioned = True
 
             if event["user"] == self.me.id:
