@@ -39,9 +39,15 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         content = self._prepared_content(content)
         if room is not None:
             try:
+                error_msg = u'"{0}" is not a valid room name.'
+                if isinstance(room, basestring):
+                    room = self.get_room_from_name_or_id(room)
+                    if not room:
+                        raise KeyError
+                error_msg = u'"{0}" is not a room object.'
                 room_id = room["room_id"]
             except KeyError:
-                logging.error(u'"%s" is not a room object.', room)
+                logging.error(error_msg.format(room))
             else:
                 self.send_room_message(room_id, content, card=card, **kwargs)
         elif message is None or message["type"] == "groupchat":
