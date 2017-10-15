@@ -13,6 +13,6 @@ class PluginModulesLibraryMixin(object):
                 else:
                     self._plugin_modules_library = self.load("plugin_modules_library", {})
             except:
-                logging.critical("Error loading plugin_modules_library: \n%s" % traceback.format_exc())
+                logging.critical("Error loading plugin_modules_library: \n%s", traceback.format_exc())
                 return {}
         return self._plugin_modules_library

@@ -10,14 +10,15 @@ ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(toke
 PRIVATE_MESSAGE_URL = "https://%(server)s/v2/user/%(user_id)s/message?auth_token=%(token)s"
 SET_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 USER_DETAILS_URL = "https://%(server)s/v2/user/%(user_id)s?auth_token=%(token)s"
-ALL_USERS_URL = "https://%(server)s/v2/user?auth_token=%(token)s&start-index=%(start_index)s&max-results=%(max_results)s"
+ALL_USERS_URL = ("https://%(server)s/v2/user?auth_token=%(token)s&start-index"
+                 "=%(start_index)s&max-results=%(max_results)s")
 
 
 class HipChatMixin(object):
 
     def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
         if kwargs:
-            logging.warn("Unknown keyword args for send_direct_message: %s" % kwargs)
+            logging.warning("Unknown keyword args for send_direct_message: %s", kwargs)
 
         format = "text"
         if html:
@@ -36,17 +37,17 @@ class HipChatMixin(object):
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
         except:
-            logging.critical("Error in send_direct_message: \n%s" % traceback.format_exc())
+            logging.critical("Error in send_direct_message: \n%s", traceback.format_exc())
 
     def send_direct_message_reply(self, message, message_body):
         try:
             message.reply(message_body).send()
         except:
-            logging.critical("Error in send_direct_message_reply: \n%s" % traceback.format_exc())
+            logging.critical("Error in send_direct_message_reply: \n%s", traceback.format_exc())
 
-    def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
+    def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, card=None, **kwargs):
         if kwargs:
-            logging.warn("Unknown keyword args for send_room_message: %s" % kwargs)
+            logging.warning("Unknown keyword args for send_room_message: %s", kwargs)
 
         format = "text"
         if html:
@@ -62,11 +63,13 @@ class HipChatMixin(object):
                 "message_format": format,
                 "color": color,
                 "notify": notify,
+                "card": card
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r.raise_for_status()
         except:
-            logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())
+            logging.critical("Error in send_room_message: \n%s", traceback.format_exc())
 
     def set_room_topic(self, room_id, topic):
         try:
@@ -80,7 +83,7 @@ class HipChatMixin(object):
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             requests.put(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
         except:
-            logging.critical("Error in set_room_topic: \n%s" % traceback.format_exc())
+            logging.critical("Error in set_room_topic: \n%s", traceback.format_exc())
 
     def get_hipchat_user(self, user_id, q=None):
         url = USER_DETAILS_URL % {"server": settings.HIPCHAT_SERVER,

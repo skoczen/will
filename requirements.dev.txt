@@ -8,3 +8,4 @@ flake8
 mock
 nose
 coverage
+tox

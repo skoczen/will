@@ -2,7 +2,7 @@ import unittest
 
 from will.mixins.roster import RosterMixin
 from will import settings
-from will.acl import get_acl_members, is_acl_allowed
+from will.acl import is_acl_allowed
 from mock import patch
 
 
@@ -40,7 +40,7 @@ class TestVerifyAcl(unittest.TestCase):
 
     def setUp(self):
         settings.ACL = {
-            "ENGINEERING_OPS": ["bob", "alice"],
+            "ENGINEERING_OPS": ["bob", "Alice"],
             "engineering_devs": ["eve"]
         }
 
@@ -50,6 +50,7 @@ class TestVerifyAcl(unittest.TestCase):
         self.assertTrue(is_acl_allowed("eve", {"engineering_devs"}))
         self.assertTrue(is_acl_allowed("eve", {"engineering_ops", "engineering_devs"}))
         self.assertTrue(is_acl_allowed("alice", {"engineering_ops", "engineering_devs"}))
+        self.assertTrue(is_acl_allowed("Alice", {"engineering_ops", "engineering_devs"}))
 
     def test_is_acl_allowed_returns_false(self):
         self.assertFalse(is_acl_allowed("eve", {"engineering_ops"}))

@@ -1,7 +1,6 @@
 import importlib
 import logging
 import dill as pickle
-import functools
 from will import settings
 
 
@@ -63,3 +62,21 @@ class StorageMixin(object):
             return self.storage.size()
         except Exception:
             logging.exception("Failed to get the size of our storage")
+
+    # list specific save/load/clear operations
+
+    def pop(self, key, value):
+        tmp_value = self.load(key)
+        if tmp_value is None:
+            pass
+        else:
+            tmp_value.remove(value)
+            self.save(key, tmp_value)
+
+    def append(self, key, value, expire=None):
+        tmp_value = self.load(key)
+        if tmp_value is None:
+            self.save(key, [value], expire)
+        else:
+            tmp_value.append(value)
+            self.save(key, tmp_value, expire)

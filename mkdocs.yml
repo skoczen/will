@@ -13,6 +13,7 @@ pages:
 - Configure: config.md
 - Deploy: deploy.md
 - Improve: improve.md
+- Roadmap: roadmap.md
 # theme: will
 site_name: Will
 theme_dir: "docs/themes/will/"
