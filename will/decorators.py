@@ -92,7 +92,7 @@ def rendered_template(template_name, context=None, custom_filters=[]):
         def wrap(f):
             def wrapped_f(*args, **kwargs):
                 context = f(*args, **kwargs)
-                if isinstance(context, dict()):
+                if isinstance(context, dict):
                     template = env.get_template(template_name)
                     return template.render(**context)
                 else:

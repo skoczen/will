@@ -1,7 +1,7 @@
 import os
-from utils import show_valid, warn, note
+from will.utils import show_valid, warn, note
 from clint.textui import puts, indent
-from urlparse import urlparse
+from six.moves.urllib import parse
 
 
 def import_settings(quiet=True):
@@ -24,6 +24,13 @@ def import_settings(quiet=True):
             settings[k] = v
     if "ROOMS" in settings:
         settings["ROOMS"] = settings["ROOMS"].split(";")
+
+    if "PLUGINS" in settings:
+        settings["PLUGINS"] = settings["PLUGINS"].split(";")
+
+    if 'PLUGIN_BLACKLIST' in settings:
+        settings["PLUGIN_BLACKLIST"] = (settings["PLUGIN_BLACKLIST"].split(";")
+                                        if settings["PLUGIN_BLACKLIST"] else [])
 
     # If HIPCHAT_SERVER is set, we need to change the USERNAME slightly
     # for XMPP to work.
@@ -69,7 +76,7 @@ def import_settings(quiet=True):
                      "This is ok - Will will just join all available rooms.")
                 settings["ROOMS"] = None
 
-        if "DEFAULT_ROOM" not in settings and "ROOMS" in settings and settings["ROOMS"] and len(settings["ROOMS"]) > 0:
+        if "DEFAULT_ROOM" not in settings and "ROOMS" in settings and settings["ROOMS"]:
             if not quiet:
                 warn("no DEFAULT_ROOM found in the environment or config.  "
                      "Defaulting to '%s', the first one." % settings["ROOMS"][0])
@@ -110,7 +117,7 @@ def import_settings(quiet=True):
             if not settings["REDIS_URL"].startswith("redis://"):
                 settings["REDIS_URL"] = "redis://%s" % settings["REDIS_URL"]
 
-            if "REDIS_MAX_CONNECTIONS" not in settings:
+            if "REDIS_MAX_CONNECTIONS" not in settings or not settings["REDIS_MAX_CONNECTIONS"]:
                 settings["REDIS_MAX_CONNECTIONS"] = 4
                 if not quiet:
                     note("REDIS_MAX_CONNECTIONS not set. Defaulting to 4.")
@@ -167,7 +174,7 @@ def import_settings(quiet=True):
                 settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
 
         if "PROXY_URL" in settings:
-            parsed_proxy_url = urlparse(settings["PROXY_URL"])
+            parsed_proxy_url = parse.urlparse(settings["PROXY_URL"])
             settings["USE_PROXY"] = True
             settings["PROXY_HOSTNAME"] = parsed_proxy_url.hostname
             settings["PROXY_USERNAME"] = parsed_proxy_url.username
@@ -181,5 +188,6 @@ def import_settings(quiet=True):
             if not quiet:
                 show_valid(k)
             globals()[k] = settings[k]
+
 
 import_settings()

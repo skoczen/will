@@ -193,6 +193,21 @@ Sometimes, a picture is worth a thousand words.
 
 ![Image me a crazy squirrel](../img/image_me.gif)
 
+To configure `image me`, you'll need to set the following two variables in `config.py` or [in your environment with the appropriate `WILL_` prefix](http://skoczen.github.io/will/config/). Here are some instructions on where to obtain both.
+
+* `GOOGLE_API_KEY`
+  * Go to the [Google Developers Console](https://console.developers.google.com).
+  * From the menu in the top left, choose `API Manager -> Credentials`.
+  * Click `Create credentials` from the drop down, then `API Key`, that's the key you need here.
+  * Optionally, give the key a suitable human-readable name so it looks nice in the list e.g. `will-api`.
+* `GOOGLE_CUSTOM_SEARCH_ENGINE_ID`
+  * [Setup a custom search engine](https://support.google.com/customsearch/answer/2630963?hl=en) (CSE) if you don't already have one.
+  * You'll need to provide a site for the CSE to search - just input anything, so the wizard can create the CSE.
+  * Type something useful like `Will` in the name field and create the CSE.
+  * Edit the settings for the CSE you just created, and in the `Sites to search` section, change the drop-down to `Search the entire web but emphasize included sites`.
+  * Delete the "anything" site you added two steps ago, to clean it up.
+  * In the `Details` section, click the `Search engine ID` button, and copy the ID which you need here.
+
 #### Remind me
 
 This saves our bacon every day. Timeboxes meetings, helps people remember appointments, and enforces self-control.
@@ -219,8 +234,7 @@ You can also remind others as well.
 
 We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you,
 
-1. Get a free `WORLD_WEATHER_ONLINE_V2_KEY` from [world weather online](http://developer.worldweatheronline.com).
-2. Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.
+1. Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.
 
 ![World time](../img/world_time.gif)
 

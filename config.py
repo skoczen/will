@@ -62,7 +62,6 @@ PLUGINS = [
 # Don't load any of the plugins in this list.  Same options as above.
 PLUGIN_BLACKLIST = [
     "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
-    "will.plugins.productivity.world_time",   # Because it requires a WORLD_WEATHER_ONLINE_V2_KEY key
     "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
     "will.plugins.devops.bitbucket_is_up",   # Because most folks use github.
     "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
@@ -142,3 +141,7 @@ PLUGIN_BLACKLIST = [
 # PROXY_URL = "http://user:pass@corpproxy.example.com:3128"
 # or
 # PROXY_URL = "http://myproxy:80
+
+# Google Application key for "image me" command
+# GOOGLE_API_KEY = "FILL THIS IN"
+# GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"
