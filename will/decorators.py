@@ -81,7 +81,7 @@ def rendered_template(template_name, context=None, custom_filters=[]):
     loader = FileSystemLoader(template_dirs)
     env = Environment(loader=loader)
 
-    if isinstance(custom_filters, list()):
+    if isinstance(custom_filters, list):
         for custom_filter in custom_filters:
             env.filters[custom_filter.__name__] = custom_filter
 
