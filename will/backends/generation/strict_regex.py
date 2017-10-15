@@ -11,7 +11,6 @@ class RegexBackend(GenerationBackend):
         exclude_list = ["fn", ]
         matches = []
 
-        # self.handle_regex = re.compile("@%s" % settings.HIPCHAT_HANDLE)
         message = event.data
         for name, l in self.bot.message_listeners.items():
             search_matches = l["regex"].search(message.content)
