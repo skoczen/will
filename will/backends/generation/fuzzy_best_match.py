@@ -62,7 +62,6 @@ class FuzzyBestMatch(GenerationBackend):
         exclude_list = ["fn", ]
         matches = []
 
-        self.handle_regex = regex.compile("@%s" % settings.HIPCHAT_HANDLE)
         message = event.data
 
         # TODO: add token_sort_ratio
@@ -93,7 +92,6 @@ class FuzzyBestMatch(GenerationBackend):
                     and (
                         message.is_private_chat or
                         ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
-                        # self.handle_regex.search(message.content)
                         message.is_direct
                     )
 

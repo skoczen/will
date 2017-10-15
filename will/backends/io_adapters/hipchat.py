@@ -100,7 +100,6 @@ class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSub
 
         self.nick = settings.HIPCHAT_NAME
         self.handle = settings.HIPCHAT_HANDLE
-        self.handle_regex = re.compile("@%s" % self.handle)
 
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
