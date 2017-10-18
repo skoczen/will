@@ -28,7 +28,7 @@ from backends import analysis, execution, generation, io_adapters
 from backends.io_adapters.base import Event
 from scheduler import Scheduler
 import settings
-from utils import show_valid, error, warn, note, print_head, Bunch
+from utils import show_valid, show_invalid, error, warn, note, print_head, Bunch
 
 
 # Force UTF8
@@ -957,6 +957,7 @@ To set your %(name)s:
                         last_parent_name = plugin_info["parent_help_text"]
                     with indent(2):
                         plugin_name = plugin_info["name"]
+                        plugin_warnings = []
                         # Just a little nicety
                         if plugin_name[-6:] == "Plugin":
                             plugin_name = plugin_name[:-6]
@@ -973,6 +974,8 @@ To set your %(name)s:
                                     with indent(2):
                                         if hasattr(fn, "will_fn_metadata"):
                                             meta = fn.will_fn_metadata
+                                            if "warnings" in meta:
+                                                plugin_warnings.append(meta["warnings"])
                                             if "required_settings" in meta:
                                                 for s in meta["required_settings"]:
                                                     self.required_settings_from_plugins[s] = {
@@ -1044,6 +1047,7 @@ To set your %(name)s:
                                             elif "bottle_route" in meta:
                                                 # puts("- %s" % function_name)
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
+
                                 except Exception as e:
                                     error(plugin_name)
                                     self.startup_error(
@@ -1052,7 +1056,12 @@ To set your %(name)s:
                                             function_name,
                                         ), e
                                     )
-                            show_valid(plugin_name)
+                            if len(plugin_warnings) > 0:
+                                show_invalid(plugin_name)
+                                for w in plugin_warnings:
+                                    warn(w)
+                            else:
+                                show_valid(plugin_name)
                 except Exception as e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
 
