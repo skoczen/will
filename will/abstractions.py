@@ -18,7 +18,7 @@ class Message(object):
         "backend_supports_acl",
         "content",
         "backend",
-        "source",
+        "original_incoming_event",
     ]
 
     def __init__(self, *args, **kwargs):
@@ -43,6 +43,11 @@ class Message(object):
         self.hash = h.hexdigest()
 
         self.metadata = Bunch()
+        if not "original_incoming_event_hash" in kwargs:
+            if hasattr(self, "original_incoming_event") and hasattr(self.original_incoming_event, "hash"):
+                self.original_incoming_event_hash = self.original_incoming_event.hash
+            else:
+                self.original_incoming_event_hash = self.hash
 
     def __unicode__(self, *args, **kwargs):
         if len(self.content) > 20:
@@ -90,11 +95,11 @@ class Event(Bunch):
         h.update(self.timestamp.strftime("%s"))
         h.update("%s" % self.type)
         self.hash = h.hexdigest()
-        if not "source_hash" in kwargs:
-            if hasattr(self, "source") and hasattr(self.source, "hash"):
-                self.source_hash = self.source.hash
+        if not "original_incoming_event_hash" in kwargs:
+            if hasattr(self, "original_incoming_event") and hasattr(self.original_incoming_event, "hash"):
+                self.original_incoming_event_hash = self.original_incoming_event.hash
             else:
-                self.source_hash = self.hash
+                self.original_incoming_event_hash = self.hash
 
 
 class Person(Bunch):

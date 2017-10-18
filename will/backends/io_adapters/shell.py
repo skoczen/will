@@ -44,12 +44,12 @@ class ShellBackend(StdInOutIOBackend):
                 is_direct=True,
                 is_private_chat=True,
                 is_group_chat=False,
-                backend=self.name,
+                backend=self.internal_name,
                 sender=self.partner,
                 will_is_mentioned=False,
                 will_said_it=False,
                 backend_supports_acl=False,
-                source=event
+                original_incoming_event=event
             )
             return m
         else:
@@ -62,9 +62,7 @@ class ShellBackend(StdInOutIOBackend):
             self.send_direct_message(event.content)
 
         elif event.type == "message.no_response":
-            # TODO: Seriously fix this. It's gross and confusing.
-            # print(event.data["source"].data.content)
-            if event.data and "source" in event.data and len(event.data["source"].data.content) > 0:
+            if event.data and hasattr(event.data, "original_incoming_event") and len(event.data.original_incoming_event.data.content) > 0:
                 self.send_direct_message(random.choice(UNSURE_REPLIES))
 
         # Regardless of whether or not we had something to say,
@@ -103,6 +101,6 @@ class ShellBackend(StdInOutIOBackend):
             will_is_mentioned=False,
             will_said_it=False,
             backend_supports_acl=False,
-            source={}
+            original_incoming_event={}
         ))
         )

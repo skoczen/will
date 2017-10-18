@@ -58,7 +58,11 @@ class BestScoreBackend(ExecutionBackend):
                             self.do_execute(message, m)
                             had_one_reply = True
                 if not had_one_reply:
-                    self.bot.pubsub.publish("message.no_response", {'source': message}, reference_message=message)
+                    self.bot.pubsub.publish(
+                        "message.no_response",
+                        message.data,
+                        reference_message=message.data.original_incoming_event
+                    )
 
                 return {}
             except:
