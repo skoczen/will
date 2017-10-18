@@ -120,7 +120,7 @@ class SlackBackend(IOBackend, SleepMixin):
                 will_is_mentioned=will_is_mentioned,
                 will_said_it=will_said_it,
                 backend_supports_acl=True,
-                source=clean_for_pickling(event),
+                original_incoming_event=clean_for_pickling(event),
             )
             return m
         else:
@@ -128,8 +128,6 @@ class SlackBackend(IOBackend, SleepMixin):
             pass
 
     def handle_outgoing_event(self, event):
-        # print "outgoing"
-        # print event
         if event.type in ["say", "reply"]:
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
                 event.content = SlackMarkdownConverter().convert(event.content)
@@ -164,8 +162,8 @@ class SlackBackend(IOBackend, SleepMixin):
 
         elif (
             event.type == "message.no_response" and
-            event.data["source"].data.is_direct and
-            event.data["source"].data.will_said_it is False
+            event.data.is_direct and
+            event.data.will_said_it is False
         ):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)
@@ -214,11 +212,20 @@ class SlackBackend(IOBackend, SleepMixin):
                     })
         else:
             # Mentions that come back via self.reply()
-            channel_id = event.data["source"].data.channel.id
+            if hasattr(event.data, "original_incoming_event"):
+                if hasattr(event.data.original_incoming_event.channel, "id"):
+                    channel_id = event.data.original_incoming_event.channel.id
+                else:
+                    channel_id = event.data.original_incoming_event.channel
+            else:
+                if hasattr(event.data["original_incoming_event"].data.channel, "id"):
+                    channel_id = event.data["original_incoming_event"].data.channel.id
+                else:
+                    channel_id = event.data["original_incoming_event"].data.channel
 
         try:
             data.update({
-                "thread_ts": event.data["source"].data.thread
+                "thread_ts": event.data["original_incoming_event"].data.thread
             })
         except:
             pass

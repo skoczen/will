@@ -443,7 +443,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 will_is_mentioned=will_is_mentioned,
                 will_said_it=will_said_it,
                 backend_supports_acl=True,
-                source=clean_for_pickling(event),
+                original_incoming_event=clean_for_pickling(event),
             )
             # print("normalized:")
             # print(m.__dict__)

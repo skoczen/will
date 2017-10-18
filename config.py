@@ -73,7 +73,7 @@ PLUGIN_BLACKLIST = [
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    # "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.hipchat",
     # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
     "will.backends.io_adapters.slack",
@@ -146,7 +146,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # The list of rooms will should join.  Default is all rooms.
 # TODO: Appears to be Hipchat-specific, should be renamed or
 # deprecated.
-ROOMS = ['Will Testing', ]
+# ROOMS = ['Will Testing', ]
 
 # The maximum number of milliseconds to wait for an analysis backend to finish
 # ANALYSIS_TIMEOUT_MS = 2000
@@ -164,10 +164,11 @@ ROOMS = ['Will Testing', ]
 # DEFAULT_ROOM = 'Testing, Will Kahuna'
 
 
-# A secret key, used to specify this instance of will and secure pubsub contents.
+# A secret key, used to namespace this instance of will and secure pubsub contents.
 # Do *NOT* keep it in config.py.  *DO* set it in the environment, in a secured session.
-# TODO: Move this to config.untracked.py
-SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
+# If a SECRET_KEY is not set, one will be auto-generated, but will limit Will to reading
+# data from this excecution only.
+# SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
 
 
 # Turn up or down Will's logging level

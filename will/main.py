@@ -482,6 +482,10 @@ To set your %(name)s:
             print('\n\nReceived keyboard interrupt, quitting threads.',)
             self.exiting = True
 
+            if "WILL_EPHEMERAL_SECRET_KEY" in os.environ:
+                os.environ["WILL_SECRET_KEY"] = ""
+                os.environ["WILL_EPHEMERAL_SECRET_KEY"] = ""
+
             if self.scheduler_thread:
                 try:
                     self.scheduler_thread.terminate()
@@ -561,6 +565,7 @@ To set your %(name)s:
                 event = self.pubsub.get_message()
                 if event and hasattr(event, "type"):
                     now = datetime.datetime.now()
+                    logging.info("%s - %s" % (event.type, event.original_incoming_event_hash))
                     logging.debug("\n\n *** Event (%s): %s\n\n" % (event.type, event))
 
                     # TODO: Order by most common.
@@ -568,62 +573,84 @@ To set your %(name)s:
                         # A message just got dropped off one of the IO Backends.
                         # Send it to analysis.
 
-                        analysis_threads[event.source_hash] = {
+                        analysis_threads[event.original_incoming_event_hash] = {
                             "count": 0,
                             "timeout_end": now + datetime.timedelta(seconds=self.analysis_timeout / 1000),
-                            "source": event,
+                            "original_incoming_event": event,
+                            "working_event": event,
                         }
-                        self.pubsub.publish("analysis.start", event.data.source, reference_message=event)
+                        self.pubsub.publish("analysis.start", event.data.original_incoming_event, reference_message=event)
 
                     elif event.type == "analysis.complete":
-                        q = analysis_threads[event.source_hash]
-                        q["source"].update({"analysis": event.data})
+                        q = analysis_threads[event.original_incoming_event_hash]
+                        q["working_event"].update({"analysis": event.data})
                         q["count"] += 1
+                        logging.info("Analysis for %s:  %s/%s" % (event.original_incoming_event_hash, q["count"], num_analysis_threads))
 
                         if q["count"] >= num_analysis_threads or now > q["timeout_end"]:
                             # done, move on.
-                            generation_threads[event.source_hash] = {
+                            generation_threads[event.original_incoming_event_hash] = {
                                 "count": 0,
                                 "timeout_end": (
                                     now +
                                     datetime.timedelta(seconds=self.generation_timeout / 1000)
                                 ),
-                                "source": q["source"],
+                                "original_incoming_event": q["original_incoming_event"],
+                                "working_event": q["working_event"],
                             }
                             try:
-                                del analysis_threads[event.source_hash]
+                                del analysis_threads[event.original_incoming_event_hash]
                             except:
                                 pass
-                            self.pubsub.publish("generation.start", q["source"], reference_message=q["source"])
+                            self.pubsub.publish("generation.start", q["working_event"], reference_message=q["original_incoming_event"])
 
                     elif event.type == "generation.complete":
-                        q = generation_threads[event.source_hash]
-                        if not hasattr(q["source"], "generation_options"):
-                            q["source"].generation_options = []
+                        q = generation_threads[event.original_incoming_event_hash]
+                        if not hasattr(q["working_event"], "generation_options"):
+                            q["working_event"].generation_options = []
                         if hasattr(event, "data") and len(event.data) > 0:
                             for d in event.data:
-                                q["source"].generation_options.append(d)
+                                q["working_event"].generation_options.append(d)
                         q["count"] += 1
+                        logging.info("Generation for %s:  %s/%s" % (event.original_incoming_event_hash, q["count"], num_generation_threads))
 
                         if q["count"] >= num_generation_threads or now > q["timeout_end"]:
                             # done, move on to execution.
                             for b in self.execution_backends:
                                 try:
-                                    b.handle_execution(q["source"])
+                                    logging.info("Executing for %s on %s" % (b, event.original_incoming_event_hash))
+                                    b.handle_execution(q["working_event"])
                                 except:
+                                    logging.critical(
+                                        "Error running %s for %s.  \n\n%s\nContinuing...\n" % (
+                                            b,
+                                            event.original_incoming_event_hash,
+                                            traceback.format_exc()
+                                        )
+                                    )
                                     break
                             try:
-                                del generation_threads[event.source_hash]
+                                del generation_threads[event.original_incoming_event_hash]
                             except:
                                 pass
 
                     elif event.type == "message.no_response":
+                        logging.info("Publishing no response for %s" % (event.original_incoming_event_hash,))
+                        logging.info(event.data.__dict__)
                         try:
-                            self.publish("message.outgoing.%s" % event.data["source"].data.backend, event)
+                            self.publish("message.outgoing.%s" % event.data.backend, event)
                         except:
+                            logging.critical(
+                                "Error publishing no_response for %s.  \n\n%s\nContinuing...\n" % (
+                                    event.original_incoming_event_hash,
+                                    traceback.format_exc()
+                                )
+                            )
                             pass
                 else:
                     self.sleep_for_event_loop()
+            # except KeyError:
+            #     pass
             except:
                 logging.exception("Error handling message")
 

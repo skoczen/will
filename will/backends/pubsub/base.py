@@ -116,17 +116,17 @@ class BasePubSub(SettingsMixin):
             e.sender = obj.sender
 
         if reference_message:
-            source_hash = None
-            if hasattr(reference_message, "source_hash"):
-                source_hash = reference_message.source_hash
+            original_incoming_event_hash = None
+            if hasattr(reference_message, "original_incoming_event_hash"):
+                original_incoming_event_hash = reference_message.original_incoming_event_hash
             elif hasattr(reference_message, "source") and hasattr(reference_message.source, "hash"):
-                source_hash = reference_message.source.hash
-            elif hasattr(reference_message, "source") and hasattr(reference_message.source, "source_hash"):
-                source_hash = reference_message.source.source_hash
+                original_incoming_event_hash = reference_message.source.hash
+            elif hasattr(reference_message, "source") and hasattr(reference_message.source, "original_incoming_event_hash"):
+                original_incoming_event_hash = reference_message.source.original_incoming_event_hash
             elif hasattr(reference_message, "hash"):
-                source_hash = reference_message.hash
-            if source_hash:
-                e.source_hash = source_hash
+                original_incoming_event_hash = reference_message.hash
+            if original_incoming_event_hash:
+                e.original_incoming_event_hash = original_incoming_event_hash
 
         return self.publish_to_backend(
             self._localize_topic(topic),

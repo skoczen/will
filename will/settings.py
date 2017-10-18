@@ -1,4 +1,5 @@
 import os
+import uuid
 from will.utils import show_valid, warn, note, error
 from clint.textui import puts, indent
 from six.moves.urllib import parse
@@ -22,6 +23,9 @@ def import_settings(quiet=True):
         if k[:5] == "WILL_":
             k = k[5:]
             settings[k] = v
+    if "HIPCHAT_ROOMS" in settings:
+        settings["HIPCHAT_ROOMS"] = settings["HIPCHAT_ROOMS"].split(";")
+
     if "ROOMS" in settings:
         settings["ROOMS"] = settings["ROOMS"].split(";")
 
@@ -219,6 +223,15 @@ def import_settings(quiet=True):
 
         if "EVENT_LOOP_INTERVAL" not in settings:
             settings["EVENT_LOOP_INTERVAL"] = 0.025
+
+        if "SECRET_KEY" not in settings:
+            note(
+                "No SECRET_KEY specified.  Auto-generating one specific to this run of Will.\n" +
+                "  Know that will won't be able to catch up on old messages or work in a multicomponent install without one."
+            )
+            settings["SECRET_KEY"] = uuid.uuid4().hex
+            os.environ["WILL_SECRET_KEY"] = settings["SECRET_KEY"]
+            os.environ["WILL_EPHEMERAL_SECRET_KEY"] = "True"
 
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):
