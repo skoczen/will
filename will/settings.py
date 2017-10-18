@@ -212,6 +212,18 @@ def import_settings(quiet=True):
             else:
                 settings["TEMPLATE_DIRS"] = []
 
+        if "WILL_HANDLE" not in settings:
+            if "HANDLE" in settings:
+                settings["WILL_HANDLE"] = settings["HANDLE"]
+            elif "SLACK_HANDLE" in settings:
+                settings["WILL_HANDLE"] = settings["SLACK_HANDLE"]
+            elif "HIPCHAT_HANDLE" in settings:
+                settings["WILL_HANDLE"] = settings["HIPCHAT_HANDLE"]
+            elif "ROCKETCHAT_HANDLE" in settings:
+                settings["WILL_HANDLE"] = settings["ROCKETCHAT_HANDLE"]
+            else:
+                settings["WILL_HANDLE"] = "will"
+
         if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and\
                 (settings["ALLOW_INSECURE_HIPCHAT_SERVER"] is True or
                  settings["ALLOW_INSECURE_HIPCHAT_SERVER"].lower() == "true"):

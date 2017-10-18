@@ -1011,7 +1011,7 @@ To set your %(name)s:
                                                     regex = "(?i)%s" % regex
                                                 help_regex = meta["listener_regex"]
                                                 if meta["listens_only_to_direct_mentions"]:
-                                                    help_regex = "@%s %s" % (settings.HIPCHAT_HANDLE, help_regex)
+                                                    help_regex = "@%s %s" % (settings.WILL_HANDLE, help_regex)
                                                 self.all_listener_regexes.append(help_regex)
                                                 if meta["__doc__"]:
                                                     pht = plugin_info.get("parent_help_text", None)

@@ -19,19 +19,6 @@ class FuzzyBestMatch(GenerationBackend):
             regex_string = method_meta["regex_pattern"]
             if "case_sensitive" in method_meta and not method_meta["case_sensitive"]:
                 regex_string = "(?i)%s" % regex_string
-            # help_regex = method_meta["regex_pattern"]
-            # if method_meta["direct_mentions_only"]:
-            #     help_regex = "@%s %s" % (settings.HIPCHAT_HANDLE, help_regex)
-            # self.all_listener_regexes.append(help_regex)
-            # if method_meta["__doc__"]:
-            #     pht = plugin_info.get("parent_help_text", None)
-            #     if pht:
-            #         if pht in self.help_modules:
-            #             self.help_modules[pht].append(method_meta["__doc__"])
-            #         else:
-            #             self.help_modules[pht] = [method_meta["__doc__"]]
-            #     else:
-            #         self.help_modules[OTHER_HELP_HEADING].append(method_meta["__doc__"])
 
             if method_meta["multiline"]:
                 try:

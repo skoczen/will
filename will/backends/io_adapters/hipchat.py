@@ -12,13 +12,15 @@ import traceback
 from sleekxmpp import ClientXMPP
 from sleekxmpp.exceptions import IqError, IqTimeout
 
-from will import settings
 from .base import IOBackend
+from will import settings
+from will.utils import is_admin
+from will.acl import is_acl_allowed
 from multiprocessing import Process, Queue
 from will.abstractions import Event, Message, Person, Channel
 from multiprocessing.queues import Empty
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
-from will.mixins import RosterMixin, RoomMixin, StorageMixin, PubSubMixin
+from will.mixins import RoomMixin, StorageMixin, PubSubMixin
 
 # TODO: Cleanup unused urls
 ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
@@ -33,7 +35,66 @@ ALL_ROOMS_URL = ("https://%(server)s/v2/room?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s&expand=items")
 
 
-class HipchatXMPPClient(ClientXMPP, RosterMixin, RoomMixin, StorageMixin, PubSubMixin):
+class HipChatRosterMixin(object):
+    @property
+    def people(self):
+        if not hasattr(self, "_people"):
+            self._people = self.load('will_hipchat_people', {})
+        return self._people
+
+    @property
+    def internal_roster(self):
+        logging.warn(
+            "mixin.internal_roster has been deprecated.  Please use mixin.people instead. "
+            "internal_roster will be removed at the end of 2017"
+        )
+        return self.people
+
+    def get_user_by_full_name(self, name):
+        # TODO: Fix this better for shell, etc
+        for jid, info in self.people.items():
+            if info["name"] == name:
+                return info
+
+        return {"jid": "123", "hipchat_id": "123"}
+
+    def get_user_by_nick(self, nick):
+        for jid, info in self.people.items():
+            if info["nick"] == nick:
+                return info
+        return {"jid": "123", "hipchat_id": "123"}
+
+    def get_user_by_jid(self, jid):
+        if jid in self.people:
+            return self.people[jid]
+
+        return {"jid": "123", "hipchat_id": "123"}
+
+    def get_user_from_message(self, message):
+        if message["type"] == "groupchat":
+            return self.get_user_by_full_name(message["mucnick"])
+        elif message['type'] in ('chat', 'normal'):
+            jid = ("%s" % message["from"]).split("/")[0]
+            return self.get_user_by_jid(jid)
+        else:
+            return {"jid": "123", "hipchat_id": "123"}
+
+    def message_is_from_admin(self, message):
+        nick = self.get_user_from_message(message)['nick']
+        return is_admin(nick)
+
+    def message_is_allowed(self, message, acl):
+        nick = self.get_user_from_message(message)['nick']
+        return is_acl_allowed(nick, acl)
+
+    def get_user_by_hipchat_id(self, id):
+        for jid, info in self.people.items():
+            if info["hipchat_id"] == id:
+                return info
+        return None
+
+
+class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin, PubSubMixin):
 
     def start_xmpp_client(self, xmpp_bridge_queue=None, backend_name=""):
         logger = logging.getLogger(__name__)
