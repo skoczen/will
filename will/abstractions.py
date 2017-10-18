@@ -137,7 +137,7 @@ class Person(Bunch):
 
     @property
     def nick(self):
-        logging.warn("sender.nick is deprecated, and will be removed at the end of 2017")
+        logging.warn("sender.nick is deprecated and will be removed eventually. Please use sender.handle instead!")
         return self.handle
 
 

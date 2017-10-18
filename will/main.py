@@ -572,6 +572,7 @@ To set your %(name)s:
                     if event.type == "message.incoming":
                         # A message just got dropped off one of the IO Backends.
                         # Send it to analysis.
+                        
 
                         analysis_threads[event.original_incoming_event_hash] = {
                             "count": 0,
@@ -642,6 +643,18 @@ To set your %(name)s:
                         except:
                             logging.critical(
                                 "Error publishing no_response for %s.  \n\n%s\nContinuing...\n" % (
+                                    event.original_incoming_event_hash,
+                                    traceback.format_exc()
+                                )
+                            )
+                            pass
+                    elif event.type == "message.not_allowed":
+                        logging.info("Publishing not allowed for %s" % (event.original_incoming_event_hash,))
+                        try:
+                            self.publish("message.outgoing.%s" % event.data.backend, event)
+                        except:
+                            logging.critical(
+                                "Error publishing not_allowed for %s.  \n\n%s\nContinuing...\n" % (
                                     event.original_incoming_event_hash,
                                     traceback.format_exc()
                                 )

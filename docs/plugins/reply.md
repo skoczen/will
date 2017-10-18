@@ -38,7 +38,7 @@ Sometimes you want will to ping you - that's where @name mentions are great.  To
 ```python
 @respond_to("^hi")   # Basic
 def hi(self, message):
-    self.reply(message, "hello, %s!" % message.sender.nick)
+    self.reply(message, "hello, %s!" % message.sender.handle)
 ```
 
 ![Hi, Hello, username!](../img/hi_hello.gif)

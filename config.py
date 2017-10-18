@@ -73,7 +73,7 @@ PLUGIN_BLACKLIST = [
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.hipchat",
     # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
     "will.backends.io_adapters.slack",
@@ -173,6 +173,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 # Turn up or down Will's logging level
 # LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOGLEVEL = "WARNING"
 # LOGLEVEL = "INFO"
 
 # Turn on or off Will's profiling
@@ -191,9 +192,12 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # in respond_to and hear actions.
 # Group names can be any string, and the list is composed of user handles.
 # ACL = {
-#     "admins": ["steven", "will"]
+#     "admins": ["sarah", "sue", "steven"]
 # }
-
+#
+# By default, if no ACL is set, all users can perform all actions - but warnings
+# will be printed to the console.  To disable those warnings, set DISABLE_ACL to True
+# DISABLE_ACL = False
 
 # Sets a different storage backend.  If unset, defaults to redis.
 # If you use a different backend, make sure to add their required settings.
@@ -206,7 +210,11 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # ZEROMQ_URL = "tcp://127.0.0.1:15555"
 
 
-# Disable SSL checks.  Strongly reccomended this is not set to True.
+# Rocket.Chat server URL and port as necessary
+# ROCKETCHAT_URL = "http://localhost:3000"
+
+
+# Disable Hipchat SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
 
 # Turn on/off encryption in the pub/sub layer (default is on).
@@ -230,6 +238,3 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Google Application key for "image me" command
 # GOOGLE_API_KEY = "FILL THIS IN"
 # GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"
-
-# Rocket.Chat server URL and port as necessary
-# ROCKETCHAT_URL = "http://localhost:3000"

@@ -1,4 +1,4 @@
-import imp
+
 import logging
 import traceback
 import requests
@@ -18,49 +18,18 @@ class AllBackend(ExecutionBackend):
             try:
                 had_one_reply = False
                 for m in message.generation_options:
-                    logging.info("handle_execution")
-                    logging.info(m)
-                    logging.info(m.__dict__)
-                    logging.info(m.context)
-                    logging.info(m.context.full_method_name)
-                    logging.info(self.bot)
-                    logging.info(self.bot.pubsub)
-
-                    # Question: do we need to do this via self.bot, or can we re-instantiate
-                    # the execution thread (and in the process, magically provide/handle self.message)?
-                    module = imp.load_source(m.context.plugin_info["parent_name"], m.context.plugin_info["parent_path"])
-                    logging.info("module")
-                    logging.info(module)
-                    cls = getattr(module, m.context.plugin_info["name"])
-                    # Do we need self.bot?
-                    instantiated_module = cls(message=message, bot=self.bot)
-                    logging.info("instantiated_module")
-                    logging.info(instantiated_module)
-                    method = getattr(instantiated_module, m.context.function_name)
-
-                    # live_listener = self.bot.message_listeners[m.context.full_method_name]
-                    thread_args = [message, ] + m.context["args"]
-
-                    self.execute(
-                        method,
-                        *thread_args,
-                        **m.context.search_matches
-                    )
-                    logging.info("Executed")
+                    self.execute(message, m)
                     had_one_reply = True
+
                 # TODO: Abstract this into a base method (Raise?)
                 if not had_one_reply:
-                    self.bot.pubsub.publish(
-                        "message.no_response",
-                        message.data,
-                        reference_message=message.data.original_incoming_event
-                    )
+                    self.no_response(message)
 
                 return {}
             except:
                 logging.critical(
                     "Error running %s.  \n\n%s\nContinuing...\n" % (
-                        m.context.full_method_name,
+                        message.context.full_method_name,
                         traceback.format_exc()
                     )
                 )

@@ -211,6 +211,13 @@ def import_settings(quiet=True):
             if "WILL_ADMINS" in os.environ:
                 settings["ADMINS"] = [a.strip().lower() for a in settings.get('ADMINS', '').split(';') if a.strip()]
 
+        if "ADMINS" in settings and settings["ADMINS"] != "*":
+            warn("ADMINS is now deprecated, and will be removed at the end of 2017.  Please use ACL instead. See below for details")
+            note("Change your config.py to:\n  ACL = {\n     'admins': %s\n  }" % settings["ADMINS"])
+
+        if "DISABLE_ACL" not in settings:
+            settings["DISABLE_ACL"] = False
+
         if "PROXY_URL" in settings:
             parsed_proxy_url = parse.urlparse(settings["PROXY_URL"])
             settings["USE_PROXY"] = True
@@ -225,13 +232,14 @@ def import_settings(quiet=True):
             settings["EVENT_LOOP_INTERVAL"] = 0.025
 
         if "SECRET_KEY" not in settings:
-            note(
-                "No SECRET_KEY specified.  Auto-generating one specific to this run of Will.\n" +
-                "  Know that will won't be able to catch up on old messages or work in a multicomponent install without one."
-            )
-            settings["SECRET_KEY"] = uuid.uuid4().hex
-            os.environ["WILL_SECRET_KEY"] = settings["SECRET_KEY"]
-            os.environ["WILL_EPHEMERAL_SECRET_KEY"] = "True"
+            if not quiet:
+                note(
+                    "No SECRET_KEY specified.  Auto-generating one specific to this run of Will.\n" +
+                    "  Know that will won't be able to catch up on old messages or work in a multicomponent install without one."
+                )
+                settings["SECRET_KEY"] = uuid.uuid4().hex
+                os.environ["WILL_SECRET_KEY"] = settings["SECRET_KEY"]
+                os.environ["WILL_EPHEMERAL_SECRET_KEY"] = "True"
 
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):

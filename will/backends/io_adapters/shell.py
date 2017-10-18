@@ -22,7 +22,7 @@ class ShellBackend(StdInOutIOBackend):
     internal_name = "will.backends.io_adapters.shell"
     partner = Person(
         id="you",
-        handle="you",
+        handle="shelluser",
         source=Bunch(),
         name="Friend",
     )

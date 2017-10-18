@@ -8,7 +8,7 @@ class EmergencyContactsPlugin(WillPlugin):
     def set_my_info(self, message, contact_info=""):
         """set my contact info to ____: Set your emergency contact info."""
         contacts = self.load("contact_info", {})
-        contacts[message.sender.nick] = {
+        contacts[message.sender.handle] = {
             "info": contact_info,
             "name": message.sender.name,
         }
