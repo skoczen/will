@@ -122,7 +122,7 @@ def import_settings(quiet=True):
             settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
 
         if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
-            settings["ENABLE_INTERNAL_ENCRYPTION"] = False
+            settings["ENABLE_INTERNAL_ENCRYPTION"] = True
 
         if "HTTPSERVER_PORT" not in settings:
             # For heroku

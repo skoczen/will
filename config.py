@@ -195,13 +195,6 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # }
 
 
-# Deprecated - please use ACL, above, instead:  User handles who are allowed to perform
-# `admin_only` plugins.  Defaults to everyone.
-# ADMINS = [
-#     "steven",
-#     "levi",
-# ]
-
 # Sets a different storage backend.  If unset, defaults to redis.
 # If you use a different backend, make sure to add their required settings.
 # STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
@@ -216,9 +209,9 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Disable SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
 
-# Turn on encryption in the pub/sub layer.  Causes a small speed bump,
-# but secures messages in an untrusted environment.
-ENABLE_INTERNAL_ENCRYPTION = True
+# Turn on/off encryption in the pub/sub layer (default is on).
+# Causes a small speed bump, but secures messages in an untrusted environment.
+# ENABLE_INTERNAL_ENCRYPTION = False
 
 # Mailgun config, if you'd like will to send emails.
 # DEFAULT_FROM_EMAIL="will@example.com"
