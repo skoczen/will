@@ -109,7 +109,39 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         #         sender = message.sender
         #     self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
-    def reply(self, event, content, **kwargs):
+    def reply(self, event, content=None, **kwargs):
+        # Be really smart about what we're getting back.
+        if (
+            (
+                (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Message") or
+                (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Event")
+            ) and type(content) == type("words")
+        ):
+            # 1.x world - user passed a message and a string.  Keep rolling.
+            pass
+        elif (
+                (
+                    (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Message") or
+                    (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Event")
+                ) and type(event) == type("words")
+        ):
+            # User passed the string and message object backwards, and we're in a 1.x world
+            temp_content = content
+            content = event
+            event = temp_content
+            del temp_content
+        elif (
+            type(event) == type("words") and
+            not content
+        ):
+            # We're in the Will 2.0 automagic event finding.
+            content = event
+            event = self.message
+
+        else:
+            # Who knows what happened.  Let it blow up.
+            pass
+
         # Be smart about backend.
         message = event.data
 
@@ -120,28 +152,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 source_message=message,
                 kwargs=kwargs,
             ))
-
-        # # Valid kwargs:
-        # # color: yellow, red, green, purple, gray, random.  Default is green.
-        # # html: Display HTML or not. Default is False
-        # # notify: Ping everyone. Default is False
-        # content = self._prepared_content(content, message, kwargs)
-        # if message is None or message["type"] == "groupchat":
-        #     # Reply, speaking to the room.
-        #     try:
-        #         content = "@%s %s" % (message.sender["nick"], content)
-        #     except TypeError:
-        #         content = "%s\nNote: I was told to reply, but this message didn't come from a person!" % (content,)
-
-        #     self.say(content, message=message, **kwargs)
-
-        # elif message['type'] in ('chat', 'normal'):
-        #     # Reply to the user (1-1 chat)
-        #     if "sender" in message:
-        #         sender = message["sender"]
-        #     else:
-        #         sender = message.sender
-        #     self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
     def set_topic(self, topic, message=None, room=None):
 
