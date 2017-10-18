@@ -63,7 +63,7 @@ class MorningPlugin(WillPlugin):
 
     @respond_to("^good morning")
     def good_morning(self, message):
-        self.reply(message, "oh, g'morning!")
+        self.reply("oh, g'morning!")
     """)
 
     print("  /templates")

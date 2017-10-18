@@ -12,4 +12,4 @@ class HomePagePlugin(WillPlugin):
 
     @respond_to("(what is|what's) your (website|url)")
     def what_is_website(self, message):
-        self.reply(message, "It's %s" % settings.PUBLIC_URL)
+        self.reply("It's %s" % settings.PUBLIC_URL)
