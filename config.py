@@ -139,6 +139,10 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Set > 1024 to run without elevated permission.
 # HTTPSERVER_PORT = "9000"
 
+# Your will's mention handle. (aka @will)  Note that this is not backend-specific,
+# and is only used for the generation of help text.
+# WILL_HANDLE = "will"
+
 # ------------------------------------------------------------------------------------
 # Optional settings
 # ------------------------------------------------------------------------------------

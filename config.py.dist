@@ -114,9 +114,6 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Hipchat settings
 # ------------------------------------------------------------------------------------
 
-# Ideally, set these in the environment with the WILL_ prefix.
-# HIPCHAT_HANDLE = 'will'
-
 
 # ------------------------------------------------------------------------------------
 # Slack settings
