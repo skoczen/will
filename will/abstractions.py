@@ -8,6 +8,7 @@ from will.utils import Bunch
 
 
 class Message(object):
+    will_internal_type = "Message"
     REQUIRED_FIELDS = [
         "is_direct",
         "is_private_chat",
@@ -72,6 +73,7 @@ class Message(object):
 
 
 class Event(Bunch):
+    will_internal_type = "Event"
 
     REQUIRED_FIELDS = [
         "type",
@@ -104,6 +106,7 @@ class Event(Bunch):
 
 class Person(Bunch):
     will_is_person = True
+    will_internal_type = "Person"
     REQUIRED_FIELDS = [
         "id",
         "handle",
@@ -142,6 +145,7 @@ class Person(Bunch):
 
 
 class Channel(Bunch):
+    will_internal_type = "Channel"
     REQUIRED_FIELDS = [
         "id",
         "name",
