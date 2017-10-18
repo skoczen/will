@@ -41,6 +41,7 @@ class SlackBackend(IOBackend, SleepMixin):
     def normalize_incoming_event(self, event):
 
         if (
+            "type" in event and
             event["type"] == "message" and
             ("subtype" not in event or event["subtype"] != "message_changed") and
             # Ignore thread summary events (for now.)
