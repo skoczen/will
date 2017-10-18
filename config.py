@@ -242,3 +242,6 @@ LOGLEVEL = "WARNING"
 # Google Application key for "image me" command
 # GOOGLE_API_KEY = "FILL THIS IN"
 # GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"
+
+# Internal, used for helpful output when upgrades are installed
+WILL_RELEASE_VERSION = 2.0

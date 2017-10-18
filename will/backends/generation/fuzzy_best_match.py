@@ -82,12 +82,6 @@ class FuzzyBestMatch(GenerationBackend):
                             ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
                             message.is_direct
                         )
-
-                        # TODO: Get ACL working again.
-                        # It's from admins only and sender is an admin, or it's not from admins only
-                        # and ((l['admin_only'] and self.message_is_from_admin(msg)) or (not l['admin_only']))
-                        # # It's available only to the members of one or more ACLs, or no ACL in use
-                        # and ((len(l['acl']) > 0 and self.message_is_allowed(msg, l['acl'])) or (len(l['acl']) == 0))
                 ):
                     fuzzy_regex = self._generate_compiled_regex(l)
 

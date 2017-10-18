@@ -267,7 +267,8 @@ def import_settings(quiet=True):
             if not quiet:
                 note(
                     "No SECRET_KEY specified.  Auto-generating one specific to this run of Will.\n" +
-                    "  Know that will won't be able to catch up on old messages or work in a multicomponent install without one."
+                    "  Know that Will won't be able to catch up on old messages\n" +
+                    "  or work in a multicomponent install without one."
                 )
                 settings["SECRET_KEY"] = uuid.uuid4().hex
                 os.environ["WILL_SECRET_KEY"] = settings["SECRET_KEY"]
