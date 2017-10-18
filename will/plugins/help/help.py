@@ -10,7 +10,7 @@ class HelpPlugin(WillPlugin):
         # help_data = self.load("help_files")
         selected_modules = help_modules = self.load("help_modules")
 
-        self.say("Sure thing, %s." % message.sender.nick)
+        self.say("Sure thing, %s." % message.sender.handle)
 
         help_text = "Here's what I know how to do:"
         if plugin and plugin in help_modules:

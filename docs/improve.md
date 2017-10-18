@@ -160,7 +160,12 @@ Here's what's new:
 - Slack support
 - CLI/Shell backend
 - [Rocket.chat](https://rocket.chat/) support, thanks to [antgel](https://github.com/antgel)
+- Lots more intelligence around required settings and verification, to make first starting and debugging Will easier.
 
+
+This release also changes a few bits of behavior, to be consistent:
+- `admin_only` is explicitly flagged for deprecation and removal, to be replaced by the ACL system introduced in 2015 (largely, this is because having two different access control systems is crazy and painful.)  Switching is as easy as adding `ACL = {'admins': ['steven', 'will']}` to your config.py and find/replacing `admin_only=True` with `acl=['admins',] in your codebase.  For now, Will handles backwards compatability by mapping the old settings into the new places, but he won't forever.  Thanks for updating, and making ongoing maintenence simpler!
+- If no ACLs are specified and users try to perform restricted commands, they'll be allowed as before, but Will will complain to the console. A new `DISABLE_ACL` setting has been added to turn off the complaining.
 
 This release addresses a number of bugs and smaller features, including:
 
