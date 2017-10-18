@@ -79,8 +79,12 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
         self.exiting = False
 
         # Find all the PLUGINS modules
-        plugins = settings.PLUGINS
-        self.plugins_dirs = {}
+        try:
+            plugins = settings.PLUGINS
+            self.plugins_dirs = {}
+        except:
+            # We're missing settings. They handle that.
+            sys.exit(1)
 
         # Set template dirs.
         full_path_template_dirs = []

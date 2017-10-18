@@ -1,8 +1,10 @@
 import os
+import sys
 import uuid
 from will.utils import show_valid, warn, note, error
 from clint.textui import puts, indent
 from six.moves.urllib import parse
+from six.moves import input
 
 
 def import_settings(quiet=True):
@@ -51,7 +53,25 @@ def import_settings(quiet=True):
     with indent(2):
         try:
             had_warning = False
-            import config
+            try:
+                import config
+            except ImportError:
+                # Missing config.py.  Check for config.py.dist
+                if os.path.isfile("config.py.dist"):
+                    confirm = input(
+                        "Hi, looks like you're just starting up!\nI didn't find a config.py, but I do see config.py.dist here. Want me to use that? (y/n) "
+                    ).lower()
+                    if confirm in ["y", "yes"]:
+                        print("Great! One moment.\n\n")
+                        os.rename("config.py.dist", "config.py")
+                        import config
+                    else:
+                        print("Ok.  I can't start without one though. Quitting now!")
+                        sys.exit(1)
+                else:
+                    error("I'm missing my config.py file. Usually one comes with the installation - maybe it got lost?")
+                    sys.exit(1)
+
             for k, v in config.__dict__.items():
                 # Ignore private variables
                 if "__" not in k:
@@ -73,7 +93,7 @@ def import_settings(quiet=True):
         puts("Verifying settings... ")
 
     with indent(2):
-        # Deprecation and backwards-compatability for Will 1.x-> 2.x
+        # Deprecation and backwards-compatibility for Will 1.x-> 2.x
         DEPRECATED_BUT_MAPPED_SETTINGS = {
             "USERNAME": "HIPCHAT_USERNAME",
             "PASSWORD": "HIPCHAT_PASSWORD",
