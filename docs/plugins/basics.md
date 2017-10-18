@@ -37,7 +37,7 @@ class BonjourPlugin(WillPlugin):
     @respond_to("bonjour")
     def say_bonjour_will(self, message):
         """bonjour: I know how to say bonjour! In French!"""
-        self.reply(message, "bonjour!")
+        self.reply("bonjour!")
 
 
 ```

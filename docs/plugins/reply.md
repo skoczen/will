@@ -11,21 +11,18 @@ Like any normal person, will can talk to the chat room, or in 1-1 chats.  To tal
 @respond_to("bonjour")
 def say_bonjour_will(self, message):
     # Awesome stuff
-    self.say("Bonjour!", message=message)
+    self.say("Bonjour!")
 ```
 
 ![Bonjour!](../img/only_bonjour.gif)
 
-Note that we pass `messsage` along.  This allows will to route his reply to the correct room.  Without it, he'll just speak to the `DEFAULT_ROOM`.
-
 `say()` comes with a number of options, including color, html, and ping notify. 
 
 ```python
-self.say(content, message=None, room=None, html=False, color="green", notify=False)
+self.say(content, room=None, html=False, color="green", notify=False)
 ```
 
 - **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
-- **`message`**: (optional) The incoming message object
 - **`room`**: (optional) The room object (from self.available_rooms) to send the message to.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". 
@@ -38,18 +35,16 @@ Sometimes you want will to ping you - that's where @name mentions are great.  To
 ```python
 @respond_to("^hi")   # Basic
 def hi(self, message):
-    self.reply(message, "hello, %s!" % message.sender.handle)
+    self.reply("hello, %s!" % message.sender.handle)
 ```
 
 ![Hi, Hello, username!](../img/hi_hello.gif)
 
-Note the order of arguments is different here, and `messsage` is required. All the options: 
+All the options: 
 
 ```python
-self.reply(message, content, html=False, color="green", notify=False)
+self.reply(content, html=False, color="green", notify=False)
 ```
-
-- **`message`**: The incoming message object.  Required
 - **`content`**: the content you want to send to the room. HTML or plain text.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".

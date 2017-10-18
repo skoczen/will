@@ -8,4 +8,4 @@ class BonjourPlugin(WillPlugin):
     @respond_to("^bonjour$")
     def bonjour(self, message):
         """bonjour: Je parle un petit français aussi!"""
-        self.reply(message, "bonjour!")
+        self.reply("bonjour!")
