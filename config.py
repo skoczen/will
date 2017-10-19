@@ -177,7 +177,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 # Turn up or down Will's logging level
 # LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-LOGLEVEL = "DEBUG"
+# LOGLEVEL = "DEBUG"
 # LOGLEVEL = "INFO"
 
 # Turn on or off Will's profiling
