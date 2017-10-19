@@ -73,7 +73,7 @@ PLUGIN_BLACKLIST = [
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
-    # "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.hipchat",
     # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
     "will.backends.io_adapters.slack",
@@ -177,7 +177,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 # Turn up or down Will's logging level
 # LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-LOGLEVEL = "WARNING"
+LOGLEVEL = "DEBUG"
 # LOGLEVEL = "INFO"
 
 # Turn on or off Will's profiling

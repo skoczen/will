@@ -429,7 +429,7 @@ class RocketChatBackend(IOBackend):
     # Gets updates from REST and Realtime APIs.
     def _get_updates(self):
         try:
-
+            polling_interval_seconds = 5
             self.rc.on('changed', self._changed_callback)
             self._get_rest_metadata()
 

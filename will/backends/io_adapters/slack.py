@@ -174,8 +174,8 @@ class SlackBackend(IOBackend, SleepMixin):
         if hasattr(event, "kwargs"):
             data.update(event.kwargs)
 
+            # Add slack-specific functionality
             if "color" in event.kwargs:
-
                 data.update({
                     "attachments": json.dumps([
                         {
