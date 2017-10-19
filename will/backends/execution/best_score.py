@@ -6,7 +6,6 @@ import warnings
 
 from will import settings
 from will.decorators import require_settings
-from will.plugin import Event
 from will.utils import Bunch
 from .base import ExecutionBackend
 
