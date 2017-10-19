@@ -43,6 +43,14 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
         content = re.sub(r'>\s+<', '><', content)
         return content
 
+    def _trim_for_execution(self, message):
+        # Trim it down
+        if hasattr(message, "analysis"):
+            message.analysis = None
+        if hasattr(message, "source_message") and hasattr(message.source_message, "analysis"):
+            message.source_message.analysis = None
+        return message
+
     def say(self, content, message=None, room=None, **kwargs):
         logging.info("self.say")
         logging.info(content)
@@ -53,6 +61,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
         backend = False
         if not message:
             message = self.message
+        message = self._trim_for_execution(message)
         logging.info(message)
 
         if hasattr(message, "backend"):
@@ -72,6 +81,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
                 backend = settings.DEFAULT_BACKEND
 
         logging.info("backend: %s" % backend)
+
         if backend:
             logging.info("putting in queue: %s" % content)
             self.publish("message.outgoing.%s" % backend, Event(

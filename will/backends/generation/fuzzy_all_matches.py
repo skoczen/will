@@ -63,14 +63,9 @@ class FuzzyAllMatchesBackend(GenerationBackend):
                     self.match_choices.append(l["regex_pattern"])
 
             search_matches = fuzz_process.extract(message.content, self.match_choices)
-            # logging.info("search_matches")
-            # logging.info(search_matches)
 
             for match_str, confidence in search_matches:
                 l = self.match_methods[match_str]
-                logging.info(" Match (%s) - %s" % (
-                    confidence, match_str))
-                regex_matches = l["regex"].search(message.content)
                 if (
                         # The search regex matches and
                         # regex_matches
@@ -91,6 +86,7 @@ class FuzzyAllMatchesBackend(GenerationBackend):
                             message.is_direct
                         )
                 ):
+                    logging.info(" Match (%s) - %s" % (confidence, match_str))
                     fuzzy_regex = self._generate_compiled_regex(l)
 
                     regex_matches = fuzzy_regex.search(message.content)

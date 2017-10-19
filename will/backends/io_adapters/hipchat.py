@@ -26,8 +26,8 @@ from will.mixins import RoomMixin, StorageMixin, PubSubMixin
 ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
 ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 ROOM_URL = "https://%(server)s/v2/room/%(room_id)s/?auth_token=%(token)s"
-PRIVATE_MESSAGE_URL = "https://%(server)s/v2/user/%(user_id)s/message?auth_token=%(token)s"
 SET_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
+PRIVATE_MESSAGE_URL = "https://%(server)s/v2/user/%(user_id)s/message?auth_token=%(token)s"
 USER_DETAILS_URL = "https://%(server)s/v2/user/%(user_id)s?auth_token=%(token)s"
 ALL_USERS_URL = ("https://%(server)s/v2/user?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s")
@@ -86,7 +86,7 @@ class HipChatRosterMixin(object):
                 return self.get_user_by_full_name(message["mucnick"])
 
         elif message['type'] in ('chat', 'normal'):
-            jid = ("%s" % message["from"]).split("/")[0]
+            jid = ("%s" % message["from"]).split("@")[0].split("_")[1]
             return self.get_user_by_jid(jid)
         else:
             return None
@@ -347,7 +347,8 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
                 "notify": notify,
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
+            r.raise_for_status()
         except:
             logging.critical("Error in send_direct_message: \n%s" % traceback.format_exc())
 
@@ -476,21 +477,20 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
 
     def normalize_incoming_event(self, event):
         logging.debug("hipchat: normalize_incoming_event - %s" % event)
-
         if event["type"] in ("chat", "normal", "groupchat") and ("from_jid" in event or "from" in event):
 
             sender = self.get_user_from_message(event)
-            channel = clean_for_pickling(self.channels[event["xmpp_jid"]])
             interpolated_handle = "@%s" % self.me.handle
             will_is_mentioned = False
             will_said_it = False
+            channel = None
+            if "xmpp_jid" in event and event["xmpp_jid"]:
+                channel = clean_for_pickling(self.channels[event["xmpp_jid"]])
+                is_private_chat = False
+            else:
+                if event["type"] in ("chat", "normal"):
+                    is_private_chat = True
 
-            is_private_chat = False
-
-            if event["type"] in ("chat", "normal"):
-                is_private_chat = True
-
-            # <@U5GUL9D9N> hi
             is_direct = False
             if is_private_chat or event["body"].startswith(interpolated_handle):
                 is_direct = True
@@ -501,7 +501,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
             if interpolated_handle in event["body"]:
                 will_is_mentioned = True
 
-            if sender == self.me.id:
+            if sender.id == self.me.id:
                 will_said_it = True
 
             m = Message(
@@ -534,21 +534,23 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
         if event.type in ["say", "reply"]:
             event.content = re.sub(r'>\s+<', '><', event.content)
 
-            if hasattr(event, "source_message") and event.source_message and hasattr(event.source_message, "data"):
-                if event.source_message.data.is_group_chat:
-                    self.send_room_message(
-                        event.source_message.data.channel.id,
-                        event.content,
-                        **kwargs
-                    )
+            if hasattr(event, "source_message") and event.source_message:
+                send_source = event.source_message
+                if hasattr(event.source_message, "data"):
+                    send_source = event.source_message.data
+
+                if send_source.is_private_chat:
+                    # Private, 1-1 chats.
+                    self.send_direct_message(send_source.sender.id, event.content, **kwargs)
+
                 else:
-                    event.source_message
-                    user_id = event.source_message.sender.id
-                    self.send_direct_message(
-                        user_id,
+                    # We're in a public room
+                    self.send_room_message(
+                        send_source.channel.id,
                         event.content,
                         **kwargs
                     )
+
             else:
                 # Came from webhook/etc
                 if "room" in kwargs:
