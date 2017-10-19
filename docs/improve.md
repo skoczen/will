@@ -149,7 +149,6 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
-
 #### 2.0 - ???
 
 TODO: Finish these

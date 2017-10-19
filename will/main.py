@@ -21,7 +21,6 @@ from os.path import abspath, dirname
 from multiprocessing import Process, Queue
 
 import bottle
-from listener import ListenerMixin
 from mixins import ScheduleMixin, StorageMixin, ErrorMixin, SleepMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin, PubSubMixin
 from backends import analysis, execution, generation, io_adapters
@@ -61,7 +60,7 @@ def yappi_aggregate(func, stats):
 
 
 class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
-              ErrorMixin, RoomMixin, ListenerMixin, PluginModulesLibraryMixin):
+              ErrorMixin, RoomMixin, PluginModulesLibraryMixin):
 
     def __init__(self, **kwargs):
         if "template_dirs" in kwargs:
