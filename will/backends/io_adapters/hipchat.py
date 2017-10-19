@@ -56,28 +56,40 @@ class HipChatRosterMixin(object):
             if info["name"] == name:
                 return info
 
-        return {"jid": "123", "hipchat_id": "123"}
+        return None
 
     def get_user_by_nick(self, nick):
         for jid, info in self.people.items():
             if info["nick"] == nick:
                 return info
-        return {"jid": "123", "hipchat_id": "123"}
+        return None
 
     def get_user_by_jid(self, jid):
         if jid in self.people:
             return self.people[jid]
 
-        return {"jid": "123", "hipchat_id": "123"}
+        return None
 
     def get_user_from_message(self, message):
         if message["type"] == "groupchat":
-            return self.get_user_by_full_name(message["mucnick"])
+            if "xmpp_jid" in message:
+                user = self.get_user_by_jid(message["xmpp_jid"])
+                if user:
+                    return user
+                elif "from" in message:
+                    full_name = message["from"].split("/")[1]
+                    user = self.get_user_by_full_name(full_name)
+                    if user:
+                        return user
+
+            if "mucnick" in message:
+                return self.get_user_by_full_name(message["mucnick"])
+
         elif message['type'] in ('chat', 'normal'):
             jid = ("%s" % message["from"]).split("/")[0]
             return self.get_user_by_jid(jid)
         else:
-            return {"jid": "123", "hipchat_id": "123"}
+            return None
 
     def message_is_from_admin(self, message):
         nick = self.get_user_from_message(message)['nick']
@@ -245,9 +257,6 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
         self._send_to_backend(msg)
 
     def message_recieved(self, msg):
-        print "message_recieved"
-        print msg.__dict__
-        print msg['type']
         if msg['type'] in ('chat', 'normal'):
             self._send_to_backend(msg)
 
@@ -284,12 +293,10 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
 
         stripped_msg.xmpp_jid = msg.getMucroom()
         stripped_msg.body = msg["body"]
-        print("putting in bridge queue")
-        print(stripped_msg)
         self.xmpp_bridge_queue.put(stripped_msg)
 
 
-class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
+class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
     friendly_name = "HipChat"
     internal_name = "will.backends.io_adapters.hipchat"
     required_settings = [
@@ -471,23 +478,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         logging.debug("hipchat: normalize_incoming_event - %s" % event)
 
         if event["type"] in ("chat", "normal", "groupchat") and ("from_jid" in event or "from" in event):
-            # Sample of group message
-            # {u'source_team': u'T5ACF70KV', u'text': u'test',
-            # u'ts': u'1495661121.838366', u'user': u'U5ACF70RH',
-            # u'team': u'T5ACF70KV', u'type': u'message', u'channel': u'C5JDAR2S3'}
 
-            # Sample of 1-1 message
-            # {u'source_team': u'T5ACF70KV', u'text': u'test',
-            # u'ts': u'1495662397.335424', u'user': u'U5ACF70RH',
-            # u'team': u'T5ACF70KV', u'type': u'message', u'channel': u'D5HGP0YE7'}
-            if "from_jid" in event:
-                sender = event["from_jid"]
-            else:
-                sender = event["from"]
-
-            event_sender_id = sender.split("@")[0].split("_")[1]
-
-            sender = self.people[event_sender_id]
+            sender = self.get_user_from_message(event)
             channel = clean_for_pickling(self.channels[event["xmpp_jid"]])
             interpolated_handle = "@%s" % self.me.handle
             will_is_mentioned = False
@@ -530,8 +522,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             return m
 
         else:
-            print("Unknown event type")
-            print(event)
+            # print("Unknown event type")
+            # print(event)
             return None
 
     def handle_outgoing_event(self, event):
@@ -542,14 +534,10 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         if event.type in ["say", "reply"]:
             event.content = re.sub(r'>\s+<', '><', event.content)
 
-            if hasattr(event, "source_message") and event.source_message:
-                if event.source_message.original_incoming_event.type == "groupchat":
-
-                    sys.stdout.write("\n\n\n")
-                    sys.stdout.write("%s" % event.source_message.channel)
-                    sys.stdout.flush()
+            if hasattr(event, "source_message") and event.source_message and hasattr(event.source_message, "data"):
+                if event.source_message.data.is_group_chat:
                     self.send_room_message(
-                        event.source_message.channel.id,
+                        event.source_message.data.channel.id,
                         event.content,
                         **kwargs
                     )
@@ -579,18 +567,18 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
 
         elif (
             event.type == "message.no_response" and
-            event.source_message.is_direct and
-            event.source_message.will_said_it is False
+            event.data.is_direct and
+            event.data.will_said_it is False
         ):
-            if event.source_message.original_incoming_event.type == "groupchat":
+            if event.data.original_incoming_event.type == "groupchat":
                 self.send_room_message(
-                    event.source_message.original_incoming_event.room.room_id,
+                    event.data.channel.id,
                     random.choice(UNSURE_REPLIES),
                     **kwargs
                 )
             else:
                 self.send_direct_message(
-                    event.source_message.original_incoming_event.sender["hipchat_id"],
+                    event.data.sender.id,
                     random.choice(UNSURE_REPLIES),
                     **kwargs
                 )
@@ -601,8 +589,6 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 try:
                     input_event = self.xmpp_bridge_queue.get(timeout=settings.EVENT_LOOP_INTERVAL)
                     if input_event:
-                        print "input_event"
-                        print input_event
                         self.handle_incoming_event(input_event)
 
                 except Empty:
