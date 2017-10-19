@@ -365,7 +365,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
-            r.rasie_for_status()
+            r.raise_for_status()
 
         except:
             logging.critical("Error in send_room_message: \n%s" % traceback.format_exc())
@@ -543,7 +543,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             event.content = re.sub(r'>\s+<', '><', event.content)
 
             if hasattr(event, "source_message") and event.source_message:
-                if event.source_message.source.type == "groupchat":
+                if event.source_message.original_incoming_event.type == "groupchat":
 
                     sys.stdout.write("\n\n\n")
                     sys.stdout.write("%s" % event.source_message.channel)
@@ -582,15 +582,15 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             event.source_message.is_direct and
             event.source_message.will_said_it is False
         ):
-            if event.source_message.source.type == "groupchat":
+            if event.source_message.original_incoming_event.type == "groupchat":
                 self.send_room_message(
-                    event.source_message.source.room.room_id,
+                    event.source_message.original_incoming_event.room.room_id,
                     random.choice(UNSURE_REPLIES),
                     **kwargs
                 )
             else:
                 self.send_direct_message(
-                    event.source_message.source.sender["hipchat_id"],
+                    event.source_message.original_incoming_event.sender["hipchat_id"],
                     random.choice(UNSURE_REPLIES),
                     **kwargs
                 )
