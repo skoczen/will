@@ -39,6 +39,12 @@ class RocketChatBackend(IOBackend):
                 "http://localhost:3000"
             ),
         },
+        {
+            "name": "ROCKETCHAT_HANDLE",
+            "obtain_at": (
+                "Will's mention name in Rocket.chat, e.g. @will is 'will'"
+            ),
+        },
     ]
 
     pp = pprint.PrettyPrinter(indent=4)
@@ -122,8 +128,6 @@ class RocketChatBackend(IOBackend):
                 logging.debug('Will didnt say it')
                 will_said_it = False
 
-            # TODO: Find out where backend_supports_acl is used.
-            # Perhaps it's useful.
             m = Message(
                 content=event['msg'],
                 type=event.type,
@@ -135,7 +139,7 @@ class RocketChatBackend(IOBackend):
                 channel=channel,
                 will_is_mentioned=will_is_mentioned,
                 will_said_it=will_said_it,
-                backend_supports_acl=False,
+                backend_supports_acl=True,
                 source=clean_for_pickling(event)
             )
             return m
@@ -244,8 +248,8 @@ class RocketChatBackend(IOBackend):
     # https://rocket.chat/docs/developer-guides/rest-api/
 
     def _rest_login(self):
-        params = {'username': settings.HIPCHAT_USERNAME,
-                  'password': settings.HIPCHAT_PASSWORD}
+        params = {'username': settings.ROCKETCHAT_USERNAME,
+                  'password': settings.ROCKETCHAT_PASSWORD}
         r = requests.post('{}login'.format(self.rcapi),
                           data=params)
         rj = r.json()
@@ -263,10 +267,7 @@ class RocketChatBackend(IOBackend):
         fetched = 0
         total = 0
 
-        # TODO: Why do I need to set handle here as done in slack.py?
-        # It should have been set as an envvar (otherwise how did
-        # we get this far?).
-        self.handle = settings.HIPCHAT_USERNAME
+        self.handle = settings.ROCKETCHAT_HANDLE
 
         people = {}
 
@@ -384,7 +385,7 @@ class RocketChatBackend(IOBackend):
         time.sleep(5)
 
     def _realtime_login(self):
-        params = [{'user': {'username': settings.HIPCHAT_USERNAME}, 'password': settings.HIPCHAT_PASSWORD}]
+        params = [{'user': {'username': settings.ROCKETCHAT_USERNAME}, 'password': settings.ROCKETCHAT_PASSWORD}]
         self.rc.call('login', params, self._login_callback)
 
     def _login_callback(self, error, result):
@@ -428,7 +429,6 @@ class RocketChatBackend(IOBackend):
     # Gets updates from REST and Realtime APIs.
     def _get_updates(self):
         try:
-            polling_interval_seconds = 5
 
             self.rc.on('changed', self._changed_callback)
             self._get_rest_metadata()

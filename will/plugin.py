@@ -43,21 +43,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
         content = re.sub(r'>\s+<', '><', content)
         return content
 
-    def say(self, content, message=None, room=None, card=None, **kwargs):
-        # Valid kwargs:
-        # color: yellow, red, green, purple, gray, random.  Default is green.
-        # html: Display HTML or not. Default is False
-        # notify: Ping everyone. Default is False
+    def say(self, content, message=None, room=None, **kwargs):
         logging.info("self.say")
         logging.info(content)
 
         if not "room" in kwargs and room:
             kwargs["room"] = room
-
-        # TODO: Get this abstracted and working.
-        # card: Card see: https://developer.atlassian.com/hipchat/guide/sending-messages
-        if not "card" in kwargs and card:
-            kwargs["card"] = card
 
         backend = False
         if not message:
@@ -89,26 +80,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
                 source_message=message,
                 kwargs=kwargs,
             ))
-
-        # content = self._prepared_content(content, message, kwargs)
-        # rooms = []
-        # if room is not None:
-        #     try:
-        #         room_id = room["room_id"]
-        #     except KeyError:
-        #         logging.error(u'"{0}" is not a room object.'.format(room))
-        #     else:
-        #         self.send_room_message(room_id, content, card=card, **kwargs)
-        # elif message is None or message["type"] == "groupchat":
-        #     rooms = self._rooms_from_message_and_room(message, room)
-        #     for r in rooms:
-        #         self.send_room_message(r["room_id"], content, card=card, **kwargs)
-        # else:
-        #     if "sender" in message:
-        #         sender = message["sender"]
-        #     else:
-        #         sender = message.sender
-        #     self.send_direct_message(sender["hipchat_id"], content, **kwargs)
 
     def reply(self, event, content=None, **kwargs):
         # Be really smart about what we're getting back.
