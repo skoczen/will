@@ -172,6 +172,7 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
+        self.add_event_handler("groupchat_invite", self.room_invite)
 
         self.register_plugin('xep_0045')  # MUC
 
@@ -191,6 +192,14 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
         # TODO: Pull this and related.
         # self.update_will_roster_and_rooms()
 
+        for r in self.rooms:
+            if "xmpp_jid" in r:
+                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+
+    def room_invite(self, event):
+        # TODO: Pull this and related.
+        # self.update_will_roster_and_rooms()
+        logging.info("Invite recieved for %s" % event)
         for r in self.rooms:
             if "xmpp_jid" in r:
                 self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
@@ -236,6 +245,9 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
         self._send_to_backend(msg)
 
     def message_recieved(self, msg):
+        print "message_recieved"
+        print msg.__dict__
+        print msg['type']
         if msg['type'] in ('chat', 'normal'):
             self._send_to_backend(msg)
 
@@ -272,7 +284,8 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
 
         stripped_msg.xmpp_jid = msg.getMucroom()
         stripped_msg.body = msg["body"]
-        # print("putting in bridge queue")
+        print("putting in bridge queue")
+        print(stripped_msg)
         self.xmpp_bridge_queue.put(stripped_msg)
 
 
@@ -455,9 +468,9 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
         return self._channels
 
     def normalize_incoming_event(self, event):
-        # print("hipchat: normalize_incoming_event - %s" % event)
+        logging.debug("hipchat: normalize_incoming_event - %s" % event)
 
-        if event["type"] in ("chat", "normal", "groupchat") and "from_jid" in event:
+        if event["type"] in ("chat", "normal", "groupchat") and ("from_jid" in event or "from" in event):
             # Sample of group message
             # {u'source_team': u'T5ACF70KV', u'text': u'test',
             # u'ts': u'1495661121.838366', u'user': u'U5ACF70RH',
@@ -467,7 +480,13 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             # {u'source_team': u'T5ACF70KV', u'text': u'test',
             # u'ts': u'1495662397.335424', u'user': u'U5ACF70RH',
             # u'team': u'T5ACF70KV', u'type': u'message', u'channel': u'D5HGP0YE7'}
-            event_sender_id = event["from_jid"].split("@")[0].split("_")[1]
+            if "from_jid" in event:
+                sender = event["from_jid"]
+            else:
+                sender = event["from"]
+
+            event_sender_id = sender.split("@")[0].split("_")[1]
+
             sender = self.people[event_sender_id]
             channel = clean_for_pickling(self.channels[event["xmpp_jid"]])
             interpolated_handle = "@%s" % self.me.handle
@@ -490,7 +509,7 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             if interpolated_handle in event["body"]:
                 will_is_mentioned = True
 
-            if event["from_jid"] == self.me.id:
+            if sender == self.me.id:
                 will_said_it = True
 
             m = Message(
@@ -511,8 +530,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
             return m
 
         else:
-            # print("Unknown event type")
-            # print(event)
+            print("Unknown event type")
+            print(event)
             return None
 
     def handle_outgoing_event(self, event):
@@ -582,6 +601,8 @@ class HipChatBackend(IOBackend, RoomMixin, StorageMixin):
                 try:
                     input_event = self.xmpp_bridge_queue.get(timeout=settings.EVENT_LOOP_INTERVAL)
                     if input_event:
+                        print "input_event"
+                        print input_event
                         self.handle_incoming_event(input_event)
 
                 except Empty:
