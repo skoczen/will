@@ -118,8 +118,10 @@ class Scheduler(ScheduleMixin, PluginModulesLibraryMixin):
             logging.critical("Scheduler run blew up.\n\n%s\nContinuing...\n", traceback.format_exc())
 
     def run_action(self, task):
-        if task["type"] == "room_message":
-            self.bot.send_room_message(task["room"]["room_id"], task["content"], *task["args"], **task["kwargs"])
+
+        if task["type"] == "message" and "topic" in task:
+            self.publish(task["topic"], task["event"])
+            # self.bot.send_room_message(task["room"]["room_id"], task["content"], *task["args"], **task["kwargs"])
         elif task["type"] == "direct_message":
             user = self.bot.get_user_by_jid(task["target_jid"])
             self.bot.send_direct_message(user["hipchat_id"], task["content"], *task["args"], **task["kwargs"])

@@ -173,6 +173,7 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
 
         self.nick = settings.HIPCHAT_NAME
         self.handle = settings.HIPCHAT_HANDLE
+        self.mention_handle = "@%s" %settings.HIPCHAT_HANDLE
 
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
@@ -419,6 +420,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
                 full_roster["%s" % (user['id'],)] = Person(
                     id=user["id"],
                     handle=user["mention_name"],
+                    mention_handle="@%s" % user["mention_name"],
                     source=clean_for_pickling(user),
                     name=user["name"],
                 )
@@ -431,6 +433,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
                     full_roster["%s" % (user['id'],)] = Person(
                         id=user["id"],
                         handle=user["mention_name"],
+                        mention_handle="@%s" % user["mention_name"],
                         source=clean_for_pickling(user),
                         name=user["name"],
                     )

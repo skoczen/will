@@ -268,6 +268,7 @@ class RocketChatBackend(IOBackend):
         total = 0
 
         self.handle = settings.ROCKETCHAT_HANDLE
+        self.mention_handle = "@%s" % settings.ROCKETCHAT_HANDLE
 
         people = {}
 
@@ -291,6 +292,7 @@ class RocketChatBackend(IOBackend):
                 person = Person(
                     id=user['_id'],
                     handle=user['username'],
+                    mention_handle="@%s" % user["username"],
                     source=clean_for_pickling(user)['username'],
                     name=user['name'],
                     timezone='GMT'

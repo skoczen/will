@@ -51,7 +51,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
             message.source_message.analysis = None
         return message
 
-    def say(self, content, message=None, room=None, **kwargs):
+    def say(self, content, message=None, room=None, package_for_scheduling=False, **kwargs):
         logging.info("self.say")
         logging.info(content)
 
@@ -83,15 +83,19 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
         logging.info("backend: %s" % backend)
 
         if backend:
-            logging.info("putting in queue: %s" % content)
-            self.publish("message.outgoing.%s" % backend, Event(
+            e = Event(
                 type="say",
                 content=content,
                 source_message=message,
                 kwargs=kwargs,
-            ))
+            )
+            if package_for_scheduling:
+                return e
+            else:
+                logging.info("putting in queue: %s" % content)
+                self.publish("message.outgoing.%s" % backend, e)
 
-    def reply(self, event, content=None, **kwargs):
+    def reply(self, event, content=None, message=None, package_for_scheduling=False, **kwargs):
         # Be really smart about what we're getting back.
         if (
             (
@@ -99,7 +103,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
                 (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Event")
             ) and type(content) == type("words")
         ):
-            # 1.x world - user passed a message and a string.  Keep rolling.
+            # "1.x world - user passed a message and a string.  Keep rolling."
             pass
         elif (
                 (
@@ -107,7 +111,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
                     (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Event")
                 ) and type(event) == type("words")
         ):
-            # User passed the string and message object backwards, and we're in a 1.x world
+            # "User passed the string and message object backwards, and we're in a 1.x world"
             temp_content = content
             content = event
             event = temp_content
@@ -116,24 +120,32 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
             type(event) == type("words") and
             not content
         ):
-            # We're in the Will 2.0 automagic event finding.
+            # "We're in the Will 2.0 automagic event finding."
             content = event
             event = self.message
 
         else:
-            # Who knows what happened.  Let it blow up.
+            # "No magic needed."
             pass
 
         # Be smart about backend.
-        message = event.data
+        if hasattr(event, "data"):
+            message = event.data
+        elif hasattr(self, "message") and hasattr(self.message, "data"):
+            message = self.message.data
 
         if hasattr(message, "backend"):
-            self.publish("message.outgoing.%s" % message.backend, Event(
+            e = Event(
                 type="reply",
                 content=content,
+                topic="message.outgoing.%s" % message.backend,
                 source_message=message,
                 kwargs=kwargs,
-            ))
+            )
+            if package_for_scheduling:
+                return e
+            else:
+                self.publish("message.outgoing.%s" % message.backend, e)
 
     def set_topic(self, topic, message=None, room=None):
 
@@ -148,11 +160,9 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
             )
 
     def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
-
-        content = self._prepared_content(content, message, kwargs)
-        if message is None or message["type"] == "groupchat":
-            rooms = self._rooms_from_message_and_room(message, room)
-            for r in rooms:
-                self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
-        elif message['type'] in ('chat', 'normal'):
-            self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
+        packaged_event = self.reply(None, content=content, message=message, package_for_scheduling=True)
+        self.add_outgoing_event_to_schedule(when, {
+            "type": "message",
+            "topic": packaged_event.topic,
+            "event": packaged_event,
+        })
