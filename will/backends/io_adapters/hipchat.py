@@ -328,7 +328,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
         },
     ]
 
-    def send_direct_message(self, user_id, message_body, html=False, notify=False, **kwargs):
+    def send_direct_message(self, user_id, message_body, html=False, card=None, notify=False, **kwargs):
         if kwargs:
             logging.warn("Unknown keyword args for send_direct_message: %s" % kwargs)
 
@@ -345,6 +345,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
                 "message": message_body,
                 "message_format": format,
                 "notify": notify,
+                "card": card,
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
@@ -370,6 +371,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
                 "message_format": format,
                 "color": color,
                 "notify": notify,
+                "card": card,
             }
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             r = requests.post(url, headers=headers, data=json.dumps(data), **settings.REQUESTS_OPTIONS)
