@@ -231,6 +231,11 @@ class SlackBackend(IOBackend, SleepMixin):
         except:
             pass
 
+        # Auto-link mention names
+        if data["text"].find("&lt;@") != -1:
+            data["text"] = data["text"].replace("&lt;@", "<@")
+            data["text"] = data["text"].replace("&gt;", ">")
+
         data.update({
             "token": settings.SLACK_API_TOKEN,
             "channel": channel_id,
@@ -250,7 +255,6 @@ class SlackBackend(IOBackend, SleepMixin):
         )
         resp_json = r.json()
         if not resp_json["ok"]:
-            # print(resp_json)
             assert resp_json["ok"]
 
     def _map_color(self, color):
@@ -281,6 +285,8 @@ class SlackBackend(IOBackend, SleepMixin):
 
     def _update_people(self):
         people = {}
+        if not hasattr(self, "client"):
+            self.client = SlackClient(settings.SLACK_API_TOKEN)
 
         self.handle = self.client.server.username
 
@@ -290,6 +296,7 @@ class SlackBackend(IOBackend, SleepMixin):
                 user_timezone = v.tz
             people[k] = Person(
                 id=v.id,
+                mention_handle="<@%s>" % v.id,
                 handle=v.name,
                 source=clean_for_pickling(v),
                 name=v.real_name,
@@ -297,6 +304,7 @@ class SlackBackend(IOBackend, SleepMixin):
             if v.name == self.handle:
                 self.me = Person(
                     id=v.id,
+                    mention_handle="<@%s>" % v.id,
                     handle=v.name,
                     source=clean_for_pickling(v),
                     name=v.real_name,
@@ -316,7 +324,7 @@ class SlackBackend(IOBackend, SleepMixin):
             if self.client.rtm_connect():
                 self._update_backend_metadata()
 
-                num_polls_between_updates = 20
+                num_polls_between_updates = 30 / settings.EVENT_LOOP_INTERVAL  # Every 30 seconds
                 current_poll_count = 0
                 while True:
                     events = self.client.rtm_read()
@@ -328,7 +336,7 @@ class SlackBackend(IOBackend, SleepMixin):
 
                     # Update channels/people/me/etc every 10s or so.
                     current_poll_count += 1
-                    if current_poll_count < num_polls_between_updates:
+                    if current_poll_count > num_polls_between_updates:
                         self._update_backend_metadata()
                         current_poll_count = 0
 

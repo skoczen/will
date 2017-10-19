@@ -23,6 +23,7 @@ class ShellBackend(StdInOutIOBackend):
     partner = Person(
         id="you",
         handle="shelluser",
+        mention_handle="@shelluser",
         source=Bunch(),
         name="Friend",
     )
@@ -85,6 +86,7 @@ class ShellBackend(StdInOutIOBackend):
         self.me = Person(
             id="will",
             handle="will",
+            mention_handle="@will",
             source=Bunch(),
             name="William T. Botterton",
         )

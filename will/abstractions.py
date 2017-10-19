@@ -110,6 +110,7 @@ class Person(Bunch):
     REQUIRED_FIELDS = [
         "id",
         "handle",
+        "mention_handle",
         "source",
         "name",
         "first_name"
