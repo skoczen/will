@@ -1,7 +1,6 @@
 import requests
 
 from will import settings
-from will.decorators import require_settings
 
 
 class EmailMixin(object):
@@ -16,7 +15,7 @@ class EmailMixin(object):
             else:
                 raise ValueError("Couldn't send email, from_email was None and there was no DEFAULT_FROM_EMAIL")
 
-        if email_list is None or len(email_list) == 0:
+        if not email_list:
             raise ValueError("Email list wasn't specified. Expecting a list of emails, got %s" % email_list)
 
         api_url = getattr(settings, 'MAILGUN_API_URL', None)

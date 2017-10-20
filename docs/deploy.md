@@ -75,6 +75,43 @@ git push heroku
 Simple.  For best-practices, see our continuous deployment recommendations below.
 
 
+## Depoly in Docker
+Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis. 
+
+### Pre-requisites
+You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you must start the image via the docker command with the correct arguments.
+
+### Step 1: Configure your container's environment variables
+In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:
+```bash 
+WILL_USERNAME
+WILL_PASSWORD
+WILL_V2_TOKEN
+```
+Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly. 
+
+### Step 2: Deploy your plugins and templates
+If you have any custom templates, create directories for your plugins and templates, and load your plugins and templates they'll be mounted when the container starts up giving your contanerized bot access to your templates.
+```bash 
+mkdir ./plugins ./templates
+```
+
+### Step 3: Build will.
+Run build your docker image locally.
+```bash
+docker-compose build 
+```
+
+### Step 4: Start the container
+Start your image from docker-compose using:
+```bash
+docker-compose up 
+```
+or to run the container in the background,
+```bash
+docker-compose up -d
+```
+
 ## Deploy Everywhere Else
 
 #### Will is Just Python

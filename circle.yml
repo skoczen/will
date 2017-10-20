@@ -5,4 +5,5 @@ test:
   override:
     - /home/ubuntu/will/will/scripts/test_run.sh
     - coverage run -m nose
+    - tox
     - flake8
