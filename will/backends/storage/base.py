@@ -1,9 +1,9 @@
 import redis
 import urlparse
-from will.mixins import SettingsMixin
+from will.mixins import SettingsMixin, EncryptionMixin
 
 
-class BaseStorageBackend(SettingsMixin, object):
+class BaseStorageBackend(SettingsMixin, EncryptionMixin, object):
     required_settings = []
 
     """
@@ -15,7 +15,7 @@ class BaseStorageBackend(SettingsMixin, object):
     load() - gets a value from the backend
     """
 
-    def save(self, key, value, expire=None):
+    def backend_save(self, key, value, expire=None):
         raise NotImplemented
 
     def clear(self, key):
@@ -24,5 +24,15 @@ class BaseStorageBackend(SettingsMixin, object):
     def clear_all_keys(self):
         raise NotImplemented
 
-    def load(self, key):
+    def backend_load(self, key):
         raise NotImplemented
+
+    def save(self, key, value, *args, **kwargs):
+        self.backend_save(key, self.encrypt(value), *args, **kwargs)
+
+    def load(self, key, *args, **kwargs):
+        try:
+            return self.decrypt(self.backend_load(key, *args, **kwargs))
+        except:
+            print "error decrypting.  Assuming unencrypted for %s" % key
+            return self.backend_load(key, *args, **kwargs)

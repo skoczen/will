@@ -221,9 +221,10 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Disable Hipchat SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
 
-# Turn on/off encryption in the pub/sub layer (default is on).
+# Turn on/off encryption in pub/sub and storage (default is on).
 # Causes a small speed bump, but secures messages in an untrusted environment.
 # ENABLE_INTERNAL_ENCRYPTION = False
+# ENCRYPTION_BACKEND = "aes"
 
 # Mailgun config, if you'd like will to send emails.
 # DEFAULT_FROM_EMAIL="will@example.com"
