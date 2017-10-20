@@ -1,7 +1,6 @@
 import importlib
 import logging
 import dill as pickle
-import functools
 from will import settings
 
 

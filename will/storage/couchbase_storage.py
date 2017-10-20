@@ -1,5 +1,4 @@
-import urlparse
-
+from six.moves.urllib import parse
 from couchbase import Couchbase, exceptions as cb_exc
 
 
@@ -18,7 +17,7 @@ class CouchbaseStorage(object):
     * couchbase://hostname/bucket?password=123abc&timeout=5
     """
     def __init__(self, settings):
-        url = urlparse.urlparse(settings.COUCHBASE_URL)
+        url = parse.urlparse(settings.COUCHBASE_URL)
         params = dict([
             param.split('=')
             for param in url.query.split('&')

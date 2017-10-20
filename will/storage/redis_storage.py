@@ -1,5 +1,5 @@
 import redis
-import urlparse
+from six.moves.urllib import parse
 
 
 class RedisStorage(object):
@@ -14,7 +14,7 @@ class RedisStorage(object):
     * redis://rediscloud:asdfkjaslkdjflasdf@pub-redis-12345.us-east-1-1.2.ec2.garantiadata.com:12345
     """
     def __init__(self, settings):
-        url = urlparse.urlparse(settings.REDIS_URL)
+        url = parse.urlparse(settings.REDIS_URL)
 
         if hasattr(url, "path"):
             db = url.path[1:]
