@@ -25,7 +25,7 @@ def import_settings(quiet=True):
         if k[:5] == "WILL_":
             k = k[5:]
             settings[k] = v
-    if "HIPCHAT_ROOMS" in settings:
+    if "HIPCHAT_ROOMS" in settings and type(settings["HIPCHAT_ROOMS"]) is type("tes"):
         settings["HIPCHAT_ROOMS"] = settings["HIPCHAT_ROOMS"].split(";")
 
     if "ROOMS" in settings:
