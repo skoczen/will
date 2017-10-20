@@ -171,7 +171,7 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
         #             )
         #     puts("")
 
-        self.nick = settings.HIPCHAT_NAME
+        self.nick = settings.HIPCHAT_HANDLE
         self.handle = settings.HIPCHAT_HANDLE
         self.mention_handle = "@%s" %settings.HIPCHAT_HANDLE
 
