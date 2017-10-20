@@ -150,7 +150,8 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # The list of rooms will should join.  Default is all rooms.
 # TODO: Appears to be Hipchat-specific, should be renamed or
 # deprecated.
-# ROOMS = ['Will Testing', ]
+# HIPCHAT_NAME = "will"
+# HIPCHAT_ROOMS = ['Will Testing']
 
 # The maximum number of milliseconds to wait for an analysis backend to finish
 # ANALYSIS_TIMEOUT_MS = 2000
