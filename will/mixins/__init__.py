@@ -1,4 +1,5 @@
 from will.mixins.errors import ErrorMixin
+from will.mixins.encryption import EncryptionMixin
 from will.mixins.email import EmailMixin
 from will.mixins.naturaltime import NaturalTimeMixin
 from will.mixins.room import RoomMixin
