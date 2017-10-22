@@ -7,6 +7,14 @@ def deprecation_warning_for_admin(f):
     return err
 
 
+def passthrough_decorator(*args, **kwargs):
+    def wrap(f):
+        def wrapped_f(*args, **kwargs):
+            f(*args, **kwargs)
+        return wrapped_f
+    return wrap
+
+
 def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
     def wrap(f):
         passed_args = []
