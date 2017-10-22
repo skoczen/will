@@ -13,7 +13,11 @@ import sys
 import threading
 import time
 import traceback
-import yappi
+try:
+    from yappi import profile as yappi_profile
+except:
+    from will.decorators import passthrough_decorator as yappi_profile
+
 from cStringIO import StringIO
 from importlib import import_module
 from clint.textui import colored, puts, indent
@@ -121,7 +125,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
         os.environ["WILL_TEMPLATE_DIRS_PICKLED"] =\
             ";;".join(full_path_template_dirs)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap(self):
         print_head()
         self.load_config()
@@ -229,7 +233,7 @@ To set your %(name)s:
             settings.import_settings(quiet=False)
         puts("")
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def verify_io(self):
         puts("Verifying IO backends...")
         missing_settings = False
@@ -283,7 +287,7 @@ To set your %(name)s:
             sys.exit(1)
         puts()
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def verify_analysis(self):
         puts("Verifying Analysis backends...")
         missing_settings = False
@@ -326,7 +330,7 @@ To set your %(name)s:
             sys.exit(1)
         puts()
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def verify_generate(self):
         puts("Verifying Generation backends...")
         missing_settings = False
@@ -369,7 +373,7 @@ To set your %(name)s:
             sys.exit(1)
         puts()
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def verify_execution(self):
         puts("Verifying Execution backend...")
         missing_settings = False
@@ -412,7 +416,7 @@ To set your %(name)s:
             sys.exit(1)
         puts()
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_execution(self):
         missing_setting_error_messages = []
         self.execution_backends = []
@@ -449,7 +453,7 @@ To set your %(name)s:
             )
             sys.exit(1)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def verify_plugin_settings(self):
         puts("Verifying settings requested by plugins...")
 
@@ -551,7 +555,7 @@ To set your %(name)s:
         print(". done.\n")
         sys.exit(1)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_event_handler(self):
         self.analysis_timeout = getattr(settings, "ANALYSIS_TIMEOUT_MS", 2000)
         self.generation_timeout = getattr(settings, "GENERATION_TIMEOUT_MS", 2000)
@@ -670,7 +674,7 @@ To set your %(name)s:
             except:
                 logging.exception("Error handling message")
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_storage_mixin(self):
         puts("Bootstrapping storage...")
         try:
@@ -690,7 +694,7 @@ To set your %(name)s:
             puts(traceback.format_exc(e))
             sys.exit(1)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_pubsub_mixin(self):
         puts("Bootstrapping pubsub...")
         try:
@@ -710,7 +714,7 @@ To set your %(name)s:
             puts(traceback.format_exc(e))
             sys.exit(1)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_scheduler(self):
         bootstrapped = False
         try:
@@ -746,7 +750,7 @@ To set your %(name)s:
             show_valid("Scheduler started.")
             self.scheduler.start_loop(self)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_bottle(self):
         bootstrapped = False
         try:
@@ -765,7 +769,7 @@ To set your %(name)s:
             show_valid("Web server started.")
             bottle.run(host='0.0.0.0', port=settings.HTTPSERVER_PORT, server='cherrypy', quiet=True)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_io(self):
         # puts("Bootstrapping IO...")
         self.has_stdin_io_backend = False
@@ -808,7 +812,7 @@ To set your %(name)s:
 
             self.io_backends.append(b)
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_analysis(self):
 
         self.analysis_backends = []
@@ -838,7 +842,7 @@ To set your %(name)s:
             self.analysis_backends.append(b)
         pass
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_generation(self):
         self.generation_backends = []
         self.generation_threads = []
@@ -867,7 +871,7 @@ To set your %(name)s:
             self.generation_backends.append(b)
         pass
 
-    @yappi.profile(return_callback=yappi_aggregate)
+    @yappi_profile(return_callback=yappi_aggregate)
     def bootstrap_plugins(self):
         puts("Bootstrapping plugins...")
         OTHER_HELP_HEADING = "Other"
