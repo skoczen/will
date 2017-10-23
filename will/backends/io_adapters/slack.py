@@ -18,6 +18,8 @@ from will.abstractions import Event, Message, Person, Channel
 from slackclient import SlackClient
 
 SLACK_SEND_URL = "https://slack.com/api/chat.postMessage"
+SLACK_SET_TOPIC_URL = "https://slack.com/api/channels.setTopic"
+SLACK_PRIVATE_SET_TOPIC_URL = "https://slack.com/api/groups.setTopic"
 
 
 class SlackMarkdownConverter(MarkdownConverter):
@@ -51,7 +53,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             ("subtype" not in event or event["subtype"] != "message_changed") and
             # Ignore thread summary events (for now.)
             # TODO: We should stack these into the history.
-            ("subtype" not in event or "thread_ts" not in event["message"])
+            ("subtype" not in event or ("message" in event and "thread_ts" not in event["message"]))
         ):
             # print("slack: normalize_incoming_event - %s" % event)
             # Sample of group message
@@ -133,6 +135,26 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             # An event type the slack ba has no idea how to handle.
             pass
 
+    def set_topic(self, event):
+        headers = {'Accept': 'text/plain'}
+        data = self.set_data_channel_and_thread(event)
+        data.update({
+            "token": settings.SLACK_API_TOKEN,
+            "as_user": True,
+            "topic": event.content,
+        })
+        if data["channel"].startswith("G"):
+            url = SLACK_PRIVATE_SET_TOPIC_URL
+        else:
+            url = SLACK_SET_TOPIC_URL
+        r = requests.post(
+            url,
+            headers=headers,
+            data=data,
+            **settings.REQUESTS_OPTIONS
+        )
+        self.handle_request(r, data)
+
     def handle_outgoing_event(self, event):
         if event.type in ["say", "reply"]:
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
@@ -168,6 +190,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                                 break
                 self.send_message(event)
 
+        if event.type in ["topic_change", ]:
+            self.set_topic(event)
         elif (
             event.type == "message.no_response" and
             event.data.is_direct and
@@ -176,33 +200,24 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)
 
-    def send_message(self, event):
-        data = {}
-        if hasattr(event, "kwargs"):
-            data.update(event.kwargs)
+    def handle_request(self, r, data):
+        resp_json = r.json()
+        if not resp_json["ok"]:
+            if resp_json["error"] == "not_in_channel":
+                channel = self.get_channel_from_name(data["channel"])
+                if not hasattr(self, "me") or not hasattr(self.me, "handle"):
+                    self.people
 
-            # Add slack-specific functionality
-            if "color" in event.kwargs:
-                data.update({
-                    "attachments": json.dumps([
-                        {
-                            "fallback": event.content,
-                            "color": self._map_color(event.kwargs["color"]),
-                            "text": event.content,
-                        }
-                    ]),
-                })
+                logging.critical(
+                    "I was asked to post to the slack %s channel, but I haven't been invited. "
+                    "Please invite me with '/invite @%s'" % (channel.name, self.me.handle)
+                )
             else:
-                data.update({
-                    "text": event.content,
-                })
-        else:
-            data.update({
-                "text": event.content,
-            })
+                logging.error("Error sending to slack: %s" % resp_json["error"])
+                logging.error(resp_json)
+                assert resp_json["ok"]
 
-        # TODO: This is terrifingly ugly.  Yes, it works.  No, I will not have any idea how
-        # in a few months.  Abstract this stuff out!
+    def set_data_channel_and_thread(self, event, data={}):
         if "channel" in event:
             # We're coming off an explicit set.
             channel_id = event.channel.id
@@ -241,6 +256,37 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 })
             except:
                 pass
+        data.update({
+            "channel": channel_id,
+        })
+        return data
+
+    def send_message(self, event):
+        data = {}
+        if hasattr(event, "kwargs"):
+            data.update(event.kwargs)
+
+            # Add slack-specific functionality
+            if "color" in event.kwargs:
+                data.update({
+                    "attachments": json.dumps([
+                        {
+                            "fallback": event.content,
+                            "color": self._map_color(event.kwargs["color"]),
+                            "text": event.content,
+                        }
+                    ]),
+                })
+            else:
+                data.update({
+                    "text": event.content,
+                })
+        else:
+            data.update({
+                "text": event.content,
+            })
+
+        data = self.set_data_channel_and_thread(event, data=data)
 
         # Auto-link mention names
         if data["text"].find("&lt;@") != -1:
@@ -249,7 +295,6 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
 
         data.update({
             "token": settings.SLACK_API_TOKEN,
-            "channel": channel_id,
             "as_user": True,
         })
         if hasattr(event, "kwargs") and "html" in event.kwargs and event.kwargs["html"]:
@@ -264,20 +309,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             data=data,
             **settings.REQUESTS_OPTIONS
         )
-        resp_json = r.json()
-        if not resp_json["ok"]:
-            if resp_json["error"] == "not_in_channel":
-                channel = self.get_channel_from_name(data["channel"])
-                if not hasattr(self, "me") or not hasattr(self.me, "handle"):
-                    self.people
-
-                logging.critical(
-                    "I was asked to post to the slack %s channel, but I haven't been invited. "
-                    "Please invite me with '/invite @%s'" % (channel.name, self.me.handle)
-                )
-            else:
-                logging.error("Error sending to slack: %s" % resp_json["error"])
-                assert resp_json["ok"]
+        self.handle_request(r, data)
 
     def _map_color(self, color):
         # Turn colors into hex values, handling old slack colors, etc

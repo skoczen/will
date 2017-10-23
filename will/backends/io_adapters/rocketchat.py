@@ -187,6 +187,8 @@ class RocketChatBackend(IOBackend):
                 #         **kwargs
                 #     )
 
+        if event.type in ["topic_change", ]:
+            self.set_room_topic(event.content)
         elif (
             event.type == "message.no_response" and
             event.data["source"].data.is_direct and
@@ -194,6 +196,9 @@ class RocketChatBackend(IOBackend):
         ):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)
+
+    def set_topic(self, event):
+        logging.warn("Rocket.Chat doesn't support topics yet: https://github.com/RocketChat/Rocket.Chat/issues/328")
 
     def send_message(self, event):
         logging.info('Sending message to Rocket.Chat')

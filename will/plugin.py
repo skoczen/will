@@ -25,20 +25,6 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
 
         super(WillPlugin, self).__init__(*args, **kwargs)
 
-    # TODO: pull all the hipchat-specific logic out of this,
-
-    def _rooms_from_message_and_room(self, message, room):
-        if room == "ALL_ROOMS":
-            rooms = self.available_rooms
-        elif room:
-            rooms = [self.get_room_from_name_or_id(room), ]
-        else:
-            if message:
-                rooms = [self.get_room_from_message(message), ]
-            else:
-                rooms = [self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM), ]
-        return rooms
-
     def _prepared_content(self, content, message, kwargs):
         content = re.sub(r'>\s+<', '><', content)
         return content
@@ -51,6 +37,21 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
             message.source_message.analysis = None
         return message
 
+    def get_backend(self, message):
+        backend = False
+        if hasattr(message, "backend"):
+            backend = message.backend
+        elif message and hasattr(message, "data") and hasattr(message.data, "backend"):
+            backend = message.data.backend
+        else:
+            backend = settings.DEFAULT_BACKEND
+        return backend
+
+    def get_message(self, message_passed):
+        if not message_passed and hasattr(self, "message"):
+            return self.message
+        return message_passed
+
     def say(self, content, message=None, room=None, package_for_scheduling=False, **kwargs):
         logging.info("self.say")
         logging.info(content)
@@ -58,30 +59,9 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
         if not "room" in kwargs and room:
             kwargs["room"] = room
 
-        backend = False
-        if not message and hasattr(self, "message"):
-            message = self.message
-        if message:
-            message = self._trim_for_execution(message)
-
-        if message and hasattr(message, "backend"):
-            # Events, content/type/timestamp
-            # {
-            #   message: message,
-            #   type: "reply/say/topic_change/emoji/etc"
-            # }
-            backend = message.backend
-        else:
-            # TODO: need a clear, documented spec for this.
-            if message and hasattr(message, "data") and hasattr(message.data, "backend"):
-                logging.info(message.data)
-                logging.info(message.data.__dict__)
-                backend = message.data.backend
-            else:
-                backend = settings.DEFAULT_BACKEND
-
-        logging.info("backend: %s" % backend)
-
+        message = self.get_message(message)
+        message = self._trim_for_execution(message)
+        backend = self.get_backend(message)
         if backend:
             e = Event(
                 type="say",
@@ -96,6 +76,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
                 self.publish("message.outgoing.%s" % backend, e)
 
     def reply(self, event, content=None, message=None, package_for_scheduling=False, **kwargs):
+        message = self.get_message(message)
+
         # Be really smart about what we're getting back.
         if (
             (
@@ -134,30 +116,32 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
         elif hasattr(self, "message") and hasattr(self.message, "data"):
             message = self.message.data
 
-        if hasattr(message, "backend"):
+        backend = self.get_backend(message)
+        if backend:
             e = Event(
                 type="reply",
                 content=content,
-                topic="message.outgoing.%s" % message.backend,
+                topic="message.outgoing.%s" % backend,
                 source_message=message,
                 kwargs=kwargs,
             )
             if package_for_scheduling:
                 return e
             else:
-                self.publish("message.outgoing.%s" % message.backend, e)
+                self.publish("message.outgoing.%s" % backend, e)
 
-    def set_topic(self, topic, message=None, room=None):
-
-        if message is None or message["type"] == "groupchat":
-            rooms = self._rooms_from_message_and_room(message, room)
-            for r in rooms:
-                self.set_room_topic(r["room_id"], topic)
-        elif message['type'] in ('chat', 'normal'):
-            self.send_direct_message(
-                message.sender["hipchat_id"],
-                "I can't set the topic of a one-to-one chat.  Let's just talk."
-            )
+    def set_topic(self, topic, message=None, room=None, **kwargs):
+        message = self.get_message(message)
+        message = self._trim_for_execution(message)
+        backend = self.get_backend(message)
+        e = Event(
+            type="topic_change",
+            content=topic,
+            topic="message.outgoing.%s" % backend,
+            source_message=message,
+            kwargs=kwargs,
+        )
+        self.publish("message.outgoing.%s" % backend, e)
 
     def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
         packaged_event = self.reply(None, content=content, message=message, package_for_scheduling=True)
