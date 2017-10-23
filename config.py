@@ -179,7 +179,7 @@ HIPCHAT_ROOMS = ['Will Testing', 'Will and I']
 # Turn up or down Will's logging level
 # LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
 # LOGLEVEL = "DEBUG"
-# LOGLEVEL = "INFO"
+LOGLEVEL = "WARNING"
 
 # Turn on or off Will's profiling
 # PROFILING_ENABLED = False

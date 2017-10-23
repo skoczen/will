@@ -60,7 +60,7 @@ class AESEncryption(WillBaseEncryptionBackend):
         except:
             logging.critical("Error unpacking message from the wire: \n%s" % traceback.format_exc())
             logging.warn("Error decrypting.  Attempting unencrypted load for %s to ease migration." % key)
-            obj = pickle.loads(raw_enc)
+            obj = pickle.loads(binascii.a2b_base64(raw_enc))
             return obj
 
 
