@@ -51,7 +51,6 @@ class HipChatRosterMixin(object):
         return self.people
 
     def get_user_by_full_name(self, name):
-        # TODO: Fix this better for shell, etc
         for jid, info in self.people.items():
             if info["name"] == name:
                 return info
@@ -147,33 +146,9 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
                         ' "@{1} what are the rooms?" for the full list.'
                         .format(r, settings.HIPCHAT_HANDLE))
 
-        # TODO: Move this to the hipchat backend
-        # if "hipchat" in settings.CHAT_BACKENDS:
-        #     puts("Verifying rooms...")
-        #     # If we're missing ROOMS, join all of them.
-        #     with indent(2):
-        #         if settings.HIPCHAT_ROOMS is None:
-        #             # Yup. Thanks, BSDs.
-        #             q = Queue()
-        #             p = Process(target=self.update_available_rooms, args=(), kwargs={"q": q, })
-        #             p.start()
-        #             rooms_list = q.get()
-        #             show_valid("Joining all %s known rooms." % len(rooms_list))
-        #             os.environ["WILL_ROOMS"] = ";".join(rooms_list)
-        #             p.join()
-        #             settings.import_settings()
-        #         else:
-        #             show_valid(
-        #                 "Joining the %s room%s specified." % (
-        #                     len(settings.HIPCHAT_ROOMS),
-        #                     "s" if len(settings.HIPCHAT_ROOMS) > 1 else ""
-        #                 )
-        #             )
-        #     puts("")
-
         self.nick = settings.HIPCHAT_HANDLE
         self.handle = settings.HIPCHAT_HANDLE
-        self.mention_handle = "@%s" %settings.HIPCHAT_HANDLE
+        self.mention_handle = "@%s" % settings.HIPCHAT_HANDLE
 
         self.whitespace_keepalive = True
         self.whitespace_keepalive_interval = 30
@@ -395,6 +370,29 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
         except:
             logging.critical("Error in set_room_topic: \n%s" % traceback.format_exc())
 
+    def get_room_from_message(self, event):
+        kwargs = {}
+        if hasattr(event, "kwargs"):
+            kwargs.update(event.kwargs)
+        if hasattr(event, "source_message") and event.source_message:
+            send_source = event.source_message
+            if hasattr(event.source_message, "data"):
+                send_source = event.source_message.data
+
+            if send_source.is_private_chat:
+                # Private, 1-1 chats.
+                return False
+            else:
+                # We're in a public room
+                return send_source.channel.id,
+        else:
+            # Came from webhook/etc
+            if "room" in kwargs:
+                return kwargs["room"],
+            else:
+                return self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
+        return False
+
     def get_hipchat_user(self, user_id, q=None):
         url = USER_DETAILS_URL % {"server": settings.HIPCHAT_SERVER,
                                   "user_id": user_id,
@@ -539,38 +537,36 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
         if event.type in ["say", "reply"]:
             event.content = re.sub(r'>\s+<', '><', event.content)
 
+            room = self.get_room_from_message(event)
             if hasattr(event, "source_message") and event.source_message:
                 send_source = event.source_message
+
                 if hasattr(event.source_message, "data"):
                     send_source = event.source_message.data
 
                 if send_source.is_private_chat:
                     # Private, 1-1 chats.
                     self.send_direct_message(send_source.sender.id, event.content, **kwargs)
+                    return
 
-                else:
-                    # We're in a public room
-                    self.send_room_message(
-                        send_source.channel.id,
-                        event.content,
-                        **kwargs
-                    )
+            # Otherwise trust room.
+            self.send_room_message(
+                room,
+                event.content,
+                **kwargs
+            )
 
+        elif event.type in ["topic_change", ]:
+            room = self.get_room_from_message(event)
+            if room:
+                self.set_room_topic(room, event.content)
             else:
-                # Came from webhook/etc
-                if "room" in kwargs:
-                    self.send_room_message(
-                        kwargs["room"],
-                        event.content,
-                        **kwargs
-                    )
-                else:
-                    default_room = self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
-                    self.send_room_message(
-                        default_room,
-                        event.content,
-                        **kwargs
-                    )
+                if hasattr(event, "source_message") and event.source_message:
+                    send_source = event.source_message
+
+                    if hasattr(event.source_message, "data"):
+                        send_source = event.source_message.data
+                    self.send_direct_message(send_source.sender.id, "I can't set the topic of a one-to-one chat.  Let's just talk.", **kwargs)
 
         elif (
             event.type == "message.no_response" and

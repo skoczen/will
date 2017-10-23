@@ -116,21 +116,23 @@ def import_settings(quiet=True):
                 settings[v] = settings[k]
                 del settings[k]
 
-        # Set defaults
-        if "HIPCHAT_ROOMS" not in settings:
-            if not quiet:
-                warn("no HIPCHAT_ROOMS list found in the environment or config.  "
-                     "This is ok - Will will just join all available HIPCHAT_rooms.")
-                settings["HIPCHAT_ROOMS"] = None
+        # Set for hipchat
+        for b in settings["IO_BACKENDS"]:
+            if "hipchat" in b:
+                if "HIPCHAT_ROOMS" not in settings:
+                    if not quiet:
+                        warn("no HIPCHAT_ROOMS list found in the environment or config.  "
+                             "This is ok - Will will just join all available HIPCHAT_rooms.")
+                        settings["HIPCHAT_ROOMS"] = None
 
-        if (
-            "HIPCHAT_DEFAULT_ROOM" not in settings and "HIPCHAT_ROOMS" in settings and
-            settings["HIPCHAT_ROOMS"] and len(settings["HIPCHAT_ROOMS"]) > 0
-        ):
-            if not quiet:
-                warn("no HIPCHAT_DEFAULT_ROOM found in the environment or config.  "
-                     "Defaulting to '%s', the first one." % settings["HIPCHAT_ROOMS"][0])
-            settings["HIPCHAT_DEFAULT_ROOM"] = settings["HIPCHAT_ROOMS"][0]
+                if (
+                    "HIPCHAT_DEFAULT_ROOM" not in settings and "HIPCHAT_ROOMS" in settings and
+                    settings["HIPCHAT_ROOMS"] and len(settings["HIPCHAT_ROOMS"]) > 0
+                ):
+                    if not quiet:
+                        warn("no HIPCHAT_DEFAULT_ROOM found in the environment or config.  "
+                             "Defaulting to '%s', the first one." % settings["HIPCHAT_ROOMS"][0])
+                    settings["HIPCHAT_DEFAULT_ROOM"] = settings["HIPCHAT_ROOMS"][0]
 
         if (
             "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
@@ -140,6 +142,14 @@ def import_settings(quiet=True):
                 warn("no DEFAULT_BACKEND found in the environment or config.  "
                      "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
             settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
+
+        for b in settings["IO_BACKENDS"]:
+            if "slack" in b and "SLACK_DEFAULT_CHANNEL" not in settings and not quiet:
+                warn(
+                    "No SLACK_DEFAULT_CHANNEL set - any messages sent without an explicit channel will go "
+                    "to a non-deterministic channel that will has access to "
+                    "- this is almost certainly not what you want."
+                )
 
         if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
             settings["ENABLE_INTERNAL_ENCRYPTION"] = True
@@ -262,6 +272,9 @@ def import_settings(quiet=True):
 
         if "EVENT_LOOP_INTERVAL" not in settings:
             settings["EVENT_LOOP_INTERVAL"] = 0.025
+
+        if "LOGLEVEL" not in settings:
+            settings["LOGLEVEL"] = "ERROR"
 
         if "SECRET_KEY" not in settings:
             if not quiet:
