@@ -46,11 +46,11 @@ class AESEncryption(WillBaseEncryptionBackend):
             return None
 
     @classmethod
-    def decrypt_from_b64(cls, enc):
+    def decrypt_from_b64(cls, raw_enc):
         try:
             if settings.ENABLE_INTERNAL_ENCRYPTION:
-                iv = enc[:BS]
-                enc = enc[BS+1:]
+                iv = raw_enc[:BS]
+                enc = raw_enc[BS+1:]
                 cipher = AES.new(key, AES.MODE_CBC, iv)
                 enc = unpad(cipher.decrypt(binascii.a2b_base64(enc)))
             obj = pickle.loads(binascii.a2b_base64(enc))
@@ -59,7 +59,9 @@ class AESEncryption(WillBaseEncryptionBackend):
             pass
         except:
             logging.critical("Error unpacking message from the wire: \n%s" % traceback.format_exc())
-            return None
+            logging.warn("Error decrypting.  Attempting unencrypted load for %s to ease migration." % key)
+            obj = pickle.loads(raw_enc)
+            return obj
 
 
 def bootstrap(settings):
