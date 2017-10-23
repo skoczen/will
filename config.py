@@ -73,10 +73,10 @@ PLUGIN_BLACKLIST = [
 
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
+    "will.backends.io_adapters.slack",
     "will.backends.io_adapters.hipchat",
     # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
-    "will.backends.io_adapters.slack",
 ]
 
 # Backends to analyze messages and generate useful metadata
@@ -121,7 +121,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # ------------------------------------------------------------------------------------
 # Slack settings
 # ------------------------------------------------------------------------------------
-
+# SLACK_DEFAULT_CHANNEL = "alpha"
 
 # ------------------------------------------------------------------------------------
 # Rocket.chat settings
@@ -150,8 +150,8 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # The list of rooms will should join.  Default is all rooms.
 # TODO: Appears to be Hipchat-specific, should be renamed or
 # deprecated.
-# HIPCHAT_NAME = "will"
-# HIPCHAT_ROOMS = ['Will Testing']
+HIPCHAT_HANDLE = "will"
+HIPCHAT_ROOMS = ['Will Testing', 'Will and I']
 
 # The maximum number of milliseconds to wait for an analysis backend to finish
 # ANALYSIS_TIMEOUT_MS = 2000

@@ -12,7 +12,7 @@ from markdownify import MarkdownConverter
 from will import settings
 from .base import IOBackend
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
-from will.mixins import SleepMixin
+from will.mixins import SleepMixin, StorageMixin
 from multiprocessing import Process
 from will.abstractions import Event, Message, Person, Channel
 from slackclient import SlackClient
@@ -26,7 +26,7 @@ class SlackMarkdownConverter(MarkdownConverter):
         return '*%s*' % text if text else ''
 
 
-class SlackBackend(IOBackend, SleepMixin):
+class SlackBackend(IOBackend, SleepMixin, StorageMixin):
     friendly_name = "Slack"
     internal_name = "will.backends.io_adapters.slack"
     required_settings = [
@@ -37,6 +37,11 @@ class SlackBackend(IOBackend, SleepMixin):
 3. Generate a new token (These instructions are incorrect!).""",
         }
     ]
+
+    def get_channel_from_name(self, name):
+        for k, c in self.channels.items():
+            if c.name == name or c.id == name:
+                return c
 
     def normalize_incoming_event(self, event):
 
@@ -148,18 +153,20 @@ class SlackBackend(IOBackend, SleepMixin):
                     kwargs.update(**event.kwargs)
 
                 if "room" in kwargs:
-                    self.send_room_message(
-                        kwargs["room"],
-                        event.content,
-                        **kwargs
-                    )
+                    event.channel = self.get_channel_from_name(kwargs["room"])
+                elif "channel" in kwargs:
+                    event.channel = self.get_channel_from_name(kwargs["channel"])
                 else:
-                    default_room = self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
-                    self.send_room_message(
-                        default_room,
-                        event.content,
-                        **kwargs
-                    )
+                    if hasattr(settings, "SLACK_DEFAULT_ROOM"):
+                        event.channel = self.get_channel_from_name(settings.SLACK_DEFAULT_ROOM)
+                    else:
+                        # Set self.me
+                        self.people
+                        for c in self.channels.values():
+                            if c.name != c.id and self.me.id in c.members:
+                                event.channel = c
+                                break
+                self.send_message(event)
 
         elif (
             event.type == "message.no_response" and
@@ -196,40 +203,44 @@ class SlackBackend(IOBackend, SleepMixin):
 
         # TODO: This is terrifingly ugly.  Yes, it works.  No, I will not have any idea how
         # in a few months.  Abstract this stuff out!
-        if "source_message" in event:
-            # Mentions that come back via self.say()
-            if hasattr(event.source_message, "data"):
-                channel_id = event.source_message.data.channel.id
-                if hasattr(event.source_message.data, "thread"):
-                    data.update({
-                        "thread_ts": event.source_message.data.thread
-                    })
-            else:
-                # Mentions that come back via self.say() with a specific room (I think)
-                channel_id = event.source_message.channel.id
-                if hasattr(event.source_message, "thread"):
-                    data.update({
-                        "thread_ts": event.source_message.thread
-                    })
+        if "channel" in event:
+            # We're coming off an explicit set.
+            channel_id = event.channel.id
         else:
-            # Mentions that come back via self.reply()
-            if hasattr(event.data, "original_incoming_event"):
-                if hasattr(event.data.original_incoming_event.channel, "id"):
-                    channel_id = event.data.original_incoming_event.channel.id
+            if "source_message" in event:
+                # Mentions that come back via self.say()
+                if hasattr(event.source_message, "data"):
+                    channel_id = event.source_message.data.channel.id
+                    if hasattr(event.source_message.data, "thread"):
+                        data.update({
+                            "thread_ts": event.source_message.data.thread
+                        })
                 else:
-                    channel_id = event.data.original_incoming_event.channel
+                    # Mentions that come back via self.say() with a specific room (I think)
+                    channel_id = event.source_message.channel.id
+                    if hasattr(event.source_message, "thread"):
+                        data.update({
+                            "thread_ts": event.source_message.thread
+                        })
             else:
-                if hasattr(event.data["original_incoming_event"].data.channel, "id"):
-                    channel_id = event.data["original_incoming_event"].data.channel.id
+                # Mentions that come back via self.reply()
+                if hasattr(event.data, "original_incoming_event"):
+                    if hasattr(event.data.original_incoming_event.channel, "id"):
+                        channel_id = event.data.original_incoming_event.channel.id
+                    else:
+                        channel_id = event.data.original_incoming_event.channel
                 else:
-                    channel_id = event.data["original_incoming_event"].data.channel
+                    if hasattr(event.data["original_incoming_event"].data.channel, "id"):
+                        channel_id = event.data["original_incoming_event"].data.channel.id
+                    else:
+                        channel_id = event.data["original_incoming_event"].data.channel
 
-        try:
-            data.update({
-                "thread_ts": event.data["original_incoming_event"].data.thread
-            })
-        except:
-            pass
+            try:
+                data.update({
+                    "thread_ts": event.data["original_incoming_event"].data.thread
+                })
+            except:
+                pass
 
         # Auto-link mention names
         if data["text"].find("&lt;@") != -1:
@@ -255,7 +266,18 @@ class SlackBackend(IOBackend, SleepMixin):
         )
         resp_json = r.json()
         if not resp_json["ok"]:
-            assert resp_json["ok"]
+            if resp_json["error"] == "not_in_channel":
+                channel = self.get_channel_from_name(data["channel"])
+                if not hasattr(self, "me") or not hasattr(self.me, "handle"):
+                    self.people
+
+                logging.critical(
+                    "I was asked to post to the slack %s channel, but I haven't been invited. "
+                    "Please invite me with '/invite @%s'" % (channel.name, self.me.handle)
+                )
+            else:
+                logging.error("Error sending to slack: %s" % resp_json["error"])
+                assert resp_json["ok"]
 
     def _map_color(self, color):
         # Turn colors into hex values, handling old slack colors, etc
@@ -267,6 +289,30 @@ class SlackBackend(IOBackend, SleepMixin):
             return "good"
 
         return color
+
+    def join_channel(self, channel_id):
+        return self.client.api_call(
+            "channels.join",
+            channel=channel_id,
+        )
+
+    @property
+    def people(self):
+        if not hasattr(self, "_people") or self._people is {}:
+            self._update_people()
+        return self._people
+
+    @property
+    def channels(self):
+        if not hasattr(self, "_channels") or self._channels is {}:
+            self._update_channels()
+        return self._channels
+
+    @property
+    def client(self):
+        if not hasattr(self, "_client"):
+            self._client = SlackClient(settings.SLACK_API_TOKEN)
+        return self._client
 
     def _update_channels(self):
         channels = {}
@@ -281,12 +327,16 @@ class SlackBackend(IOBackend, SleepMixin):
                 source=clean_for_pickling(c),
                 members=members
             )
-        self.channels = channels
+        if len(channels.keys()) == 0:
+            # Server isn't set up yet, and we're likely in a processing thread,
+            if self.load("slack_channel_cache", None):
+                self._channels = self.load("slack_channel_cache", None)
+        else:
+            self._channels = channels
+            self.save("slack_channel_cache", channels)
 
     def _update_people(self):
         people = {}
-        if not hasattr(self, "client"):
-            self.client = SlackClient(settings.SLACK_API_TOKEN)
 
         self.handle = self.client.server.username
 
@@ -313,7 +363,19 @@ class SlackBackend(IOBackend, SleepMixin):
                 people[k].timezone = user_timezone
                 if v.name == self.handle:
                     self.me.timezone = user_timezone
-        self.people = people
+        if len(people.keys()) == 0:
+            # Server isn't set up yet, and we're likely in a processing thread,
+            if self.load("slack_people_cache", None):
+                self._people = self.load("slack_people_cache", None)
+            if not hasattr(self, "me") or not self.me:
+                self.me = self.load("slack_me_cache", None)
+            if not hasattr(self, "handle") or not self.handle:
+                self.handle = self.load("slack_handle_cache", None)
+        else:
+            self._people = people
+            self.save("slack_people_cache", people)
+            self.save("slack_me_cache", self.me)
+            self.save("slack_handle_cache", self.handle)
 
     def _update_backend_metadata(self):
         self._update_people()
@@ -356,7 +418,9 @@ class SlackBackend(IOBackend, SleepMixin):
         #    Note that Channel asks for members, a list of People.
         # f) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
-        self.client = SlackClient(settings.SLACK_API_TOKEN)
+
+        # Property, auto-inits.
+        self.client
 
         self.rtm_thread = Process(target=self._watch_slack_rtm)
         self.rtm_thread.start()
