@@ -21,7 +21,7 @@ from .base import IOBackend
 
 
 class RocketChatBackend(IOBackend):
-    friendly_name = "RocketChat"
+    friendly_name = "RocketChat (BETA)"
     internal_name = "will.backends.io_adapters.rocketchat"
     required_settings = [
         {
@@ -162,30 +162,16 @@ class RocketChatBackend(IOBackend):
             if hasattr(event, "source_message") and event.source_message:
                 self.send_message(event)
             else:
-                # TODO: Here lies stuff that:
-                # a) may not be needed or supported with Rocket.Chat, or
-                # b) that may need to be fixed in order to work.
-                # send_room_message() was removed as it doesn't appear
-                # useful, but the below was left in for future interest.
-                # The mentod wasn't even defined in slack.py at the
-                # time.
+                # TODO: Rocket.Chat backend needs to provide ways to handle and properly route:
+                # 1. 1-1 messages
+                # 2. Group (channel) messages
+                # 3. Ad-hoc group messages (if they exist)
+                # 4. Messages that have a channel/room explicitly specified that's different than
+                #    where they came from/
+                # 5. Messages without a channel (Fallback to ROCKETCHAT_DEFAULT_CHANNEL) (messages that don't have a room, )
                 kwargs = {}
                 if "kwargs" in event:
                     kwargs.update(**event.kwargs)
-
-                # if "room" in kwargs:
-                #     self.send_room_message(
-                #         kwargs["room"],
-                #         event.content,
-                #         **kwargs
-                #     )
-                # else:
-                #     default_room = self.get_room_from_name_or_id(settings.HIPCHAT_DEFAULT_ROOM)["room_id"]
-                #     self.send_room_message(
-                #         default_room,
-                #         event.content,
-                #         **kwargs
-                #     )
 
         if event.type in ["topic_change", ]:
             self.set_room_topic(event.content)
