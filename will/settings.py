@@ -116,21 +116,23 @@ def import_settings(quiet=True):
                 settings[v] = settings[k]
                 del settings[k]
 
-        # Set defaults
-        if "HIPCHAT_ROOMS" not in settings:
-            if not quiet:
-                warn("no HIPCHAT_ROOMS list found in the environment or config.  "
-                     "This is ok - Will will just join all available HIPCHAT_rooms.")
-                settings["HIPCHAT_ROOMS"] = None
+        # Set for hipchat
+        for b in settings["IO_BACKENDS"]:
+            if "hipchat" in b:
+                if "HIPCHAT_ROOMS" not in settings:
+                    if not quiet:
+                        warn("no HIPCHAT_ROOMS list found in the environment or config.  "
+                             "This is ok - Will will just join all available HIPCHAT_rooms.")
+                        settings["HIPCHAT_ROOMS"] = None
 
-        if (
-            "HIPCHAT_DEFAULT_ROOM" not in settings and "HIPCHAT_ROOMS" in settings and
-            settings["HIPCHAT_ROOMS"] and len(settings["HIPCHAT_ROOMS"]) > 0
-        ):
-            if not quiet:
-                warn("no HIPCHAT_DEFAULT_ROOM found in the environment or config.  "
-                     "Defaulting to '%s', the first one." % settings["HIPCHAT_ROOMS"][0])
-            settings["HIPCHAT_DEFAULT_ROOM"] = settings["HIPCHAT_ROOMS"][0]
+                if (
+                    "HIPCHAT_DEFAULT_ROOM" not in settings and "HIPCHAT_ROOMS" in settings and
+                    settings["HIPCHAT_ROOMS"] and len(settings["HIPCHAT_ROOMS"]) > 0
+                ):
+                    if not quiet:
+                        warn("no HIPCHAT_DEFAULT_ROOM found in the environment or config.  "
+                             "Defaulting to '%s', the first one." % settings["HIPCHAT_ROOMS"][0])
+                    settings["HIPCHAT_DEFAULT_ROOM"] = settings["HIPCHAT_ROOMS"][0]
 
         if (
             "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
