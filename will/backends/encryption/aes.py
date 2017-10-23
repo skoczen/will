@@ -53,15 +53,12 @@ class AESEncryption(WillBaseEncryptionBackend):
                 enc = raw_enc[BS+1:]
                 cipher = AES.new(key, AES.MODE_CBC, iv)
                 enc = unpad(cipher.decrypt(binascii.a2b_base64(enc)))
-            obj = pickle.loads(binascii.a2b_base64(enc))
-            return obj
+            return pickle.loads(binascii.a2b_base64(enc))
         except (KeyboardInterrupt, SystemExit):
             pass
         except:
-            logging.critical("Error unpacking message from the wire: \n%s" % traceback.format_exc())
-            logging.warn("Error decrypting.  Attempting unencrypted load for %s to ease migration." % key)
-            obj = pickle.loads(binascii.a2b_base64(raw_enc))
-            return obj
+            logging.warn("Error decrypting.  Attempting unencrypted load to ease migration.")
+            return pickle.loads(binascii.a2b_base64(raw_enc))
 
 
 def bootstrap(settings):
