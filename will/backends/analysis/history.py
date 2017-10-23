@@ -13,6 +13,8 @@ class HistoryAnalysis(AnalysisBackend, StorageMixin):
         # print("history analyze")
         # print(message)
         history = self.load("message_history", [])
+        if not history:
+            history = []
         max_history_context = getattr(settings, "HISTORY_CONTEXT_LENGTH", 20)
 
         if history:

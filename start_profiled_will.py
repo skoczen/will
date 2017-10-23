@@ -5,7 +5,10 @@ import shutil
 
 
 def start_will():
-    shutil.rmtree('will_profiles')
+    try:
+        shutil.rmtree('will_profiles')
+    except OSError:
+        pass
     os.makedirs("will_profiles")
 
     bot = WillBot()

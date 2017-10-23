@@ -34,8 +34,8 @@ class ShellBackend(StdInOutIOBackend):
     def send_room_message(self, room_id, message_body, html=False, color="green", notify=False, **kwargs):
         print("Will: %s" % html_to_text(message_body))
 
-    def set_room_topic(self, room_id, topic):
-        print("Will: Setting the Topic to %s" & topic)
+    def set_room_topic(self, topic):
+        print("Will: Let's talk about %s" % (topic, ))
 
     def normalize_incoming_event(self, event):
         if event["type"] == "message.incoming.stdin":
@@ -61,6 +61,8 @@ class ShellBackend(StdInOutIOBackend):
         # Print any replies.
         if event.type in ["say", "reply"]:
             self.send_direct_message(event.content)
+        if event.type in ["topic_change", ]:
+            self.set_room_topic(event.content)
 
         elif event.type == "message.no_response":
             if event.data and hasattr(event.data, "original_incoming_event") and len(event.data.original_incoming_event.data.content) > 0:
