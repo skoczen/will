@@ -111,14 +111,6 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 
 # ------------------------------------------------------------------------------------
-# Hipchat settings
-# ------------------------------------------------------------------------------------
-
-# Ideally, set these in the environment with the WILL_ prefix.
-# HIPCHAT_HANDLE = 'will'
-
-
-# ------------------------------------------------------------------------------------
 # Slack settings
 # ------------------------------------------------------------------------------------
 # SLACK_DEFAULT_CHANNEL = "alpha"
@@ -126,6 +118,28 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # ------------------------------------------------------------------------------------
 # Rocket.chat settings
 # ------------------------------------------------------------------------------------
+
+# Rocket.Chat server URL and port as necessary
+# ROCKETCHAT_URL = "http://localhost:3000"
+
+
+# ------------------------------------------------------------------------------------
+# Hipchat settings
+# ------------------------------------------------------------------------------------
+
+# Ideally, set these in the environment with the WILL_ prefix.
+# Will's mention name, e.g. @will
+# HIPCHAT_HANDLE = 'will'
+
+# The list of rooms will should join.  Default is all rooms.
+# HIPCHAT_ROOMS = ['Will Testing', 'Will and I']
+
+# Will's proper name
+# HIPCHAT_NAME = "William T. Botterton"
+
+# Disable Hipchat SSL checks.  Strongly reccomended this is not set to True.
+# ALLOW_INSECURE_HIPCHAT_SERVER = False
+
 
 # ------------------------------------------------------------------------------------
 # Potentially required settings
@@ -135,54 +149,14 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Note no trailing slash.
 # PUBLIC_URL = "http://my-will.herokuapp.com"
 
+# The backend and room Will should talk to if the trigger is a webhook and he isn't told
+# a specific room.  Default is the first of IO_BACKENDS and ROOMS.
+# DEFAULT_BACKEND = "will.backends.io_adapters.slack"
+# DEFAULT_ROOM = 'Notifications'
+
 # Port to bind the web server to (defaults to $PORT, then 80.)
 # Set > 1024 to run without elevated permission.
 # HTTPSERVER_PORT = "9000"
-
-# Your will's mention handle. (aka @will)  Note that this is not backend-specific,
-# and is only used for the generation of help text.
-# WILL_HANDLE = "will"
-
-# ------------------------------------------------------------------------------------
-# Optional settings
-# ------------------------------------------------------------------------------------
-
-# The list of rooms will should join.  Default is all rooms.
-# TODO: Appears to be Hipchat-specific, should be renamed or
-# deprecated.
-HIPCHAT_HANDLE = "will"
-HIPCHAT_ROOMS = ['Will Testing', 'Will and I']
-
-# The maximum number of milliseconds to wait for an analysis backend to finish
-# ANALYSIS_TIMEOUT_MS = 2000
-
-# The maximum number of milliseconds to wait for a generation backend to finish
-# GENERATION_TIMEOUT_MS = 2000
-
-# The interval will checks his internal cross-thread messaging queues, in seconds.
-# Increasing the value will make will slower, but consume fewer resources.
-# EVENT_LOOP_INTERVAL = 0.025
-
-# The backend and room will will talk to if the trigger is a webhook and he isn't told
-# a specific one.  Default is the first of IO_BACKENDS and ROOMS.
-# DEFAULT_BACKEND = "will.backends.io_adapters.hipchat"
-# DEFAULT_ROOM = 'Testing, Will Kahuna'
-
-
-# A secret key, used to namespace this instance of will and secure pubsub contents.
-# Do *NOT* keep it in config.py.  *DO* set it in the environment, in a secured session.
-# If a SECRET_KEY is not set, one will be auto-generated, but will limit Will to reading
-# data from this excecution only.
-# SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
-
-
-# Turn up or down Will's logging level
-# LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-# LOGLEVEL = "DEBUG"
-LOGLEVEL = "WARNING"
-
-# Turn on or off Will's profiling
-# PROFILING_ENABLED = False
 
 # Fully-qualified folders to look for templates in, beyond the two that
 # are always included: core will's templates folder, your project's templates folder, and
@@ -211,16 +185,43 @@ LOGLEVEL = "WARNING"
 
 # Sets a different storage backend.  If unset, defaults to redis.
 # If you use a different backend, make sure to add their required settings.
-# PUBSUB_BACKEND = "zeromq"  # "redis", or "zeromq" (beta).
+# PUBSUB_BACKEND = "redis"  # "redis", or "zeromq" (beta).
 # ZEROMQ_URL = "tcp://127.0.0.1:15555"
 
 
-# Rocket.Chat server URL and port as necessary
-# ROCKETCHAT_URL = "http://localhost:3000"
+# Your will's mention handle. (aka @will)  Note that this is not backend-specific,
+# and is only used for the generation of help text.
+# WILL_HANDLE = "will"
 
 
-# Disable Hipchat SSL checks.  Strongly reccomended this is not set to True.
-# ALLOW_INSECURE_HIPCHAT_SERVER = False
+# ------------------------------------------------------------------------------------
+# Optional settings
+# ------------------------------------------------------------------------------------
+
+# The maximum number of milliseconds to wait for an analysis backend to finish
+# ANALYSIS_TIMEOUT_MS = 2000
+
+# The maximum number of milliseconds to wait for a generation backend to finish
+# GENERATION_TIMEOUT_MS = 2000
+
+# The interval will checks his internal cross-thread messaging queues, in seconds.
+# Increasing the value will make will slower, but consume fewer resources.
+# EVENT_LOOP_INTERVAL = 0.025
+
+# A secret key, used to namespace this instance of will and secure pubsub contents.
+# Do *NOT* keep it in config.py.  *DO* set it in the environment as WILL_SECRET_KEY,
+# in a secured session. If a SECRET_KEY is not set, one will be auto-generated, 
+# but it may limit Will to reading data from this excecution only, and may not work
+# on virtualized machines, or machines with many or changing MAC addresses
+# SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
+
+
+# Turn up or down Will's logging level
+# LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+# LOGLEVEL = "DEBUG"
+
+# Turn on or off Will's profiling
+# PROFILING_ENABLED = False
 
 # Turn on/off encryption in pub/sub and storage (default is on).
 # Causes a small speed bump, but secures messages in an untrusted environment.
