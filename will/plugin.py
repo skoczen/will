@@ -59,12 +59,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
             kwargs["room"] = room
 
         backend = False
-        if not message:
+        if not message and hasattr(self, "message"):
             message = self.message
-        message = self._trim_for_execution(message)
-        logging.info(message)
+        if message:
+            message = self._trim_for_execution(message)
 
-        if hasattr(message, "backend"):
+        if message and hasattr(message, "backend"):
             # Events, content/type/timestamp
             # {
             #   message: message,
@@ -73,7 +73,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatR
             backend = message.backend
         else:
             # TODO: need a clear, documented spec for this.
-            if hasattr(message, "data") and hasattr(message.data, "backend"):
+            if message and hasattr(message, "data") and hasattr(message.data, "backend"):
                 logging.info(message.data)
                 logging.info(message.data.__dict__)
                 backend = message.data.backend

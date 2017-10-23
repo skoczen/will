@@ -141,6 +141,14 @@ def import_settings(quiet=True):
                      "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
             settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
 
+        for b in settings["IO_BACKENDS"]:
+            if "slack" in b and "SLACK_DEFAULT_CHANNEL" not in settings and not quiet:
+                warn(
+                    "No SLACK_DEFAULT_CHANNEL set - any messages sent without an explicit channel will go "
+                    "to a non-deterministic channel that will has access to "
+                    "- this is almost certainly not what you want."
+                )
+
         if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
             settings["ENABLE_INTERNAL_ENCRYPTION"] = True
 
@@ -262,6 +270,9 @@ def import_settings(quiet=True):
 
         if "EVENT_LOOP_INTERVAL" not in settings:
             settings["EVENT_LOOP_INTERVAL"] = 0.025
+
+        if "LOGLEVEL" not in settings:
+            settings["LOGLEVEL"] = "ERROR"
 
         if "SECRET_KEY" not in settings:
             if not quiet:
