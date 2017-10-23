@@ -1,3 +1,4 @@
+import logging
 import redis
 import urlparse
 from will.mixins import SettingsMixin, EncryptionMixin
@@ -34,5 +35,5 @@ class BaseStorageBackend(SettingsMixin, EncryptionMixin, object):
         try:
             return self.decrypt(self.backend_load(key, *args, **kwargs))
         except:
-            print "error decrypting.  Assuming unencrypted for %s" % key
+            logging.warn("Error decrypting.  Attempting unencrypted load for %s to ease migration." % key)
             return self.backend_load(key, *args, **kwargs)

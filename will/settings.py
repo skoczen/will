@@ -1,10 +1,44 @@
 import os
 import sys
-import uuid
 from will.utils import show_valid, warn, note, error
 from clint.textui import puts, indent
 from six.moves.urllib import parse
 from six.moves import input
+
+
+def auto_key():
+    """This method attempts to auto-generate a unique cryptographic key based on the hardware ID.
+    It should *NOT* be used in production, or to replace a proper key, but it can help get will
+    running in local and test environments more easily."""
+    import uuid
+    import time
+    import random
+    import hashlib
+
+    node = uuid.getnode()
+
+    h = hashlib.md5()
+    h.update("%s" % node)
+    key1 = h.hexdigest()
+
+    time.sleep(random.uniform(0, 0.5))
+    node = uuid.getnode()
+
+    h = hashlib.md5()
+    h.update("%s" % node)
+    key2 = h.hexdigest()
+
+    time.sleep(random.uniform(0, 0.5))
+    node = uuid.getnode()
+
+    h = hashlib.md5()
+    h.update("%s" % node)
+    key3 = h.hexdigest()
+
+    if key1 == key2 and key2 == key3:
+        return key1
+
+    return False
 
 
 def import_settings(quiet=True):
@@ -139,7 +173,7 @@ def import_settings(quiet=True):
             settings["IO_BACKENDS"] and len(settings["IO_BACKENDS"]) > 0
         ):
             if not quiet:
-                warn("no DEFAULT_BACKEND found in the environment or config.  "
+                note("no DEFAULT_BACKEND found in the environment or config.  "
                      "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
             settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
 
@@ -150,9 +184,6 @@ def import_settings(quiet=True):
                     "to a non-deterministic channel that will has access to "
                     "- this is almost certainly not what you want."
                 )
-
-        if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
-            settings["ENABLE_INTERNAL_ENCRYPTION"] = True
 
         if "HTTPSERVER_PORT" not in settings:
             # For heroku
@@ -213,7 +244,7 @@ def import_settings(quiet=True):
             default_public = "http://localhost:%s" % settings["HTTPSERVER_PORT"]
             settings["PUBLIC_URL"] = default_public
             if not quiet:
-                warn("no PUBLIC_URL found in the environment or config.  Defaulting to '%s'." % default_public)
+                note("no PUBLIC_URL found in the environment or config.  Defaulting to '%s'." % default_public)
 
         if "TEMPLATE_DIRS" not in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:
@@ -276,16 +307,33 @@ def import_settings(quiet=True):
         if "LOGLEVEL" not in settings:
             settings["LOGLEVEL"] = "ERROR"
 
+        if "ENABLE_INTERNAL_ENCRYPTION" not in settings:
+            settings["ENABLE_INTERNAL_ENCRYPTION"] = True
+
         if "SECRET_KEY" not in settings:
             if not quiet:
-                note(
-                    "No SECRET_KEY specified.  Auto-generating one specific to this run of Will.\n" +
-                    "  Know that Will won't be able to catch up on old messages\n" +
-                    "  or work in a multicomponent install without one."
-                )
-                settings["SECRET_KEY"] = uuid.uuid4().hex
-                os.environ["WILL_SECRET_KEY"] = settings["SECRET_KEY"]
-                os.environ["WILL_EPHEMERAL_SECRET_KEY"] = "True"
+                if "ENABLE_INTERNAL_ENCRYPTION" in settings and settings["ENABLE_INTERNAL_ENCRYPTION"]:
+                    key = auto_key()
+                    if key:
+                        warn(
+                            "No SECRET_KEY specified and ENABLE_INTERNAL_ENCRYPTION is on.\n" +
+                            "  Temporarily auto-generating a key specific to this computer:\n    %s\n" % (key,) +
+                            "  Please set WILL_SECRET_KEY in the environment as soon as possible to ensure \n" +
+                            "  Will is able to access information from previous runs."
+                        )
+                    else:
+                        error(
+                            "ENABLE_INTERNAL_ENCRYPTION is turned on, but a SECRET_KEY has not been given.\n" +
+                            "We tried to automatically generate temporary SECRET_KEY, but this appears to be a \n" +
+                            "shared or virtualized environment.\n Please set a unique secret key in the " +
+                            "environment as WILL_SECRET_KEY to run will."
+                        )
+                        print "  Unable to start will without a SECRET_KEY while encryption is turned on. Shutting down."
+                        sys.exit(1)
+
+                    settings["SECRET_KEY"] = key
+                    os.environ["WILL_SECRET_KEY"] = settings["SECRET_KEY"]
+                    os.environ["WILL_EPHEMERAL_SECRET_KEY"] = "True"
 
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):
