@@ -153,7 +153,7 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 Fixes and features in this release:
 
-* Makes passing the `room=` option *much* easier (you can just use the room's name now, thanks to [wontonst](https://github.com/wontonst).
+* Makes passing the `room=` option *much* easier (you can just use the room's name now,) thanks to [wontonst](https://github.com/wontonst).
 * Adds support for jinja `custom_filters` in the `@rendered_template` decorator, thanks to [chillipeper](https://github.com/chillipeper).
 
 
