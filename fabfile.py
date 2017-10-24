@@ -56,11 +56,11 @@ def deploy_docs():
     for root, dirs, files in os.walk(root_dir, topdown=False):
         for name in files:
             if name not in WHITELIST_FILES and not any([r in WHITELIST_DIRS for r in _splitpath(root)]):
-                # print "removing %s" % (os.path.join(root, name))
+                # print("removing %s" % (os.path.join(root, name)))
                 os.remove(os.path.join(root, name))
         for name in dirs:
             if name not in WHITELIST_DIRS and not any([r in WHITELIST_DIRS for r in _splitpath(root)]):
-                print "removing %s" % (os.path.join(root, name))
+                print("removing %s" % (os.path.join(root, name)))
                 try:
                     os.rmdir(os.path.join(root, name))
                 except:

@@ -19,17 +19,17 @@ class PagerDutyPlugin(WillPlugin):
     def _get_user_email_from_mention_name(self, mention_name):
         try:
             u = self.get_user_by_nick(mention_name[1:])
-            email_address = self.get_hipchat_user(u['hipchat_id'])['email']
+            email_address = self.get_user(u['hipchat_id'])['email']
             return email_address
         except TypeError:
             return None
 
     def _update_incident(self, message, incidents, action, assign_to_email=None):
         pager = pygerduty.PagerDuty(settings.PAGERDUTY_SUBDOMAIN, settings.PAGERDUTY_API_KEY)
-        email_address = self.get_hipchat_user(message.sender['hipchat_id'])['email']
+        email_address = self.get_user(message.sender['hipchat_id'])['email']
         user = self._associate_pd_user(email_address, pager)
         if user is None:
-            self.reply(message, "I couldn't find your user :(")
+            self.reply("I couldn't find your user :(")
             return
 
         # if incident(s) are given
@@ -40,28 +40,28 @@ class PagerDutyPlugin(WillPlugin):
                     incident = pager.incidents.show(entity_id=i)
                 except pygerduty.BadRequest as e:
                     if e.code == 5001:
-                        self.reply(message, "Incident %s was not found." % i, color="yellow")
+                        self.reply("Incident %s was not found." % i, color="yellow")
                     continue
                 if action == 'ack':
                     try:
                         incident.acknowledge(requester_id=user.id)
                     except pygerduty.BadRequest as e:
                         if e.code == 1001:
-                            self.reply(message, "%s has been already resolved." % i, color="yellow")
+                            self.reply("%s has been already resolved." % i, color="yellow")
                         continue
                 elif action == 'resolve':
                     try:
                         incident.resolve(requester_id=user.id)
                     except pygerduty.BadRequest as e:
                         if e.code == 1001:
-                            self.reply(message, "%s has been already resolved." % i, color="yellow")
+                            self.reply("%s has been already resolved." % i, color="yellow")
                         continue
                 elif action == 'reassign':
                     try:
                         if assign_to_email is not None:
                             assign_to = self._associate_pd_user(assign_to_email, pager)
                             if assign_to is None:
-                                self.reply(message, "Coudn't find the PD user for %s :(" % assign_to_email)
+                                self.reply("Coudn't find the PD user for %s :(" % assign_to_email)
                                 return
                             else:
                                 incident.reassign(user_ids=[assign_to.id], requester_id=user.id)
@@ -69,7 +69,7 @@ class PagerDutyPlugin(WillPlugin):
                         # ignore any error, maybe it worth to log it somewhere
                         # in the future
                         continue
-            self.reply(message, "Ok.")
+            self.reply("Ok.")
         # if incident(s) are not given
         else:
             try:
@@ -89,7 +89,7 @@ class PagerDutyPlugin(WillPlugin):
                 elif action == 'resolve_all':
                     for incident in pager.incidents.list(status='acknowledged'):
                         incident.resolve(requester_id=user.id)
-                self.reply(message, "Ok.")
+                self.reply("Ok.")
             except pygerduty.BadRequest:
                 # ignore any error, might be acked/resolved
                 pass
@@ -132,9 +132,9 @@ class PagerDutyPlugin(WillPlugin):
         pager = pygerduty.PagerDuty(settings.PAGERDUTY_SUBDOMAIN, settings.PAGERDUTY_API_KEY)
         for service in pager.services.list(limit=50):
             if service.name == service_name:
-                user = self._associate_pd_user(self.get_hipchat_user(message.sender['hipchat_id'])['email'], pager)
+                user = self._associate_pd_user(self.get_user(message.sender['hipchat_id'])['email'], pager)
                 if user is None:
-                    self.reply(message, "I couldn't find your user :(", color="yellow")
+                    self.reply("I couldn't find your user :(", color="yellow")
                     return
                 now = datetime.datetime.utcnow()
                 start_time = now.strftime("%Y-%m-%dT%H:%MZ")
@@ -143,9 +143,9 @@ class PagerDutyPlugin(WillPlugin):
                     pager.maintenance_windows.create(service_ids=[service.id], requester_id=user.id,
                                                      start_time=start_time,
                                                      end_time=end_time)
-                    self.reply(message, "Ok.")
+                    self.reply("Ok.")
                 except pygerduty.BadRequest as e:
-                    self.reply(message, "Failed: %s" % e.message, color="yellow")
+                    self.reply("Failed: %s" % e.message, color="yellow")
 
     @respond_to("^pd reassign (?P<incidents>[0-9 ]+)( )(?P<mention_name>[a-zA-Z@]+)$")
     def reassign_incidents(self, message, incidents, mention_name):
@@ -153,4 +153,4 @@ class PagerDutyPlugin(WillPlugin):
         if email_address:
             self._update_incident(message, incidents.split(" "), 'reassign', email_address)
         else:
-            self.reply(message, "Can't find email address for %s" % mention_name)
+            self.reply("Can't find email address for %s" % mention_name)

@@ -4,9 +4,10 @@ import random
 import time
 import traceback
 from apscheduler.triggers.cron import CronTrigger
+from will.mixins.pubsub import PubSubMixin
 
 
-class ScheduleMixin(object):
+class ScheduleMixin(PubSubMixin, object):
 
     def times_key(self, periodic_list=False):
         if periodic_list:
@@ -19,21 +20,20 @@ class ScheduleMixin(object):
         return "will_schedule_list"
 
     def get_schedule_list(self, periodic_list=False):
-        # TODO: Clean this up.
         return self.load(self.schedule_key(periodic_list=periodic_list), {})
 
     def save_schedule_list(self, new_list, periodic_list=False):
         self.save(self.schedule_key(periodic_list=periodic_list), new_list)
 
     def get_times_list(self, periodic_list=False):
-        # TODO: Clean this up.
         return self.load(self.times_key(periodic_list=periodic_list), {})
 
     def save_times_list(self, new_list, periodic_list=False):
         return self.save(self.times_key(periodic_list=periodic_list), new_list)
 
-    def add_direct_message_to_schedule(self, when, content, message, *args, **kwargs):
-        target_user = self.get_user_from_message(message)
+    # TODO: Create new version of this that's properly abstracted, instead of get_user_from_message
+    def add_direct_message_to_schedule(self, when, content, message, target_user, *args, **kwargs):
+        # target_user = self.get_user_from_message(message)
         self.add_to_schedule(when, {
             "type": "direct_message",
             "content": content,
@@ -50,6 +50,9 @@ class ScheduleMixin(object):
             "args": args,
             "kwargs": kwargs,
         })
+
+    def add_outgoing_event_to_schedule(self, when, event, *args, **kwargs):
+        self.add_to_schedule(when, event, *args, **kwargs)
 
     def add_to_schedule(self, when, item, periodic_list=False, ignore_scheduler_lock=False):
         try:
