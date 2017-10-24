@@ -24,7 +24,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
                 rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
         return rooms
 
-    def _prepared_content(self, content):
+    @staticmethod
+    def _prepared_content(content):
         content = re.sub(r'>\s+<', '><', content)
         return content
 
@@ -36,12 +37,17 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMi
         # card: Card see: https://developer.atlassian.com/hipchat/guide/sending-messages
 
         content = self._prepared_content(content)
-        rooms = []
         if room is not None:
             try:
+                error_msg = u'"{0}" is not a valid room name.'
+                if isinstance(room, basestring):
+                    room = self.get_room_from_name_or_id(room)
+                    if not room:
+                        raise KeyError
+                error_msg = u'"{0}" is not a room object.'
                 room_id = room["room_id"]
             except KeyError:
-                logging.error(u'"%s" is not a room object.', room)
+                logging.error(error_msg.format(room))
             else:
                 self.send_room_message(room_id, content, card=card, **kwargs)
         elif message is None or message["type"] == "groupchat":

@@ -26,7 +26,7 @@ self.say(content, message=None, room=None, html=False, color="green", notify=Fal
 
 - **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
 - **`message`**: (optional) The incoming message object
-- **`room`**: (optional) The room object (from self.available_rooms) to send the message to.
+- **`room`**: (optional) The room object (from self.available_rooms) or the room name to send the message to.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". 
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
@@ -67,7 +67,7 @@ def ping(self):
     self.say("PONG!")
 ```
 
-If you want to talk to a different room, you can pass in the `room` argument with one of the rooms from `self.available_rooms`.
+If you want to talk to a different room, you can pass in the `room` argument with one of the rooms from `self.available_rooms` or the string name of the room.
 
 
 ## Send an email
@@ -116,7 +116,7 @@ self.schedule_say(content, when, message=None, room=None, html=False, color="gre
 - **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
 - **`when`**: when you want the message to be said. Python `datetime` object.
 - **`message`**: (optional) The incoming message object
-- **`room`**: (optional) The room object (from self.available_rooms) to send the message to.
+- **`room`**: (optional) The room object (from self.available_rooms), the room name, or "ALL_ROOMS" to send the message to.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
@@ -144,7 +144,7 @@ self.set_topic(topic, message=None, room=None)
 
 - `topic`: The string you want to set the topic to
 - `message`: (optional) The incoming message object
-- `room`: (optional) The room object (from self.available_rooms) to send the message to.
+- `room`: (optional) The room object (from self.available_rooms), a room name, or "ALL_ROOMS" to send the message to.
 
 
 
