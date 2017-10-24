@@ -167,8 +167,8 @@ class RocketChatBackend(IOBackend):
                 # 2. Group (channel) messages
                 # 3. Ad-hoc group messages (if they exist)
                 # 4. Messages that have a channel/room explicitly specified that's different than
-                #    where they came from/
-                # 5. Messages without a channel (Fallback to ROCKETCHAT_DEFAULT_CHANNEL) (messages that don't have a room, )
+                #    where they came from.
+                # 5. Messages without a channel (Fallback to ROCKETCHAT_DEFAULT_CHANNEL) (messages that don't have a room )
                 kwargs = {}
                 if "kwargs" in event:
                     kwargs.update(**event.kwargs)

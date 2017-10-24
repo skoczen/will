@@ -217,7 +217,7 @@ class HipChatRoomMixin(object):
 
     def get_room_from_name_or_id(self, name_or_id):
         for name, room in self.available_rooms.items():
-            if name_or_id == name:
+            if name_or_id.lower() == name.lower():
                 return room
             if "xmpp_jid" in room and name_or_id == room["xmpp_jid"]:
                 return room
@@ -664,11 +664,34 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
         if hasattr(event, "kwargs"):
             kwargs.update(event.kwargs)
 
+        room = None
+        passed_room = None
+        if "room" in kwargs:
+            passed_room = kwargs["room"]
+        if "channel" in kwargs:
+            passed_room = kwargs["channel"]
+
+        if passed_room:
+            if isinstance(passed_room, basestring):
+                # User passed in a room string
+                room = self.get_room_from_name_or_id(passed_room)
+            else:
+                # User found the internal HipChatRoom object and passed it.
+                room = passed_room
+        else:
+            # Default to the room we heard this message in.
+            room = self.get_room_from_message(event)
+
+        room_id = None
+        if room and hasattr(room, "id"):
+            room_id = room.id
+        else:
+            room_id = room
+
         if event.type in ["say", "reply"]:
             event.content = re.sub(r'>\s+<', '><', event.content)
 
-            room = self.get_room_from_message(event)
-            if hasattr(event, "source_message") and event.source_message:
+            if hasattr(event, "source_message") and event.source_message and not room:
                 send_source = event.source_message
 
                 if hasattr(event.source_message, "data"):
@@ -681,15 +704,14 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
 
             # Otherwise trust room.
             self.send_room_message(
-                room,
+                room_id,
                 event.content,
                 **kwargs
             )
 
         elif event.type in ["topic_change", ]:
-            room = self.get_room_from_message(event)
-            if room:
-                self.set_room_topic(room, event.content)
+            if room_id:
+                self.set_room_topic(room_id, event.content)
             else:
                 if hasattr(event, "source_message") and event.source_message:
                     send_source = event.source_message
