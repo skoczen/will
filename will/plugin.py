@@ -54,9 +54,13 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             return self.message
         return message_passed
 
-    def say(self, content, message=None, room=None, package_for_scheduling=False, **kwargs):
+    def say(self, content, message=None, room=None, channel=None, package_for_scheduling=False, **kwargs):
         logging.info("self.say")
         logging.info(content)
+        if channel:
+            room = channel
+        elif room:
+            channel = room
 
         if not "room" in kwargs and room:
             kwargs["room"] = room
@@ -132,7 +136,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             else:
                 self.publish("message.outgoing.%s" % backend, e)
 
-    def set_topic(self, topic, message=None, room=None, **kwargs):
+    def set_topic(self, topic, message=None, room=None, channel=None, **kwargs):
+        if channel:
+            room = channel
+        elif room:
+            channel = room
+
         message = self.get_message(message)
         message = self._trim_for_execution(message)
         backend = self.get_backend(message)
@@ -145,7 +154,11 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         )
         self.publish("message.outgoing.%s" % backend, e)
 
-    def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
+    def schedule_say(self, content, when, message=None, room=None, channel=None, *args, **kwargs):
+        if channel:
+            room = channel
+        elif room:
+            channel = room
         packaged_event = self.reply(None, content=content, message=message, package_for_scheduling=True)
         self.add_outgoing_event_to_schedule(when, {
             "type": "message",
