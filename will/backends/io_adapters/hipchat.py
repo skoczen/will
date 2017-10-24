@@ -1,5 +1,7 @@
 import json
 import logging
+from multiprocessing.queues import Empty
+from multiprocessing import Process, Queue
 import random
 import re
 import requests
@@ -16,9 +18,7 @@ from .base import IOBackend
 from will import settings
 from will.utils import is_admin
 from will.acl import is_acl_allowed
-from multiprocessing import Process, Queue
 from will.abstractions import Event, Message, Person, Channel
-from multiprocessing.queues import Empty
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from will.mixins import RoomMixin, StorageMixin, PubSubMixin
 

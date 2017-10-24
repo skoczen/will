@@ -210,7 +210,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 # A secret key, used to namespace this instance of will and secure pubsub contents.
 # Do *NOT* keep it in config.py.  *DO* set it in the environment as WILL_SECRET_KEY,
-# in a secured session. If a SECRET_KEY is not set, one will be auto-generated, 
+# in a secured session. If a SECRET_KEY is not set, one will be auto-generated,
 # but it may limit Will to reading data from this excecution only, and may not work
 # on virtualized machines, or machines with many or changing MAC addresses
 # SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"

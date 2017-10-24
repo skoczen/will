@@ -75,4 +75,4 @@ class TestTalkBackPlugin(unittest.TestCase):
         self.plugin.talk_back("That's what she said")
 
         mock_get.assert_called_once_with(TalkBackPlugin.QUOTES_URL)
-        mock_reply.assert_called_once_with("That's what she said", 'Actually, she said things like this: \nHi! ~ An')
+        mock_reply.assert_called_once_with('Actually, she said things like this: \nHi! ~ An')

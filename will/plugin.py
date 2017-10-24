@@ -1,13 +1,14 @@
 import re
 import logging
 
-from will import settings
 from bottle import request
-from mixins import NaturalTimeMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
-    EmailMixin, PubSubMixin
-from will.backends.io_adapters.hipchat import HipChatRosterMixin
-from utils import html_to_text
+
+from will import settings
 from will.abstractions import Event, Message
+from will.backends.io_adapters.hipchat import HipChatRosterMixin
+from will.mixins import NaturalTimeMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
+    EmailMixin, PubSubMixin
+from will.utils import html_to_text
 
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatRosterMixin,
