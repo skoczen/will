@@ -11,22 +11,19 @@ Like any normal person, will can talk to the chat room, or in 1-1 chats.  To tal
 @respond_to("bonjour")
 def say_bonjour_will(self, message):
     # Awesome stuff
-    self.say("Bonjour!", message=message)
+    self.say("Bonjour!")
 ```
 
 ![Bonjour!](../img/only_bonjour.gif)
 
-Note that we pass `messsage` along.  This allows will to route his reply to the correct room.  Without it, he'll just speak to the `DEFAULT_ROOM`.
-
 `say()` comes with a number of options, including color, html, and ping notify. 
 
 ```python
-self.say(content, message=None, room=None, html=False, color="green", notify=False)
+self.say(content, channel=None, html=False, color="green", notify=False)
 ```
 
 - **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
-- **`message`**: (optional) The incoming message object
-- **`room`**: (optional) The room object (from self.available_rooms) or the room name to send the message to.
+- **`channel`**: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just reply in the same channel/room/thread.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". 
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
@@ -38,18 +35,16 @@ Sometimes you want will to ping you - that's where @name mentions are great.  To
 ```python
 @respond_to("^hi")   # Basic
 def hi(self, message):
-    self.reply(message, "hello, %s!" % message.sender.nick)
+    self.reply("hello, %s!" % message.sender.handle)
 ```
 
 ![Hi, Hello, username!](../img/hi_hello.gif)
 
-Note the order of arguments is different here, and `messsage` is required. All the options: 
+All the options: 
 
 ```python
-self.reply(message, content, html=False, color="green", notify=False)
+self.reply(content, html=False, color="green", notify=False)
 ```
-
-- **`message`**: The incoming message object.  Required
 - **`content`**: the content you want to send to the room. HTML or plain text.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
@@ -67,7 +62,7 @@ def ping(self):
     self.say("PONG!")
 ```
 
-If you want to talk to a different room, you can pass in the `room` argument with one of the rooms from `self.available_rooms` or the string name of the room.
+If you want to talk to a different room, you can pass in the `channel` with the name of the channel or room you want to talk to.
 
 
 ## Send an email
@@ -110,13 +105,13 @@ def walkmaster(self):
 The options are pretty much the same as `self.say`, with the addition of the `when` parameter.
 
 ```python
-self.schedule_say(content, when, message=None, room=None, html=False, color="green", notify=False)
+self.schedule_say(content, when, message=None, channel=None, html=False, color="green", notify=False)
 ```
 
 - **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
 - **`when`**: when you want the message to be said. Python `datetime` object.
 - **`message`**: (optional) The incoming message object
-- **`room`**: (optional) The room object (from self.available_rooms), the room name, or "ALL_ROOMS" to send the message to.
+- **`channel`**: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just reply in the same channel/room/thread. You can also pass "ALL_ROOMS" to send the message everywhere, if that's really your thing.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
@@ -139,12 +134,12 @@ def give_us_somethin_to_talk_about(self, message):
 Note: you can't set the topic of a 1-1 chat. Will will complain politely.  All options:
 
 ```python
-self.set_topic(topic, message=None, room=None) 
+self.set_topic(topic, message=None, channel=None) 
 ```
 
 - `topic`: The string you want to set the topic to
 - `message`: (optional) The incoming message object
-- `room`: (optional) The room object (from self.available_rooms), a room name, or "ALL_ROOMS" to send the message to.
+- `channel`: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just set the topic for the same channel/room/thread. You can also pass "ALL_ROOMS" to send the message everywhere, if that's really your thing.
 
 
 

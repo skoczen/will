@@ -6,7 +6,7 @@ class ThanksPlugin(WillPlugin):
 
     @respond_to("^(?:thanks|thank you|tx|thx|ty|tyvm)")
     def respond_to_thanks(self, message):
-        self.reply(message, "You're welcome!")
+        self.reply("You're welcome!")
 
     @hear("(thanks|thank you|tx|thx|ty|tyvm),? (will|william)")
     def hear_thanks(self, message):

@@ -7,7 +7,7 @@ class MorninEveninPlugin(WillPlugin):
 
     @hear("^(good )?(morning?)")
     def morning(self, message):
-        self.say("mornin', %s" % message.sender.nick, message=message)
+        self.say("mornin', %s" % message.sender.handle, message=message)
 
     @hear("^(good ?|g')?('?night)")
     def good_night(self, message):

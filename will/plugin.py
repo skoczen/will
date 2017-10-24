@@ -1,101 +1,167 @@
 import re
 import logging
 
-from will import settings
 from bottle import request
-from will.mixins import NaturalTimeMixin, RosterMixin, RoomMixin, \
-    ScheduleMixin, HipChatMixin, StorageMixin, SettingsMixin, EmailMixin
+
+from will import settings
+from will.abstractions import Event, Message
+# Backwards compatability with 1.x, eventually to be deprecated.
+from will.backends.io_adapters.hipchat import HipChatRosterMixin, HipChatRoomMixin
+from will.mixins import NaturalTimeMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
+    EmailMixin, PubSubMixin
+from will.utils import html_to_text
 
 
-class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, RosterMixin,
-                 ScheduleMixin, HipChatMixin, SettingsMixin):
+class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, HipChatRosterMixin,
+                 ScheduleMixin, SettingsMixin, PubSubMixin):
     is_will_plugin = True
     request = request
 
-    def _rooms_from_message_and_room(self, message, room):
-        if room == "ALL_ROOMS":
-            rooms = self.available_rooms
-        elif room:
-            rooms = [self.get_room_from_name_or_id(room), ]
-        else:
-            if message:
-                rooms = [self.get_room_from_message(message), ]
-            else:
-                rooms = [self.get_room_from_name_or_id(settings.DEFAULT_ROOM), ]
-        return rooms
+    def __init__(self, *args, **kwargs):
+        if "bot" in kwargs:
+            self.bot = kwargs["bot"]
+            del kwargs["bot"]
+        if "message" in kwargs:
+            self.message = kwargs["message"]
+            del kwargs["message"]
 
-    @staticmethod
-    def _prepared_content(content):
+        super(WillPlugin, self).__init__(*args, **kwargs)
+
+    def _prepared_content(self, content, message, kwargs):
         content = re.sub(r'>\s+<', '><', content)
         return content
 
-    def say(self, content, message=None, room=None, card=None, **kwargs):
-        # Valid kwargs:
-        # color: yellow, red, green, purple, gray, random.  Default is green.
-        # html: Display HTML or not. Default is False
-        # notify: Ping everyone. Default is False
-        # card: Card see: https://developer.atlassian.com/hipchat/guide/sending-messages
+    def _trim_for_execution(self, message):
+        # Trim it down
+        if hasattr(message, "analysis"):
+            message.analysis = None
+        if hasattr(message, "source_message") and hasattr(message.source_message, "analysis"):
+            message.source_message.analysis = None
+        return message
 
-        content = self._prepared_content(content)
-        if room is not None:
-            try:
-                error_msg = u'"{0}" is not a valid room name.'
-                if isinstance(room, basestring):
-                    room = self.get_room_from_name_or_id(room)
-                    if not room:
-                        raise KeyError
-                error_msg = u'"{0}" is not a room object.'
-                room_id = room["room_id"]
-            except KeyError:
-                logging.error(error_msg.format(room))
-            else:
-                self.send_room_message(room_id, content, card=card, **kwargs)
-        elif message is None or message["type"] == "groupchat":
-            rooms = self._rooms_from_message_and_room(message, room)
-            for r in rooms:
-                self.send_room_message(r["room_id"], content, card=card, **kwargs)
+    def get_backend(self, message):
+        backend = False
+        if hasattr(message, "backend"):
+            backend = message.backend
+        elif message and hasattr(message, "data") and hasattr(message.data, "backend"):
+            backend = message.data.backend
         else:
-            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
+            backend = settings.DEFAULT_BACKEND
+        return backend
 
-    def reply(self, message, content, **kwargs):
-        # Valid kwargs:
-        # color: yellow, red, green, purple, gray, random.  Default is green.
-        # html: Display HTML or not. Default is False
-        # notify: Ping everyone. Default is False
+    def get_message(self, message_passed):
+        if not message_passed and hasattr(self, "message"):
+            return self.message
+        return message_passed
 
-        content = self._prepared_content(content)
-        if message is None or message["type"] == "groupchat":
-            # Reply, speaking to the room.
-            try:
-                content = "@%s %s" % (message.sender["nick"], content)
-            except TypeError:
-                content = "%s\nNote: I was told to reply, but this message didn't come from a person!" % (content,)
+    def say(self, content, message=None, room=None, channel=None, package_for_scheduling=False, **kwargs):
+        logging.info("self.say")
+        logging.info(content)
+        if channel:
+            room = channel
+        elif room:
+            channel = room
 
-            self.say(content, message=message, **kwargs)
+        if not "channel" in kwargs and channel:
+            kwargs["channel"] = channel
 
-        elif message['type'] in ('chat', 'normal'):
-            # Reply to the user (1-1 chat)
-
-            self.send_direct_message(message.sender["hipchat_id"], content, **kwargs)
-
-    def set_topic(self, topic, message=None, room=None):
-
-        if message is None or message["type"] == "groupchat":
-            rooms = self._rooms_from_message_and_room(message, room)
-            for r in rooms:
-                self.set_room_topic(r["room_id"], topic)
-        elif message['type'] in ('chat', 'normal'):
-            self.send_direct_message(
-                message.sender["hipchat_id"],
-                "I can't set the topic of a one-to-one chat.  Let's just talk."
+        message = self.get_message(message)
+        message = self._trim_for_execution(message)
+        backend = self.get_backend(message)
+        if backend:
+            e = Event(
+                type="say",
+                content=content,
+                source_message=message,
+                kwargs=kwargs,
             )
+            if package_for_scheduling:
+                return e
+            else:
+                logging.info("putting in queue: %s" % content)
+                self.publish("message.outgoing.%s" % backend, e)
 
-    def schedule_say(self, content, when, message=None, room=None, *args, **kwargs):
+    def reply(self, event, content=None, message=None, package_for_scheduling=False, **kwargs):
+        message = self.get_message(message)
 
-        content = self._prepared_content(content)
-        if message is None or message["type"] == "groupchat":
-            rooms = self._rooms_from_message_and_room(message, room)
-            for r in rooms:
-                self.add_room_message_to_schedule(when, content, r, *args, **kwargs)
-        elif message['type'] in ('chat', 'normal'):
-            self.add_direct_message_to_schedule(when, content, message, *args, **kwargs)
+        # Be really smart about what we're getting back.
+        if (
+            (
+                (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Message") or
+                (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Event")
+            ) and type(content) == type("words")
+        ):
+            # "1.x world - user passed a message and a string.  Keep rolling."
+            pass
+        elif (
+                (
+                    (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Message") or
+                    (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Event")
+                ) and type(event) == type("words")
+        ):
+            # "User passed the string and message object backwards, and we're in a 1.x world"
+            temp_content = content
+            content = event
+            event = temp_content
+            del temp_content
+        elif (
+            type(event) == type("words") and
+            not content
+        ):
+            # "We're in the Will 2.0 automagic event finding."
+            content = event
+            event = self.message
+
+        else:
+            # "No magic needed."
+            pass
+
+        # Be smart about backend.
+        if hasattr(event, "data"):
+            message = event.data
+        elif hasattr(self, "message") and hasattr(self.message, "data"):
+            message = self.message.data
+
+        backend = self.get_backend(message)
+        if backend:
+            e = Event(
+                type="reply",
+                content=content,
+                topic="message.outgoing.%s" % backend,
+                source_message=message,
+                kwargs=kwargs,
+            )
+            if package_for_scheduling:
+                return e
+            else:
+                self.publish("message.outgoing.%s" % backend, e)
+
+    def set_topic(self, topic, message=None, room=None, channel=None, **kwargs):
+        if channel:
+            room = channel
+        elif room:
+            channel = room
+
+        message = self.get_message(message)
+        message = self._trim_for_execution(message)
+        backend = self.get_backend(message)
+        e = Event(
+            type="topic_change",
+            content=topic,
+            topic="message.outgoing.%s" % backend,
+            source_message=message,
+            kwargs=kwargs,
+        )
+        self.publish("message.outgoing.%s" % backend, e)
+
+    def schedule_say(self, content, when, message=None, room=None, channel=None, *args, **kwargs):
+        if channel:
+            room = channel
+        elif room:
+            channel = room
+        packaged_event = self.reply(None, content=content, message=message, package_for_scheduling=True)
+        self.add_outgoing_event_to_schedule(when, {
+            "type": "message",
+            "topic": packaged_event.topic,
+            "event": packaged_event,
+        })

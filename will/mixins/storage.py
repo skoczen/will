@@ -2,6 +2,7 @@ import importlib
 import logging
 import dill as pickle
 from will import settings
+from will.abstractions import Person, Event, Channel, Message
 
 
 class StorageMixin(object):
@@ -15,9 +16,9 @@ class StorageMixin(object):
                 # couchbase => will.storage.couchbase_backend
                 # etc...
                 module_name = ''.join([
-                    'will.storage.',
+                    'will.backends.storage.',
                     getattr(settings, 'STORAGE_BACKEND', 'redis'),
-                    '_storage'
+                    '_backend'
                 ])
                 storage_module = importlib.import_module(module_name)
 

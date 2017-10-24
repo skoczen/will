@@ -73,7 +73,7 @@ class BonjourPlugin(WillPlugin):
     @respond_to("bonjour")
     def say_bonjour_will(self, message):
         """bonjour: I know how to say bonjour! In French!"""
-        self.reply(message, "bonjour!")
+        self.reply("bonjour!")
 ```
 
 ![Bonjour help](../img/bonjour_help.gif)
@@ -146,7 +146,7 @@ class BonjourPlugin(WillPlugin):
 
     @respond_to("bonjour")
     def say_bonjour_will(self, message):
-        self.reply(message, settings.HELLO_MESSAGE)
+        self.reply(settings.HELLO_MESSAGE)
 ```
 
 You can also mark one or more settings as required for your plugin with the `require_settings` decorator, and they'll be checked on startup.
@@ -159,7 +159,7 @@ class BonjourPlugin(WillPlugin):
     @require_settings("HELLO_MESSAGE", "ANOTHER_SETTING")
     @respond_to("bonjour")
     def say_bonjour_will(self, message):
-        self.reply(message, settings.HELLO_MESSAGE)
+        self.reply(settings.HELLO_MESSAGE)
 ```
 
 When will starts up, he'll make sure they've been set:
@@ -178,7 +178,7 @@ class HistoryPlugin(WillPlugin):
     @respond_to("^get last message")
     def get_history(self, message):
         room = self.get_room_from_message(message)
-        self.reply(message, room.history[-1]["message"])
+        self.reply(room.history[-1]["message"])
 ```
 
 `.history` is pretty much what's returned from the [HipChat room history API](https://www.hipchat.com/docs/apiv2/method/view_room_history) - the lone exception is that the date has been converted to a python datetime.

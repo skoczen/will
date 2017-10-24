@@ -1,51 +1,9 @@
-from will.utils import is_admin
-from will.acl import is_acl_allowed
-
-
 class RosterMixin(object):
-    @property
-    def internal_roster(self):
-        if not hasattr(self, "_internal_roster"):
-            self._internal_roster = self.load('will_roster', {})
-        return self._internal_roster
 
-    def get_user_by_full_name(self, name):
-        for info in self.internal_roster.values():
-            if info["name"] == name:
-                return info
-        return None
-
-    def get_user_by_nick(self, nick):
-        for info in self.internal_roster.values():
-            if info["nick"] == nick:
-                return info
-        return None
-
-    def get_user_by_jid(self, jid):
-        if jid in self.internal_roster:
-            return self.internal_roster[jid]
-
-        return None
-
-    def get_user_from_message(self, message):
-        if message["type"] == "groupchat":
-            return self.get_user_by_full_name(message["mucnick"])
-        elif message['type'] in ('chat', 'normal'):
-            jid = ("%s" % message["from"]).split("/")[0]
-            return self.get_user_by_jid(jid)
-        else:
-            return None
-
-    def message_is_from_admin(self, message):
-        nick = self.get_user_from_message(message)['nick']
-        return is_admin(nick)
-
-    def message_is_allowed(self, message, acl):
-        nick = self.get_user_from_message(message)['nick']
-        return is_acl_allowed(nick, acl)
-
-    def get_user_by_hipchat_id(self, id):
-        for info in self.internal_roster.values():
-            if info["hipchat_id"] == id:
-                return info
-        return None
+    def __init__(self, *args, **kwargs):
+        import logging
+        logging.critical(
+            "RosterMixin has been moved to the hipchat backend.\n" +
+            "Please change all your imports to `from will.backends.io_adapters.hipchat import HipChatRosterMixin`"
+        )
+        super(RosterMixin, self).__init__(*args, **kwargs)
