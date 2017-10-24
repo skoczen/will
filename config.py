@@ -124,7 +124,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 
 # ------------------------------------------------------------------------------------
-# Hipchat settings
+# HipChat settings
 # ------------------------------------------------------------------------------------
 
 # Ideally, set these in the environment with the WILL_ prefix.
@@ -137,7 +137,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Will's proper name
 # HIPCHAT_NAME = "William T. Botterton"
 
-# Disable Hipchat SSL checks.  Strongly reccomended this is not set to True.
+# Disable HipChat SSL checks.  Strongly reccomended this is not set to True.
 # ALLOW_INSECURE_HIPCHAT_SERVER = False
 
 

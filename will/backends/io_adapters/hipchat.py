@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import logging
 from multiprocessing.queues import Empty
@@ -20,9 +21,8 @@ from will.utils import is_admin
 from will.acl import is_acl_allowed
 from will.abstractions import Event, Message, Person, Channel
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
-from will.mixins import RoomMixin, StorageMixin, PubSubMixin
+from will.mixins import StorageMixin, PubSubMixin
 
-# TODO: Cleanup unused urls
 ROOM_NOTIFICATION_URL = "https://%(server)s/v2/room/%(room_id)s/notification?auth_token=%(token)s"
 ROOM_TOPIC_URL = "https://%(server)s/v2/room/%(room_id)s/topic?auth_token=%(token)s"
 ROOM_URL = "https://%(server)s/v2/room/%(room_id)s/?auth_token=%(token)s"
@@ -33,6 +33,10 @@ ALL_USERS_URL = ("https://%(server)s/v2/user?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s")
 ALL_ROOMS_URL = ("https://%(server)s/v2/room?auth_token=%(token)s&start-index"
                  "=%(start_index)s&max-results=%(max_results)s&expand=items")
+
+# From RoomsMixins
+V1_TOKEN_URL = "https://%(server)s/v1/rooms/list?auth_token=%(token)s"
+V2_TOKEN_URL = "https://%(server)s/v2/room?auth_token=%(token)s&expand=items"
 
 
 class HipChatRosterMixin(object):
@@ -105,7 +109,124 @@ class HipChatRosterMixin(object):
         return None
 
 
-class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin, PubSubMixin):
+class HipChatRoom(Bunch):
+
+    @property
+    def id(self):
+        if 'room_id' in self:
+            # Using API v1
+            return self['room_id']
+        elif 'id' in self:
+            # Using API v2
+            return self['id']
+        else:
+            raise TypeError('Room ID not found')
+
+    @property
+    def history(self):
+        payload = {"auth_token": settings.HIPCHAT_V2_TOKEN}
+        response = requests.get("https://{1}/v2/room/{0}/history".format(str(self.id),
+                                                                         settings.HIPCHAT_SERVER),
+                                params=payload, **settings.REQUESTS_OPTIONS)
+        data = json.loads(response.text)['items']
+        for item in data:
+            item['date'] = datetime.strptime(item['date'][:-13], "%Y-%m-%dT%H:%M:%S")
+        return data
+
+    @property
+    def participants(self):
+        payload = {"auth_token": settings.HIPCHAT_V2_TOKEN}
+        response = requests.get(
+            "https://{1}/v2/room/{0}/participant".format(
+                str(self.id),
+                settings.HIPCHAT_SERVER
+            ),
+            params=payload,
+            **settings.REQUESTS_OPTIONS
+        ).json()
+        data = response['items']
+        while 'next' in response['links']:
+            response = requests.get(response['links']['next'],
+                                    params=payload, **settings.REQUESTS_OPTIONS).json()
+            data.extend(response['items'])
+        return data
+
+
+class HipChatRoomMixin(object):
+    def update_available_rooms(self, q=None):
+        self._available_rooms = {}
+        # Use v1 token to grab a full room list if we can (good to avoid rate limiting)
+        if hasattr(settings, "V1_TOKEN"):
+            url = V1_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
+                                  "token": settings.HIPCHAT_V1_TOKEN}
+            r = requests.get(url, **settings.REQUESTS_OPTIONS)
+            if r.status_code == requests.codes.unauthorized:
+                raise Exception("V1_TOKEN authentication failed with HipChat")
+            for room in r.json()["rooms"]:
+                # Some integrations expect a particular name for the ID field.
+                # Better to use room.id.
+                room["id"] = room["room_id"]
+                self._available_rooms[room["name"]] = HipChatRoom(**room)
+        # Otherwise, grab 'em one-by-one via the v2 api.
+        else:
+            params = {}
+            params['start-index'] = 0
+            max_results = params['max-results'] = 1000
+            url = V2_TOKEN_URL % {"server": settings.HIPCHAT_SERVER,
+                                  "token": settings.HIPCHAT_V2_TOKEN}
+            while True:
+                resp = requests.get(url, params=params,
+                                    **settings.REQUESTS_OPTIONS)
+                if resp.status_code == requests.codes.unauthorized:
+                    raise Exception("V2_TOKEN authentication failed with HipChat")
+                rooms = resp.json()
+
+                for room in rooms["items"]:
+                    # Some integrations expect a particular name for the ID field.
+                    # Better to use room.id
+                    room["room_id"] = room["id"]
+                    self._available_rooms[room["name"]] = HipChatRoom(**room)
+
+                logging.info('Got %d rooms', len(rooms['items']))
+                if len(rooms['items']) == max_results:
+                    params['start-index'] += max_results
+                else:
+                    break
+
+        self.save("hipchat_rooms", self._available_rooms)
+        if q:
+            q.put(self._available_rooms)
+
+    @property
+    def available_rooms(self):
+        if not hasattr(self, "_available_rooms"):
+            self._available_rooms = self.load('hipchat_rooms', None)
+            if not self._available_rooms:
+                self.update_available_rooms()
+
+        return self._available_rooms
+
+    def get_room_by_jid(self, jid):
+        for room in self.available_rooms.values():
+            if "xmpp_jid" in room and room["xmpp_jid"] == jid:
+                return room
+        return None
+
+    def get_room_from_message(self, message):
+        return self.get_room_by_jid(message.getMucroom())
+
+    def get_room_from_name_or_id(self, name_or_id):
+        for name, room in self.available_rooms.items():
+            if name_or_id == name:
+                return room
+            if "xmpp_jid" in room and name_or_id == room["xmpp_jid"]:
+                return room
+            if "room_id" in room and name_or_id == room["room_id"]:
+                return room
+        return None
+
+
+class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, StorageMixin, PubSubMixin):
 
     def start_xmpp_client(self, xmpp_bridge_queue=None, backend_name=""):
         logger = logging.getLogger(__name__)
@@ -272,7 +393,7 @@ class HipchatXMPPClient(ClientXMPP, HipChatRosterMixin, RoomMixin, StorageMixin,
         self.xmpp_bridge_queue.put(stripped_msg)
 
 
-class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
+class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMixin):
     friendly_name = "HipChat"
     internal_name = "will.backends.io_adapters.hipchat"
     required_settings = [
@@ -611,7 +732,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, RoomMixin, StorageMixin):
         #    Note that Channel asks for members, a list of People.
         # f) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
-        self.client = HipchatXMPPClient("%s/bot" % settings.HIPCHAT_USERNAME, settings.HIPCHAT_PASSWORD)
+        self.client = HipChatXMPPClient("%s/bot" % settings.HIPCHAT_USERNAME, settings.HIPCHAT_PASSWORD)
         self.xmpp_bridge_queue = Queue()
         self.client.start_xmpp_client(
             xmpp_bridge_queue=self.xmpp_bridge_queue,
