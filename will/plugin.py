@@ -62,8 +62,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         elif room:
             channel = room
 
-        if not "room" in kwargs and room:
-            kwargs["room"] = room
+        if not "channel" in kwargs and channel:
+            kwargs["channel"] = channel
 
         message = self.get_message(message)
         message = self._trim_for_execution(message)

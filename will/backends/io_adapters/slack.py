@@ -42,7 +42,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
 
     def get_channel_from_name(self, name):
         for k, c in self.channels.items():
-            if c.name == name or c.id == name:
+            if c.name.lower() == name.lower() or c.id.lower() == name.lower():
                 return c
 
     def normalize_incoming_event(self, event):
@@ -165,15 +165,15 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             event.content = event.content.replace(">", "&gt;")
             event.content = event.content.replace("\_", "_")
 
-            if hasattr(event, "source_message") and event.source_message:
+            kwargs = {}
+            if "kwargs" in event:
+                kwargs.update(**event.kwargs)
+
+            if hasattr(event, "source_message") and event.source_message and "channel" not in kwargs:
                 self.send_message(event)
             else:
                 # Came from webhook/etc
                 # TODO: finish this.
-                kwargs = {}
-                if "kwargs" in event:
-                    kwargs.update(**event.kwargs)
-
                 if "room" in kwargs:
                     event.channel = self.get_channel_from_name(kwargs["room"])
                 elif "channel" in kwargs:
