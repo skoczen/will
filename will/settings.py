@@ -153,6 +153,19 @@ def import_settings(quiet=True):
         # Set for hipchat
         for b in settings["IO_BACKENDS"]:
             if "hipchat" in b:
+                if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and\
+                        (settings["ALLOW_INSECURE_HIPCHAT_SERVER"] is True or
+                         settings["ALLOW_INSECURE_HIPCHAT_SERVER"].lower() == "true"):
+                    warn("You are choosing to run will with SSL disabled. "
+                         "This is INSECURE and should NEVER be deployed outside a development environment.")
+                    settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = True
+                    settings["REQUESTS_OPTIONS"] = {
+                        "verify": False,
+                    }
+                else:
+                    settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = False
+                    settings["REQUESTS_OPTIONS"] = {}
+
                 if "HIPCHAT_ROOMS" not in settings:
                     if not quiet:
                         warn("no HIPCHAT_ROOMS list found in the environment or config.  "
@@ -168,13 +181,29 @@ def import_settings(quiet=True):
                              "Defaulting to '%s', the first one." % settings["HIPCHAT_ROOMS"][0])
                     settings["HIPCHAT_DEFAULT_ROOM"] = settings["HIPCHAT_ROOMS"][0]
 
+            if "HIPCHAT_HANDLE" in settings and "HIPCHAT_HANDLE_NOTED" not in settings:
+                if not quiet:
+                    note(
+                        "HIPCHAT_HANDLE is no longer required (or used), as Will knows how to get\n" +
+                        "        his current handle from the HipChat servers."
+                    )
+                    settings["HIPCHAT_HANDLE_NOTED"] = True
+
+            if "HIPCHAT_NAME" in settings and "HIPCHAT_NAME_NOTED" not in settings:
+                if not quiet:
+                    note(
+                        "HIPCHAT_NAME is no longer required (or used), as Will knows how to get\n" +
+                        "        his current name from the HipChat servers."
+                    )
+                    settings["HIPCHAT_NAME_NOTED"] = True
+
         if (
             "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
             settings["IO_BACKENDS"] and len(settings["IO_BACKENDS"]) > 0
         ):
             if not quiet:
-                note("no DEFAULT_BACKEND found in the environment or config.  "
-                     "Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
+                note("no DEFAULT_BACKEND found in the environment or config.\n  "
+                     "      Defaulting to '%s', the first one." % settings["IO_BACKENDS"][0])
             settings["DEFAULT_BACKEND"] = settings["IO_BACKENDS"][0]
 
         for b in settings["IO_BACKENDS"]:
@@ -244,7 +273,7 @@ def import_settings(quiet=True):
             default_public = "http://localhost:%s" % settings["HTTPSERVER_PORT"]
             settings["PUBLIC_URL"] = default_public
             if not quiet:
-                note("no PUBLIC_URL found in the environment or config.  Defaulting to '%s'." % default_public)
+                note("no PUBLIC_URL found in the environment or config.\n        Defaulting to '%s'." % default_public)
 
         if "TEMPLATE_DIRS" not in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:
@@ -264,19 +293,6 @@ def import_settings(quiet=True):
                 settings["WILL_HANDLE"] = settings["ROCKETCHAT_HANDLE"]
             else:
                 settings["WILL_HANDLE"] = "will"
-
-        if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and\
-                (settings["ALLOW_INSECURE_HIPCHAT_SERVER"] is True or
-                 settings["ALLOW_INSECURE_HIPCHAT_SERVER"].lower() == "true"):
-            warn("You are choosing to run will with SSL disabled. "
-                 "This is INSECURE and should NEVER be deployed outside a development environment.")
-            settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = True
-            settings["REQUESTS_OPTIONS"] = {
-                "verify": False,
-            }
-        else:
-            settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = False
-            settings["REQUESTS_OPTIONS"] = {}
 
         if "ADMINS" not in settings:
             settings["ADMINS"] = "*"

@@ -250,9 +250,17 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
         self.rooms = []
         self.default_room = settings.HIPCHAT_DEFAULT_ROOM
 
-        # TODO: Clean this up, and pass it in from the controlling thread,
-        # then nuke RoomsMixin
-        # Property boostraps the list
+        my_user_url = "https://%(server)s/v2/user/%(user_id)s?auth_token=%(token)s" % {
+            "user_id": settings.HIPCHAT_USERNAME.split("@")[0].split("_")[1],
+            "server": settings.HIPCHAT_SERVER,
+            "token": settings.HIPCHAT_V2_TOKEN,
+        }
+        r = requests.get(my_user_url, **settings.REQUESTS_OPTIONS)
+        resp = r.json()
+        settings.HIPCHAT_EMAIL = resp["email"]
+        settings.HIPCHAT_HANDLE = resp["mention_name"]
+        settings.HIPCHAT_NAME = resp["name"]
+
         self.available_rooms
         for r in settings.HIPCHAT_ROOMS:
             if r != "":
@@ -282,6 +290,8 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
         self.add_event_handler("message", self.message_recieved)
         self.add_event_handler("groupchat_message", self.room_message)
         self.add_event_handler("groupchat_invite", self.room_invite)
+        self.add_event_handler("error", self.handle_errors)
+        self.add_event_handler("presence_error", self.handle_errors)
 
         self.register_plugin('xep_0045')  # MUC
 
@@ -303,7 +313,11 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
 
         for r in self.rooms:
             if "xmpp_jid" in r:
-                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], settings.HIPCHAT_NAME, wait=True)
+
+    def handle_errors(self, event):
+        print "got error event"
+        print event
 
     def room_invite(self, event):
         # TODO: Pull this and related.
@@ -311,7 +325,7 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
         logging.info("Invite recieved for %s" % event)
         for r in self.rooms:
             if "xmpp_jid" in r:
-                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], self.nick, wait=True)
+                self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], settings.HIPCHAT_NAME, wait=True)
 
     def update_will_roster_and_rooms(self):
         people = self.load('will_hipchat_people', {})
@@ -417,12 +431,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
 2. Go to https://your-org.hipchat.com/account/api
 3. Create a token.
 4. Copy the value - this is the HIPCHAT_V2_TOKEN.""",
-        },
-        {
-            "name": "HIPCHAT_HANDLE",
-            "obtain_at": """1. Log into hipchat using will's user.
-2. Set HIPCHAT_HANDLE to Will's users' mention name without the @, i.e. @will would be HIPCHAT_HANDLE='will'.""",
-        },
+        }
     ]
 
     def send_direct_message(self, user_id, message_body, html=False, card=None, notify=False, **kwargs):
@@ -505,7 +514,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
                 return False
             else:
                 # We're in a public room
-                return send_source.channel.id,
+                return send_source.channel.id
         else:
             # Came from webhook/etc
             if "room" in kwargs:
