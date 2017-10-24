@@ -102,13 +102,17 @@ def randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
     return wrap
 
 
-def rendered_template(template_name, context=None):
+def rendered_template(template_name, context=None, custom_filters=[]):
     import os
     from jinja2 import Environment, FileSystemLoader
 
     template_dirs = os.environ["WILL_TEMPLATE_DIRS_PICKLED"].split(";;")
     loader = FileSystemLoader(template_dirs)
     env = Environment(loader=loader)
+
+    if isinstance(custom_filters, list):
+        for custom_filter in custom_filters:
+            env.filters[custom_filter.__name__] = custom_filter
 
     if context is not None:
         this_template = env.get_template(template_name)

@@ -29,11 +29,12 @@ Will includes [Jinja](http://jinja.pocoo.org/) for powerful awesome template ren
 
 
 ```python
-self.rendered_template(template_name, context={})
+self.rendered_template(template_name, context={}, custom_filters=[])
 ```
 
 - **`template_name`**: path to the template, relative to the `TEMPLATE_DIRS` specified in `config.py`.
 - **`context`**: a dictionary to render the template with.
+- **`custom_filters`**: [custom filters](http://jinja.pocoo.org/docs/2.9/api/#custom-filters)  support for rendering templates
 
 You can use `rendered_template()` directly in a plugin,
 

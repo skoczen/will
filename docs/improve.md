@@ -96,7 +96,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [camilonova](https://github.com/camilonova) fixed the `@randomly` decorator, and brought the joy of more pugs to your life.  He's also reported several important bugs.
 - [ckcollab](http://github.com/ckcollab) was one of the original contributors, when will was first built at GreenKahuna.
 - [charlax](https://github.com/charlax) gave us batch-get of rooms via the V2 API.
-- [chillipeper](https://github.com/chillipeper) fixed up the max-size and handling of V2 rooms.
+- [chillipeper](https://github.com/chillipeper) fixed up the max-size and handling of V2 rooms, and taught will how to use bottle's `custom_filters`.
 - [crccheck](https://github.com/crccheck) gave you friendly error messages if your `WILL_ROOMS` was wrong.
 - [d0ugal](https://github.com/d0ugal) fixed up the docs to meet the new mkdocs standard.
 - [danbourke](https://github.com/danbourke) submitted a fix for the >2000 rooms bug, and kept Will happy.
@@ -133,6 +133,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [tophsic](https://github.com/tophsic) made help friendlier, including plugin-specific help.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
 - [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. And added `append` and `pop` list support. And ditched WorldWeatherOnline when it started to hurt. Yep.
+- [wontonst](https://github.com/wontonst) made it simple to have will reply to a specific room.
 - [woparry](https://github.com/woparry) made sure that Will could handle organizations with a massive (>2000) number of rooms.
 
 
@@ -149,16 +150,25 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 ## Releases
 
-#### 2.0 - ???
+#### 2.0.1beta - ???
 
 TODO: Finish these
-Huge rewrite, adding pluggable backends for chat systems as well as Will's internal brains.  A huge number of really smart people gave their thoughts and suggestions throughout the process, not least @hobson, @woohgit, @netjunki, @sivy, @antgel, @shadow7412, @brandonsturgeon, @pepedocs, @tophsic
+This is a huge rwerite of will, adding pluggable backends for chat systems as well as Will's internal brains.  
+
+**TL;DR: Slack, Rocket.chat, and stdio support, and you can write full chatterbots with Will now.**
+
+A huge number of really smart people gave their thoughts and suggestions throughout the process, not least @hobson, @woohgit, @netjunki, @sivy, @antgel, @shadow7412, @brandonsturgeon, @pepedocs, @tophsic
 
 Here's what's new:
 
 - Slack support
 - CLI/Shell backend
 - [Rocket.chat](https://rocket.chat/) support, thanks to [antgel](https://github.com/antgel)
+- Will's brains have been abstracted - you can now add custom analysis, generation, and execution backends to build everything from a straight regex-bot to a full chatterbot.
+- Pluggable I/O backends, which is how all of the above were done.
+- Pluggable storage backends.
+- Pluggable pubsub backends.
+- Built-in encryption for storage and pub/sub (with pluggable backends as well.)
 - Lots more intelligence around required settings and verification, to make first starting and debugging Will easier.
 
 
@@ -169,12 +179,21 @@ This release also changes a few bits of behavior, to be consistent:
 
 There are a couple *internal* backwards-incompatible changes:
 - `RosterMixin` has been renamed `HipChatRosterMixin` and moved to `will.backends.io_adapters.hipchat`.  This change should not affect you unless you were specifically importing RosterMixin in your own plugins - everything in `WillPlugin` has been automatically routed to the right place, in a backwards-compatible way.
+- `Room` and `RoomMixin` have similarly become `HipChatRoom` and `HipChatRoomMixin and moved to `will.backends.io_adapters.hipchat`.
 
 
 This release addresses a number of bugs and smaller features, including:
 
 * Chatoms support fixed by [bykof](https://github.com/bykof).
 * Friendlier world time output.
+* You can pass in `channel=` or `room=` when specifying a custom reply location.  If both are passed in, Will uses `channel`.
+
+#### 1.0.2 - October 24, 2017
+
+Fixes and features in this release:
+
+* Makes passing the `room=` option *much* easier (you can just use the room's name now,) thanks to [wontonst](https://github.com/wontonst).
+* Adds support for jinja `custom_filters` in the `@rendered_template` decorator, thanks to [chillipeper](https://github.com/chillipeper).
 
 #### 1.0.1 - October 10, 2017
 
