@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import copy
+from cStringIO import StringIO
 import datetime
 import imp
+from importlib import import_module
 import inspect
 import logging
+from multiprocessing import Process, Queue
 import operator
 import os
+from os.path import abspath, dirname
 import re
 import signal
 import sys
@@ -18,20 +22,17 @@ try:
 except:
     from will.decorators import passthrough_decorator as yappi_profile
 
-from cStringIO import StringIO
-from importlib import import_module
 from clint.textui import colored, puts, indent
-from os.path import abspath, dirname
-from multiprocessing import Process, Queue
-
 import bottle
-from mixins import ScheduleMixin, StorageMixin, ErrorMixin, SleepMixin,\
+
+
+from will import settings
+from will.backends import analysis, execution, generation, io_adapters
+from will.backends.io_adapters.base import Event
+from will.mixins import ScheduleMixin, StorageMixin, ErrorMixin, SleepMixin,\
     RoomMixin, PluginModulesLibraryMixin, EmailMixin, PubSubMixin
-from backends import analysis, execution, generation, io_adapters
-from backends.io_adapters.base import Event
-from scheduler import Scheduler
-import settings
-from utils import show_valid, show_invalid, error, warn, note, print_head, Bunch
+from will.scheduler import Scheduler
+from will.utils import show_valid, show_invalid, error, warn, note, print_head, Bunch
 
 
 # Force UTF8
