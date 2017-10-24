@@ -184,12 +184,13 @@ self.pop(&quot;my_key&quot;, &quot;value&quot;)
 
 <h2 id="template-rendering">Template rendering</h2>
 <p>Will includes <a href="http://jinja.pocoo.org/">Jinja</a> for powerful awesome template rendering.  To use it, just call <code>self.rendered_template()</code></p>
-<pre><code class="python">self.rendered_template(template_name, context={})
+<pre><code class="python">self.rendered_template(template_name, context={}, custom_filters=[])
 </code></pre>
 
 <ul>
 <li><strong><code>template_name</code></strong>: path to the template, relative to the <code>TEMPLATE_DIRS</code> specified in <code>config.py</code>.</li>
 <li><strong><code>context</code></strong>: a dictionary to render the template with.</li>
+<li><strong><code>custom_filters</code></strong>: <a href="http://jinja.pocoo.org/docs/2.9/api/#custom-filters">custom filters</a>  support for rendering templates</li>
 </ul>
 <p>You can use <code>rendered_template()</code> directly in a plugin,</p>
 <pre><code class="python">@respond_to(&quot;what are the rooms\?&quot;)

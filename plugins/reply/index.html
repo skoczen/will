@@ -186,7 +186,7 @@ def say_bonjour_will(self, message):
 <ul>
 <li><strong><code>content</code></strong>: the content you want to send to the room. Any string will do, HTML or plain text.</li>
 <li><strong><code>message</code></strong>: (optional) The incoming message object</li>
-<li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms) to send the message to.</li>
+<li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms) or the room name to send the message to.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
 <li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". </li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
@@ -217,7 +217,7 @@ def ping(self):
     self.say(&quot;PONG!&quot;)
 </code></pre>
 
-<p>If you want to talk to a different room, you can pass in the <code>room</code> argument with one of the rooms from <code>self.available_rooms</code>.</p>
+<p>If you want to talk to a different room, you can pass in the <code>room</code> argument with one of the rooms from <code>self.available_rooms</code> or the string name of the room.</p>
 <h2 id="send-an-email">Send an email</h2>
 <p>Will has one email backend at the moment, via <a href="http://www.mailgun.com">mailgun</a>.  If you've set <code>DEFAULT_FROM_EMAIL</code>, <code>MAILGUN_API_URL</code>, and <code>MAILGUN_API_KEY</code>, you can use <code>self.send_email()</code></p>
 <pre><code class="python">@respond_to(&quot;status report&quot;)
@@ -254,7 +254,7 @@ def walkmaster(self):
 <li><strong><code>content</code></strong>: the content you want to send to the room. Any string will do, HTML or plain text.</li>
 <li><strong><code>when</code></strong>: when you want the message to be said. Python <code>datetime</code> object.</li>
 <li><strong><code>message</code></strong>: (optional) The incoming message object</li>
-<li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms) to send the message to.</li>
+<li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms), the room name, or "ALL_ROOMS" to send the message to.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
 <li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
@@ -277,7 +277,7 @@ def give_us_somethin_to_talk_about(self, message):
 <ul>
 <li><code>topic</code>: The string you want to set the topic to</li>
 <li><code>message</code>: (optional) The incoming message object</li>
-<li><code>room</code>: (optional) The room object (from self.available_rooms) to send the message to.</li>
+<li><code>room</code>: (optional) The room object (from self.available_rooms), a room name, or "ALL_ROOMS" to send the message to.</li>
 </ul>
 <h2 id="do-any-python-thing">Do any python thing</h2>
 <p>Will is Just Python.  Because of that, your imagination is the limit of what he can do to respond to requests.</p>
