@@ -4,6 +4,6 @@ class RosterMixin(object):
         import logging
         logging.critical(
             "RosterMixin has been moved to the hipchat backend.\n" +
-            "Please change all your imports to from will.backends.io_adapters.hipchat import HipChatRosterMixin"
+            "Please change all your imports to `from will.backends.io_adapters.hipchat import HipChatRosterMixin`"
         )
         super(RosterMixin, self).__init__(*args, **kwargs)

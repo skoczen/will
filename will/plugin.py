@@ -5,13 +5,14 @@ from bottle import request
 
 from will import settings
 from will.abstractions import Event, Message
-from will.backends.io_adapters.hipchat import HipChatRosterMixin
-from will.mixins import NaturalTimeMixin, RoomMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
+# Backwards compatability with 1.x, eventually to be deprecated.
+from will.backends.io_adapters.hipchat import HipChatRosterMixin, HipChatRoomMixin
+from will.mixins import NaturalTimeMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
     EmailMixin, PubSubMixin
 from will.utils import html_to_text
 
 
-class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, RoomMixin, HipChatRosterMixin,
+class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, HipChatRosterMixin,
                  ScheduleMixin, SettingsMixin, PubSubMixin):
     is_will_plugin = True
     request = request
