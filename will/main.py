@@ -1019,11 +1019,11 @@ To set your %(name)s:
                                                     pht = plugin_info.get("parent_help_text", None)
                                                     if pht:
                                                         if pht in self.help_modules:
-                                                            self.help_modules[pht].append(meta["__doc__"])
+                                                            self.help_modules[pht].append(u"%s" % meta["__doc__"])
                                                         else:
-                                                            self.help_modules[pht] = [meta["__doc__"]]
+                                                            self.help_modules[pht] = [u"%s" % meta["__doc__"]]
                                                     else:
-                                                        self.help_modules[OTHER_HELP_HEADING].append(meta["__doc__"])
+                                                        self.help_modules[OTHER_HELP_HEADING].append(u"%s" % meta["__doc__"])
                                                 if meta["multiline"]:
                                                     compiled_regex = re.compile(regex, re.MULTILINE | re.DOTALL)
                                                 else:
