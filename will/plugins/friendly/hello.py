@@ -13,6 +13,6 @@ class HelloPlugin(WillPlugin):
     def hello(self, message):
         self.reply("hi!")
 
-    @periodic(hour='10', minute='05', date=4, month=12)
+    @periodic(hour='10', minute='05', day=4, month=12)
     def birthday(self, message):
         self.reply("Hey, so I didn't want to make a big deal of it, but today's my birthday!")

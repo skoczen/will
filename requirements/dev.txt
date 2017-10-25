@@ -1,4 +1,4 @@
--r requirements.txt
+-r base.txt
 
 # Dev only
 pyandoc
