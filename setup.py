@@ -8,6 +8,7 @@ from will import VERSION
 DESCRIPTION = "A friendly python hipchat bot"
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
+REQS_DIR = os.path.join(ROOT_DIR, "requirements")
 
 install_requires = []
 with open("requirements.txt", "r+") as f:
@@ -15,6 +16,14 @@ with open("requirements.txt", "r+") as f:
         if line[0] == "-":
             continue
         install_requires.append(line.strip())
+
+for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
+    with open(os.path.join("requirements", req_file), "r+") as f:
+        for line in f.readlines():
+            if line[0] == "-":
+                continue
+            install_requires.append(line.strip())
+
 
 tests_require = [
     'pytest==2.8.3',
