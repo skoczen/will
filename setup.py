@@ -18,7 +18,7 @@ with open("requirements.txt", "r+") as f:
         install_requires.append(line.strip())
 
 for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
-    with open(os.path.join("requirements", req_file), "r+") as f:
+    with open(os.path.join(REQS_DIR, req_file), "r+") as f:
         for line in f.readlines():
             if line[0] == "-":
                 continue
