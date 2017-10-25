@@ -150,6 +150,41 @@ def import_settings(quiet=True):
                 settings[v] = settings[k]
                 del settings[k]
 
+        # Migrate from 1.x
+        if "CHAT_BACKENDS" in settings and "IO_BACKENDS" not in settings:
+            IO_BACKENDS = []
+            for c in settings["CHAT_BACKENDS"]:
+                IO_BACKENDS.append("will.backends.io_adapters.%s" % c)
+            settings["IO_BACKENDS"] = IO_BACKENDS
+            if not quiet:
+                warn(
+                    "Deprecated settings.  Please update your config.py from:"
+                    "\n   CHAT_BACKENDS = %s\n   to\n   IO_BACKENDS = %s" %
+                    (settings["CHAT_BACKENDS"], IO_BACKENDS)
+                )
+        if "ANALYZE_BACKENDS" not in settings:
+            if not quiet:
+                note("No ANALYZE_BACKENDS specified.  Defaulting to history only.")
+            settings["ANALYZE_BACKENDS"] = [
+                "will.backends.analysis.nothing",
+                "will.backends.analysis.history",
+            ]
+
+        if "GENERATION_BACKENDS" not in settings:
+            if not quiet:
+                note("No GENERATION_BACKENDS specified.  Defaulting to fuzzy_all_matches and strict_regex.")
+            settings["GENERATION_BACKENDS"] = [
+                "will.backends.generation.fuzzy_all_matches",
+                "will.backends.generation.strict_regex",
+            ]
+
+        if "EXECUTION_BACKENDS" not in settings:
+            if not quiet:
+                note("No EXECUTION_BACKENDS specified.  Defaulting to best_score.")
+            settings["EXECUTION_BACKENDS"] = [
+                "will.backends.execution.best_score",
+            ]
+
         # Set for hipchat
         for b in settings["IO_BACKENDS"]:
             if "hipchat" in b:
