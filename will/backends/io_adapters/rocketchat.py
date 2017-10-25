@@ -15,49 +15,38 @@ from multiprocessing.dummy import Process
 from six.moves.urllib import parse
 
 from will import settings
-from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from will.abstractions import Event, Message, Person, Channel
+from will.mixins import SleepMixin, StorageMixin
+from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from .base import IOBackend
 
 
-class RocketChatBackend(IOBackend):
+class RocketChatBackend(IOBackend, StorageMixin):
     friendly_name = "RocketChat (BETA)"
     internal_name = "will.backends.io_adapters.rocketchat"
     required_settings = [
         {
             "name": "ROCKETCHAT_USERNAME",
-            "obtain_at": "Will username as configured in Rocket.Chat.",
+            "obtain_at": """1. Go to your rocket.chat instance (i.e. your-name.rocket.chat)
+2. Create a new normal account for Will.
+3. Set this value to the username, just like you'd use to log in with it.""",
         },
         {
             "name": "ROCKETCHAT_PASSWORD",
-            "obtain_at": "Will password as configured in Rocket.Chat.",
+            "obtain_at": """1. Go to your rocket.chat instance (i.e. your-name.rocket.chat)
+2. Create a new normal account for Will, and note the password you use.
+3. Set this value to that password, just like you'd use to log in with it.""",
         },
         {
-            "name": "ROCKETCHAT__URL",
+            "name": "ROCKETCHAT_URL",
             "obtain_at": (
-                "Including protocol and port if not 80 e.g. "
-                "http://localhost:3000"
-            ),
-        },
-        {
-            "name": "ROCKETCHAT_HANDLE",
-            "obtain_at": (
-                "Will's mention name in Rocket.chat, e.g. @will is 'will'"
+                "This is your rocket.chat url - typically either your-name.rocket.chat for "
+                "Rocket.Chat cloud, or something like http://localhost:3000 for local installations."
             ),
         },
     ]
 
     pp = pprint.PrettyPrinter(indent=4)
-
-    def __init__(self):
-
-        self.rcapi = settings.ROCKETCHAT_URL + '/api/v1/'
-        self.subscribed_rooms = {}
-
-        # Set up Values to be shared by Processes
-        self.manager = Manager()
-        self.token = self.manager.Value(ctypes.c_char_p, '')
-        self.userid = self.manager.Value(ctypes.c_char_p, '')
 
     def normalize_incoming_event(self, event):
         logging.info('Normalizing incoming Rocket.Chat event')
@@ -95,7 +84,17 @@ class RocketChatBackend(IOBackend):
                     members=channel_members
                 )
             else:
-                channel = clean_for_pickling(self.channels[event["rid"]])
+                if "rid" in event and event["rid"] in self.channels:
+                    channel = clean_for_pickling(self.channels[event["rid"]])
+                else:
+                    # Private channel, unknown members.  Just do our best and try to route it.
+                    if "rid" in event:
+                        channel = Channel(
+                            id=event["rid"],
+                            name=event["rid"],
+                            source=clean_for_pickling(event["rid"]),
+                            members={}
+                        )
             logging.debug('channel: {}'.format(channel))
 
             # Set various variables depending on whether @handle was
@@ -140,15 +139,13 @@ class RocketChatBackend(IOBackend):
                 will_is_mentioned=will_is_mentioned,
                 will_said_it=will_said_it,
                 backend_supports_acl=True,
-                source=clean_for_pickling(event)
+                original_incoming_event=clean_for_pickling(event)
             )
             return m
         else:
             logging.debug('Passing, I dont know how to normalize this event of type ', event["type"])
             pass
 
-    # This and send_message heavily "inspired" by slack.py. Technical
-    # debt may be present. :)
     def handle_outgoing_event(self, event):
         # Print any replies.
         logging.info('Handling outgoing Rocket.Chat event')
@@ -159,8 +156,9 @@ class RocketChatBackend(IOBackend):
             if "kwargs" in event and "html" in event.kwargs and event.kwargs["html"]:
                 event.content = html2text.html2text(event.content)
 
+            self.send_message(event)
             if hasattr(event, "source_message") and event.source_message:
-                self.send_message(event)
+                pass
             else:
                 # TODO: Rocket.Chat backend needs to provide ways to handle and properly route:
                 # 1. 1-1 messages
@@ -174,17 +172,19 @@ class RocketChatBackend(IOBackend):
                     kwargs.update(**event.kwargs)
 
         if event.type in ["topic_change", ]:
-            self.set_room_topic(event.content)
+            self.set_topic(event.content)
         elif (
             event.type == "message.no_response" and
-            event.data["source"].data.is_direct and
-            event.data["source"].data.will_said_it is False
+            event.data.is_direct and
+            event.data.will_said_it is False
         ):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)
 
     def set_topic(self, event):
         logging.warn("Rocket.Chat doesn't support topics yet: https://github.com/RocketChat/Rocket.Chat/issues/328")
+        event.content("Hm. Looks like Rocket.Chat doesn't support topics yet: https://github.com/RocketChat/Rocket.Chat/issues/328")
+        self.send_message(event)
 
     def send_message(self, event):
         logging.info('Sending message to Rocket.Chat')
@@ -241,11 +241,13 @@ class RocketChatBackend(IOBackend):
     def _rest_login(self):
         params = {'username': settings.ROCKETCHAT_USERNAME,
                   'password': settings.ROCKETCHAT_PASSWORD}
-        r = requests.post('{}login'.format(self.rcapi),
+        r = requests.post('{}login'.format(self.rocketchat_api_url),
                           data=params)
-        rj = r.json()
-        self.token.value = rj['data']['authToken']
-        self.userid.value = rj['data']['userId']
+        resp_json = r.json()
+        self._token = resp_json['data']['authToken']
+        self.save("WILL_ROCKETCHAT_TOKEN", self._token)
+        self._userid = resp_json['data']['userId']
+        self.save("WILL_ROCKETCHAT_USERID", self._userid)
 
     def _rest_users_list(self):
         logging.debug('Getting users list from Rocket.Chat')
@@ -253,28 +255,28 @@ class RocketChatBackend(IOBackend):
         # Remember to paginate. ;)
         count = 50
         passes = 0
-        headers = {'X-Auth-Token': self.token.value,
-                   'X-User-Id': self.userid.value}
+        headers = {'X-Auth-Token': self.token,
+                   'X-User-Id': self.userid}
         fetched = 0
         total = 0
 
-        self.handle = settings.ROCKETCHAT_HANDLE
-        self.mention_handle = "@%s" % settings.ROCKETCHAT_HANDLE
+        self.handle = settings.ROCKETCHAT_USERNAME
+        self.mention_handle = "@%s" % settings.ROCKETCHAT_USERNAME
 
         people = {}
 
         while fetched <= total:
             params = {'count': count,
                       'offset': fetched}
-            r = requests.get('{}users.list'.format(self.rcapi),
+            r = requests.get('{}users.list'.format(self.rocketchat_api_url),
                              headers=headers,
                              params=params)
-            rj = r.json()
-            if rj['success'] is False:
-                logging.exception('rj: {}'.format(rj))
-            total = rj['total']
+            resp_json = r.json()
+            if resp_json['success'] is False:
+                logging.exception('resp_json: {}'.format(resp_json))
+            total = resp_json['total']
 
-            for user in rj['users']:
+            for user in resp_json['users']:
                 # TODO: Unlike slack.py, no timezone support at present.
                 # RC returns utcOffset, but this isn't enough to
                 # determine timezone.
@@ -312,21 +314,21 @@ class RocketChatBackend(IOBackend):
         # Remember to paginate. ;)
         count = 50
         passes = 0
-        headers = {'X-Auth-Token': self.token.value,
-                   'X-User-Id': self.userid.value}
+        headers = {'X-Auth-Token': self.token,
+                   'X-User-Id': self.userid}
         fetched = 0
         total = 0
 
         channels = {}
 
         while fetched <= total:
-            r = requests.get('{}channels.list'.format(self.rcapi),
+            r = requests.get('{}channels.list'.format(self.rocketchat_api_url),
                              headers=headers)
-            rj = r.json()
+            resp_json = r.json()
 
-            total = rj['total']
+            total = resp_json['total']
 
-            for channel in rj['channels']:
+            for channel in resp_json['channels']:
                 members = {}
                 for username in channel['usernames']:
                     userid = self._get_userid_from_username(username)
@@ -347,35 +349,36 @@ class RocketChatBackend(IOBackend):
     def _rest_post_message(self, data):
         logging.info('Posting message to Rocket.Chat REST API')
         logging.debug('data: {}'.format(data))
-        headers = {'X-Auth-Token': self.token.value,
-                   'X-User-Id': self.userid.value}
+        headers = {
+            'X-Auth-Token': self.token,
+            'X-User-Id': self.userid
+        }
         logging.debug('headers: {}'.format(headers))
-        r = requests.post('{}chat.postMessage'.format(self.rcapi),
-                          headers=headers,
-                          json=data,
-                          **settings.REQUESTS_OPTIONS)
-        rj = r.json()
+        r = requests.post(
+            '{}chat.postMessage'.format(self.rocketchat_api_url),
+            headers=headers,
+            data=data,
+        )
+        resp_json = r.json()
+
         # TODO: Necessary / useful to check return codes?
-        if not 'success' in rj:
-            logging.debug('rj: {}'.format(rj))
-            assert rj['success']
+        if not 'success' in resp_json:
+            logging.debug('resp_json: {}'.format(resp_json))
+            assert resp_json['success']
 
     # Realtime API functions, documented at
     # https://rocket.chat/docs/developer-guides/realtime-api/
 
-    def _realtime_connect(self):
-        # TODO: Consider using auto_reconnect and debug options.
+    def _start_connect(self):
         up = parse.urlparse(settings.ROCKETCHAT_URL)
         if up.scheme == 'http':
             ws_proto = 'ws'
         else:
             ws_proto = 'wss'
-        self.rc = DDPClient('{}://{}/websocket'.format(ws_proto, up.netloc))
+        self.rc = DDPClient('{}://{}/websocket'.format(ws_proto, up.netloc), auto_reconnect=True, auto_reconnect_timeout=1)
+        self.rc.on('connected', self._realtime_login)
+        self.rc.on('changed', self._changed_callback)
         self.rc.connect()
-        # TODO: Argh. This needs to be here because if we continue
-        # before the connection is ready, stuff fails with no errors
-        # to the console. This will take some debug effort.
-        time.sleep(5)
 
     def _realtime_login(self):
         params = [{'user': {'username': settings.ROCKETCHAT_USERNAME}, 'password': settings.ROCKETCHAT_PASSWORD}]
@@ -388,12 +391,8 @@ class RocketChatBackend(IOBackend):
             return
 
         logging.debug('result: {}'.format(result))
-
-        self.token.value = result['token']
-        self.userid.value = result['id']
-
-        logging.debug('self.token.value: {}'.format(self.token.value))
-        logging.debug('self.userid.value: {}'.format(self.userid.value))
+        logging.debug('self.token: {}'.format(self.token))
+        logging.debug('self.userid: {}'.format(self.userid))
 
         # Use dummy to make it a Thread, otherwise DDP events don't
         # get back to the right place. If there is a real need to make
@@ -419,11 +418,33 @@ class RocketChatBackend(IOBackend):
             logging.exception('error: {}'.format(error))
             return
 
+    @property
+    def token(self):
+        if not hasattr(self, "_token") or not self._token:
+            self._token = self.load("WILL_ROCKETCHAT_TOKEN", None)
+            if not self._token:
+                self._rest_login()
+        return self._token
+
+    @property
+    def userid(self):
+        if not hasattr(self, "_userid") or not self._userid:
+            self._userid = self.load("WILL_ROCKETCHAT_USERID", None)
+            if not self._userid:
+                self._rest_login()
+        return self._userid
+
+    @property
+    def rocketchat_api_url(self):
+        if settings.ROCKETCHAT_URL.endswith("/"):
+            return settings.ROCKETCHAT_URL + 'api/v1/'
+        else:
+            return settings.ROCKETCHAT_URL + '/api/v1/'
+
     # Gets updates from REST and Realtime APIs.
     def _get_updates(self):
         try:
             polling_interval_seconds = 5
-            self.rc.on('changed', self._changed_callback)
             self._get_rest_metadata()
 
             while True:
@@ -470,5 +491,9 @@ class RocketChatBackend(IOBackend):
         # f) A way for self.handle, self.me, self.people, and self.channels to be kept accurate,
         #    with a maximum lag of 60 seconds.
 
-        self._realtime_connect()
-        self._realtime_login()
+        self.subscribed_rooms = {}
+
+        # Gets and stores token and ID.
+        self._rest_login()
+        # Kicks off listeners and REST room polling.
+        self._start_connect()

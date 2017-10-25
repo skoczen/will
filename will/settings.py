@@ -164,7 +164,7 @@ def import_settings(quiet=True):
                     }
                 else:
                     settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = False
-                    settings["REQUESTS_OPTIONS"] = {}
+                    
 
                 if "HIPCHAT_ROOMS" not in settings:
                     if not quiet:
@@ -196,6 +196,15 @@ def import_settings(quiet=True):
                         "        his current name from the HipChat servers."
                     )
                     settings["HIPCHAT_NAME_NOTED"] = True
+
+        # Rocket.chat
+        for b in settings["IO_BACKENDS"]:
+            if "rocketchat" in b:
+                if "ROCKETCHAT_USERNAME" in settings and "ROCKETCHAT_EMAIL" not in settings:
+                    settings["ROCKETCHAT_EMAIL"] = settings["ROCKETCHAT_USERNAME"]
+                if "ROCKETCHAT_URL" in settings:
+                    if settings["ROCKETCHAT_URL"].endswith("/"):
+                        settings["ROCKETCHAT_URL"] = settings["ROCKETCHAT_URL"][:-1]
 
         if (
             "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
@@ -274,6 +283,9 @@ def import_settings(quiet=True):
             settings["PUBLIC_URL"] = default_public
             if not quiet:
                 note("no PUBLIC_URL found in the environment or config.\n        Defaulting to '%s'." % default_public)
+
+        if not "REQUESTS_OPTIONS" in settings:
+            settings["REQUESTS_OPTIONS"] = {}
 
         if "TEMPLATE_DIRS" not in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:
