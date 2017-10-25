@@ -164,7 +164,6 @@ def import_settings(quiet=True):
                     }
                 else:
                     settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = False
-                    
 
                 if "HIPCHAT_ROOMS" not in settings:
                     if not quiet:
