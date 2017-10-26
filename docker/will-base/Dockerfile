@@ -1,5 +1,5 @@
 # PULL python
-FROM python:rc-alpine
+FROM python:2.7-alpine
 
 
 # Maintainer
