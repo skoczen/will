@@ -308,9 +308,6 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
             self.disconnect()
 
     def join_rooms(self, event):
-        # TODO: Pull this and related.
-        # self.update_will_roster_and_rooms()
-
         for r in self.rooms:
             if "xmpp_jid" in r:
                 self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], settings.HIPCHAT_NAME, wait=True)
@@ -320,8 +317,6 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
         print event
 
     def room_invite(self, event):
-        # TODO: Pull this and related.
-        # self.update_will_roster_and_rooms()
         logging.info("Invite recieved for %s" % event)
         for r in self.rooms:
             if "xmpp_jid" in r:
