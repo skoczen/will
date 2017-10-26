@@ -179,7 +179,8 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Sets a different storage backend.  If unset, defaults to redis.
 # If you use a different backend, make sure to add their required settings.
 # PUBSUB_BACKEND = "redis"  # "redis", or "zeromq" (beta).
-# ZEROMQ_URL = "tcp://127.0.0.1:15555"
+PUBSUB_BACKEND = "zeromq"
+ZEROMQ_URL = "tcp://127.0.0.1:15555"
 
 
 # Your will's mention handle. (aka @will)  Note that this is not backend-specific,
