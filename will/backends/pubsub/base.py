@@ -58,8 +58,6 @@ class BasePubSub(SettingsMixin, EncryptionMixin):
             data=obj,
             type=topic,
         )
-        # TODO: Decide on this.  It's hacky, but it makes backwards
-        # compatability easier.
         if hasattr(obj, "sender"):
             e.sender = obj.sender
 
@@ -104,17 +102,8 @@ class BasePubSub(SettingsMixin, EncryptionMixin):
         try:
             m = self.get_from_backend()
             if m and m["type"] not in SKIP_TYPES:
-                loaded_message = self.decrypt(m["data"])
-                # Handling inconsistent backends, but appears to no longer be an issue.
-                # if not loaded_message["hash"] in self.recent_hashes:
-                #     self.recent_hashes.append(loaded_message["hash"])
-                #     if len(self.recent_hashes) > 100:
-                #         self.recent_hashes = self.recent_hashes[1:]
-                return loaded_message
-                # print(loaded_message)
-                # loaded_message = pickle.loads(
-                #     dec
-                # )
+                return self.decrypt(m["data"])
+
         except AttributeError:
             raise Exception("Tried to call get message without having subscribed first!")
         except (KeyboardInterrupt, SystemExit):
