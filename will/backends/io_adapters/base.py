@@ -39,11 +39,17 @@ class IOBackend(PubSubMixin, SleepMixin, SettingsMixin, object):
         raise NotImplemented
 
     def handle_incoming_event(self, event):
-        m = self.normalize_incoming_event(event)
-        if m:
-            # print("\n\n\n\nhandle_incoming_event")
-            # print(m)
-            self.pubsub.publish("message.incoming", m, reference_message=m)
+        try:
+            m = self.normalize_incoming_event(event)
+            if m:
+                # print("\n\n\n\nhandle_incoming_event")
+                # print(m)
+                self.pubsub.publish("message.incoming", m, reference_message=m)
+        except:
+            logging.critical("Error handling incoming event %s: \n%s" % (
+                event,
+                traceback.format_exc(),
+            ))
 
     def handle_outgoing_event(self, event):
         raise NotImplemented

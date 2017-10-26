@@ -150,6 +150,41 @@ def import_settings(quiet=True):
                 settings[v] = settings[k]
                 del settings[k]
 
+        # Migrate from 1.x
+        if "CHAT_BACKENDS" in settings and "IO_BACKENDS" not in settings:
+            IO_BACKENDS = []
+            for c in settings["CHAT_BACKENDS"]:
+                IO_BACKENDS.append("will.backends.io_adapters.%s" % c)
+            settings["IO_BACKENDS"] = IO_BACKENDS
+            if not quiet:
+                warn(
+                    "Deprecated settings.  Please update your config.py from:"
+                    "\n   CHAT_BACKENDS = %s\n   to\n   IO_BACKENDS = %s" %
+                    (settings["CHAT_BACKENDS"], IO_BACKENDS)
+                )
+        if "ANALYZE_BACKENDS" not in settings:
+            if not quiet:
+                note("No ANALYZE_BACKENDS specified.  Defaulting to history only.")
+            settings["ANALYZE_BACKENDS"] = [
+                "will.backends.analysis.nothing",
+                "will.backends.analysis.history",
+            ]
+
+        if "GENERATION_BACKENDS" not in settings:
+            if not quiet:
+                note("No GENERATION_BACKENDS specified.  Defaulting to fuzzy_all_matches and strict_regex.")
+            settings["GENERATION_BACKENDS"] = [
+                "will.backends.generation.fuzzy_all_matches",
+                "will.backends.generation.strict_regex",
+            ]
+
+        if "EXECUTION_BACKENDS" not in settings:
+            if not quiet:
+                note("No EXECUTION_BACKENDS specified.  Defaulting to best_score.")
+            settings["EXECUTION_BACKENDS"] = [
+                "will.backends.execution.best_score",
+            ]
+
         # Set for hipchat
         for b in settings["IO_BACKENDS"]:
             if "hipchat" in b:
@@ -164,7 +199,6 @@ def import_settings(quiet=True):
                     }
                 else:
                     settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = False
-                    settings["REQUESTS_OPTIONS"] = {}
 
                 if "HIPCHAT_ROOMS" not in settings:
                     if not quiet:
@@ -196,6 +230,15 @@ def import_settings(quiet=True):
                         "        his current name from the HipChat servers."
                     )
                     settings["HIPCHAT_NAME_NOTED"] = True
+
+        # Rocket.chat
+        for b in settings["IO_BACKENDS"]:
+            if "rocketchat" in b:
+                if "ROCKETCHAT_USERNAME" in settings and "ROCKETCHAT_EMAIL" not in settings:
+                    settings["ROCKETCHAT_EMAIL"] = settings["ROCKETCHAT_USERNAME"]
+                if "ROCKETCHAT_URL" in settings:
+                    if settings["ROCKETCHAT_URL"].endswith("/"):
+                        settings["ROCKETCHAT_URL"] = settings["ROCKETCHAT_URL"][:-1]
 
         if (
             "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
@@ -274,6 +317,9 @@ def import_settings(quiet=True):
             settings["PUBLIC_URL"] = default_public
             if not quiet:
                 note("no PUBLIC_URL found in the environment or config.\n        Defaulting to '%s'." % default_public)
+
+        if not "REQUESTS_OPTIONS" in settings:
+            settings["REQUESTS_OPTIONS"] = {}
 
         if "TEMPLATE_DIRS" not in settings:
             if "WILL_TEMPLATE_DIRS_PICKLED" in os.environ:

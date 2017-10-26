@@ -39,8 +39,13 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             message.source_message.analysis = None
         return message
 
-    def get_backend(self, message):
+    def get_backend(self, message, service=None):
         backend = False
+        if service:
+            for b in settings.IO_BACKENDS:
+                if service in b:
+                    return b
+
         if hasattr(message, "backend"):
             backend = message.backend
         elif message and hasattr(message, "data") and hasattr(message.data, "backend"):
@@ -54,7 +59,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             return self.message
         return message_passed
 
-    def say(self, content, message=None, room=None, channel=None, package_for_scheduling=False, **kwargs):
+    def say(self, content, message=None, room=None, channel=None, service=None, package_for_scheduling=False, **kwargs):
         logging.info("self.say")
         logging.info(content)
         if channel:
@@ -67,7 +72,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
 
         message = self.get_message(message)
         message = self._trim_for_execution(message)
-        backend = self.get_backend(message)
+        backend = self.get_backend(message, service=service)
+
         if backend:
             e = Event(
                 type="say",
@@ -83,6 +89,25 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
 
     def reply(self, event, content=None, message=None, package_for_scheduling=False, **kwargs):
         message = self.get_message(message)
+
+        if "channel" in kwargs:
+            logging.error(
+                "I was just asked to talk to %(channel)s, but I can't use channel using .reply() - "
+                "it's just for replying to the person who talked to me.  Please use .say() instead." % kwargs
+            )
+            return
+        if "service" in kwargs:
+            logging.error(
+                "I was just asked to talk to %(service)s, but I can't use a service using .reply() - "
+                "it's just for replying to the person who talked to me.  Please use .say() instead." % kwargs
+            )
+            return
+        if "room" in kwargs:
+            logging.error(
+                "I was just asked to talk to %(room)s, but I can't use room using .reply() - "
+                "it's just for replying to the person who talked to me.  Please use .say() instead." % kwargs
+            )
+            return
 
         # Be really smart about what we're getting back.
         if (
@@ -136,7 +161,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             else:
                 self.publish("message.outgoing.%s" % backend, e)
 
-    def set_topic(self, topic, message=None, room=None, channel=None, **kwargs):
+    def set_topic(self, topic, message=None, room=None, channel=None, service=None, **kwargs):
         if channel:
             room = channel
         elif room:
@@ -144,7 +169,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
 
         message = self.get_message(message)
         message = self._trim_for_execution(message)
-        backend = self.get_backend(message)
+        backend = self.get_backend(message, service=service)
         e = Event(
             type="topic_change",
             content=topic,
@@ -154,12 +179,15 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         )
         self.publish("message.outgoing.%s" % backend, e)
 
-    def schedule_say(self, content, when, message=None, room=None, channel=None, *args, **kwargs):
+    def schedule_say(self, content, when, message=None, room=None, channel=None, service=None, *args, **kwargs):
         if channel:
             room = channel
         elif room:
             channel = room
-        packaged_event = self.reply(None, content=content, message=message, package_for_scheduling=True)
+        packaged_event = self.reply(
+            None, content=content, message=message, channel=channel,
+            service=service, package_for_scheduling=True, *args, **kwargs
+        )
         self.add_outgoing_event_to_schedule(when, {
             "type": "message",
             "topic": packaged_event.topic,

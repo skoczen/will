@@ -19,6 +19,8 @@ DO_NOT_PICKLE = [
     "parse_channel_data",
     "server",
     "send_message",
+    "ts",
+    "_updatedAt",
 ]
 
 

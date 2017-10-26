@@ -170,7 +170,9 @@ Here's what's new:
 - Pluggable pubsub backends.
 - Built-in encryption for storage and pub/sub (with pluggable backends as well.)
 - Lots more intelligence around required settings and verification, to make first starting and debugging Will easier.
+- New `@will gif me` command.  Because it can't all be serious. :)
 
+Read all about it here: [What's new in Will 2](https://heywill.io/will2)
 
 This release also changes a few bits of behavior, to be consistent:
 - `self.reply()` *finally* no longer requires you to tediously pass the `message` back to it.  It's also smart, and backwards compatable with existing plugins.
