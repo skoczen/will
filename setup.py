@@ -8,14 +8,22 @@ from will import VERSION
 DESCRIPTION = "A friendly python hipchat bot"
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
+REQS_DIR = os.path.join(ROOT_DIR, "requirements")
 
 install_requires = []
-for req_file in ("requirements.base.txt", "requirements.txt"):
-    with open(req_file, "r+") as f:
+with open("requirements.txt", "r+") as f:
+    for line in f.readlines():
+        if line[0] == "-":
+            continue
+        install_requires.append(line.strip())
+
+for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
+    with open(os.path.join(REQS_DIR, req_file), "r+") as f:
         for line in f.readlines():
             if line[0] == "-":
                 continue
             install_requires.append(line.strip())
+
 
 tests_require = [
     'pytest==2.8.3',
@@ -55,7 +63,7 @@ setup(
     tests_require=tests_require,
     packages=find_packages(),
     include_package_data=True,
-    keywords=["hipchat", "bot", "ai"],
+    keywords=["chatbot", "bot", "ai", "slack", "hipchat", "rocketchat", "stride"],
     classifiers=[
         "Programming Language :: Python",
         "License :: OSI Approved :: BSD License",

@@ -1,2 +1,0 @@
-pyzmq==16.0.2
--r requirements.base.txt
