@@ -160,7 +160,7 @@ class RocketChatBackend(IOBackend, StorageMixin):
             if hasattr(event, "source_message") and event.source_message:
                 pass
             else:
-                # TODO: Rocket.Chat backend needs to provide ways to handle and properly route:
+                # Backend needs to provide ways to handle and properly route:
                 # 1. 1-1 messages
                 # 2. Group (channel) messages
                 # 3. Ad-hoc group messages (if they exist)
