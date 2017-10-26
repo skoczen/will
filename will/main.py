@@ -578,7 +578,6 @@ To set your %(name)s:
                     if event.type == "message.incoming":
                         # A message just got dropped off one of the IO Backends.
                         # Send it to analysis.
-                        
 
                         analysis_threads[event.original_incoming_event_hash] = {
                             "count": 0,
