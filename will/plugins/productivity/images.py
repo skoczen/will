@@ -44,13 +44,14 @@ class ImagesPlugin(WillPlugin):
             )
             r = requests.get("https://www.google.com/search?tbm=isch&safe=active&q=%s" % search_query)
             results = []
-            index = r.content.find("<img")
+            content = r.content.decode("utf-8")
+            index = content.find("<img")
             while index != -1:
-                src_start = r.content.find('src=', index)
-                src_end = r.content.find(" ", src_start)
-                match = r.content[src_start+5: src_end-1]
+                src_start = content.find('src=', index)
+                src_end = content.find(" ", src_start)
+                match = content[src_start+5: src_end-1]
 
-                index = r.content.find("<img", src_end)
+                index = content.find("<img", src_end)
                 results.append(match)
         if results:
             url = random.choice(results)
@@ -97,13 +98,14 @@ class ImagesPlugin(WillPlugin):
             }
             r = requests.get("https://www.google.com/search?tbm=isch&tbs=itp:animated&safe=active&q=%s" % search_query, headers=headers)
             results = []
-            index = r.content.find("<img")
+            content = r.content.decode("utf-8")
+            index = content.find('"ou":')
             while index != -1:
-                src_start = r.content.find('ou":', index)
-                src_end = r.content.find('","', src_start)
-                match = r.content[src_start+5: src_end]
+                src_start = content.find('"ou":', index)
+                src_end = content.find('","', src_start)
+                match = content[src_start+6: src_end]
 
-                index = r.content.find('ou":', src_end)
+                index = content.find('"ou":', src_end)
                 results.append(match)
         if results:
             url = random.choice(results)
