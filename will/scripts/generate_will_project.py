@@ -143,7 +143,8 @@ This is our bot, a [will](https://github.com/skoczen/will) bot.
 
     print("\nDone.")
 
-    print("\n Your will is now ready to go. Run ./run_will.py to get started!" )
+    print("\n Your will is now ready to go. Run ./run_will.py to get started!")
+
 
 if __name__ == '__main__':
     main()
