@@ -10,7 +10,7 @@ def deprecation_warning_for_admin(f):
 def passthrough_decorator(*args, **kwargs):
     def wrap(f):
         def wrapped_f(*args, **kwargs):
-            f(*args, **kwargs)
+            return f(*args, **kwargs)
         return wrapped_f
     return wrap
 

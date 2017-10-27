@@ -18,12 +18,12 @@ key = hashlib.sha256(settings.SECRET_KEY.encode("utf-8")).digest()
 
 
 def pad(s):
-    s = s + (BS - len(s) % BS) * "~"
+    s = "%s%s" % (s.decode("utf-8"), ((BS - len(s) % BS) * "~"))
     return s
 
 
 def unpad(s):
-    while s.endswith("~"):
+    while s.endswith(str.encode("~")):
         s = s[:-1]
     return s
 
@@ -38,7 +38,7 @@ class AESEncryption(WillBaseEncryptionBackend):
                 iv = binascii.b2a_hex(os.urandom(8))
                 cipher = AES.new(key, AES.MODE_CBC, iv)
                 enc = binascii.b2a_base64(cipher.encrypt(pad(enc)))
-                return "%s/%s" % (iv, enc)
+                return "%s/%s" % (iv.decode("utf-8"), enc.decode("utf-8"))
             else:
                 return enc
         except:
