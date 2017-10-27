@@ -75,7 +75,7 @@ PLUGIN_BLACKLIST = [
 IO_BACKENDS = [
     "will.backends.io_adapters.slack",
     "will.backends.io_adapters.hipchat",
-    # "will.backends.io_adapters.rocketchat",
+    "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
 ]
 

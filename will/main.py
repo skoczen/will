@@ -133,76 +133,76 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
         self.bootstrap_pubsub_mixin()
         self.bootstrap_plugins()
         self.verify_plugin_settings()
-        self.verify_io()
+        started = self.verify_io()
+        if started:
+            puts("Bootstrapping complete.")
 
-        puts("Bootstrapping complete.")
+            # Save help modules.
+            self.save("help_modules", self.help_modules)
 
-        # Save help modules.
-        self.save("help_modules", self.help_modules)
+            puts("\nStarting core processes:")
 
-        puts("\nStarting core processes:")
+            # try:
+            # Exit handlers.
+            # signal.signal(signal.SIGINT, self.handle_sys_exit)
+            # # TODO this hangs for some reason.
+            # signal.signal(signal.SIGTERM, self.handle_sys_exit)
 
-        # try:
-        # Exit handlers.
-        # signal.signal(signal.SIGINT, self.handle_sys_exit)
-        # # TODO this hangs for some reason.
-        # signal.signal(signal.SIGTERM, self.handle_sys_exit)
+            # Scheduler
+            self.scheduler_thread = Process(target=self.bootstrap_scheduler)
 
-        # Scheduler
-        self.scheduler_thread = Process(target=self.bootstrap_scheduler)
+            # Bottle
+            self.bottle_thread = Process(target=self.bootstrap_bottle)
 
-        # Bottle
-        self.bottle_thread = Process(target=self.bootstrap_bottle)
+            # Event handler
+            self.incoming_event_thread = Process(target=self.bootstrap_event_handler)
 
-        # Event handler
-        self.incoming_event_thread = Process(target=self.bootstrap_event_handler)
+            self.io_threads = []
+            self.analysis_threads = []
+            self.generation_threads = []
 
-        self.io_threads = []
-        self.analysis_threads = []
-        self.generation_threads = []
+            with indent(2):
+                try:
+                    # Start up threads.
+                    self.bootstrap_io()
+                    self.bootstrap_analysis()
+                    self.bootstrap_generation()
+                    self.bootstrap_execution()
 
-        with indent(2):
-            try:
-                # Start up threads.
-                self.bootstrap_io()
-                self.bootstrap_analysis()
-                self.bootstrap_generation()
-                self.bootstrap_execution()
+                    self.scheduler_thread.start()
+                    self.bottle_thread.start()
+                    self.incoming_event_thread.start()
 
-                self.scheduler_thread.start()
-                self.bottle_thread.start()
-                self.incoming_event_thread.start()
+                    errors = self.get_startup_errors()
+                    if len(errors) > 0:
+                        error_message = "FYI, I ran into some problems while starting up:"
+                        for err in errors:
+                            error_message += "\n%s\n" % err
+                        puts(colored.red(error_message))
 
-                errors = self.get_startup_errors()
-                if len(errors) > 0:
-                    error_message = "FYI, I ran into some problems while starting up:"
-                    for err in errors:
-                        error_message += "\n%s\n" % err
-                    puts(colored.red(error_message))
+                    self.stdin_listener_thread = False
+                    self.has_stdin_io_backend = True
+                    if self.has_stdin_io_backend:
 
-                self.stdin_listener_thread = False
-                self.has_stdin_io_backend = True
-                if self.has_stdin_io_backend:
-
-                    self.current_line = ""
-                    while True:
-                        for line in sys.stdin.readline():
-                            if "\n" in line:
-                                self.publish(
-                                    "message.incoming.stdin",
-                                    Event(
-                                        type="message.incoming.stdin",
-                                        content=self.current_line,
+                        self.current_line = ""
+                        while True:
+                            for line in sys.stdin.readline():
+                                if "\n" in line:
+                                    self.publish(
+                                        "message.incoming.stdin",
+                                        Event(
+                                            type="message.incoming.stdin",
+                                            content=self.current_line,
+                                        )
                                     )
-                                )
-                                self.current_line = ""
-                            else:
-                                self.current_line += line
-                else:
-                    while True:
-                        time.sleep(100)
-            except (KeyboardInterrupt, SystemExit):
-                self.handle_sys_exit()
+                                    self.current_line = ""
+                                else:
+                                    self.current_line += line
+                    else:
+                        while True:
+                            time.sleep(100)
+                except (KeyboardInterrupt, SystemExit):
+                    self.handle_sys_exit()
 
     def verify_individual_setting(self, test_setting, quiet=False):
         if not test_setting.get("only_if", True):
@@ -276,14 +276,16 @@ To set your %(name)s:
                     missing_setting_error_messages.append(error_message)
                     missing_settings = True
 
-        if missing_settings and not one_valid_backend:
+        if missing_settings or not one_valid_backend:
             puts("")
             error(
                 "Unable to find a valid IO backend - will has no way to talk "
                 "or listen!\n       Quitting now, please look at the above errors!\n"
             )
-            sys.exit(1)
+            self.handle_sys_exit()
+            return False
         puts()
+        return True
 
     @yappi_profile(return_callback=yappi_aggregate)
     def verify_analysis(self):
