@@ -18,21 +18,21 @@ def auto_key():
     node = uuid.getnode()
 
     h = hashlib.md5()
-    h.update("%s" % node)
+    h.update(str("%s" % node).encode('utf-8'))
     key1 = h.hexdigest()
 
     time.sleep(random.uniform(0, 0.5))
     node = uuid.getnode()
 
     h = hashlib.md5()
-    h.update("%s" % node)
+    h.update(str("%s" % node).encode('utf-8'))
     key2 = h.hexdigest()
 
     time.sleep(random.uniform(0, 0.5))
     node = uuid.getnode()
 
     h = hashlib.md5()
-    h.update("%s" % node)
+    h.update(str("%s" % node).encode('utf-8'))
     key3 = h.hexdigest()
 
     if key1 == key2 and key2 == key3:
@@ -390,7 +390,7 @@ def import_settings(quiet=True):
                             "shared or virtualized environment.\n Please set a unique secret key in the " +
                             "environment as WILL_SECRET_KEY to run will."
                         )
-                        print "  Unable to start will without a SECRET_KEY while encryption is turned on. Shutting down."
+                        print("  Unable to start will without a SECRET_KEY while encryption is turned on. Shutting down.")
                         sys.exit(1)
 
                     settings["SECRET_KEY"] = key

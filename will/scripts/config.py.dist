@@ -75,7 +75,7 @@ PLUGIN_BLACKLIST = [
 IO_BACKENDS = [
     "will.backends.io_adapters.slack",
     "will.backends.io_adapters.hipchat",
-    "will.backends.io_adapters.rocketchat",
+    # "will.backends.io_adapters.rocketchat",
     "will.backends.io_adapters.shell",
 ]
 
@@ -87,9 +87,9 @@ ANALYZE_BACKENDS = [
 
 # Backends to generate possible actions, and metadata about them.
 GENERATION_BACKENDS = [
+    # "will.backends.generation.fuzzy_best_match",
     "will.backends.generation.fuzzy_all_matches",
     "will.backends.generation.strict_regex",
-    # "will.backends.generation.fuzzy_best_match",
 ]
 
 # The "decision making" backends that look among the generated choices,

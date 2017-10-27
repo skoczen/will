@@ -313,8 +313,8 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
                 self.plugin['xep_0045'].joinMUC(r["xmpp_jid"], settings.HIPCHAT_NAME, wait=True)
 
     def handle_errors(self, event):
-        print "got error event"
-        print event
+        print("got error event")
+        print(event)
 
     def room_invite(self, event):
         logging.info("Invite recieved for %s" % event)
