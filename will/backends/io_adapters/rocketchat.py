@@ -304,7 +304,7 @@ class RocketChatBackend(IOBackend, StorageMixin):
         if username is None:
             raise TypeError("No username given")
 
-        for id, data in self.people.iteritems():
+        for id, data in self.people.items():
             if data['handle'] == username:
                 return id
 
