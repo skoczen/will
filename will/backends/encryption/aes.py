@@ -14,7 +14,7 @@ from will.backends.encryption.base import WillBaseEncryptionBackend
 
 
 BS = 16
-key = hashlib.sha256(settings.SECRET_KEY).digest()
+key = hashlib.sha256(settings.SECRET_KEY.encode("utf-8")).digest()
 
 
 def pad(s):

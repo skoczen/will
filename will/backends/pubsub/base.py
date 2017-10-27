@@ -2,7 +2,7 @@ import logging
 import os
 import redis
 import traceback
-import urlparse
+from six.moves.urllib.parse import urlparse
 
 from will.abstractions import Event
 from will import settings
