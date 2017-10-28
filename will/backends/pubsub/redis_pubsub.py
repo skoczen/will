@@ -1,3 +1,4 @@
+import logging
 import redis
 from six.moves.urllib import parse
 from .base import BasePubSub
@@ -47,11 +48,11 @@ Examples:
         self._pubsub = self.redis.pubsub()
 
     def publish_to_backend(self, topic, body_str):
-        # print("publishing %s" % (topic,))
+        logging.debug("publishing %s" % (topic,))
         return self.redis.publish(topic, body_str)
 
     def do_subscribe(self, topic):
-        # print("subscribed to %s" % topic)
+        logging.debug("subscribed to %s" % topic)
         return self._pubsub.psubscribe(topic)
 
     def unsubscribe(self, topic):

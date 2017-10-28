@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import copy
-from cStringIO import StringIO
 import datetime
 import imp
 from importlib import import_module
@@ -134,76 +133,76 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
         self.bootstrap_pubsub_mixin()
         self.bootstrap_plugins()
         self.verify_plugin_settings()
-        self.verify_io()
+        started = self.verify_io()
+        if started:
+            puts("Bootstrapping complete.")
 
-        puts("Bootstrapping complete.")
+            # Save help modules.
+            self.save("help_modules", self.help_modules)
 
-        # Save help modules.
-        self.save("help_modules", self.help_modules)
+            puts("\nStarting core processes:")
 
-        puts("\nStarting core processes:")
+            # try:
+            # Exit handlers.
+            # signal.signal(signal.SIGINT, self.handle_sys_exit)
+            # # TODO this hangs for some reason.
+            # signal.signal(signal.SIGTERM, self.handle_sys_exit)
 
-        # try:
-        # Exit handlers.
-        # signal.signal(signal.SIGINT, self.handle_sys_exit)
-        # # TODO this hangs for some reason.
-        # signal.signal(signal.SIGTERM, self.handle_sys_exit)
+            # Scheduler
+            self.scheduler_thread = Process(target=self.bootstrap_scheduler)
 
-        # Scheduler
-        self.scheduler_thread = Process(target=self.bootstrap_scheduler)
+            # Bottle
+            self.bottle_thread = Process(target=self.bootstrap_bottle)
 
-        # Bottle
-        self.bottle_thread = Process(target=self.bootstrap_bottle)
+            # Event handler
+            self.incoming_event_thread = Process(target=self.bootstrap_event_handler)
 
-        # Event handler
-        self.incoming_event_thread = Process(target=self.bootstrap_event_handler)
+            self.io_threads = []
+            self.analysis_threads = []
+            self.generation_threads = []
 
-        self.io_threads = []
-        self.analysis_threads = []
-        self.generation_threads = []
+            with indent(2):
+                try:
+                    # Start up threads.
+                    self.bootstrap_io()
+                    self.bootstrap_analysis()
+                    self.bootstrap_generation()
+                    self.bootstrap_execution()
 
-        with indent(2):
-            try:
-                # Start up threads.
-                self.bootstrap_io()
-                self.bootstrap_analysis()
-                self.bootstrap_generation()
-                self.bootstrap_execution()
+                    self.scheduler_thread.start()
+                    self.bottle_thread.start()
+                    self.incoming_event_thread.start()
 
-                self.scheduler_thread.start()
-                self.bottle_thread.start()
-                self.incoming_event_thread.start()
+                    errors = self.get_startup_errors()
+                    if len(errors) > 0:
+                        error_message = "FYI, I ran into some problems while starting up:"
+                        for err in errors:
+                            error_message += "\n%s\n" % err
+                        puts(colored.red(error_message))
 
-                errors = self.get_startup_errors()
-                if len(errors) > 0:
-                    error_message = "FYI, I ran into some problems while starting up:"
-                    for err in errors:
-                        error_message += "\n%s\n" % err
-                    puts(colored.red(error_message))
+                    self.stdin_listener_thread = False
+                    self.has_stdin_io_backend = True
+                    if self.has_stdin_io_backend:
 
-                self.stdin_listener_thread = False
-                self.has_stdin_io_backend = True
-                if self.has_stdin_io_backend:
-
-                    self.current_line = ""
-                    while True:
-                        for line in sys.stdin.readline():
-                            if "\n" in line:
-                                self.publish(
-                                    "message.incoming.stdin",
-                                    Event(
-                                        type="message.incoming.stdin",
-                                        content=self.current_line,
+                        self.current_line = ""
+                        while True:
+                            for line in sys.stdin.readline():
+                                if "\n" in line:
+                                    self.publish(
+                                        "message.incoming.stdin",
+                                        Event(
+                                            type="message.incoming.stdin",
+                                            content=self.current_line,
+                                        )
                                     )
-                                )
-                                self.current_line = ""
-                            else:
-                                self.current_line += line
-                else:
-                    while True:
-                        time.sleep(100)
-            except (KeyboardInterrupt, SystemExit):
-                self.handle_sys_exit()
+                                    self.current_line = ""
+                                else:
+                                    self.current_line += line
+                    else:
+                        while True:
+                            time.sleep(100)
+                except (KeyboardInterrupt, SystemExit):
+                    self.handle_sys_exit()
 
     def verify_individual_setting(self, test_setting, quiet=False):
         if not test_setting.get("only_if", True):
@@ -264,7 +263,7 @@ To set your %(name)s:
                             c = cls()
                             show_valid(c.friendly_name)
                             c.verify_settings()
-                except Exception as e:
+                except Exception :
                     error_message = (
                         "IO backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_IO_BACKENDS, or provide it somehow (pip install, etc)."
@@ -273,18 +272,20 @@ To set your %(name)s:
                     puts()
                     puts(error_message)
                     puts()
-                    puts(traceback.format_exc(e))
+                    puts(traceback.format_exc())
                     missing_setting_error_messages.append(error_message)
                     missing_settings = True
 
-        if missing_settings and not one_valid_backend:
+        if missing_settings or not one_valid_backend:
             puts("")
             error(
                 "Unable to find a valid IO backend - will has no way to talk "
                 "or listen!\n       Quitting now, please look at the above errors!\n"
             )
-            sys.exit(1)
+            self.handle_sys_exit()
+            return False
         puts()
+        return True
 
     @yappi_profile(return_callback=yappi_aggregate)
     def verify_analysis(self):
@@ -316,7 +317,7 @@ To set your %(name)s:
                     puts()
                     puts(error_message)
                     puts()
-                    puts(traceback.format_exc(e))
+                    puts(traceback.format_exc())
                     missing_setting_error_messages.append(error_message)
                     missing_settings = True
 
@@ -359,7 +360,7 @@ To set your %(name)s:
                     puts()
                     puts(error_message)
                     puts()
-                    puts(traceback.format_exc(e))
+                    puts(traceback.format_exc())
                     missing_setting_error_messages.append(error_message)
                     missing_settings = True
 
@@ -402,7 +403,7 @@ To set your %(name)s:
                     puts()
                     puts(error_message)
                     puts()
-                    puts(traceback.format_exc(e))
+                    puts(traceback.format_exc())
                     missing_setting_error_messages.append(error_message)
                     missing_settings = True
 
@@ -441,7 +442,7 @@ To set your %(name)s:
                     puts()
                     puts(error_message)
                     puts()
-                    puts(traceback.format_exc(e))
+                    puts(traceback.format_exc())
                     missing_setting_error_messages.append(error_message)
 
         if len(self.execution_backends) == 0:
@@ -578,7 +579,6 @@ To set your %(name)s:
                     if event.type == "message.incoming":
                         # A message just got dropped off one of the IO Backends.
                         # Send it to analysis.
-                        
 
                         analysis_threads[event.original_incoming_event_hash] = {
                             "count": 0,
@@ -683,14 +683,14 @@ To set your %(name)s:
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
-        except ImportError as e:
-            module_name = traceback.format_exc(e).split(" ")[-1]
+        except ImportError :
+            module_name = traceback.format_exc().split(" ")[-1]
             error("Unable to bootstrap storage - attempting to load %s" % module_name)
-            puts(traceback.format_exc(e))
+            puts(traceback.format_exc())
             sys.exit(1)
-        except Exception as e:
+        except Exception:
             error("Unable to bootstrap storage!")
-            puts(traceback.format_exc(e))
+            puts(traceback.format_exc())
             sys.exit(1)
 
     @yappi_profile(return_callback=yappi_aggregate)
@@ -704,13 +704,13 @@ To set your %(name)s:
                 show_valid("Bootstrapped!")
             puts("")
         except ImportError as e:
-            module_name = traceback.format_exc(e).split(" ")[-1]
+            module_name = traceback.format_exc().split(" ")[-1]
             error("Unable to bootstrap pubsub - attempting to load %s" % module_name)
-            puts(traceback.format_exc(e))
+            puts(traceback.format_exc())
             sys.exit(1)
-        except Exception as e:
+        except Exception :
             error("Unable to bootstrap pubsub!")
-            puts(traceback.format_exc(e))
+            puts(traceback.format_exc())
             sys.exit(1)
 
     @yappi_profile(return_callback=yappi_aggregate)
@@ -743,7 +743,7 @@ To set your %(name)s:
                     meta["num_times_per_day"]
                 )
             bootstrapped = True
-        except Exception as e:
+        except Exception :
             self.startup_error("Error bootstrapping scheduler", e)
         if bootstrapped:
             show_valid("Scheduler started.")
@@ -762,7 +762,7 @@ To set your %(name)s:
                         bottle_route_args[k[len("bottle_"):]] = v
                 bottle.route(instantiated_fn.will_fn_metadata["bottle_route"], **bottle_route_args)(instantiated_fn)
             bootstrapped = True
-        except Exception as e:
+        except Exception :
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
             show_valid("Web server started at %s." % (settings.PUBLIC_URL,))
@@ -806,7 +806,7 @@ To set your %(name)s:
                             self.io_threads.append(thread)
 
                         show_valid("IO: %s Backend started." % cls.friendly_name)
-                except Exception as e:
+                except Exception :
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.io_backends.append(b)
@@ -835,7 +835,7 @@ To set your %(name)s:
                         thread.start()
                         self.analysis_threads.append(thread)
                         show_valid("Analysis: %s Backend started." % cls.__name__)
-                except Exception as e:
+                except Exception :
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.analysis_backends.append(b)
@@ -864,7 +864,7 @@ To set your %(name)s:
                         thread.start()
                         self.generation_threads.append(thread)
                         show_valid("Generation: %s Backend started." % cls.__name__)
-                except Exception as e:
+                except Exception :
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.generation_backends.append(b)
@@ -923,7 +923,7 @@ To set your %(name)s:
                                     "parent_help_text": parent_help_text,
                                     "blacklisted": blacklisted,
                                 }
-                            except Exception as e:
+                            except Exception :
                                 self.startup_error("Error loading %s" % (module_path,), e)
 
                 self.plugins = []
@@ -943,9 +943,9 @@ To set your %(name)s:
                                         "parent_help_text": plugin_modules_library[name]["parent_help_text"],
                                         "blacklisted": plugin_modules_library[name]["blacklisted"],
                                     })
-                            except Exception as e:
+                            except Exception :
                                 self.startup_error("Error bootstrapping %s" % (class_name,), e)
-                    except Exception as e:
+                    except Exception :
                         self.startup_error("Error bootstrapping %s" % (name,), e)
 
             self._plugin_modules_library = plugin_modules_library
@@ -1067,7 +1067,7 @@ To set your %(name)s:
                                                 # puts("- %s" % function_name)
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
 
-                                except Exception as e:
+                                except Exception :
                                     error(plugin_name)
                                     self.startup_error(
                                         "Error bootstrapping %s.%s" % (
@@ -1081,7 +1081,7 @@ To set your %(name)s:
                                     warn(w)
                             else:
                                 show_valid(plugin_name)
-                except Exception as e:
+                except Exception :
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
 
         puts("")

@@ -54,6 +54,7 @@ def clean_for_pickling(d):
 # Via http://stackoverflow.com/a/925630
 class HTMLStripper(html_parser.HTMLParser):
     def __init__(self):
+        self.convert_charrefs = True
         self.reset()
         self.fed = []
 

@@ -152,12 +152,11 @@ If you're looking for plugin inspiration, here are some wills that are open-sour
 
 #### 2.0.1beta - ???
 
-TODO: Finish these
 This is a huge rwerite of will, adding pluggable backends for chat systems as well as Will's internal brains.  
 
 **TL;DR: Slack, Rocket.chat, and stdio support, and you can write full chatterbots with Will now.**
 
-A huge number of really smart people gave their thoughts and suggestions throughout the process, not least @hobson, @woohgit, @netjunki, @sivy, @antgel, @shadow7412, @brandonsturgeon, @pepedocs, @tophsic
+A huge number of really smart people gave their thoughts and suggestions throughout the process, not least @hobson, @woohgit, @netjunki, @sivy, @antgel, @shadow7412, @brandonsturgeon, @pepedocs, @tophsic, and @mike-love.
 
 Here's what's new:
 
@@ -178,17 +177,12 @@ This release also changes a few bits of behavior, to be consistent:
 - `self.reply()` *finally* no longer requires you to tediously pass the `message` back to it.  It's also smart, and backwards compatable with existing plugins.
 - `admin_only` is explicitly flagged for deprecation and removal, to be replaced by the ACL system introduced in 2015 (largely, this is because having two different access control systems is crazy and painful.)  Switching is as easy as adding `ACL = {'admins': ['steven', 'will']}` to your config.py and find/replacing `admin_only=True` with `acl=['admins',] in your codebase.  For now, Will handles backwards compatibility by mapping the old settings into the new places, but he won't forever.  Thanks for updating, and making ongoing maintenence simpler!
 - If no ACLs are specified and users try to perform restricted commands, they'll be allowed as before, but Will will complain to the console. A new `DISABLE_ACL` setting has been added to turn off the complaining.
+- You can pass in `channel=` or `room=` when specifying a custom reply location.  If both are passed in, Will uses `channel`.
 
 There are a couple *internal* backwards-incompatible changes:
 - `RosterMixin` has been renamed `HipChatRosterMixin` and moved to `will.backends.io_adapters.hipchat`.  This change should not affect you unless you were specifically importing RosterMixin in your own plugins - everything in `WillPlugin` has been automatically routed to the right place, in a backwards-compatible way.
 - `Room` and `RoomMixin` have similarly become `HipChatRoom` and `HipChatRoomMixin and moved to `will.backends.io_adapters.hipchat`.
 
-
-This release addresses a number of bugs and smaller features, including:
-
-* Chatoms support fixed by [bykof](https://github.com/bykof).
-* Friendlier world time output.
-* You can pass in `channel=` or `room=` when specifying a custom reply location.  If both are passed in, Will uses `channel`.
 
 #### 1.0.2 - October 24, 2017
 

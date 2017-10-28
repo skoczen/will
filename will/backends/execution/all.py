@@ -20,7 +20,6 @@ class AllBackend(ExecutionBackend):
                     self.execute(message, m)
                     had_one_reply = True
 
-                # TODO: Abstract this into a base method (Raise?)
                 if not had_one_reply:
                     self.no_response(message)
 

@@ -34,7 +34,7 @@ Examples:
 
     def __init__(self, settings, *args, **kwargs):
         self.verify_settings(quiet=True)
-        logging.warning(
+        logging.error(
             "The ZeroMQ Backend isn't ready for prime-time yet. Please "
             "test closely, and report any problems at Will's github page!"
         )
