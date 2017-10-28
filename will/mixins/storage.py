@@ -30,21 +30,21 @@ class StorageMixin(object):
         self.bootstrap_storage()
         try:
             return self.storage.save(key, pickle.dumps(value), expire=expire)
-        except Exception:
+        except:
             logging.exception("Unable to save %s", key)
 
     def clear(self, key):
         self.bootstrap_storage()
         try:
             return self.storage.clear(key)
-        except Exception:
+        except:
             logging.exception("Unable to clear %s", key)
 
     def clear_all_keys(self):
         self.bootstrap_storage()
         try:
             return self.storage.clear_all_keys()
-        except Exception:
+        except:
             logging.exception("Unable to clear all keys")
 
     def load(self, key, default=None):
@@ -54,8 +54,9 @@ class StorageMixin(object):
             if val is not None:
                 return pickle.loads(val)
             return default
-        except Exception:
-            logging.exception("Failed to load %s", key)
+        except:
+            # logging.exception("Failed to load %s", key)
+            return default
 
     def size(self):
         self.bootstrap_storage()

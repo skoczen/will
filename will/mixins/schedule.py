@@ -97,8 +97,8 @@ class ScheduleMixin(PubSubMixin, object):
         now = datetime.datetime.now()
         ct = CronTrigger(*sched_args, **sched_kwargs)
         when = ct.get_next_fire_time(now)
-        print "ct.get_next_fire_time(now)"
-        print when
+        logging.info("ct.get_next_fire_time(now)")
+        logging.info(when)
         item = {
             "type": "periodic_task",
             "module_name": module_name,

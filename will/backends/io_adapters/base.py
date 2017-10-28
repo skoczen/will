@@ -42,8 +42,6 @@ class IOBackend(PubSubMixin, SleepMixin, SettingsMixin, object):
         try:
             m = self.normalize_incoming_event(event)
             if m:
-                # print("\n\n\n\nhandle_incoming_event")
-                # print(m)
                 self.pubsub.publish("message.incoming", m, reference_message=m)
         except:
             logging.critical("Error handling incoming event %s: \n%s" % (
@@ -58,8 +56,6 @@ class IOBackend(PubSubMixin, SleepMixin, SettingsMixin, object):
         pass
 
     def __publish_incoming_message(self, message):
-        # print("__publish_incoming_message")
-        # print(message)
         return self.pubsub.publish("message.incoming", message, reference_message=message)
 
     def __start_event_listeners(self):

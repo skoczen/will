@@ -39,8 +39,8 @@ class Message(object):
         self.content = self._clean_message_content(self.content)
 
         h = hashlib.md5()
-        h.update(self.timestamp.strftime("%s"))
-        h.update("%s" % self.content)
+        h.update(self.timestamp.strftime("%s").encode("utf-8"))
+        h.update(self.content.encode("utf-8"))
         self.hash = h.hexdigest()
 
         self.metadata = Bunch()
@@ -94,8 +94,8 @@ class Event(Bunch):
             self.timestamp = datetime.datetime.now()
 
         h = hashlib.md5()
-        h.update(self.timestamp.strftime("%s"))
-        h.update("%s" % self.type)
+        h.update(self.timestamp.strftime("%s").encode("utf-8"))
+        h.update(self.type.encode("utf-8"))
         self.hash = h.hexdigest()
         if not "original_incoming_event_hash" in kwargs:
             if hasattr(self, "original_incoming_event") and hasattr(self.original_incoming_event, "hash"):

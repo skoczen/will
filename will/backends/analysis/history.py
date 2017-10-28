@@ -10,8 +10,6 @@ class HistoryAnalysis(AnalysisBackend, StorageMixin):
 
     def do_analyze(self, message):
         # Load the last few messages, add it to the context under "history"
-        # print("history analyze")
-        # print(message)
         history = self.load("message_history", [])
         if not history:
             history = []

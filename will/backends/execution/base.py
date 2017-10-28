@@ -35,7 +35,6 @@ class ExecutionBackend(object):
         )
 
     def execute(self, message, option):
-        # TODO: Verify ACLs
         acl = option.context["acl"]
         if type(acl) == type("test"):
             acl = [acl]
@@ -66,8 +65,6 @@ class ExecutionBackend(object):
             module = imp.load_source(option.context.plugin_info["parent_name"], option.context.plugin_info["parent_path"])
             cls = getattr(module, option.context.plugin_info["name"])
 
-            # TODO: Do we need self.bot?
-            # instantiated_module = cls(message=message, bot=self.bot)
             instantiated_module = cls(message=message)
             method = getattr(instantiated_module, option.context.function_name)
 

@@ -1,6 +1,6 @@
 import logging
 import redis
-import urlparse
+from six.moves.urllib.parse import urlparse
 from will.mixins import SettingsMixin, EncryptionMixin
 
 
