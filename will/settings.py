@@ -402,7 +402,6 @@ def import_settings(quiet=True):
         if "FUZZY_REGEX_ALLOWABLE_ERRORS" not in settings:
             settings["FUZZY_REGEX_ALLOWABLE_ERRORS"] = 3
 
-
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):
             if not quiet:

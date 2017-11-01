@@ -26,13 +26,12 @@ for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
                 or line.startswith("#")
             ):
                 continue
-            
+
             if "-e" in line:
                 line = line.replace("-e", "")
                 dependency_links.append(line)
                 line = line.split("#")[-1].split("=")[-1]
-            
-            print line.strip()
+
             install_requires.append(line.strip())
 
 
