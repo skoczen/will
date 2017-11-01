@@ -22,5 +22,10 @@ class HowAreYouPlugin(WillPlugin):
             "day_name": now.strftime("%A")
         }
         reply = random.choice(RESPONSES) % context
-
+        message.said_to_how_are_you = True
         self.say(reply, message=message)
+
+    # @hear("")
+    # def how_are_you_reply(self, message):
+    #     print(message.analysis["history"][0].data)
+    #     print(message.analysis["history"][1].data)
