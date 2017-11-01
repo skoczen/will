@@ -263,7 +263,7 @@ To set your %(name)s:
                             c = cls()
                             show_valid(c.friendly_name)
                             c.verify_settings()
-                except Exception :
+                except Exception as e:
                     error_message = (
                         "IO backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_IO_BACKENDS, or provide it somehow (pip install, etc)."
@@ -493,17 +493,17 @@ To set your %(name)s:
                 os.environ["WILL_SECRET_KEY"] = ""
                 os.environ["WILL_EPHEMERAL_SECRET_KEY"] = ""
 
-            if self.scheduler_thread:
+            if hasattr(self, "scheduler_thread") and self.scheduler_thread:
                 try:
                     self.scheduler_thread.terminate()
                 except KeyboardInterrupt:
                     pass
-            if self.bottle_thread:
+            if hasattr(self, "bottle_thread") and self.bottle_thread:
                 try:
                     self.bottle_thread.terminate()
                 except KeyboardInterrupt:
                     pass
-            if self.incoming_event_thread:
+            if hasattr(self, "incoming_event_thread") and self.incoming_event_thread:
                 try:
                     self.incoming_event_thread.terminate()
                 except KeyboardInterrupt:
@@ -708,7 +708,7 @@ To set your %(name)s:
             error("Unable to bootstrap pubsub - attempting to load %s" % module_name)
             puts(traceback.format_exc())
             sys.exit(1)
-        except Exception :
+        except Exception as e:
             error("Unable to bootstrap pubsub!")
             puts(traceback.format_exc())
             sys.exit(1)
@@ -743,7 +743,7 @@ To set your %(name)s:
                     meta["num_times_per_day"]
                 )
             bootstrapped = True
-        except Exception :
+        except Exception as e:
             self.startup_error("Error bootstrapping scheduler", e)
         if bootstrapped:
             show_valid("Scheduler started.")
@@ -762,7 +762,7 @@ To set your %(name)s:
                         bottle_route_args[k[len("bottle_"):]] = v
                 bottle.route(instantiated_fn.will_fn_metadata["bottle_route"], **bottle_route_args)(instantiated_fn)
             bootstrapped = True
-        except Exception :
+        except Exception as e:
             self.startup_error("Error bootstrapping bottle", e)
         if bootstrapped:
             show_valid("Web server started at %s." % (settings.PUBLIC_URL,))
@@ -806,7 +806,7 @@ To set your %(name)s:
                             self.io_threads.append(thread)
 
                         show_valid("IO: %s Backend started." % cls.friendly_name)
-                except Exception :
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.io_backends.append(b)
@@ -835,7 +835,7 @@ To set your %(name)s:
                         thread.start()
                         self.analysis_threads.append(thread)
                         show_valid("Analysis: %s Backend started." % cls.__name__)
-                except Exception :
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.analysis_backends.append(b)
@@ -864,7 +864,7 @@ To set your %(name)s:
                         thread.start()
                         self.generation_threads.append(thread)
                         show_valid("Generation: %s Backend started." % cls.__name__)
-                except Exception :
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s io" % b, e)
 
             self.generation_backends.append(b)
@@ -923,7 +923,7 @@ To set your %(name)s:
                                     "parent_help_text": parent_help_text,
                                     "blacklisted": blacklisted,
                                 }
-                            except Exception :
+                            except Exception as e:
                                 self.startup_error("Error loading %s" % (module_path,), e)
 
                 self.plugins = []
@@ -943,9 +943,9 @@ To set your %(name)s:
                                         "parent_help_text": plugin_modules_library[name]["parent_help_text"],
                                         "blacklisted": plugin_modules_library[name]["blacklisted"],
                                     })
-                            except Exception :
+                            except Exception as e:
                                 self.startup_error("Error bootstrapping %s" % (class_name,), e)
-                    except Exception :
+                    except Exception as e:
                         self.startup_error("Error bootstrapping %s" % (name,), e)
 
             self._plugin_modules_library = plugin_modules_library
@@ -1067,7 +1067,7 @@ To set your %(name)s:
                                                 # puts("- %s" % function_name)
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
 
-                                except Exception :
+                                except Exception as e :
                                     error(plugin_name)
                                     self.startup_error(
                                         "Error bootstrapping %s.%s" % (
@@ -1081,7 +1081,7 @@ To set your %(name)s:
                                     warn(w)
                             else:
                                 show_valid(plugin_name)
-                except Exception :
+                except Exception as e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
 
         puts("")

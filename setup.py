@@ -11,6 +11,7 @@ SOURCE_DIR = os.path.join(ROOT_DIR)
 REQS_DIR = os.path.join(ROOT_DIR, "requirements")
 
 install_requires = []
+dependency_links = []
 with open("requirements.txt", "r+") as f:
     for line in f.readlines():
         if line[0] == "-":
@@ -20,8 +21,18 @@ with open("requirements.txt", "r+") as f:
 for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
     with open(os.path.join(REQS_DIR, req_file), "r+") as f:
         for line in f.readlines():
-            if line[0] == "-":
+            if (
+                (line.startswith("-") and not line.startswith("-e"))
+                or line.startswith("#")
+            ):
                 continue
+            
+            if "-e" in line:
+                line = line.replace("-e", "")
+                dependency_links.append(line)
+                line = line.split("#")[-1].split("=")[-1]
+            
+            print line.strip()
             install_requires.append(line.strip())
 
 
@@ -59,6 +70,7 @@ setup(
     version=VERSION,
     download_url=['https://github.com/skoczen/will/tarball/%s' % VERSION, ],
     install_requires=install_requires,
+    dependency_links=dependency_links,
     setup_requires=setup_requires,
     tests_require=tests_require,
     packages=find_packages(),
