@@ -397,6 +397,12 @@ def import_settings(quiet=True):
                     os.environ["WILL_SECRET_KEY"] = settings["SECRET_KEY"]
                     os.environ["WILL_EPHEMERAL_SECRET_KEY"] = "True"
 
+        if "FUZZY_MINIMUM_MATCH_CONFIDENCE" not in settings:
+            settings["FUZZY_MINIMUM_MATCH_CONFIDENCE"] = 90
+        if "FUZZY_REGEX_ALLOWABLE_ERRORS" not in settings:
+            settings["FUZZY_REGEX_ALLOWABLE_ERRORS"] = 3
+
+
         # Set them in the module namespace
         for k in sorted(settings, key=lambda x: x[0]):
             if not quiet:
