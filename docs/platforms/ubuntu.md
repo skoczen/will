@@ -115,7 +115,7 @@ Eventually, you'll reach this screen of joy.  Now, it's time to play!
 
 #### Testing will out
 
-Once your will is up and running, hop into any of your chat rooms, and say hello!
+Once your will is up and running, hop into any of your hipchat rooms, and say hello!
 
 `@will hi`
 

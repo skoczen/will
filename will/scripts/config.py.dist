@@ -67,6 +67,13 @@ PLUGIN_BLACKLIST = [
     "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
 ]
 
+# A secret key, used to namespace this instance of will and secure pubsub contents.
+# Do *NOT* keep it in config.py.  *DO* set it in the environment as WILL_SECRET_KEY,
+# in a secured session. If a SECRET_KEY is not set, one will be auto-generated,
+# but it may limit Will to reading data from this excecution only, and may not work
+# on virtualized machines, or machines with many or changing MAC addresses
+# SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
+
 # ------------------------------------------------------------------------------------
 # Platform and Decision-making
 # ------------------------------------------------------------------------------------
@@ -201,14 +208,6 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Increasing the value will make will slower, but consume fewer resources.
 # EVENT_LOOP_INTERVAL = 0.025
 
-# A secret key, used to namespace this instance of will and secure pubsub contents.
-# Do *NOT* keep it in config.py.  *DO* set it in the environment as WILL_SECRET_KEY,
-# in a secured session. If a SECRET_KEY is not set, one will be auto-generated,
-# but it may limit Will to reading data from this excecution only, and may not work
-# on virtualized machines, or machines with many or changing MAC addresses
-# SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
-
-
 # Turn up or down Will's logging level
 # LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
 # LOGLEVEL = "DEBUG"
@@ -218,7 +217,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 # Turn on/off encryption in pub/sub and storage (default is on).
 # Causes a small speed bump, but secures messages in an untrusted environment.
-# ENABLE_INTERNAL_ENCRYPTION = False
+# ENABLE_INTERNAL_ENCRYPTION = True
 # ENCRYPTION_BACKEND = "aes"
 
 # Mailgun config, if you'd like will to send emails.
