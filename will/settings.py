@@ -162,6 +162,22 @@ def import_settings(quiet=True):
                     "\n   CHAT_BACKENDS = %s\n   to\n   IO_BACKENDS = %s" %
                     (settings["CHAT_BACKENDS"], IO_BACKENDS)
                 )
+        if "CHAT_BACKENDS" not in settings and "IO_BACKENDS" not in settings:
+            if not quiet:
+                warn("""Deprecated settings.  No backend found, so we're defaulting to hipchat and shell only.
+Please add this to your config.py:
+IO_BACKENDS = "
+    "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.shell",
+#   "will.backends.io_adapters.slack",
+#   "will.backends.io_adapters.rocketchat",
+]
+""")
+            settings["IO_BACKENDS"] = [
+                "will.backends.io_adapters.hipchat",
+                "will.backends.io_adapters.shell",
+            ]
+
         if "ANALYZE_BACKENDS" not in settings:
             if not quiet:
                 note("No ANALYZE_BACKENDS specified.  Defaulting to history only.")
@@ -267,9 +283,13 @@ def import_settings(quiet=True):
                 settings["HTTPSERVER_PORT"] = "80"
 
         if "STORAGE_BACKEND" not in settings:
+            if not quiet:
+                warn("No STORAGE_BACKEND specified.  Defaulting to redis.")
             settings["STORAGE_BACKEND"] = "redis"
 
         if "PUBSUB_BACKEND" not in settings:
+            if not quiet:
+                warn("No PUBSUB_BACKEND specified.  Defaulting to redis.")
             settings["PUBSUB_BACKEND"] = "redis"
 
         if settings["STORAGE_BACKEND"] == "redis" or settings["PUBSUB_BACKEND"] == "redis":
