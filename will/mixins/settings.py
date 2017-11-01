@@ -24,12 +24,13 @@ class SettingsMixin(object):
                 else:
                     meta["friendly_name"] = self.__class__.__name__
                 if not quiet:
-                    error("%(name)s is missing. It's required by the %(friendly_name)s backend." % meta)
                     with indent(2):
-                        error_message = (
-                            "To obtain a %(name)s: \n%(obtain_at)s"
-                        ) % meta
-                        puts(error_message)
+                        error("%(name)s is missing. It's required by the %(friendly_name)s backend." % meta)
+                        with indent(2):
+                            error_message = (
+                                "To obtain a %(name)s: \n%(obtain_at)s"
+                            ) % meta
+                            puts(error_message)
                 passed = False
                 # raise Exception(error_message)
             else:

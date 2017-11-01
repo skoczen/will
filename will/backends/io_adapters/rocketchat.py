@@ -22,7 +22,7 @@ from .base import IOBackend
 
 
 class RocketChatBackend(IOBackend, StorageMixin):
-    friendly_name = "RocketChat (BETA)"
+    friendly_name = "RocketChat"
     internal_name = "will.backends.io_adapters.rocketchat"
     required_settings = [
         {

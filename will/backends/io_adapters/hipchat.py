@@ -257,9 +257,15 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
         }
         r = requests.get(my_user_url, **settings.REQUESTS_OPTIONS)
         resp = r.json()
-        settings.HIPCHAT_EMAIL = resp["email"]
-        settings.HIPCHAT_HANDLE = resp["mention_name"]
-        settings.HIPCHAT_NAME = resp["name"]
+        if "email" in resp:
+            settings.HIPCHAT_EMAIL = resp["email"]
+            settings.HIPCHAT_HANDLE = resp["mention_name"]
+            settings.HIPCHAT_NAME = resp["name"]
+        else:
+            raise EnvironmentError(
+                "\n\nError getting user info from Hipchat. This is usually a problem with the\n"
+                "username or V2 token, but here's what I heard back from them: \n\n   %s\n\n" % resp
+            )
 
         self.available_rooms
         for r in settings.HIPCHAT_ROOMS:
