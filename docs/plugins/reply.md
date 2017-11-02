@@ -24,7 +24,7 @@ self.say(content, channel=None, html=False, color="green", notify=False)
 
 - **`content`**: the content you want to send to the room. Any string will do, HTML or plain text.
 - **`channel`**: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just reply in the same channel/room/thread.
-- **`service`**: (optional, rare) The name of the service you want to send the message on.  By default Will replies on the same service you contacted him on.
+- **`service`**: (optional, rare) The name of the service (i.e. 'slack', 'hipchat', 'rocketchat') you want to send the message on.  By default Will replies on the same service you contacted him on.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". 
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
@@ -61,9 +61,11 @@ When will recieves messages from webhooks and HTTP requests, he's still connecte
 @route("/ping")
 def ping(self):
     self.say("PONG!")
+    # or
+    self.say("PONG!", room="ping-pong", service="slack")
 ```
 
-If you want to talk to a different room, you can pass in the `channel` with the name of the channel or room you want to talk to.
+If you want to talk to a different room, you can pass in the `channel` with the name of the channel or room you want to talk to.  If you have multiple services connected, just pass `service` with the one you want.
 
 
 ## Send an email
@@ -113,7 +115,7 @@ self.schedule_say(content, when, message=None, channel=None, html=False, color="
 - **`when`**: when you want the message to be said. Python `datetime` object.
 - **`message`**: (optional) The incoming message object
 - **`channel`**: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just reply in the same channel/room/thread. You can also pass "ALL_ROOMS" to send the message everywhere, if that's really your thing.
-- **`service`**: (optional, rare) The name of the service you want to send the message on.  By default Will replies on the same service you contacted him on.
+- **`service`**: (optional, rare) The name of the service (i.e. 'slack', 'hipchat', 'rocketchat') you want to send the message on.  By default Will replies on the same service you contacted him on.
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.

@@ -3,7 +3,7 @@ site_url: http://skoczen.github.io/will
 site_description: "Will is a simple, beautiful-to-code python hipchat bot"
 pages:
 - Get Started: index.md
-- Upgrade to 2: upgrading_to_2.md
+- Upgrade to 2.0: upgrading_to_2.md
 - Teach Your Will:
   - The Basics: plugins/basics.md
   - What Will Can Notice: plugins/notice.md
@@ -14,6 +14,7 @@ pages:
 - Configure: config.md
 - Deploy: deploy.md
 - Improve: improve.md
+- Releases: releases.md
 - Roadmap: roadmap.md
 extra_javascript:
 - themes/will/js/base.js

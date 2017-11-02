@@ -8,11 +8,15 @@ All environment variables prefixed with `WILL_` are imported into will's `settin
 
 In best practices, you should keep all of the following in environment variables:
 
-- `WILL_USERNAME`
-- `WILL_PASSWORD`
+- `WILL_SLACK_API_TOKEN`
+- `WILL_HIPCHAT_USERNAME`
+- `WILL_HIPCHAT_PASSWORD`
+- `WILL_HIPCHAT_V2_TOKEN`
+- `WILL_HIPCHAT_V1_TOKEN`
+- `WILL_ROCKETCHAT_USERNAME`
+- `WILL_ROCKETCHAT_PASSWORD`
+- `WILL_ROCKETCHAT_URL`
 - `WILL_REDIS_URL`
-- `WILL_V2_TOKEN`
-- `WILL_V1_TOKEN`
 - Any other tokens, keys, passwords, or sensitive URLS.
 
 We've made it easy.  No excuses. :)
@@ -23,18 +27,31 @@ Config.py is where all of your non-sensitive settings should go.   This includes
 
 - `PLUGINS`: The list of plugins to run,
 - `PLUGIN_BLACKLIST`: The list of plugins to ignore, even if they're in `PLUGINS`,
+- `IO_BACKENDS`: The list services you want Will to connect to,
+- `ANALYZE_BACKENDS`: The list of message-analysis backends you want Will to run through.
+- `GENERATION_BACKENDS`: The list of reply-generation backends you want Will to go through.
+- `EXECUTION_BACKENDS`: The list of decision-making and execution backends you want Will to go through (we recommend just having one.)
+- `STORAGE_BACKEND`: Which backend you'd like to use for Will to store his long-term memory. (Built-in: 'redis', 'couchbase', 'file')
+- `PUBSUB_BACKEND`: Which backend you'd like to use for Will to use for his working memory. (Built-in: 'redis'.  Soon: 'zeromq', 'builtin')
+- `ENCYPTION_BACKEND`: Which backend you'd like to use for Will to encrypt his storage and memory. (Built-in: 'aes'.)
 - `PUBLIC_URL`: The publicly accessible URL will can reach himself at (used for [keepalive](plugins/bundled.md#administration)),
 - `HTTPSERVER_PORT`: The port will should handle HTTP requests on.  Defaults to 80, set to > 1024 if you don't have sudo,
 - `REDIS_MAX_CONNECTIONS`: The maximum number of connections to make to redis, for connection pooling.
-- `ROOMS`: The list of rooms to join,
-- `DEFAULT_ROOM`: The room to send messages that come from web requests to,
+- `FUZZY_MINIMUM_MATCH_CONFIDENCE`:  What percentage of confidence Will should have before replying to a fuzzy match.
+- `FUZZY_REGEX_ALLOWABLE_ERRORS`:  The maximum number of letters that can be wrong in trying to make a fuzzy match.
+- `SLACK_DEFAULT_CHANNEL`: The default Slack channel to send messages to (via webhooks, etc)
+- `HIPCHAT_ROOMS`: The list of rooms to join,
+- `HIPCHAT_DEFAULT_ROOM`: The room to send messages that come from web requests to,
+- `DEFAULT_BACKEND`: The service to send messages that come from web requests to,
 - `TEMPLATE_DIRS`: Extra directories to look for templates,
 - `ADMINS`: The mention names of all the admins,
 - `LOGLEVEL`: What logging level to use,
 - `HIPCHAT_SERVER`: if you're using the [HipChat server beta](https://www.hipchat.com/server), the hostname of the server,
 - `ALLOW_INSECURE_HIPCHAT_SERVER`: the option to disable SSL checks (seriously, don't),
+- `ENABLE_INTERNAL_ENCRYPTION`: the option to turn off internal encryption (not recommended, but you can do it.)
 - `PROXY_URL`: Proxy server to use, consider exporting it as `WILL_PROXY_URL` environment variable, if it contains sensitive information
 - and all of your non-sensitive plugin settings.
+
 
 More expansive documentation on all of those settings is in `config.py`, right where you need it.
 

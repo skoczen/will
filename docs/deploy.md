@@ -26,15 +26,18 @@ At minimum, that's
 ```bash
 heroku config:set \
 WILL_PUBLIC_URL="http://our-will-name.herokuapp.com" \
-WILL_USERNAME='12345_123456@chat.hipchat.com' \
-WILL_PASSWORD='asj2498q89dsf89a8df' \
-WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
+# Slack
+WILL_SLACK_API_TOKEN="lkasjflkaklfjlasfjal1249814"
+# Hipchat
+WILL_HIPCHAT_USERNAME='12345_123456@chat.hipchat.com' \
+WILL_HIPCHAT_PASSWORD='asj2498q89dsf89a8df' \
+WILL_HIPCHAT_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
+# Rocket.Chat
+WILL_ROCKETCHAT_USERNAME='will@heywill.io'\
+WILL_ROCKETCHAT_PASSWORD='12o312938asfjilasdlfjasdlkfj'\
+WILL_ROCKETCHAT_URL='https://heywill.rocket.chat'\
 ```
 
-If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:
-```bash
-heroku config:set WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
-```
 
 Finally, for will's schedule to be correct, you need to set him to the time zone you want:
 
@@ -84,9 +87,16 @@ You should have docker already installed; additionally, the instructions require
 ### Step 1: Configure your container's environment variables
 In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:
 ```bash 
-WILL_USERNAME
-WILL_PASSWORD
-WILL_V2_TOKEN
+# For Slack
+WILL_SLACK_API_TOKEN
+# For Hipchat
+WILL_HIPCHAT_USERNAME
+WILL_HIPCHAT_PASSWORD
+WILL_HIPCHAT_V2_TOKEN
+# Rocket.Chat
+WILL_ROCKETCHAT_USERNAME
+WILL_ROCKETCHAT_PASSWORD
+WILL_ROCKETCHAT_URL
 ```
 Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly. 
 
@@ -125,16 +135,24 @@ In your chosen deploy environment and setup, you'll want to do a couple things:
 At minimum, that's:
 ```bash
 export WILL_PUBLIC_URL="http://our-will-name.herokuapp.com"
-export WILL_USERNAME='12345_123456@chat.hipchat.com'
-export WILL_PASSWORD='asj2498q89dsf89a8df'
-export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
 export WILL_REDIS_URL='redis://some-domain.com/7/'
 export WILL_HTTPSERVER_PORT='80'
+
+# Slack
+WILL_SLACK_API_TOKEN="lkasjflkaklfjlasfjal1249814"
+# Hipchat
+export WILL_HIPCHAT_USERNAME='12345_123456@chat.hipchat.com'
+export WILL_HIPCHAT_PASSWORD='asj2498q89dsf89a8df'
+export WILL_HIPCHAT_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
+# Rocket.Chat
+WILL_ROCKETCHAT_USERNAME='will@heywill.io'
+WILL_ROCKETCHAT_PASSWORD='12o312938asfjilasdlfjasdlkfj'
+WILL_ROCKETCHAT_URL='https://heywill.rocket.chat'
 ```
 
 If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:
 ```bash
-export WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
+export WILL_HIPCHAT_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
 ```
 
 You'll also need to set any environment variables for your plugins.
@@ -198,6 +216,16 @@ Examples:
 
  * `FILE_DIR='/var/run/will/settings/'`
  * `FILE_DIR='~will/settings/'`
+
+
+
+## Pubsub Backends
+
+Will's default pubsub backend is Redis, and support for ZeroMQ and a pure-python backend is on the way.
+
+To change the backend, just set `PUBSUB_BACKEND` in `config.py` and then supply any other needed settings for the new backend.  The currently supported backend is:
+
+ * `redis` - The default Redis backend
 
 
 ## Best Practices
