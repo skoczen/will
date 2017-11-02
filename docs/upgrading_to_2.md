@@ -1,8 +1,12 @@
 <h1>Upgrading to Will 2.0</h1>
 
-Will 2.0 is finally here, and its main goal was to free people using Will from being locked into a single chat provider, and add some more flexibility to his brain.  You can read the [release announcement](https://heywill.io/will2) for a bit more context, and some good reasons why you'll want to upgrade!
+Will was born four years ago, and 0.x and 1.x lived long, good lives.
 
-# The short version: just pip install
+But as the years passed, there were increasing concerns about HipChat lock-in, and it was time to make Will smarter.  
+
+So six months ago, work on Will 2.0 began, and today it's finally here! All of our Wills are free from lock-in, future-proofed, and whole lot smarter.  If you're just hearing about this, it's worth a quick read of the [release announcement](https://heywill.io/will2) for a bit more context!
+
+# The Short Version: Just pip install
 While Will has picked up a bunch of features and improvements in 2.0, we've aimed to keep him backwards-compatable with 1.x and 0.x releases.  If you weren't using any undocumented internal methods and you're already using redis, upgrading should be as easy as:
 
 ```shell
@@ -11,13 +15,13 @@ pip install --upgrade will
 
 From there, you can just `./run_will.py`, and things should Just Work.
 
-You will, however, see a lot of output from Will, telling you that some names have changed, and asking you to update them in your config.py when you have time.  You can either just follow those instructions, or the guide below.
+You will, however, see a lot of output from Will, telling you that some names have changed, and asking you to update them in your `config.py` when you have time.  You can either just follow those instructions, or the guide below.
 
-# The long version:
+# The Long Version:
 
 ## 1. Add IO backends.
 
-If you're just planning to continue using HipChat, we'd recommend that you add this to your `config.py`:
+If you're planning to continue only using HipChat (until it's replaced by Stride), we'd recommend that you add this to your `config.py`:
 
 ```python
 IO_BACKENDS = [
@@ -28,14 +32,17 @@ IO_BACKENDS = [
 ]
 ```
 
-That will enable the HipChat and local shell stdin/stdout backend, for easy testing.  If you want to also bring your Will into a Slack or Rocket.Chat room in the future, just uncomment that backend and restart!
+That will enable the HipChat and local shell stdin/stdout backend, for easy testing. 
+
+If you want to also bring your Will into a Slack or Rocket.Chat room in the future, just uncomment that backend and restart!
 
 ## 2. Update the HipChat tokens to be namespaced.  
 
-You'll see this starting up, but when you have time, update your tokens as follows:  (If you're using `WILL_` environment variables, please add the `WILL_` as needed:)
+You'll see this starting up, but when you have time, update your tokens as follows:  
+(If you're using `WILL_` environment variables, please add the `WILL_` as needed:)
 
 - `USERNAME` becomes `HIPCHAT_USERNAME`
-- `TOKEN` becomes `HIPCHAT_V1_TOKEN`
+- `TOKEN` or `V1_TOKEN` become `HIPCHAT_V1_TOKEN`
 - `V2_TOKEN` becomes `HIPCHAT_V2_TOKEN`
 - `DEFAULT_ROOM` becomes `HIPCHAT_DEFAULT_ROOM`
 - `HANDLE` should be removed, as it's now pulled live from the HipChat servers and not used.
@@ -48,12 +55,12 @@ You'll see this starting up, but when you have time, update your tokens as follo
 
 At the moment, Redis is the only working pubsub backend, and is required to run Will. So, if you're not already running it, you'll need it for 2.x.
 
-If this is impossible for your setup, ZeroMQ support is in the works, and we're looking to add a pure-python backend as well in 2.1 or 2.2.
+If this is impossible for your setup, ZeroMQ support is in the works, and we're looking to add a pure-python backend as well in 2.1 or 2.2.  Creating a new pubsub backend just requires subclassing `BasePubSub` and implementing four methods - so if someone has a little time to bring those along, a pull request is welcome!
 
 
 ## 4. Set your encryption secret key.
 
-Will now encrypts all messages on the pubsub wire and in storage by default.  Without a `SECRET_KEY` set, he'll auto-generate one based on the machine MAC address, but this isn't a perfect solution, and will mean that he can't access his storage if there are hardware changes (or he's running in a virtualized environment.)
+Will now encrypts all messages on the pubsub wire and in storage by default.  Without a `SECRET_KEY` set, he'll auto-generate one based on the machine MAC address, but this isn't a perfect solution, and will mean that he can't access his storage if there are hardware changes (or he's running in a virtualized environment that has shifting MACs.)
 
 Please set `SECRET_KEY` as soon as possible.
 
@@ -76,7 +83,7 @@ It's worth reading through the new `config.py`, but here's a few areas specifica
 
 ### Platform and Decision-making
 
-As mentioned above, there are now multiple IO mediums and platforms that Will can communicate on. It's also now easy to [write your own](/backends/io), pull requests are very welcome, and more are coming soon.  Here's all the options:
+As mentioned above, there are now multiple IO backends and platforms that Will can communicate on. It's also now easy to [write your own](/backends/io), pull requests are very welcome, and more are coming soon.  Here's all the options:
 
 ```python
 IO_BACKENDS = [
@@ -88,7 +95,7 @@ IO_BACKENDS = [
 ```
 
 
-Will 2 also comes with pluggable brains - split into Analysis, Generation, and Execution backends.  The defaults are solid and behave similarly to Will 1.0 (the only difference is a high-confidence fuzzy matching engine), but if you're interested in making your Will more flexible, or adding more context to his responses, building custom backends is easy.
+Will 2 also comes with pluggable brains - split into Analysis, Generation, and Execution backends.  The defaults are solid and behave similarly to Will 1.0 (the only difference is a high-confidence fuzzy matching engine), but if you're interested in making your Will more flexible, or adding more context to his responses, building [custom backends is easy](/backends/analysis).
 
 Here's all of the options, with the defaults uncommented.   It's worth pulling this into your `config.py`.
 

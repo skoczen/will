@@ -19,4 +19,6 @@ The first version of Will was built by [Steven Skoczen](http://stevenskoczen.com
 Will has docs, including a quickstart and lots of screenshots at:
 **[http://skoczen.github.io/will/](http://skoczen.github.io/will)** 
 
+If you've been using Will 0.x or 1.x, and are wondering how to upgrade to 2.x, [here's our friendly guide](http://skoczen.github.io/will/upgrading_to_2/). :) 
+
 Check them out!

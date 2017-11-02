@@ -15,7 +15,7 @@ def say_hello(self, message):
 
 Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  
 
-Will started by [Steven Skoczen](http://www.inkandfeet.com), and has been [contributed to by lots of folks](improve.md#shoulders).
+Will started by [Steven Skoczen](http://www.inkandfeet.com), and has been [contributed to by lots of folks](improve.md#the-shoulders-of-giants).
 
 Check out the quickstart below!
 
@@ -23,7 +23,7 @@ Check out the quickstart below!
 
 # Quickstart
 
-**Upgrading from Will 1.x or 0.x? [Check out the Upgrade Guide](/platforms/upgrading/).**
+**Upgrading from Will 1.x or 0.x? [Check out the Upgrade Guide](/upgrading_to_2/).**
 
 Here's how to set up your system and get will running.  If you already write python, it'll probably take less than 5 minutes.
 
@@ -31,9 +31,11 @@ Here's how to set up your system and get will running.  If you already write pyt
 
 ## Install prerequisites
 
-Will doesn't need much, just python and a place to store things.
+Will doesn't need much, just python, a place to store things, and a way to communicate.
 
 Will can store stuff in Redis, Couchbase, or local storage.  Our recommended backend is redis, and we'll describe getting it set up below. [Information on using Couchbase or local storage is here](deploy.md#Storage-Backends).
+
+Will's communication layer works via publish-subscribe, and at the moment, only supports Redis.  If that's a blocker for you, ZeroMQ, and a pure python built-in layer are coming in 2.1.
 
 #### Install redis > 2.4
 
@@ -117,7 +119,7 @@ Eventually, you'll reach this screen of joy.  Now, it's time to play!
 
 #### Testing will out
 
-Once your will is up and running, hop into any of your chat rooms, and say hello!
+Once your will is up and running, hop into any of your chat rooms (or just the terminal), and say hello!
 
 `@will hi`
 

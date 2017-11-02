@@ -44,7 +44,7 @@ Provides a couple of methods for listing and updating will's internal chat room 
 
 ## Devops
 
-Will is our devops team at GreenKahuna, and in the long term, we plan to abstract and include our stack deployer as a plugin.  For the moment, he just includes a couple basics:
+Will has served as the devops team at a couple different companies, but we haven't yet been able to get the IP sorted to abstract and open-source those plugins.  So, for the moment, he just includes a couple basics:
 
 #### Emergency Contacts
 
@@ -193,7 +193,7 @@ Sometimes, a picture is worth a thousand words.
 
 ![Image me a crazy squirrel](../img/image_me.gif)
 
-To configure `image me`, you'll need to set the following two variables in `config.py` or [in your environment with the appropriate `WILL_` prefix](http://skoczen.github.io/will/config/). Here are some instructions on where to obtain both.
+Image me works out of the box, but may not in future releases (we're using a pretty hacky way to get search results.)  If you rely on it, configure `image me` properly by setting the following two variables in `config.py` or [in your environment with the appropriate `WILL_` prefix](http://skoczen.github.io/will/config/). Here are some instructions on where to obtain both.
 
 * `GOOGLE_API_KEY`
   * Go to the [Google Developers Console](https://console.developers.google.com).
@@ -207,6 +207,13 @@ To configure `image me`, you'll need to set the following two variables in `conf
   * Edit the settings for the CSE you just created, and in the `Sites to search` section, change the drop-down to `Search the entire web but emphasize included sites`.
   * Delete the "anything" site you added two steps ago, to clean it up.
   * In the `Details` section, click the `Search engine ID` button, and copy the ID which you need here.
+
+#### Gif me
+
+Like image me, but *alive*.
+
+
+![gif me cute kittens](../img/kittens.gif)
 
 #### Remind me
 
