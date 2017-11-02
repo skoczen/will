@@ -11,41 +11,12 @@ from will.mixins import SettingsMixin, EncryptionMixin
 SKIP_TYPES = ["psubscribe", "punsubscribe", ]
 
 
-class BasePubSub(SettingsMixin, EncryptionMixin):
+class PubSubPrivateBase(SettingsMixin, EncryptionMixin):
     """
-    The base pubsub backend.
-    Subclassing methods must implement:
-    - subscribe()
-    - unsubscribe()
-    - publish_to_backend()
-    - get_from_backend()
-
+    The private bits of the base pubsub backend.
     """
     def __init__(self, *args, **kwargs):
         self.recent_hashes = []
-
-    def do_subscribe(self, topic):
-        """
-        Registers with the backend to only get messages matching a specific topic.
-        Where possible, wildcards are allowed
-        """
-
-        raise NotImplementedError
-
-    def unsubscribe(self, topic):
-        """Unregisters with the backend for a given topic."""
-        raise NotImplementedError
-
-    def publish_to_backend(self, topic, str):
-        """Publishes a string to the backend with a given topic."""
-        raise NotImplementedError
-
-    def get_from_backend(self):
-        """
-        Gets the latest pending message from the backend (FIFO).
-        Returns None if no messages are pending.
-        """
-        raise NotImplementedError
 
     def publish(self, topic, obj, reference_message=None):
         """
@@ -79,6 +50,10 @@ class BasePubSub(SettingsMixin, EncryptionMixin):
             self.encrypt(e)
         )
 
+    def unsubscribe(self, topic):
+        # This is mostly here for semantic consistency.
+        self.do_unsubscribe(topic)
+
     def _localize_topic(self, topic):
         cleaned_topic = topic
         if type(topic) == type([]):
@@ -111,6 +86,39 @@ class BasePubSub(SettingsMixin, EncryptionMixin):
         except:
             logging.critical("Error in watching pubsub get message: \n%s" % traceback.format_exc())
         return None
+
+
+class BasePubSub(PubSubPrivateBase):
+    """
+    The base pubsub backend.
+    Subclassing methods must implement:
+    - do_subscribe()
+    - unsubscribe()
+    - publish_to_backend()
+    - get_from_backend()
+    """
+
+    def do_subscribe(self, topic):
+        """
+        Registers with the backend to only get messages matching a specific topic.
+        Where possible, wildcards are allowed
+        """
+        raise NotImplementedError
+
+    def do_unsubscribe(self, topic):
+        """Unregisters with the backend for a given topic."""
+        raise NotImplementedError
+
+    def publish_to_backend(self, topic, str):
+        """Publishes a string to the backend with a given topic."""
+        raise NotImplementedError
+
+    def get_from_backend(self):
+        """
+        Gets the latest pending message from the backend (FIFO).
+        Returns None if no messages are pending, and is expected *not* to be blocking.
+        """
+        raise NotImplementedError
 
 
 def bootstrap(settings):

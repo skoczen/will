@@ -14,8 +14,12 @@ pages:
 - Configure: config.md
 - Deploy: deploy.md
 - Improve: improve.md
+#    - Making Will Better and Better: improve.md
 - Releases: releases.md
 - Roadmap: roadmap.md
+- Specs: specs.md
+   - Adding a PubSub Backend: backends/pubsub.md
+   - Adding a Storage Backend: backends/storage.md
 extra_javascript:
 - themes/will/js/base.js
 - themes/will/js/bootstrap-3.0.3.min.js
