@@ -11,15 +11,23 @@ pages:
   - Creating and Organizing Plugins: plugins/create.md
   - Plugin Builtins: plugins/builtins.md
   - Bundled Plugins: plugins/bundled.md
-- Configure: config.md
+- Configure: 
+   - Overview: backends/overall.md
+   - Settings: config.md
+   - Noticing and Talking: backends/io.md
+   - Analysis and Context: backends/analysis.md
+   - Generation: backends/generation.md
+   - Decisions and Execution: backends/execution.md
+   - Pubsub and short-term memory: backends/pubsub.md
+   - Storage and long-term memory: backends/storage.md
+   - Encryption and privacy: backends/encryption.md
 - Deploy: deploy.md
 - Improve: improve.md
 #    - Making Will Better and Better: improve.md
 - Releases: releases.md
 - Roadmap: roadmap.md
-- Specs: specs.md
-   - Adding a PubSub Backend: backends/pubsub.md
-   - Adding a Storage Backend: backends/storage.md
+# - "Brain":
+# - "Will's Brain":
 extra_javascript:
 - themes/will/js/base.js
 - themes/will/js/bootstrap-3.0.3.min.js
