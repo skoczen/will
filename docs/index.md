@@ -3,7 +3,7 @@
 
 # Meet Will
 
-Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.
+Will is the friendliest, easiest-to-teach bot you've ever used.  He works on Slack, HipChat, Rocket.Chat, and more.
 
 He makes teaching your chat bot this simple:
 
@@ -22,6 +22,8 @@ Check out the quickstart below!
 <div style="width:100%;clear:both;"></div>
 
 # Quickstart
+
+**Upgrading from Will 1.x or 0.x? [Check out the Upgrade Guide](/platforms/upgrading/).**
 
 Here's how to set up your system and get will running.  If you already write python, it'll probably take less than 5 minutes.
 

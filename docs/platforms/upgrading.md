@@ -12,24 +12,22 @@ From there, you can just `./run_will.py`, and things should Just Work.
 
 You will, however, see a lot of output from Will, telling you that some names have changed, and asking you to update them in your config.py when you have time.  You can either just follow those instructions, or the guide below.
 
-## Updating your settings to Will 2
-
-There are two big changes in the settings from Will 1 to Will 2, and both come from the fact that will now supports multiple chat backends.
-
-### 1. Move to the new IO_BACKENDS syntax
+## 1. Move to the new IO_BACKENDS syntax
 
 If you're just planning to continue using HipChat, we'd recommend that you add this to your config.py:
 
+```
 IO_BACKENDS = "
     "will.backends.io_adapters.hipchat",
     "will.backends.io_adapters.shell",
 #   "will.backends.io_adapters.slack",
 #   "will.backends.io_adapters.rocketchat",
 ]
+```
 
 That will enable the HipChat and local shell stdin/stdout backend, for easy testing.  If you want to also bring Will into a Slack or Rocket.Chat room in the future, just uncomment the backend!
 
-### 2. Update the HipChat tokens to be namespaced.  
+## 2. Update the HipChat tokens to be namespaced.  
 
 You'll see this starting up, but when you have time, update your tokens as follows:  (If you're using `WILL_` environment variables, please add the `WILL_` as needed:)
 
@@ -50,12 +48,12 @@ You'll see this starting up, but when you have time, update your tokens as follo
 `ROOMS` becomes `HIPCHAT_ROOMS`
 
 
-### 3. If you're not using redis for storage, set it up for the pubsub backend.
+## 3. If you're not using redis for storage, set it up for the pubsub backend.
 
 At the moment, Redis is the only working pubsub backend, though ZeroMQ support is in the works, and we're looking to add a pure-python backend shortly.
 
 
-### 4. Set SECRET_KEY.
+## 4. Set SECRET_KEY.
 
 Will now encrypts all messages on the pubsub wire and in storage by default.  Without a SECRET_KEY set, he'll auto-generate one based on the machine MAC address, but this isn't a perfect solution, and will mean that he can't access his storage if there are hardware changes (or he's running in a virtualized environment.)
 
@@ -64,7 +62,7 @@ Please set `SECRET_KEY` as soon as possible.
 The recommended way is to set it as an environmental variable, `WILL_SECRET_KEY`, in an environment that is secured and you trust.  Any string will work, and entropy is good. 
 
 
-### 5. Set the new, Will 2.0 configuration and settings to your liking.
+## 5. Set the new, Will 2.0 configuration and settings to your liking.
 
 Will 2 ships with bunch of new features, and though we've provided sensible defaults, if you'd like, you can update your `config.py` with your preferences.
 
@@ -74,7 +72,7 @@ The simplest way to see everything is to have Will generate a `config.py.dist` t
 
 It's worth reading through the new `config.py`, but here's a few areas specifically worth a look:
 
-#### Platform and Decision-making
+### Platform and Decision-making
 
 As mentioned above, there are now multiple IO mediums and platforms that Will can communicate on (and more are coming soon).  Here's all the options
 
@@ -124,7 +122,7 @@ FUZZY_MINIMUM_MATCH_CONFIDENCE = 90  # Defaults to 90%
 FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 ```
 
-### That's it - let us know how it goes!
+## That's it - let us know how it goes!
 
 That's all you really need to know to flip the switch to Will 2.0.  As there's a lot of new stuff in this release, it's possible that some bugs have slipped through the cracks.  Please submit anything you find, no matter how small, [into the github issue tracker](https://github.com/skoczen/will/issues).  We'll be active in fixing things ASAP and helping if you're stuck.
 
