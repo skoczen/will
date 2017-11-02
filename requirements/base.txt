@@ -11,7 +11,7 @@ Markdown==2.3.1
 MarkupSafe==0.23
 # Temporary fork of natural, until python 3 support is merged: https://github.com/tehmaze/natural/pull/13
 # natural==0.2.1
-git+git://github.com/heywill/natural/@feature/will-2.0#egg=natural
+will-natural==0.2.1.1
 parsedatetime==1.1.2
 python-Levenshtein==0.12.0
 pyasn1-modules==0.0.5
