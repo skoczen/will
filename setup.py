@@ -85,6 +85,12 @@ setup(
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Communications :: Chat",
         "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Framework :: Robot Framework",
+        "Framework :: Robot Framework :: Library",
+        "Framework :: Robot Framework :: Tool",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
     ],
     entry_points={
         'console_scripts': ['generate_will_project = will.scripts.generate_will_project:main'],
