@@ -70,15 +70,15 @@ def main():
         if not os.path.exists(morning_file_path):
             with open(morning_file_path, 'w+') as f:
                 f.write("""from will.plugin import WillPlugin
-    from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
+from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 
 
-    class MorningPlugin(WillPlugin):
+class MorningPlugin(WillPlugin):
 
-        @respond_to("^good morning")
-        def good_morning(self, message):
-            self.reply("oh, g'morning!")
-        """)
+    @respond_to("^good morning")
+    def good_morning(self, message):
+        self.reply("oh, g'morning!")
+""")
 
         print("  /templates")
         if not os.path.exists(templates_dir):
@@ -95,8 +95,8 @@ def main():
         if not os.path.exists(gitignore_path):
             with open(gitignore_path, 'w+') as f:
                 f.write("""*.py[cod]
-    pip-log.txt
-    shelf.db
+pip-log.txt
+shelf.db
         """)
         else:
             append_ignore = False
@@ -113,12 +113,12 @@ def main():
         if not os.path.exists(run_will_path):
             with open(run_will_path, 'w+') as f:
                 f.write("""#!/usr/bin/env python
-    from will.main import WillBot
+from will.main import WillBot
 
-    if __name__ == '__main__':
-        bot = WillBot()
-        bot.bootstrap()
-        """)
+if __name__ == '__main__':
+    bot = WillBot()
+    bot.bootstrap()
+""")
         # And make it executable
         st = os.stat('run_will.py')
         os.chmod("run_will.py", st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
@@ -154,7 +154,7 @@ def main():
         if not os.path.exists(readme_path):
             with open(readme_path, 'w+') as f:
                 f.write("""
-    This is our bot, a [will](https://github.com/skoczen/will) bot.
+This is our bot, a [will](https://github.com/skoczen/will) bot.
     """)
 
         print("\nDone.")
