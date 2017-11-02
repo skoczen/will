@@ -46,7 +46,7 @@ Examples:
                                    port=url.port or 8091,
                                    **params)
 
-    def backend_save(self, key, value, expire=None):
+    def do_save(self, key, value, expire=None):
         res = self.couchbase.set(key, value, ttl=expire)
         return res.success
 
@@ -62,7 +62,7 @@ Examples:
         """
         return "Sorry, you must flush the Couchbase bucket from the Admin UI"
 
-    def backend_load(self, key):
+    def do_load(self, key):
         try:
             res = self.couchbase.get(key)
             return res.value

@@ -73,7 +73,7 @@ Examples:
         expire_path = os.path.join(self.dirname, '.' + key + '.expires')
         return key_path, expire_path
 
-    def backend_save(self, key, value, expire=None):
+    def do_save(self, key, value, expire=None):
         key_path, expire_path = self._key_paths(key)
         with open(key_path, 'w') as f:
             f.write(value)
@@ -95,7 +95,7 @@ Examples:
         for filename in self._all_setting_files():
             os.unlink(filename)
 
-    def backend_load(self, key):
+    def do_load(self, key):
         key_path, expire_path = self._key_paths(key)
 
         if os.path.exists(expire_path):

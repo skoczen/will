@@ -41,7 +41,7 @@ Examples:
         )
         self.redis = redis.Redis(connection_pool=connection_pool)
 
-    def backend_save(self, key, value, expire=None):
+    def do_save(self, key, value, expire=None):
         return self.redis.set(key, value, ex=expire)
 
     def clear(self, key):
@@ -50,7 +50,7 @@ Examples:
     def clear_all_keys(self):
         return self.redis.flushdb()
 
-    def backend_load(self, key):
+    def do_load(self, key):
         return self.redis.get(key)
 
     def size(self):
