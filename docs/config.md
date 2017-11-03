@@ -74,7 +74,7 @@ The rules for combining are fairly straightforward:
 
 3. Some smart defaulting happens inside settings.py for important variables.  For the moment, I'm going to leave that out of the docs, and refer you to `settings.py` as I *believe* things should Just Work, and most people should never need to care.  If this decision's wrong, please open an issue, and these docs will be improved!
 
-That's it for config.  Now, let's get your will [deployed](deploy.md)!
+That's it for config.  Now, you can either do a deeper dive into [Will's brain](/backends/overall.md), or just get your will [deployed](deploy.md)!
 
 
 

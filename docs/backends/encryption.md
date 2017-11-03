@@ -71,3 +71,5 @@ class MyCustomStorageBackend(BaseStorageBackend):
 ```
 
 From there, just test it out, and when you're ready, submit a [pull request!](https://github.com/skoczen/will/pulls)
+
+That's Will's brain, end-to-end.  If you haven't already, dig into how to get him [deployed](/deploy.md)!

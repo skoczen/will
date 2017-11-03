@@ -17,11 +17,11 @@ High-level, here's what's new:
 - Slack support
 - CLI/Shell backend
 - [Rocket.chat](https://rocket.chat/) support, thanks to [antgel](https://github.com/antgel).
-- Will's brains have been abstracted - you can now add custom analysis, generation, and execution backends to build everything from a straight regex-bot to a full chatterbot.
-- Pluggable I/O backends, which is how all of the above were done, and which means adding new platforms is pretty simple.
-- Pluggable storage backends.
-- Pluggable pubsub backends.
-- Built-in encryption for storage and pub/sub (with pluggable backends as well.)
+- Will's brains have been abstracted - you can now add custom [analysis](/backends/analysis), [generation](/backends/generation), and [execution](/backends/execution) backends to build everything from a straight regex-bot to a full chatterbot.
+- [Pluggable I/O backends](/backends/io), which is how all of the above were done, and which means adding new platforms is pretty simple.
+- [Pluggable storage](/backends/storage) backends.
+- [Pluggable pubsub](/backends/pubsub) backends.
+- Built-in encryption for storage and pub/sub (with [pluggable backends](/backends/encryption) as well.)
 - Lots more intelligence around required settings and verification, to make first starting and debugging Will easier.
 - Full Python 3 support. (Don't worry, 2.x [isn't going anywhere](https://heywill.io/will2#python3).)
 - New `@will gif me` command.  Because it can't all be serious. :)

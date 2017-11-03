@@ -113,7 +113,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [keNzi](https://github.com/keNzej) added shorten url function using bitly service.
 - [levithomason](http://github.com/levithomason) was one of the original contributors, when will was first built at GreenKahuna.
 - [mark-adams](https://github.com/mark-adams) cleaned up a Bitbucket typo.
-- [mike-love](https://github.com/mike-love) added Docker support to make running Will easier!
+- [mike-love](https://github.com/mike-love) added Docker support to make running Will easier - and then re-updated it to support Will 2.x!
 - [hobson](http://github.com/hobson) made setup.py more robust across operating systems, and improved the docs.
 - [neronmoon](https://github.com/neronmoon) made it easier to mention will with non-standard case
 - [michaeljoseph](https://github.com/michaeljoseph) suggested improvements to setup and requirements.txt format.
