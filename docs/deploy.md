@@ -9,7 +9,7 @@ Heroku is our recommended platform for deployment because it's simple, easy, and
 #### Step 1: Set up your heroku app, and a redis addon.
 
 Assuming you have the [heroku toolbelt](https://toolbelt.heroku.com/) installed and all set up, it's as easy as this:
-    
+
 ```bash
 heroku create our-will-name
 heroku addons:add rediscloud
@@ -79,14 +79,14 @@ Simple.  For best-practices, see our continuous deployment recommendations below
 
 
 ## Deploy in Docker
-Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis. 
+Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis.
 
 ### Pre-requisites
-You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you must start the image via the docker command with the correct arguments.
+You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you can still use the pre-defined  images from Docker Hub (https://hub.docker.com/r/heywill/will/). 
 
 ### Step 1: Configure your container's environment variables
 In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:
-```bash 
+```bash
 # For Slack
 WILL_SLACK_API_TOKEN
 # For Hipchat
@@ -98,24 +98,24 @@ WILL_ROCKETCHAT_USERNAME
 WILL_ROCKETCHAT_PASSWORD
 WILL_ROCKETCHAT_URL
 ```
-Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly. 
+Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly.
 
 ### Step 2: Deploy your plugins and templates
 If you have any custom templates, create directories for your plugins and templates, and load your plugins and templates they'll be mounted when the container starts up giving your containerized bot access to your templates.
-```bash 
+```bash
 mkdir ./plugins ./templates
 ```
 
 ### Step 3: Build will.
 Run build your docker image locally.
 ```bash
-docker-compose build 
+docker-compose build
 ```
 
 ### Step 4: Start the container
 Start your image from docker-compose using:
 ```bash
-docker-compose up 
+docker-compose up
 ```
 or to run the container in the background,
 ```bash
@@ -243,5 +243,3 @@ Our stack is set up so that any pushes on will's master branch have tests run on
 Continuous Deployment has dramatically changed how we build and use will - instead of talking about "what if will did...", generally, people just implement it, push it, and play with it for real.  It's been a great place to be.  It might be for you too.
 
 That's it in getting your will up and running!   But maybe you're one of those people who wants to pitch in and make will even better. Awesome. Learn [how to improve will](improve.md).
-
-
