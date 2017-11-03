@@ -6,7 +6,7 @@ services:
         volumes:
             - ./data/redis:/data
     will:
-        build: ./will/.
+        image: heywill/will:latest
         ports:
             - 8080:8080
         env_file:
@@ -14,6 +14,7 @@ services:
         volumes:
             - ./plugins:/opt/will/plugins
             - ./templates:/opt/will/templates
+            - ./config.py:/opt/will/config.py
         depends_on:
             - redis
 
