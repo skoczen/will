@@ -14,5 +14,6 @@ services:
         volumes:
             - ./plugins:/opt/will/plugins
             - ./templates:/opt/will/templates
+            - ./config.py:/opt/will/config.py
         depends_on:
             - redis
