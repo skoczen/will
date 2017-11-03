@@ -106,7 +106,7 @@ From your virtualenv and the folder you want to set up your will in,
 # .. the magic begins
 ```
 
-That's it!  
+That's it!
 
 Note that the first time you run, you'll probably be missing some configuration. That's OK - `run_will` will check your environment, and walk you through getting and setting any necessary config.  We'll go through the nitty-gritty later, but if you have any odd setup problems, look in `config.py` - that's where all of the non-sensitive data is stored.
 

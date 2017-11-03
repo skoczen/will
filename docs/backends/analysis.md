@@ -83,3 +83,5 @@ class MyCustomStorageBackend(BaseStorageBackend):
 ```
 
 From there, just test it out, and when you're ready, submit a [pull request!](https://github.com/skoczen/will/pulls)
+
+Now we've got context, let's look at how [Will generates possibilities](/platform/generation).

@@ -3,6 +3,7 @@ import argparse
 import os
 import stat
 import sys
+from six.moves import input
 
 from clint.textui import puts
 from will.utils import print_head
@@ -22,6 +23,27 @@ args = parser.parse_args()
 
 class EmptyObj(object):
     pass
+
+
+def cleaned(service_name):
+    return service_name.lower().replace(".", ''),
+
+
+def ask_user(question):
+    response = "?"
+    while response not in ["y", "n"]:
+        response = input("%s [y/n] " % question)
+        if response not in ["y", "n"]:
+            print("Please enter 'y' or 'n'.")
+    return response.startswith("y")
+
+
+def check_service(service_name, source):
+    if ask_user("  Do you want to enable %s support?" % (service_name)):
+        source = source.replace("# will.backends.io_adapters.%s" % cleaned(service_name), "will.backends.io_adapters.%s" % cleaned(service_name))
+    else:
+        source = source.replace("will.backends.io_adapters.%s" % cleaned(service_name), "# will.backends.io_adapters.%s" % cleaned(service_name))
+    return source
 
 
 def main():
@@ -127,10 +149,18 @@ if __name__ == '__main__':
         print("  config.py.dist")
 
     config_path = os.path.join(current_dir, "config.py.dist")
-    if not os.path.exists(config_path):
-        with open(config_path, "w+") as f:
-            with open(os.path.join(PROJECT_ROOT, "config.py.dist"), "r") as source_f:
-                config = source_f.read()
+    if not os.path.exists(config_path) or ask_user("! config.py.dist exists.  Overwrite it?"):
+        with open(os.path.join(PROJECT_ROOT, "config.py.dist"), "r") as source_f:
+            source = source_f.read()
+            # Ask on backends
+            print("\nWill supports a few different service backends.  Let's set up the ones you want:\n")
+            source = check_service("Slack", source)
+            source = check_service("HipChat", source)
+            source = check_service("Rocket.Chat", source)
+            source = check_service("Shell", source)
+
+            with open(config_path, "w+") as f:
+                config = source
                 f.write(config)
 
     if not args.config_dist_only:

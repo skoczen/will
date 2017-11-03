@@ -69,3 +69,5 @@ class MyCustomStorageBackend(BaseStorageBackend):
 ```
 
 From there, just test it out, and when you're ready, submit a [pull request!](https://github.com/skoczen/will/pulls)
+
+That's all you need to know to tweak and improve Will's memory.  There's just one topic left in his brain - keeping things private with [encryption](/platform/encryption).
