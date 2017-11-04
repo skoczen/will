@@ -79,4 +79,4 @@ def bootstrap(settings)
 
 From there, just test it out, and submit a [pull request!](https://github.com/skoczen/will/pulls)
 
-That's it for Will's pubsub backends.  He can also remember things long-term.  For that, read up on his [long-term memory (storage)](/platform/storage).
+That's it for Will's pubsub backends.  He can also remember things long-term.  For that, read up on his [long-term memory (storage)](/backends/storage).
