@@ -17,68 +17,49 @@ Here's a bit more about the built-ins, and when they'd be a good fit:
 
 ### History (`will.backends.analysis.history`)
 
-Just adds the last 20 messages he heard into the context, and stores this one for the future.
+Just adds the last 20 messages he heard into the context, and stores this one for the future. 
+
+*Required settings*: None
+
 
 ### Nothing (`will.backends.analysis.nothing`)
 
 Does absolutely nothing.  But it is a nice template for building your own!
 
+*Required settings*: None
 
 
-Considerations, etc
+For the moment, there's no reason not to just include both built-in backends.  But as Will grows and additional options are added, these documents will be updated to explain the tradeoffs in enabling or disabling certain backends.
 
 ## Setting your backends
 
-`config.py`
-required settings
+To set your analysis backends, just update the following in `config.py`
+
+```python
+# Backends to analyze messages and generate useful metadata
+ANALYZE_BACKENDS = [
+    "will.backends.analysis.nothing",
+    "will.backends.analysis.history",
+]
+```
+
 
 ## Contributing a new backend
 
-## Implementing a new backend
-
-Writing a new storage backend is fairly straightforward - simply subclass `BaseStorageBackend`, and implement:
-
-1) the five required methods, then
-2) specify any required settings with `required_settings`.
+Writing a new analysis backend is fairly straightforward - simply subclass `BaseStorageBackend`, and implement the do_analysis method:
 
 
 ```python
-from will.backends.storage.base import BaseStorageBackend
+from will.backends.analysis.base import AnalysisBackend
 
+class NewBackend(AnalysisBackend):
 
-class MyCustomStorageBackend(BaseStorageBackend):
-    """A custom storage backend using the latest, greatest technology.
-
-    You'll need to provide a GREAT_API_KEY to use it.
-
-    """"
-
-    required_settings = [
-        {
-            "name": "GREAT_API_KEY",
-            "obtain_at": """1. Go to greatamazingtechnology.com/api
-2. Click "Generate API Key"
-3. Copy that key, and set it in your Will.
-""",
-        },
-    ]
-
-
-    # All storage backends must supply the following methods:    
-    def __init__(self, *args, **kwargs):
-        # Connects to the storage provider.
-
-    def do_save(self, key, value, expire=None):
-        raise NotImplemented
-
-    def do_load(self, key):
-        raise NotImplemented
-
-    def clear(self, key):
-        raise NotImplemented
-
-    def clear_all_keys(self):
-        raise NotImplemented
+    def do_analyze(self, message):
+        # Do smart stuff
+        return {
+            "smart": "stuff",
+            "cool": "things",
+        }
 
 ```
 

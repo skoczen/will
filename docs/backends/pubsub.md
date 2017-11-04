@@ -9,10 +9,16 @@ Will supports the following options for pubsub backend:
 
 ## Choosing a backend
 
-## Setting your backend
+Right now, you're stuck with Redis. :)
 
-`config.py`
-required settings
+## Setting your backends
+
+To set your pubsub backend, just update the following in `config.py`
+
+```python
+PUBSUB_BACKEND = "redis"  # "redis", or "zeromq" (beta).
+```
+
 
 ## Contributing a new backend
 

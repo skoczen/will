@@ -15,14 +15,20 @@ Will supports the following io backends:
 
 This isn't a zero-sum game with will.  You can use as many backends as you'd like, all at once.
 
-Considerations, etc
 
 ## Setting your backends
 
-`config.py`
-required settings
+To set your io backends, just update the following in `config.py`
 
-## Contributing a new backend
+```python
+# Platforms and mediums messages can come in and go out on.
+IO_BACKENDS = [
+    "will.backends.io_adapters.slack",
+    "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.rocketchat",
+    "will.backends.io_adapters.shell",
+]
+```
 
 ## Implementing a new backend
 

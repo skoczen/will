@@ -102,6 +102,9 @@ From your virtualenv and the folder you want to set up your will in,
 (my_will) $ generate_will_project
 # ... output from will making your new project
 
+(my_will) $ pip install -r requirements.txt
+# ... install any needed libraries for your chosen backends.
+
 (my_will) $ ./run_will.py
 # .. the magic begins
 ```

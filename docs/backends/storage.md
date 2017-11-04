@@ -11,16 +11,22 @@ Will supports the following options for storage backend:
 
 ## Choosing a backend
 
-Considerations, etc
+In general, we recommend using Redis, especially since for v2.0, it's also required for pubsub to get Will working.  However, in the future, we'll have more pubsub options, and this will be a more option choice.
 
-## Setting your backend
+If you're running in an environment with no access to external resources or ability to install packages, the `File` backend will get you sorted.  If you're already running Couchbase for various reasons, it might make the most sense to use it.
 
-`config.py`
-required settings
+But for the moment, for most configurations, we recommend Redis.  It's stable, fast, well-supported, and just works.
 
-## Creating a new backend
 
-## Implementing a new backend
+## Setting your backends
+
+To set your storage backend, just update the following in `config.py`
+
+```python
+STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
+```
+
+## Contributing a new backend
 
 Writing a new storage backend is fairly straightforward - simply subclass `BaseStorageBackend`, and implement:
 

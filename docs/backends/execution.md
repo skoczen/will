@@ -29,62 +29,34 @@ Or, more likely, because you've built a custom generation backend that limits hi
 
 This is the right fit for most people, and it's the most similar to how our brains work.  Will looks at the options he has, and picks the single one he thinks is the best.
 
-
-
-Considerations, etc
-
 ## Setting your backends
 
-`config.py`
-required settings
+To set your execution backends, just update the following in `config.py`
+
+```python
+# The "decision making" backends that look among the generated choices,
+# and decide which to follow. Backends are executed in order, and any
+# backend can stop further evaluation.
+EXECUTION_BACKENDS = [
+    "will.backends.execution.best_score",
+    # "will.backends.execution.all",
+]
+```
+
 
 ## Contributing a new backend
 
-## Implementing a new backend
-
-Writing a new storage backend is fairly straightforward - simply subclass `BaseStorageBackend`, and implement:
-
-1) the five required methods, then
-2) specify any required settings with `required_settings`.
-
+Writing a new execution backend is reasonably straightforward - simply subclass `ExecutionBackend`, and implement `handle_execution`, making sure to call `self.execute(option)` for the option(s) you choose.:
 
 ```python
-from will.backends.storage.base import BaseStorageBackend
+from will.backends.execution.base import ExecutionBackend
 
 
-class MyCustomStorageBackend(BaseStorageBackend):
-    """A custom storage backend using the latest, greatest technology.
+class MyRandomExecutionBackend(ExecutionBackend):
 
-    You'll need to provide a GREAT_API_KEY to use it.
-
-    """"
-
-    required_settings = [
-        {
-            "name": "GREAT_API_KEY",
-            "obtain_at": """1. Go to greatamazingtechnology.com/api
-2. Click "Generate API Key"
-3. Copy that key, and set it in your Will.
-""",
-        },
-    ]
-
-
-    # All storage backends must supply the following methods:    
-    def __init__(self, *args, **kwargs):
-        # Connects to the storage provider.
-
-    def do_save(self, key, value, expire=None):
-        raise NotImplemented
-
-    def do_load(self, key):
-        raise NotImplemented
-
-    def clear(self, key):
-        raise NotImplemented
-
-    def clear_all_keys(self):
-        raise NotImplemented
+    def handle_execution(self, message):
+        random_option = random.choice(message.generation_options)
+        self.execute(random_option)
 
 ```
 
