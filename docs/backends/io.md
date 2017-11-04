@@ -80,4 +80,4 @@ class MyCustomStorageBackend(BaseStorageBackend):
 
 From there, just test it out, and when you're ready, submit a [pull request!](https://github.com/skoczen/will/pulls)
 
-Now that you've got hearing and talking sorted, let's look at how [Will adds context](/platform/analysis).
+Now that you've got hearing and talking sorted, let's look at how [Will adds context](/backends/analysis).

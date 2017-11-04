@@ -1,7 +1,7 @@
 # Storage Backends
 
 ## Overview
-Storage backends handle all of Will's long-term memory  They're designed to be durable, reliable, and robust - a lot like our brain's long-term memory, but without the forgetfulness.
+Storage backends handle all of Will's long-term memory.  They're designed to be durable, reliable, and robust - a lot like our brain's long-term memory, but without the forgetfulness.
 
 Will supports the following options for storage backend:
 
@@ -76,4 +76,4 @@ class MyCustomStorageBackend(BaseStorageBackend):
 
 From there, just test it out, and when you're ready, submit a [pull request!](https://github.com/skoczen/will/pulls)
 
-That's all you need to know to tweak and improve Will's memory.  There's just one topic left in his brain - keeping things private with [encryption](/platform/encryption).
+That's all you need to know to tweak and improve Will's memory.  There's just one topic left in his brain - keeping things private with [encryption](/backends/encryption).

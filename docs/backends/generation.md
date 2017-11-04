@@ -81,4 +81,4 @@ class MyGreatGenerationBackend(GenerationBackend):
 
 From there, just test it out, and when you're ready, submit a [pull request!](https://github.com/skoczen/will/pulls)
 
-Now we've got a host of possible things Will can do and say.  It's time to look at how [Will decides what to do](/platform/execution).
+Now we've got a host of possible things Will can do and say.  It's time to look at how [Will decides what to do](/backends/execution).

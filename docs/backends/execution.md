@@ -62,4 +62,4 @@ class MyRandomExecutionBackend(ExecutionBackend):
 
 From there, just test it out, and when you're ready, submit a [pull request!](https://github.com/skoczen/will/pulls)
 
-That's it for Will's decision making.  If you'd like a little more esoteric deep-dive, let's look at how his [short-term memory (pubsub)](/platform/pubsub).
+That's it for Will's decision making.  If you'd like a little more esoteric deep-dive, let's look at how his [short-term memory (pubsub)](/backends/pubsub).
