@@ -19,6 +19,7 @@ parser.add_argument(
     help='Only output a config.py.dist.'
 )
 args = parser.parse_args()
+requirements_txt = "will\n"
 
 
 class EmptyObj(object):
@@ -38,9 +39,15 @@ def ask_user(question):
     return response.startswith("y")
 
 
-def check_service(service_name, source):
+def enable_disable_service(service_name, source):
+    global requirements_txt
     if ask_user("  Do you want to enable %s support?" % (service_name)):
         source = source.replace("# will.backends.io_adapters.%s" % cleaned(service_name), "will.backends.io_adapters.%s" % cleaned(service_name))
+        req_path = os.path.join(os.path.join(PROJECT_ROOT, "..", "requirements"), "%s.txt" % cleaned(service_name))
+        print(req_path)
+        if os.path.exists(req_path):
+            with open(req_path, 'r') as f:
+                requirements_txt = "%s\n# %s\n%s" % (requirements_txt, service_name, f.read())
     else:
         source = source.replace("will.backends.io_adapters.%s" % cleaned(service_name), "# will.backends.io_adapters.%s" % cleaned(service_name))
     return source
@@ -154,10 +161,10 @@ if __name__ == '__main__':
             source = source_f.read()
             # Ask on backends
             print("\nWill supports a few different service backends.  Let's set up the ones you want:\n")
-            source = check_service("Slack", source)
-            source = check_service("HipChat", source)
-            source = check_service("Rocket.Chat", source)
-            source = check_service("Shell", source)
+            source = enable_disable_service("Slack", source)
+            source = enable_disable_service("HipChat", source)
+            source = enable_disable_service("Rocket.Chat", source)
+            source = enable_disable_service("Shell", source)
 
             with open(config_path, "w+") as f:
                 config = source
@@ -167,9 +174,9 @@ if __name__ == '__main__':
         print("  requirements.txt")
         # Create requirements.txt
         requirements_path = os.path.join(current_dir, "requirements.txt")
-        if not os.path.exists(requirements_path):
+        if not os.path.exists(requirements_path) or ask_user("! requirements.txt exists.  Overwrite it?"):
             with open(requirements_path, 'w+') as f:
-                f.write("will")
+                f.write(requirements_txt)
 
         print("  Procfile")
         # Create Procfile

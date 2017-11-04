@@ -20,71 +20,62 @@ Here's a bit more about the built-ins, and when they'd be a good fit:
 
 ### Fuzzy Match (all) (`will.backends.generation.fuzzy_all_matches`)
 
-Great at..
+This uses the fantastic [fuzzywuzzy](https://github.com/seatgeek/fuzzywuzzy) library to match strings with some fuzziness, as specified by `FUZZY_MINIMUM_MATCH_CONFIDENCE` (defaults to 90% confidence) and `FUZZY_REGEX_ALLOWABLE_ERRORS` (defaults to 3).
+
+Great if you'd like your Will to be a little flexible, sometimes get things wrong, but to handle typos.
+
+*Required settings*: `FUZZY_MINIMUM_MATCH_CONFIDENCE` and `FUZZY_REGEX_ALLOWABLE_ERRORS`
 
 ### Fuzzy Match (best) (`will.backends.generation.fuzzy_best_match`)
 
-Great at..
+This backend is very similar to `fuzzy_all_matches`, but instead of returning all matches above a certain confidence, it just returns the best one, regardless of how good it is.
+
+In general, there's no reason to use this over `fuzzy_all_matches`, unless you have a specific scenario that means you always want a response, but can't be sure of a confidence level.
 
 ### Strict Regex (`will.backends.generation.strict_regex`)
 
-Great at..
+Great for exact matches only.  If you only want your Will to do thing when it hears an exact command, or you have a bunch of different commands you're worried about getting mixed up in the fuzziness, `strict_regex` is the way for you to go.
 
-
-Considerations, etc
+This is the same behavior that was in Will 1.x and 0.x.
 
 ## Setting your backends
 
-`config.py`
-required settings
+To set your generation backends, just update the following in `config.py`
+
+```python
+# Backends to generate possible actions, and metadata about them.
+GENERATION_BACKENDS = [
+    "will.backends.generation.fuzzy_all_matches",
+    "will.backends.generation.strict_regex",
+    # "will.backends.generation.fuzzy_best_match",
+]
+```
+
 
 ## Contributing a new backend
 
-## Implementing a new backend
+Writing a new generation backend is easy - just subclass `GenerationBackend`, and implement `do_generate`:
 
-Writing a new storage backend is fairly straightforward - simply subclass `BaseStorageBackend`, and implement:
-
-1) the five required methods, then
-2) specify any required settings with `required_settings`.
+Note that the method should return a list of `GeneratedOption`s, including context, the backend name, and a score.
 
 
 ```python
-from will.backends.storage.base import BaseStorageBackend
+from will.backends.generation.base import GenerationBackend, GeneratedOption
 
 
-class MyCustomStorageBackend(BaseStorageBackend):
-    """A custom storage backend using the latest, greatest technology.
+class MyGreatGenerationBackend(GenerationBackend):
 
-    You'll need to provide a GREAT_API_KEY to use it.
+    def do_generate(self, event):
+        """Returns a list of GeneratedOptions"""
+        matches = []
 
-    """"
+        message = event.data
+        for name, l in self.bot.message_listeners.items():
+            if this_is_a_perfect_match(message, l):
+                o = GeneratedOption(context=context, backend="regex", score=100)
+                matches.append(o)
 
-    required_settings = [
-        {
-            "name": "GREAT_API_KEY",
-            "obtain_at": """1. Go to greatamazingtechnology.com/api
-2. Click "Generate API Key"
-3. Copy that key, and set it in your Will.
-""",
-        },
-    ]
-
-
-    # All storage backends must supply the following methods:    
-    def __init__(self, *args, **kwargs):
-        # Connects to the storage provider.
-
-    def do_save(self, key, value, expire=None):
-        raise NotImplemented
-
-    def do_load(self, key):
-        raise NotImplemented
-
-    def clear(self, key):
-        raise NotImplemented
-
-    def clear_all_keys(self):
-        raise NotImplemented
+        return matches
 
 ```
 
