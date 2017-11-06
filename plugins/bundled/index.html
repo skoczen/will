@@ -56,6 +56,12 @@
             
             
             
+                <li >
+                    <a href="../../upgrading_to_2/">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
                 <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -95,6 +101,47 @@
             
             
             
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../../backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
                 <li >
                     <a href="../../deploy/">Deploy</a>
                 </li>
@@ -107,8 +154,19 @@
             
             
             
-                <li >
-                    <a href="../../roadmap/">Roadmap</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../../releases/">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
                 </li>
             
             
@@ -200,7 +258,7 @@
 <li><strong>@will new topic ____</strong>:   Set the room topic.</li>
 </ul>
 <h2 id="devops">Devops</h2>
-<p>Will is our devops team at GreenKahuna, and in the long term, we plan to abstract and include our stack deployer as a plugin.  For the moment, he just includes a couple basics:</p>
+<p>Will has served as the devops team at a couple different companies, but we haven't yet been able to get the IP sorted to abstract and open-source those plugins.  So, for the moment, he just includes a couple basics:</p>
 <h4 id="emergency-contacts">Emergency Contacts</h4>
 <p>Saves a set of emergency contacts for team members, and provides a way for anyone on the team to get them in, well, emergencies.</p>
 <ul>
@@ -284,7 +342,7 @@
 <h4 id="image-me">Image me</h4>
 <p>Sometimes, a picture is worth a thousand words.</p>
 <p><img alt="Image me a crazy squirrel" src="../../img/image_me.gif" /></p>
-<p>To configure <code>image me</code>, you'll need to set the following two variables in <code>config.py</code> or <a href="http://skoczen.github.io/will/config/">in your environment with the appropriate <code>WILL_</code> prefix</a>. Here are some instructions on where to obtain both.</p>
+<p>Image me works out of the box, but may not in future releases (we're using a pretty hacky way to get search results.)  If you rely on it, configure <code>image me</code> properly by setting the following two variables in <code>config.py</code> or <a href="http://skoczen.github.io/will/config/">in your environment with the appropriate <code>WILL_</code> prefix</a>. Here are some instructions on where to obtain both.</p>
 <ul>
 <li><code>GOOGLE_API_KEY</code></li>
 <li>Go to the <a href="https://console.developers.google.com">Google Developers Console</a>.</li>
@@ -299,6 +357,9 @@
 <li>Delete the "anything" site you added two steps ago, to clean it up.</li>
 <li>In the <code>Details</code> section, click the <code>Search engine ID</code> button, and copy the ID which you need here.</li>
 </ul>
+<h4 id="gif-me">Gif me</h4>
+<p>Like image me, but <em>alive</em>.</p>
+<p><img alt="gif me cute kittens" src="../../img/kittens.gif" /></p>
 <h4 id="remind-me">Remind me</h4>
 <p>This saves our bacon every day. Timeboxes meetings, helps people remember appointments, and enforces self-control.</p>
 <p><img alt="Remind me" src="../../img/remind_food.gif" /></p>
@@ -310,10 +371,7 @@
 <p>You can also remind others as well.</p>
 <p><img alt="Remind somebody" src="../../img/remind_somebody.gif" /></p>
 <h4 id="world-time">World time</h4>
-<p>We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you,</p>
-<ol>
-<li>Get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.</li>
-</ol>
+<p>We're a remote company. Maybe you are too. Or your clients are.  Or the light/dark cycle of the world just fascinates you.  If any of these are you, just ask Will to get the time in pretty much any city on earth.  Even our globe-trotting CEO hasn't been able to stump him.</p>
 <p><img alt="World time" src="../../img/world_time.gif" /></p>
 <h2 id="version">Version</h2>
 <p>Provides information about the release version of @will.</p>

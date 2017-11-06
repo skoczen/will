@@ -4,7 +4,15 @@
     
     <url>
      <loc>http://skoczen.github.io/will/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>http://skoczen.github.io/will/upgrading_to_2/</loc>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,37 +21,37 @@
         
     <url>
      <loc>http://skoczen.github.io/will/plugins/basics/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://skoczen.github.io/will/plugins/notice/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://skoczen.github.io/will/plugins/reply/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://skoczen.github.io/will/plugins/create/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://skoczen.github.io/will/plugins/builtins/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://skoczen.github.io/will/plugins/bundled/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -52,15 +60,67 @@
     
     <url>
      <loc>http://skoczen.github.io/will/config/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/overall/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/io/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/analysis/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/generation/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/execution/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/pubsub/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/storage/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/backends/encryption/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
     <url>
      <loc>http://skoczen.github.io/will/deploy/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -68,17 +128,25 @@
     
     <url>
      <loc>http://skoczen.github.io/will/improve/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
+        
     <url>
-     <loc>http://skoczen.github.io/will/roadmap/</loc>
-     <lastmod>2017-10-24</lastmod>
+     <loc>http://skoczen.github.io/will/releases/</loc>
+     <lastmod>2017-11-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    <url>
+     <loc>http://skoczen.github.io/will/roadmap/</loc>
+     <lastmod>2017-11-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
 </urlset>

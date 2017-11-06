@@ -56,6 +56,12 @@
             
             
             
+                <li >
+                    <a href="../../upgrading_to_2/">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
                 <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -95,6 +101,47 @@
             
             
             
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../../backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
                 <li >
                     <a href="../../deploy/">Deploy</a>
                 </li>
@@ -107,8 +154,19 @@
             
             
             
-                <li >
-                    <a href="../../roadmap/">Roadmap</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../../releases/">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
                 </li>
             
             
@@ -220,7 +278,7 @@ def homepage_listener(self):
     @respond_to(&quot;bonjour&quot;)
     def say_bonjour_will(self, message):
         &quot;&quot;&quot;bonjour: I know how to say bonjour! In French!&quot;&quot;&quot;
-        self.reply(message, &quot;bonjour!&quot;)
+        self.reply(&quot;bonjour!&quot;)
 </code></pre>
 
 <p><img alt="Bonjour help" src="../../img/bonjour_help.gif" /></p>
@@ -271,7 +329,7 @@ class BonjourPlugin(WillPlugin):
 
     @respond_to(&quot;bonjour&quot;)
     def say_bonjour_will(self, message):
-        self.reply(message, settings.HELLO_MESSAGE)
+        self.reply(settings.HELLO_MESSAGE)
 </code></pre>
 
 <p>You can also mark one or more settings as required for your plugin with the <code>require_settings</code> decorator, and they'll be checked on startup.</p>
@@ -282,46 +340,19 @@ class BonjourPlugin(WillPlugin):
     @require_settings(&quot;HELLO_MESSAGE&quot;, &quot;ANOTHER_SETTING&quot;)
     @respond_to(&quot;bonjour&quot;)
     def say_bonjour_will(self, message):
-        self.reply(message, settings.HELLO_MESSAGE)
+        self.reply(settings.HELLO_MESSAGE)
 </code></pre>
 
 <p>When will starts up, he'll make sure they've been set:</p>
 <p><img alt="Verify settings" src="../../img/verify_settings.gif" /></p>
 <h2 id="getting-a-rooms-history">Getting a room's history</h2>
-<p>Sometimes you'll want to retrieve a room's history. No problem - get the room's object, and the last 75 messages are sitting on <code>.history</code>.</p>
+<p>Sometimes you'll want to retrieve a room's history. No problem - get the room's object, and the last 20 messages are sitting on <code>analysis.history</code>.</p>
 <pre><code class="python">class HistoryPlugin(WillPlugin):
 
     @respond_to(&quot;^get last message&quot;)
     def get_history(self, message):
         room = self.get_room_from_message(message)
-        self.reply(message, room.history[-1][&quot;message&quot;])
-</code></pre>
-
-<p><code>.history</code> is pretty much what's returned from the <a href="https://www.hipchat.com/docs/apiv2/method/view_room_history">HipChat room history API</a> - the lone exception is that the date has been converted to a python datetime.</p>
-<pre><code class="python">    {
-        u'from':{
-            u'mention_name':u'First Last',
-            u'id':xxxx,
-            u'links':{
-                u'self': u'https://api.hipchat.com/v2/user/xxxx'
-            },
-            u'name':u'First Last'
-        },
-        u'date':datetime.datetime(2015, 1, 26, 15, 26, 52),
-        u'mentions':[
-            {
-                u'mention_name':u'FirstLast',
-                u'id':xyxy,
-                u'links':{
-                    u'self': u'https://api.hipchat.com/v2/user/xyxy'
-                },
-                u'name':u'First Last'
-            }
-        ],
-        u'message':u'Hi there!',
-        u'type':u'message',
-        u'id':u'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-    }
+        self.reply(room.analysis[&quot;history&quot;][-1])
 </code></pre>
 
 <h2 id="parse-natural-time">Parse natural time</h2>

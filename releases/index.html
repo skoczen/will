@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://skoczen.github.io/will/releases/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+        <title>Releases</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/prettify-1.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link href="../css/style.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">Will</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
+            
+            
+                <li >
+                    <a href="..">Get Started</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../upgrading_to_2/">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../plugins/basics/">The Basics</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/notice/">What Will Can Notice</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/reply/">How Will Can Respond</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/create/">Creating and Organizing Plugins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/builtins/">Plugin Builtins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/bundled/">Bundled Plugins</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../config/">Configure</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../deploy/">Deploy</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../improve/">Improve</a>
+                </li>
+            
+            
+            
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li class="active">
+                            <a href="./">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li >
+                    <a rel="next" href="../improve/">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li >
+                    <a rel="prev" href="../roadmap/">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="https://github.com/skoczen/will/">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#releases">Releases</a></li>
+        
+            <li><a href="#201beta1-november-7-2017">2.0.1beta1 - November 7, 2017</a></li>
+        
+            <li><a href="#102-october-24-2017">1.0.2 - October 24, 2017</a></li>
+        
+            <li><a href="#101-october-10-2017">1.0.1 - October 10, 2017</a></li>
+        
+            <li><a href="#100-september-29-2017">1.0.0 - September 29, 2017</a></li>
+        
+            <li><a href="#095-june-23-2017">0.9.5 - June 23, 2017</a></li>
+        
+            <li><a href="#094-april-25-2017">0.9.4 - April 25, 2017</a></li>
+        
+            <li><a href="#093-september-11-2015">0.9.3 - September 11, 2015</a></li>
+        
+            <li><a href="#092-june-5-2015">0.9.2 - June 5, 2015</a></li>
+        
+            <li><a href="#091-may-30-2015">0.9.1 - May 30, 2015</a></li>
+        
+            <li><a href="#09-may-29-2015">0.9 - May 29, 2015</a></li>
+        
+            <li><a href="#082-april-24-2015">0.8.2 - April 24, 2015</a></li>
+        
+            <li><a href="#081-april-23-2015">0.8.1 - April 23, 2015</a></li>
+        
+            <li><a href="#08-april-23-2015">0.8 - April 23, 2015</a></li>
+        
+            <li><a href="#073-march-3-2015">0.7.3 - March 3, 2015</a></li>
+        
+            <li><a href="#072-february-27-2015">0.7.2 - February 27, 2015</a></li>
+        
+            <li><a href="#071-february-5-2015">0.7.1 - February 5, 2015</a></li>
+        
+            <li><a href="#070-february-4-2015">0.7.0 - February 4, 2015</a></li>
+        
+            <li><a href="#069-january-30-2015">0.6.9 - January 30, 2015</a></li>
+        
+            <li><a href="#068-january-30-2015">0.6.8 - January 30, 2015</a></li>
+        
+            <li><a href="#067-january-29-2015">0.6.7 - January 29, 2015</a></li>
+        
+            <li><a href="#066-january-29-2015">0.6.6 - January 29, 2015</a></li>
+        
+            <li><a href="#065-january-23-2015">0.6.5 - January 23, 2015</a></li>
+        
+            <li><a href="#064-january-19-2015">0.6.4 - January 19, 2015</a></li>
+        
+            <li><a href="#063-december-30-2014">0.6.3 - December 30, 2014</a></li>
+        
+            <li><a href="#062-september-23-2014">0.6.2 - September 23, 2014</a></li>
+        
+            <li><a href="#061-september-23-2014">0.6.1 - September 23, 2014</a></li>
+        
+            <li><a href="#060-september-17-2014">0.6.0 - September 17, 2014</a></li>
+        
+            <li><a href="#057-september-3-2014">0.5.7 - September 3, 2014</a></li>
+        
+            <li><a href="#056-august-26-2014">0.5.6 - August 26, 2014</a></li>
+        
+            <li><a href="#055-august-25-2014">0.5.5 - August 25, 2014</a></li>
+        
+            <li><a href="#054-july-22-2014">0.5.4 - July 22, 2014</a></li>
+        
+            <li><a href="#053-july-11-2014">0.5.3 - July 11, 2014</a></li>
+        
+            <li><a href="#051-july-2-2014">0.5.1 - July 2, 2014</a></li>
+        
+            <li><a href="#05-omnibus-june-27-2014">0.5 Omnibus - June 27, 2014</a></li>
+        
+            <li><a href="#0410-june-6-2014">0.4.10 - June 6, 2014</a></li>
+        
+            <li><a href="#049-may-28-2014">0.4.9 - May 28, 2014</a></li>
+        
+            <li><a href="#048-may-21-2014">0.4.8 - May 21, 2014</a></li>
+        
+            <li><a href="#047-may-15-2014">0.4.7 - May 15, 2014</a></li>
+        
+            <li><a href="#046-may-5-2014">0.4.6 - May 5, 2014</a></li>
+        
+            <li><a href="#045-may-2-2014">0.4.5 - May 2, 2014</a></li>
+        
+            <li><a href="#044-april-22-2014">0.4.4 - April 22, 2014</a></li>
+        
+            <li><a href="#043-april-1-2014">0.4.3 - ~ April 1, 2014</a></li>
+        
+            <li><a href="#04-march-2014">0.4 - ~ March 2014</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h1 id="releases">Releases</h1>
+<h4 id="201beta1-november-7-2017">2.0.1beta1 - November 7, 2017</h4>
+<p><strong>TL;DR: Slack, Rocket.chat, and Shell support, and you can write full chatterbots with Will now!</strong></p>
+<p>This is a huge rewrite of will, adding pluggable backends for chat systems, Will's internal brains, pub-sub, and encryption.  </p>
+<p>A huge number of really smart people gave their thoughts and suggestions throughout the process, not least <a href="https://github.com/hobson">@hobson</a>, <a href="https://github.com/woohgit">@woohgit</a>, <a href="https://github.com/netjunki">@netjunki</a>, <a href="https://github.com/sivy">@sivy</a>, <a href="https://github.com/antgel">@antgel</a>, <a href="https://github.com/shadow7412">@shadow7412</a>, <a href="https://github.com/brandonsturgeon">@brandonsturgeon</a>, <a href="https://github.com/pepedocs">@pepedocs</a>, <a href="https://github.com/tophsic">@tophsic</a>, and <a href="https://github.com/mike-love">@mike-love</a>.</p>
+<p>Read all about what and why here: <a href="https://heywill.io/will2">What's new in Will 2</a>,</p>
+<p>And when you're ready to upgrade, here's <a href="http://skoczen.github.io/will/upgrading_to_2">the upgrade guide</a>. (Spoiler: <code>pip install -U will</code>).</p>
+<p>High-level, here's what's new:</p>
+<ul>
+<li>Slack support</li>
+<li>CLI/Shell backend</li>
+<li><a href="https://rocket.chat/">Rocket.chat</a> support, thanks to <a href="https://github.com/antgel">antgel</a>.</li>
+<li>Will's brains have been abstracted - you can now add custom <a href="../backends/analysis">analysis</a>, <a href="../backends/generation">generation</a>, and <a href="../backends/execution">execution</a> backends to build everything from a straight regex-bot to a full chatterbot.</li>
+<li><a href="../backends/io">Pluggable I/O backends</a>, which is how all of the above were done, and which means adding new platforms is pretty simple.</li>
+<li><a href="../backends/storage">Pluggable storage</a> backends.</li>
+<li><a href="../backends/pubsub">Pluggable pubsub</a> backends.</li>
+<li>Built-in encryption for storage and pub/sub (with <a href="../backends/encryption">pluggable backends</a> as well.)</li>
+<li>Lots more intelligence around required settings and verification, to make first starting and debugging Will easier.</li>
+<li>Full Python 3 support. (Don't worry, 2.x <a href="https://heywill.io/will2#python3">isn't going anywhere</a>.)</li>
+<li>New <code>@will gif me</code> command.  Because it can't all be serious. :)</li>
+</ul>
+<p>This release also changes a few bits of behavior, to be consistent:</p>
+<ul>
+<li><code>self.reply()</code> <em>finally</em> no longer requires you to tediously pass the <code>message</code> back to it.  It's also smart, and backwards compatable with existing plugins.</li>
+<li><code>admin_only</code> is explicitly flagged for deprecation and removal, to be replaced by the ACL system introduced in 2015 (largely, this is because having two different access control systems is crazy and painful.)  Switching is as easy as adding <code>ACL = {'admins': ['steven', 'will']}</code> to your config.py and find/replacing <code>admin_only=True</code> with `acl=['admins',] in your codebase.  For now, Will handles backwards compatibility by mapping the old settings into the new places, but he won't forever.  Thanks for updating, and making ongoing maintenence simpler!</li>
+<li>If no ACLs are specified and users try to perform restricted commands, they'll be allowed as before, but Will will complain to the console. A new <code>DISABLE_ACL</code> setting has been added to turn off the complaining.</li>
+<li>You can pass in <code>channel=</code> or <code>room=</code> when specifying a custom reply location.  If both are passed in, Will uses <code>channel</code>.</li>
+</ul>
+<p>There are a couple <em>internal</em> backwards-incompatible changes:</p>
+<ul>
+<li><code>RosterMixin</code> has been renamed <code>HipChatRosterMixin</code> and moved to <code>will.backends.io_adapters.hipchat</code>.  This change should not affect you unless you were specifically importing RosterMixin in your own plugins - everything in <code>WillPlugin</code> has been automatically routed to the right place, in a backwards-compatible way.</li>
+<li><code>Room</code> and <code>RoomMixin</code> have similarly become <code>HipChatRoom</code> and <code>HipChatRoomMixin and moved to</code>will.backends.io_adapters.hipchat`.</li>
+</ul>
+<p>As this is a <em>big</em> update, please report any bugs you see (no matter how small) to <a href="https://github.com/skoczen/will/issues">the github issue tracker</a>.  Thanks in advance for making Will even better!</p>
+<h4 id="102-october-24-2017">1.0.2 - October 24, 2017</h4>
+<p>Fixes and features in this release:</p>
+<ul>
+<li>Makes passing the <code>room=</code> option <em>much</em> easier (you can just use the room's name now,) thanks to <a href="https://github.com/wontonst">wontonst</a>.</li>
+<li>Adds support for jinja <code>custom_filters</code> in the <code>@rendered_template</code> decorator, thanks to <a href="https://github.com/chillipeper">chillipeper</a>.</li>
+</ul>
+<h4 id="101-october-10-2017">1.0.1 - October 10, 2017</h4>
+<p>Fixes and features in this release:</p>
+<ul>
+<li>Fixes what time plugin to not require World Weather's old API, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Adds Docker support, thanks to <a href="https://github.com/mike-love">mike-love</a>.</li>
+<li>Adds Python 3 support, thanks to <a href="https://github.com/tenzer">tenzer</a>.</li>
+</ul>
+<h4 id="100-september-29-2017">1.0.0 - September 29, 2017</h4>
+<p><strong>This is the end of major feature development for the hipchat-only version of Will.  Future development will be on 2.x, and while backwards compatability will be aimed for, it's not 100% guaranteed.</strong></p>
+<p>Fixes and features in this release:</p>
+<ul>
+<li>Makes ACLs be case-insensitive, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Adds Hipchat card support, also thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Gets Chatoms random topics working again, thanks to <a href="https://github.com/bykof">bykof</a>.</li>
+<li>Environment overrides for <code>PLUGINS</code> and <code>PLUGIN_BLACKLIST</code> (semicolon separated) are now possible, thanks to <a href="https://github.com/mark-adams">mark-adams</a>.</li>
+</ul>
+<h4 id="095-june-23-2017">0.9.5 - June 23, 2017</h4>
+<p>Quick bugfix release before the big changeover to 1.0, pluggable backends (Slack support), and more.</p>
+<ul>
+<li>Fixed: <code>@will image me</code> actually works again thanks to <a href="https://github.com/antgel">antgel</a>.</li>
+</ul>
+<h4 id="094-april-25-2017">0.9.4 - April 25, 2017</h4>
+<p>New releases and movement again!  Exciting things in the pipeline for will, and that's starting with a long-awaited release.  Thanks to everyone who both submitted code, and had saint-like patience with it being merged in.</p>
+<ul>
+<li>New: <code>self.append()</code> and <code>self.pop()</code> methods to support list storage, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Fixed: <code>@will image me</code> works again (but requires a google API key - see <code>config.py</code>, thanks to <a href="https://github.com/shadow7412">shadow7412</a>.</li>
+<li>Fixed: <code>@will pugs</code> thankfully works again, thanks to <a href="https://github.com/gordol">gordol</a>.</li>
+<li>Improvement: <code>@will help &lt;plugin&gt;</code> now gives plugin-specific help, thanks to <a href="https://github.com/tophsic">tophsic</a>.</li>
+<li>Improvement: Blacklisted modules aren't even attempted to be imported, thanks to <a href="https://github.com/BrianGallew">BrianGallew</a>.</li>
+<li>Improvement: File storage engine expires properly, thanks to <a href="https://github.com/BrianGallew">BrianGallew</a>.</li>
+<li>Improvement: Zombie users no longer cause will trouble, thanks to <a href="https://github.com/BrianGallew">BrianGallew</a>.</li>
+<li>Improvement: Will now no longer gets stuck if organizations have more than 2000(!) hipchat rooms, courtesy of <a href="https://github.com/woparry">woparry</a> and <a href="https://github.com/danbourke">danbourke</a>.</li>
+<li>Improvement: V2 API calls for multiple rooms now properly uses <code>max-results</code> and doesn't hang, thanks to <a href="https://github.com/chillipeper">chillipeper</a>.</li>
+<li>Improvement: Much-improved test runners, and proper case for Bitbucket, thanks to <a href="https://github.com/mark-adams">mark-adams</a>.</li>
+<li>Improvement: <code>_available_rooms</code> is now populated with <code>Room</code> objects, regardless of whether you use V1 or V2, thanks to <a href="https://github.com/jcdyer">jcdyer</a>.</li>
+<li>Improvement: Output logging now includes timestamps by default, thanks to <a href="https://github.com/pepedocs">pepedocs</a>.</li>
+<li>Improvement: Upgraded to <code>hiredis</code> &gt; 0.2 to get windows builds working, thanks to <a href="https://github.com/Regner">Regner</a>.</li>
+<li>Improvement: Updated to the new pagerduty docs, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Improvement: Generation script doesn't make a duplicate <code>hi</code> response, thanks to <a href="https://github.com/brandonsturgeon">brandonsturgeon</a> and <a href="https://github.com/derek-adair">derek-adair</a>.</li>
+</ul>
+<h4 id="093-september-11-2015">0.9.3 - September 11, 2015</h4>
+<p>Thanks for your patience on this long-delayed release!  Here's what's new:</p>
+<ul>
+<li>New: Will watches bitbucket, and alerts on downtime, thanks to <a href="https://github.com/mvanbaak">mvanbaak</a>.</li>
+<li>New: <code>@will urban dictionary ______</code>, thanks to <a href="https://github.com/Ironykins">Ironykins</a>.</li>
+<li>New: 1-1 messages now support HTML, thanks to <a href="https://github.com/AndrewBurdyug">AndrewBurdyug</a> and <a href="https://github.com/brandonsturgeon">brandonsturgeon</a></li>
+<li>Improvement: Batch-getting of rooms, thanks to <a href="https://github.com/charlax">charlax</a>.</li>
+<li>Improvement: Better handling of uptime check edge cases, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Improvement: Proper docs for installing redis on ubuntu/debian, thanks to <a href="https://github.com/kenden">kenden</a>.</li>
+<li>Improvement: Pulled an extraneous doc page, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Improvement: Fixes to the route doc syntax, thanks to <a href="https://github.com/brandonsturgeon">brandonsturgeon</a>.</li>
+<li>Improvement: Docs now fit the new mkdocs format, thanks to <a href="https://github.com/d0ugal">d0ugal</a>.</li>
+<li>Improvement: New travis.yml setup for easier travis running, and plugged my CircleCI builds into the github repo. All future PRs should automatically have tests run!</li>
+</ul>
+<h4 id="092-june-5-2015">0.9.2 - June 5, 2015</h4>
+<ul>
+<li>Fixes bug that caused will not to join all rooms if <code>ROOMS</code> was missing. Thanks to <a href="https://github.com/camilonova">camilonova</a> for the report!</li>
+</ul>
+<h4 id="091-may-30-2015">0.9.1 - May 30, 2015</h4>
+<ul>
+<li>Fixes bug that affected <code>@will</code>s - thanks to <a href="https://github.com/woohgit">woohgit</a> for the report!</li>
+</ul>
+<h4 id="09-may-29-2015">0.9 - May 29, 2015</h4>
+<ul>
+<li><strong>BREAKING:</strong> Module change. New <code>will.plugins.fun</code> module. Existing will installs will need to add it to your <code>config.py</code> to keep the fun!</li>
+<li>New:  Support for Pagerduty workflows, thanks to <a href="https://github.com/woohgit">woohgit</a>. This is really tremendous stuff. <a href="../plugins/bundled/#pagerduty-integration">Check out the docs here</a>!</li>
+<li>New: <a href="../deploy/#storage-backends">Pluggable storage backends</a>, with support for couchbase and local file storage, in addition to redis.  Many thanks to <a href="https://github.com/borgstrom">borgstrom</a></li>
+<li>New: <a href="../plugins/builtins/#access-control">ACL</a> functionality, thanks to <a href="https://github.com/woohgit">woohgit</a>.  Backwards-compatable, even!</li>
+<li>New: Made will a little more fun, thanks to <a href="http://github.com/camilonova">camilonova</a>.  Hint: it involves the world's most meme-friendly dog.</li>
+<li>New: Will can now construct google poems, thanks to <a href="https://github.com/AirbornePorcine">AirbornePorcine</a>. Truly, his creativity knows no bounds.</li>
+<li>Improvement: Moved stuff like that into a new "fun" module.  Dry, anti-fun people can now disable it more easily. ;)</li>
+<li>Improvement: "What time is it" now outputs time zones, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Improvement: No more rate-limit problems on the v2 token, thanks to <a href="https://github.com/grundprinzip">grundprinzip</a>.</li>
+<li>Improvement: Messages are now <code>.strip()</code>ed before being compared, to handle <a href="https://github.com/skoczen/will/pull/145">frozen-fingered-typos</a>.  Thanks, <a href="https://github.com/woohgit">woohgit</a>!</li>
+<li>Fix: Typo in the docs gone.  Thanks, <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Fix: Bugs in proxy support are fixed, thanks to <a href="https://github.com/dmuntean">dmuntean</a>.</li>
+</ul>
+<h4 id="082-april-24-2015">0.8.2 - April 24, 2015</h4>
+<ul>
+<li>Fixes an odd remaining bug with <code>@randomly</code>, thanks to <a href="https://github.com/camilonova">camilonova</a>'s continued debugging.</li>
+</ul>
+<h4 id="081-april-23-2015">0.8.1 - April 23, 2015</h4>
+<ul>
+<li>Moves <code>version</code> plugin into admin, so it just works for most users.</li>
+</ul>
+<h4 id="08-april-23-2015">0.8 - April 23, 2015</h4>
+<ul>
+<li>What happens when life gets busy and we go a full month and a half between will releases?  Lots and lots:</li>
+<li>New: All-new <code>@will who is in this room?</code> command, thanks to <a href="https://github.com/puug">puug</a>.</li>
+<li>New: Will now can shorten links via bitly <code>@will bitly http://example.com</code>, thanks to <a href="https://github.com/keNzi">keNzi</a>.</li>
+<li>New: Will now supports a <code>PROXY_URL</code> setting, for getting around funky firewalls, thanks to <a href="https://github.com/dmuntean">dmuntean</a>.</li>
+<li>New: <code>@will version</code> command to check version number, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>New: Awesome new <code>remind ___ to ___ at ___</code>, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>New: Will now keeps an eye on hipchat's uptime as well, thanks to <a href="https://github.com/netjunki">netjunki</a>.</li>
+<li>Fix: a breaking bug in the <code>@randomly</code> decorator, thanks to a report by <a href="https://github.com/camilonova">camilonova</a>.</li>
+<li>Support: Handles a breaking change in the hipchat API, thanks to <a href="https://github.com/brandonsturgeon">brandonsturgeon</a>.</li>
+<li>Support: Updates to v2 of the underquoted API, thanks <a href="https://github.com/jessamynsmith">jessamynsmith</a>.</li>
+<li>Support: Updated to the new WorldWeatherOnline endpoint, since they had DDOS problems, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Improvement: The most important kind of PRs.  Spelling fixes.  Many thanks to <a href="https://github.com/jquast">jquast</a>.</li>
+<li>Improvement: <code>self.save()</code> now accepts an <code>expire</code> value, thanks to <a href="https://github.com/netjunki">netjunki</a>.</li>
+<li>Improvement: PEP8 passes for the whole codebase, with flake8 added to automated tests.</li>
+</ul>
+<h4 id="073-march-3-2015">0.7.3 - March 3, 2015</h4>
+<ul>
+<li>Fixed a breaking bug to world time, thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+</ul>
+<h4 id="072-february-27-2015">0.7.2 - February 27, 2015</h4>
+<ul>
+<li>Improved handling when <code>.reply()</code> is called incorrectly, thanks to a report by <a href="https://github.com/dothak">dothak</a></li>
+<li>Fixed the <a href="https://github.com/skoczen/will/issues/78">annoying</a> "github's ok" on first launch.</li>
+<li>Restored Python 2.6 compatability thanks to the report and patience of <a href="https://github.com/JPerkster">JPerkster</a>.</li>
+<li>Lots of code cleanup toward pep8.</li>
+</ul>
+<h4 id="071-february-5-2015">0.7.1 - February 5, 2015</h4>
+<ul>
+<li>Improved talkbackbot regex, suggested by <a href="https://github.com/PrideRage">PrideRage</a>.</li>
+</ul>
+<h4 id="070-february-4-2015">0.7.0 - February 4, 2015</h4>
+<ul>
+<li>Adds a port of the awesome <a href="https://github.com/jessamynsmith">talkbackbot</a>, thanks to <a href="https://github.com/jessamynsmith">jessamynsmith</a>, who super-kindly ported it at my request!</li>
+<li>Oh, yeah. That port also includes the first proper tests in will, and a pretty solid pattern for testing plugins.  Woo!  More huge thanks to <a href="https://github.com/jessamynsmith">jessamynsmith</a>.</li>
+</ul>
+<h4 id="069-january-30-2015">0.6.9 - January 30, 2015</h4>
+<ul>
+<li>Fixed copypasta error caught by the keen eye of <a href="https://github.com/dpoirier">dpoirier</a>.</li>
+</ul>
+<h4 id="068-january-30-2015">0.6.8 - January 30, 2015</h4>
+<ul>
+<li>Will now supports templates directories within plugins.  Just put a <code>templates</code> directory in the plugin's module, and it will be detected.  Thanks to <a href="https://github.com/sivy">sivy</a> for the idea and willingness to get it done!</li>
+</ul>
+<h4 id="067-january-29-2015">0.6.7 - January 29, 2015</h4>
+<ul>
+<li>Addition of <code>.get_user_by_nick()</code> method, to look up users by nick, thanks to <a href="https://github.com/sivy">sivy</a>.</li>
+<li>Bugfix to <code>ALLOW_INSECURE_HIPCHAT_SERVER</code> when specified in <code>config.py</code>, thanks to <a href="https://github.com/sivy">sivy</a>.</li>
+</ul>
+<h4 id="066-january-29-2015">0.6.6 - January 29, 2015</h4>
+<ul>
+<li>New <code>room.history</code> attribute with a room's history, thanks to <a href="https://github.com/PrideRage">PrideRage</a></li>
+<li>New setting: <code>ALLOW_INSECURE_HIPCHAT_SERVER</code>, which will disable SSL checks (you're on your own), thanks to <a href="https://github.com/sivy">sivy</a>.</li>
+<li>Adds support for V2 of the WorldWeatherOnline API (used for world times, weather) thanks to <a href="https://github.com/woohgit">woohgit</a>.</li>
+<li>Adds new release and doc deploy scripts, so the github <a href="https://github.com/skoczen/will/releases">releases</a> are kept up to date.  Thanks to <a href="https://github.com/crccheck">crccheck</a> for noticing and reporting they were stale!</li>
+</ul>
+<h4 id="065-january-23-2015">0.6.5 - January 23, 2015</h4>
+<ul>
+<li>Removes mkdocs from the production requirements.txt to fix a Jinja version problem.  Thanks to the report from <a href="https://github.com/PrideRage">PrideRage</a>.</li>
+</ul>
+<h4 id="064-january-19-2015">0.6.4 - January 19, 2015</h4>
+<ul>
+<li>Switches to bottle to cherrypy over gevent, which should solve lingering gevent DNS threading issues, thanks to <a href="https://github.com/wohali">wohali</a>.</li>
+<li>Support for @will, @WILL, @wIll, thanks to <a href="https://github.com/neronmoon">neronmoon</a></li>
+</ul>
+<h4 id="063-december-30-2014">0.6.3 - December 30, 2014</h4>
+<ul>
+<li>Better error handling for weirdly formatted messages.</li>
+<li>Better generated README, thanks to <a href="https://github.com/bsvetchine">bsvetchine</a>.</li>
+</ul>
+<h4 id="062-september-23-2014">0.6.2 - September 23, 2014</h4>
+<ul>
+<li>Bugfix on <code>generate_will_project</code>, thanks to the report by <a href="https://github.com/MattyDub">MattyDub</a>.</li>
+</ul>
+<h4 id="061-september-23-2014">0.6.1 - September 23, 2014</h4>
+<ul>
+<li>Freezes apscheduler to &lt; 3.0, since its API was backwards incompatibile.</li>
+</ul>
+<h4 id="060-september-17-2014">0.6.0 - September 17, 2014</h4>
+<ul>
+<li>Methods in a single class now share a common instance, thanks to <a href="https://github.com/amckinley">amckinley</a>.</li>
+<li>Redis connections are now pooled (which should help with "max clients exceeded" errors), thanks to <a href="https://github.com/carsongee">carsongee</a>.</li>
+<li>Preliminary travis ci support, thanks to <a href="https://github.com/pcurry">pcurry</a>.</li>
+<li>More gramatically correct documentation by <a href="https://github.com/hobson">hobson</a>.</li>
+</ul>
+<h4 id="057-september-3-2014">0.5.7 - September 3, 2014</h4>
+<ul>
+<li>Improvements to setup.py to be robust a variety of linux/unixes by <a href="https://github.com/hobson">hobson</a>.</li>
+</ul>
+<h4 id="056-august-26-2014">0.5.6 - August 26, 2014</h4>
+<ul>
+<li>Fix for 1-1 bootstrapping bug, thanks to <a href="https://github.com/adamcin">adamcin</a>.</li>
+</ul>
+<h4 id="055-august-25-2014">0.5.5 - August 25, 2014</h4>
+<ul>
+<li>Full html support in 1-1 chats, thanks to <a href="https://github.com/adamcin">adamcin</a>.</li>
+</ul>
+<h4 id="054-july-22-2014">0.5.4 - July 22, 2014</h4>
+<ul>
+<li>Upgrades bottle to 0.12.6 to fix <a href="http://osvdb.org/show/osvdb/106526">security bug</a>.</li>
+</ul>
+<h4 id="053-july-11-2014">0.5.3 - July 11, 2014</h4>
+<ul>
+<li><code>@randomly</code> functions now can run on the 59th minute, thanks to <a href="https://github.com/tomokas">tomokas</a>.</li>
+<li>Bad merge that duplicated <code>help.py</code> fixed by <a href="https://github.com/netjunki">netjunki</a>.</li>
+<li>"global name 'params' is not defined" bug fixed by <a href="https://github.com/amckinley">amckinley</a>.</li>
+</ul>
+<h4 id="051-july-2-2014">0.5.1 - July 2, 2014</h4>
+<ul>
+<li>New <code>HIPCHAT_SERVER</code> setting to support <a href="https://www.hipchat.com/server">beta HipChat Server</a>, thanks to <a href="https://github.com/mrgrue">mrgrue</a>.</li>
+</ul>
+<h4 id="05-omnibus-june-27-2014">0.5 Omnibus - June 27, 2014</h4>
+<ul>
+<li>Big, big release, with backwards-incompatble changes.  Please read all the notes on this one!</li>
+<li>All-new config and environment setup, including an all-new <code>config.py</code> for plugin configuration, and all non-sensitive settings.</li>
+<li>Much, much improved bootstrapping code that validates settings, gives helpful output, and generally helps you get will running.</li>
+<li>Documentation!  Real-live documentation!</li>
+<li><strong>Breaking</strong>: <code>WILL_TOKEN</code> has been renamed <code>WILL_HIPCHAT_V1_TOKEN</code>.</li>
+<li>New <code>@require_settings</code> decorator for plugins to request validation that needed settings are present.</li>
+<li>Will now has a concept of modules (groups of plugins), and groups help output according.</li>
+</ul>
+<h4 id="0410-june-6-2014">0.4.10 - June 6, 2014</h4>
+<ul>
+<li>Brand-new <code>admin_only</code> argument to <code>hear()</code> and <code>respond_to()</code>, thanks to <a href="https://github.com/rbp">rbp</a>.  If a user is not in <code>WILL_ADMINS</code>, they won't be able to run any <code>admin_only=True</code> plugins.  Default for <code>WILL_ADMINS</code> is all users to retain backwards-compatibility.</li>
+<li>All commands in the <code>storage.py</code> plugin are now admin-only.</li>
+<li><code>help</code> now only responds to direct asks, allowing other plugins to handle "help me with x", thanks to <a href="https://github.com/bfhenderson">bfhenderson</a></li>
+</ul>
+<h4 id="049-may-28-2014">0.4.9 - May 28, 2014</h4>
+<ul>
+<li>Passing a <code>room</code> to a <code>.say()</code> now works properly, thanks to <a href="https://github.com/rbp">rbp</a>.</li>
+<li>New optional <code>WILL_LOGLEVEL</code> setting, thanks to <a href="https://github.com/dpoirier">dpoirier</a>.</li>
+</ul>
+<h4 id="048-may-21-2014">0.4.8 - May 21, 2014</h4>
+<ul>
+<li>Will now ignores all previously sent messages properly, by passing in <code>bot</code> as the resource instead of an ugly time hack, thanks to <a href="https://github.com/dpoirier">dpoirier</a>.</li>
+</ul>
+<h4 id="047-may-15-2014">0.4.7 - May 15, 2014</h4>
+<ul>
+<li>Will now prints a helpful message if one of your <code>WILL_ROOMS</code> is wrong, and continues starting, instead of crashing in a fiery ball, thanks to <a href="https://github.com/crccheck">crccheck</a>.</li>
+</ul>
+<h4 id="046-may-5-2014">0.4.6 - May 5, 2014</h4>
+<ul>
+<li><code>@route</code> decorators now honor all bottle arguments, most helpfully <code>method</code>!</li>
+</ul>
+<h4 id="045-may-2-2014">0.4.5 - May 2, 2014</h4>
+<ul>
+<li>Awesome new help system by <a href="https://github.com/quixeybrian">quixeybrian</a>.</li>
+<li>"@will help" now only displays functions with docstrings, and formats them nicely.</li>
+<li>Old help (regexes and all) is available at "@will programmer help"</li>
+</ul>
+<h4 id="044-april-22-2014">0.4.4 - April 22, 2014</h4>
+<ul>
+<li>Removes the dependence on the v1 token (though it still helps with rate-limiting), thanks to <a href="https://github.com/bfhenderson">bfhenderson</a>.</li>
+<li>Much friendlier error message on an invalid API key, thanks to <a href="https://github.com/adamgilman">adamgilman</a>.</li>
+</ul>
+<h4 id="043-april-1-2014">0.4.3 - ~ April 1, 2014</h4>
+<ul>
+<li>Support for hundreds of users and rooms without hitting the API limit.</li>
+<li><code>get_all_users</code> use of the bulk API <a href="https://github.com/greenkahuna/will/pull/18">added</a> by <a href="https://github.com/quixeybrian">quixeybrian</a>.  Thanks also to <a href="https://github.com/jbeluch">jbeluch</a> and <a href="https://github.com/jdrukman">jdrukman</a> for nudges in the right direction.</li>
+<li>The start of some useful comments - the meat of will was hacked out by one person over a handful of days and it looks that way. Slowly but surely making this codebase more friendly to other contributions!</li>
+<li>Added a CONTRIBUTING.md file thanks to <a href="https://github.com/michaeljoseph">michaeljoseph</a>.</li>
+<li>Proper releases in the docs, and an updated <code>AUTHORS</code> file.  If you see something awry, send a PR!</li>
+</ul>
+<h4 id="04-march-2014">0.4 - ~ March 2014</h4>
+<ul>
+<li>
+<p>Ye olden past before we started keeping this list.  All contributions by GreenKahuna.  Will did everything that's not in the release list above.  That's called lazy retconning release lists!</p>
+</li>
+<li>
+<p>Make sure nothing from the readme is missed.</p>
+</li>
+</ul></div>
+        </div>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/prettify-1.0.min.js"></script>
+        <script src="../js/base.js"></script>
+    </body>
+</html>

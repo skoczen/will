@@ -56,6 +56,12 @@
             
             
             
+                <li >
+                    <a href="../../upgrading_to_2/">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
                 <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -95,6 +101,47 @@
             
             
             
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../../backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
                 <li >
                     <a href="../../deploy/">Deploy</a>
                 </li>
@@ -107,8 +154,19 @@
             
             
             
-                <li >
-                    <a href="../../roadmap/">Roadmap</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../../releases/">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../../roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
                 </li>
             
             
@@ -174,19 +232,18 @@
 <pre><code class="python">@respond_to(&quot;bonjour&quot;)
 def say_bonjour_will(self, message):
     # Awesome stuff
-    self.say(&quot;Bonjour!&quot;, message=message)
+    self.say(&quot;Bonjour!&quot;)
 </code></pre>
 
 <p><img alt="Bonjour!" src="../../img/only_bonjour.gif" /></p>
-<p>Note that we pass <code>messsage</code> along.  This allows will to route his reply to the correct room.  Without it, he'll just speak to the <code>DEFAULT_ROOM</code>.</p>
 <p><code>say()</code> comes with a number of options, including color, html, and ping notify. </p>
-<pre><code class="python">self.say(content, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
+<pre><code class="python">self.say(content, channel=None, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
 
 <ul>
 <li><strong><code>content</code></strong>: the content you want to send to the room. Any string will do, HTML or plain text.</li>
-<li><strong><code>message</code></strong>: (optional) The incoming message object</li>
-<li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms) or the room name to send the message to.</li>
+<li><strong><code>channel</code></strong>: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just reply in the same channel/room/thread.</li>
+<li><strong><code>service</code></strong>: (optional, rare) The name of the service (i.e. 'slack', 'hipchat', 'rocketchat') you want to send the message on.  By default Will replies on the same service you contacted him on.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
 <li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". </li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
@@ -195,16 +252,15 @@ def say_bonjour_will(self, message):
 <p>Sometimes you want will to ping you - that's where @name mentions are great.  To do those in will, you'll want to use <code>self.reply()</code></p>
 <pre><code class="python">@respond_to(&quot;^hi&quot;)   # Basic
 def hi(self, message):
-    self.reply(message, &quot;hello, %s!&quot; % message.sender.nick)
+    self.reply(&quot;hello, %s!&quot; % message.sender.handle)
 </code></pre>
 
 <p><img alt="Hi, Hello, username!" src="../../img/hi_hello.gif" /></p>
-<p>Note the order of arguments is different here, and <code>messsage</code> is required. All the options: </p>
-<pre><code class="python">self.reply(message, content, html=False, color=&quot;green&quot;, notify=False)
+<p>All the options: </p>
+<pre><code class="python">self.reply(content, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
 
 <ul>
-<li><strong><code>message</code></strong>: The incoming message object.  Required</li>
 <li><strong><code>content</code></strong>: the content you want to send to the room. HTML or plain text.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
 <li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
@@ -215,9 +271,11 @@ def hi(self, message):
 <pre><code class="python">@route(&quot;/ping&quot;)
 def ping(self):
     self.say(&quot;PONG!&quot;)
+    # or
+    self.say(&quot;PONG!&quot;, room=&quot;ping-pong&quot;, service=&quot;slack&quot;)
 </code></pre>
 
-<p>If you want to talk to a different room, you can pass in the <code>room</code> argument with one of the rooms from <code>self.available_rooms</code> or the string name of the room.</p>
+<p>If you want to talk to a different room, you can pass in the <code>channel</code> with the name of the channel or room you want to talk to.  If you have multiple services connected, just pass <code>service</code> with the one you want.</p>
 <h2 id="send-an-email">Send an email</h2>
 <p>Will has one email backend at the moment, via <a href="http://www.mailgun.com">mailgun</a>.  If you've set <code>DEFAULT_FROM_EMAIL</code>, <code>MAILGUN_API_URL</code>, and <code>MAILGUN_API_KEY</code>, you can use <code>self.send_email()</code></p>
 <pre><code class="python">@respond_to(&quot;status report&quot;)
@@ -247,14 +305,15 @@ def walkmaster(self):
 </code></pre>
 
 <p>The options are pretty much the same as <code>self.say</code>, with the addition of the <code>when</code> parameter.</p>
-<pre><code class="python">self.schedule_say(content, when, message=None, room=None, html=False, color=&quot;green&quot;, notify=False)
+<pre><code class="python">self.schedule_say(content, when, message=None, channel=None, html=False, color=&quot;green&quot;, notify=False)
 </code></pre>
 
 <ul>
 <li><strong><code>content</code></strong>: the content you want to send to the room. Any string will do, HTML or plain text.</li>
 <li><strong><code>when</code></strong>: when you want the message to be said. Python <code>datetime</code> object.</li>
 <li><strong><code>message</code></strong>: (optional) The incoming message object</li>
-<li><strong><code>room</code></strong>: (optional) The room object (from self.available_rooms), the room name, or "ALL_ROOMS" to send the message to.</li>
+<li><strong><code>channel</code></strong>: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just reply in the same channel/room/thread. You can also pass "ALL_ROOMS" to send the message everywhere, if that's really your thing.</li>
+<li><strong><code>service</code></strong>: (optional, rare) The name of the service (i.e. 'slack', 'hipchat', 'rocketchat') you want to send the message on.  By default Will replies on the same service you contacted him on.</li>
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
 <li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
@@ -271,13 +330,14 @@ def give_us_somethin_to_talk_about(self, message):
 </code></pre>
 
 <p>Note: you can't set the topic of a 1-1 chat. Will will complain politely.  All options:</p>
-<pre><code class="python">self.set_topic(topic, message=None, room=None) 
+<pre><code class="python">self.set_topic(topic, message=None, channel=None) 
 </code></pre>
 
 <ul>
 <li><code>topic</code>: The string you want to set the topic to</li>
 <li><code>message</code>: (optional) The incoming message object</li>
-<li><code>room</code>: (optional) The room object (from self.available_rooms), a room name, or "ALL_ROOMS" to send the message to.</li>
+<li><code>channel</code>: (optional) The name of the channel or room to send the message to.  If not specified, Will is smart, and will just set the topic for the same channel/room/thread. You can also pass "ALL_ROOMS" to send the message everywhere, if that's really your thing.</li>
+<li><code>service</code>: (optional, rare) The name of the service you want to send the message on.  By default Will replies on the same service you contacted him on.</li>
 </ul>
 <h2 id="do-any-python-thing">Do any python thing</h2>
 <p>Will is Just Python.  Because of that, your imagination is the limit of what he can do to respond to requests.</p>

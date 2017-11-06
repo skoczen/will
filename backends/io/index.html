@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://skoczen.github.io/will/plugins/basics/">
+        <link rel="canonical" href="http://skoczen.github.io/will/backends/io/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
-        <title>The Basics</title>
+        <title>Noticing and Talking</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -62,32 +62,32 @@
             
             
             
-                <li class="dropdown active">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                     
-                        <li class="active">
-                            <a href="./">The Basics</a>
+                        <li >
+                            <a href="../../plugins/basics/">The Basics</a>
                         </li>
                     
                         <li >
-                            <a href="../notice/">What Will Can Notice</a>
+                            <a href="../../plugins/notice/">What Will Can Notice</a>
                         </li>
                     
                         <li >
-                            <a href="../reply/">How Will Can Respond</a>
+                            <a href="../../plugins/reply/">How Will Can Respond</a>
                         </li>
                     
                         <li >
-                            <a href="../create/">Creating and Organizing Plugins</a>
+                            <a href="../../plugins/create/">Creating and Organizing Plugins</a>
                         </li>
                     
                         <li >
-                            <a href="../builtins/">Plugin Builtins</a>
+                            <a href="../../plugins/builtins/">Plugin Builtins</a>
                         </li>
                     
                         <li >
-                            <a href="../bundled/">Bundled Plugins</a>
+                            <a href="../../plugins/bundled/">Bundled Plugins</a>
                         </li>
                     
                     </ul>
@@ -101,40 +101,40 @@
             
             
             
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                     
                         <li >
-                            <a href="../../backends/overall/">Overview</a>
+                            <a href="../overall/">Overview</a>
+                        </li>
+                    
+                        <li class="active">
+                            <a href="./">Noticing and Talking</a>
                         </li>
                     
                         <li >
-                            <a href="../../backends/io/">Noticing and Talking</a>
+                            <a href="../analysis/">Analysis and Context</a>
                         </li>
                     
                         <li >
-                            <a href="../../backends/analysis/">Analysis and Context</a>
+                            <a href="../generation/">Generation</a>
                         </li>
                     
                         <li >
-                            <a href="../../backends/generation/">Generation</a>
+                            <a href="../execution/">Decisions and Execution</a>
                         </li>
                     
                         <li >
-                            <a href="../../backends/execution/">Decisions and Execution</a>
+                            <a href="../pubsub/">Pubsub and short-term memory</a>
                         </li>
                     
                         <li >
-                            <a href="../../backends/pubsub/">Pubsub and short-term memory</a>
+                            <a href="../storage/">Storage and long-term memory</a>
                         </li>
                     
                         <li >
-                            <a href="../../backends/storage/">Storage and long-term memory</a>
-                        </li>
-                    
-                        <li >
-                            <a href="../../backends/encryption/">Encryption and privacy</a>
+                            <a href="../encryption/">Encryption and privacy</a>
                         </li>
                     
                     </ul>
@@ -176,12 +176,12 @@
             <ul class="nav navbar-nav navbar-right">
                 
                 <li >
-                    <a rel="next" href="../../upgrading_to_2/">
+                    <a rel="next" href="../overall/">
                         <i class="fa fa-arrow-left"></i> Previous
                     </a>
                 </li>
                 <li >
-                    <a rel="prev" href="../notice/">
+                    <a rel="prev" href="../analysis/">
                         Next <i class="fa fa-arrow-right"></i>
                     </a>
                 </li>
@@ -204,49 +204,89 @@
             <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#teach-your-will-awesome-stuff">Teach your will awesome stuff</a></li>
+        <li class="main active"><a href="#io-backends">IO Backends</a></li>
         
-            <li><a href="#plugin-basics">Plugin basics</a></li>
+            <li><a href="#overview">Overview</a></li>
         
-            <li><a href="#hello-world">Hello, world</a></li>
+            <li><a href="#choosing-your-backends">Choosing your backends</a></li>
+        
+            <li><a href="#setting-your-backends">Setting your backends</a></li>
+        
+            <li><a href="#implementing-a-new-backend">Implementing a new backend</a></li>
         
     
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
 
-<h1 id="teach-your-will-awesome-stuff">Teach your will awesome stuff</h1>
-<p>Your will is all yours.  He'll come with all the great functions of the will library, but the power to teach him the things that are really useful to you is completely in your hands.</p>
-<p>We've designed will to be the friendliest, easiest-to-teach bot anywhere, where even non-coders can hop in and add new functionality in a matter of minutes.  We hope you'll find him as friendly as we do!</p>
-<hr />
-<h2 id="plugin-basics">Plugin basics</h2>
-<p>Plugins are just normal python files with at least one class that subclasses <code>WillPlugin</code>, and at least one method that's decorated. They can live anywhere normal python modules live, and will has some niceties to make organizing them simple.</p>
-<p>But sometimes, the best way to learn is to dive right in - so let's make one!</p>
-<h2 id="hello-world">Hello, world</h2>
-<p>Let's start as simple as they come - a plugin for will to say hello.  Since he already comes with "hello", and "hi", in this example, we'll go with "bonjour!"</p>
-<h4 id="step-1-create-a-bonjourpy">Step 1: Create a bonjour.py</h4>
-<p>This file can be called anything, but given the functionality, bonjour seems like a fair name.  Create the file in your plugins folder:</p>
-<p><img alt="Plugins folder with bonjour.py" src="../../img/plugins_bonjour.gif" /></p>
-<h4 id="step-2-add-the-plugin-python-code">Step 2: Add the plugin python code</h4>
-<p>In the <code>bonjour.py</code> file, add this:</p>
-<pre><code class="python">from will.plugin import WillPlugin
-from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
+<h1 id="io-backends">IO Backends</h1>
+<h2 id="overview">Overview</h2>
+<p>IO backends are how Will talks and listens to the outside world.  They're designed to abstract away the technical intracies of interfacing with a given platform, and let users just <em>use</em> them.</p>
+<p>Will supports the following io backends:</p>
+<ul>
+<li>Slack (<code>will.backends.storage.slack</code>)</li>
+<li>Hipchat (<code>will.backends.storage.hipchat</code>)</li>
+<li>Rocket.Chat (<code>will.backends.storage.rocketchat</code>)</li>
+<li>Shell (<code>will.backends.storage.shell</code>)</li>
+</ul>
+<h2 id="choosing-your-backends">Choosing your backends</h2>
+<p>This isn't a zero-sum game with will.  You can use as many backends as you'd like, all at once.</p>
+<h2 id="setting-your-backends">Setting your backends</h2>
+<p>To set your io backends, just update the following in <code>config.py</code></p>
+<pre><code class="python"># Platforms and mediums messages can come in and go out on.
+IO_BACKENDS = [
+    &quot;will.backends.io_adapters.slack&quot;,
+    &quot;will.backends.io_adapters.hipchat&quot;,
+    &quot;will.backends.io_adapters.rocketchat&quot;,
+    &quot;will.backends.io_adapters.shell&quot;,
+]
+</code></pre>
+
+<h2 id="implementing-a-new-backend">Implementing a new backend</h2>
+<p>Writing a new storage backend is fairly straightforward - simply subclass <code>BaseStorageBackend</code>, and implement:</p>
+<p>1) the five required methods, then
+2) specify any required settings with <code>required_settings</code>.</p>
+<pre><code class="python">from will.backends.storage.base import BaseStorageBackend
 
 
-class BonjourPlugin(WillPlugin):
+class MyCustomStorageBackend(BaseStorageBackend):
+    &quot;&quot;&quot;A custom storage backend using the latest, greatest technology.
 
-    @respond_to(&quot;bonjour&quot;)
-    def say_bonjour_will(self, message):
-        &quot;&quot;&quot;bonjour: I know how to say bonjour! In French!&quot;&quot;&quot;
-        self.reply(&quot;bonjour!&quot;)
+    You'll need to provide a GREAT_API_KEY to use it.
 
+    &quot;&quot;&quot;&quot;
+
+    required_settings = [
+        {
+            &quot;name&quot;: &quot;GREAT_API_KEY&quot;,
+            &quot;obtain_at&quot;: &quot;&quot;&quot;1. Go to greatamazingtechnology.com/api
+2. Click &quot;Generate API Key&quot;
+3. Copy that key, and set it in your Will.
+&quot;&quot;&quot;,
+        },
+    ]
+
+
+    # All storage backends must supply the following methods:    
+    def __init__(self, *args, **kwargs):
+        # Connects to the storage provider.
+
+    def do_save(self, key, value, expire=None):
+        raise NotImplemented
+
+    def do_load(self, key):
+        raise NotImplemented
+
+    def clear(self, key):
+        raise NotImplemented
+
+    def clear_all_keys(self):
+        raise NotImplemented
 
 </code></pre>
 
-<h4 id="step-3-restart-your-will">Step 3: Restart your will</h4>
-<p>Finally, <code>ctrl+c</code> then restart your will to load the new plugin, and you should be able to do this:</p>
-<p><img alt="Plugins folder with bonjour.py" src="../../img/bonjour_chat.gif" /></p>
-<p>Easy, right?  Well, now that you've got your feet wet, let's see  <a href="../notice/">what else will knows how to notice</a>.</p></div>
+<p>From there, just test it out, and when you're ready, submit a <a href="https://github.com/skoczen/will/pulls">pull request!</a></p>
+<p>Now that you've got hearing and talking sorted, let's look at how <a href="../../backends/analysis">Will adds context</a>.</p></div>
         </div>
 
         

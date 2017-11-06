@@ -56,6 +56,12 @@
             
             
             
+                <li >
+                    <a href="../upgrading_to_2/">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -95,6 +101,47 @@
             
             
             
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
                 <li class="active">
                     <a href="./">Deploy</a>
                 </li>
@@ -107,8 +154,19 @@
             
             
             
-                <li >
-                    <a href="../roadmap/">Roadmap</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../releases/">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
                 </li>
             
             
@@ -118,7 +176,7 @@
             <ul class="nav navbar-nav navbar-right">
                 
                 <li >
-                    <a rel="next" href="../config/">
+                    <a rel="next" href="../backends/encryption/">
                         <i class="fa fa-arrow-left"></i> Previous
                     </a>
                 </li>
@@ -150,11 +208,11 @@
         
             <li><a href="#deploy-on-heroku">Deploy on Heroku</a></li>
         
-            <li><a href="#depoly-in-docker">Depoly in Docker</a></li>
-        
-            <li><a href="#deploy-everywhere-else">Deploy Everywhere Else</a></li>
+            <li><a href="#deploy-in-docker">Deploy in Docker</a></li>
         
             <li><a href="#storage-backends">Storage Backends</a></li>
+        
+            <li><a href="#pubsub-backends">Pubsub Backends</a></li>
         
             <li><a href="#best-practices">Best Practices</a></li>
         
@@ -179,13 +237,16 @@ heroku addons:add rediscloud
 <p>At minimum, that's</p>
 <pre><code class="bash">heroku config:set \
 WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot; \
-WILL_USERNAME='12345_123456@chat.hipchat.com' \
-WILL_PASSWORD='asj2498q89dsf89a8df' \
-WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
-</code></pre>
-
-<p>If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:</p>
-<pre><code class="bash">heroku config:set WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
+# Slack
+WILL_SLACK_API_TOKEN=&quot;lkasjflkaklfjlasfjal1249814&quot;
+# Hipchat
+WILL_HIPCHAT_USERNAME='12345_123456@chat.hipchat.com' \
+WILL_HIPCHAT_PASSWORD='asj2498q89dsf89a8df' \
+WILL_HIPCHAT_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
+# Rocket.Chat
+WILL_ROCKETCHAT_USERNAME='will@heywill.io'\
+WILL_ROCKETCHAT_PASSWORD='12o312938asfjilasdlfjasdlkfj'\
+WILL_ROCKETCHAT_URL='https://heywill.rocket.chat'\
 </code></pre>
 
 <p>Finally, for will's schedule to be correct, you need to set him to the time zone you want:</p>
@@ -209,53 +270,93 @@ WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau' \
 </code></pre>
 
 <p>Simple.  For best-practices, see our continuous deployment recommendations below.</p>
-<h2 id="depoly-in-docker">Depoly in Docker</h2>
-<p>Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis. </p>
+<h2 id="deploy-in-docker">Deploy in Docker</h2>
+<p>Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis.</p>
 <h3 id="pre-requisites">Pre-requisites</h3>
-<p>You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you must start the image via the docker command with the correct arguments.</p>
+<p>You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you can still use the pre-defined  images from Docker Hub (https://hub.docker.com/r/heywill/will/). </p>
 <h3 id="step-1-configure-your-containers-environment-variables">Step 1: Configure your container's environment variables</h3>
 <p>In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:</p>
-<pre><code class="bash">WILL_USERNAME
-WILL_PASSWORD
-WILL_V2_TOKEN
+<pre><code class="bash"># For Slack
+WILL_SLACK_API_TOKEN
+# For Hipchat
+WILL_HIPCHAT_USERNAME
+WILL_HIPCHAT_PASSWORD
+WILL_HIPCHAT_V2_TOKEN
+# Rocket.Chat
+WILL_ROCKETCHAT_USERNAME
+WILL_ROCKETCHAT_PASSWORD
+WILL_ROCKETCHAT_URL
 </code></pre>
 
-<p>Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly. </p>
+<p>Note, we've pre-defined the redis url and the HTTP Server port; if you update these values, make sure you update the docker-compose file accordingly.</p>
 <h3 id="step-2-deploy-your-plugins-and-templates">Step 2: Deploy your plugins and templates</h3>
-<p>If you have any custom templates, create directories for your plugins and templates, and load your plugins and templates they'll be mounted when the container starts up giving your contanerized bot access to your templates.</p>
+<p>If you have any custom templates, create directories for your plugins and templates, and load your plugins and templates they'll be mounted when the container starts up giving your containerized bot access to your templates.</p>
 <pre><code class="bash">mkdir ./plugins ./templates
 </code></pre>
 
 <h3 id="step-3-build-will">Step 3: Build will.</h3>
 <p>Run build your docker image locally.</p>
-<pre><code class="bash">docker-compose build 
+<pre><code class="bash">docker-compose build
 </code></pre>
 
 <h3 id="step-4-start-the-container">Step 4: Start the container</h3>
 <p>Start your image from docker-compose using:</p>
-<pre><code class="bash">docker-compose up 
+<pre><code class="bash">docker-compose up
 </code></pre>
 
 <p>or to run the container in the background,</p>
 <pre><code class="bash">docker-compose up -d
 </code></pre>
 
-<h2 id="deploy-everywhere-else">Deploy Everywhere Else</h2>
-<h4 id="will-is-just-python">Will is Just Python</h4>
-<p>That says it all. Will is just python, and you can deploy him <em>anywhere</em> you have python, an open port, and access to redis.</p>
-<p>In your chosen deploy environment and setup, you'll want to do a couple things:</p>
-<h4 id="replicate-your-environment-settings">Replicate your environment settings</h4>
-<p>At minimum, that's:</p>
-<pre><code class="bash">export WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot;
-export WILL_USERNAME='12345_123456@chat.hipchat.com'
-export WILL_PASSWORD='asj2498q89dsf89a8df'
-export WILL_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
+<h3 id="roll-your-own-container">Roll your Own Container</h3>
+<p>Will docker file(s) are part of the main repository; this lets developers/teams
+build on the containers to embed configuration files, custom plugins etc... For
+now Will containers are represented in python 2.7 and python 3 flavors.</p>
+<h5 id="will-base">Will-base</h5>
+<p>Will is built on the alpine distribution(s) of python docker images. This was done
+to provide the smallest container footprint; yet, nothing is perfect so a few
+things need to be added.  Will-base provides the footprint to perform these base
+modifications.</p>
+<h5 id="will">Will</h5>
+<p>The heywill/will image is the container with Will executing as the
+container process.  A build arg is available for branch based builds from the Will
+repository.  To build from a specific branch use,</p>
+<pre><code>--build-arg branch=&lt;branch_name&gt;```
+
+otherwise master is the default.
+
+
+
+## Deploy Everywhere Else
+
+#### Will is Just Python
+
+That says it all. Will is just python, and you can deploy him *anywhere* you have python, an open port, and access to redis.
+
+In your chosen deploy environment and setup, you'll want to do a couple things:
+
+#### Replicate your environment settings
+
+At minimum, that's:
+```bash
+export WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot;
 export WILL_REDIS_URL='redis://some-domain.com/7/'
 export WILL_HTTPSERVER_PORT='80'
+
+# Slack
+WILL_SLACK_API_TOKEN=&quot;lkasjflkaklfjlasfjal1249814&quot;
+# Hipchat
+export WILL_HIPCHAT_USERNAME='12345_123456@chat.hipchat.com'
+export WILL_HIPCHAT_PASSWORD='asj2498q89dsf89a8df'
+export WILL_HIPCHAT_V2_TOKEN='asdfjl234jklajfa3azfasj3afa3jlkjiau'
+# Rocket.Chat
+WILL_ROCKETCHAT_USERNAME='will@heywill.io'
+WILL_ROCKETCHAT_PASSWORD='12o312938asfjilasdlfjasdlkfj'
+WILL_ROCKETCHAT_URL='https://heywill.rocket.chat'
 </code></pre>
 
 <p>If you have more than 30 chat rooms, you must also set the V1 token to avoid hipchat rate limits:</p>
-<pre><code class="bash">export WILL_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
+<pre><code class="bash">export WILL_HIPCHAT_V1_TOKEN='kjadfj89a34878adf78789a4fae3'
 </code></pre>
 
 <p>You'll also need to set any environment variables for your plugins.</p>
@@ -299,6 +400,12 @@ bot.bootstrap()
 <ul>
 <li><code>FILE_DIR='/var/run/will/settings/'</code></li>
 <li><code>FILE_DIR='~will/settings/'</code></li>
+</ul>
+<h2 id="pubsub-backends">Pubsub Backends</h2>
+<p>Will's default pubsub backend is Redis, and support for ZeroMQ and a pure-python backend is on the way.</p>
+<p>To change the backend, just set <code>PUBSUB_BACKEND</code> in <code>config.py</code> and then supply any other needed settings for the new backend.  The currently supported backend is:</p>
+<ul>
+<li><code>redis</code> - The default Redis backend</li>
 </ul>
 <h2 id="best-practices">Best Practices</h2>
 <p>In this section, we describe how we deploy and host will, in the hopes that others come forward and share what's working for them, too.  The more good practices, the better.</p>

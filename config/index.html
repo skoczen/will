@@ -56,6 +56,12 @@
             
             
             
+                <li >
+                    <a href="../upgrading_to_2/">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -95,6 +101,47 @@
             
             
             
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
                 <li >
                     <a href="../deploy/">Deploy</a>
                 </li>
@@ -107,8 +154,19 @@
             
             
             
-                <li >
-                    <a href="../roadmap/">Roadmap</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../releases/">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
                 </li>
             
             
@@ -123,7 +181,7 @@
                     </a>
                 </li>
                 <li >
-                    <a rel="prev" href="../deploy/">
+                    <a rel="prev" href="../backends/overall/">
                         Next <i class="fa fa-arrow-right"></i>
                     </a>
                 </li>
@@ -165,11 +223,15 @@
 <p>All environment variables prefixed with <code>WILL_</code> are imported into will's <code>settings</code> modules.</p>
 <p>In best practices, you should keep all of the following in environment variables:</p>
 <ul>
-<li><code>WILL_USERNAME</code></li>
-<li><code>WILL_PASSWORD</code></li>
+<li><code>WILL_SLACK_API_TOKEN</code></li>
+<li><code>WILL_HIPCHAT_USERNAME</code></li>
+<li><code>WILL_HIPCHAT_PASSWORD</code></li>
+<li><code>WILL_HIPCHAT_V2_TOKEN</code></li>
+<li><code>WILL_HIPCHAT_V1_TOKEN</code></li>
+<li><code>WILL_ROCKETCHAT_USERNAME</code></li>
+<li><code>WILL_ROCKETCHAT_PASSWORD</code></li>
+<li><code>WILL_ROCKETCHAT_URL</code></li>
 <li><code>WILL_REDIS_URL</code></li>
-<li><code>WILL_V2_TOKEN</code></li>
-<li><code>WILL_V1_TOKEN</code></li>
 <li>Any other tokens, keys, passwords, or sensitive URLS.</li>
 </ul>
 <p>We've made it easy.  No excuses. :)</p>
@@ -178,16 +240,28 @@
 <ul>
 <li><code>PLUGINS</code>: The list of plugins to run,</li>
 <li><code>PLUGIN_BLACKLIST</code>: The list of plugins to ignore, even if they're in <code>PLUGINS</code>,</li>
+<li><code>IO_BACKENDS</code>: The list services you want Will to connect to,</li>
+<li><code>ANALYZE_BACKENDS</code>: The list of message-analysis backends you want Will to run through.</li>
+<li><code>GENERATION_BACKENDS</code>: The list of reply-generation backends you want Will to go through.</li>
+<li><code>EXECUTION_BACKENDS</code>: The list of decision-making and execution backends you want Will to go through (we recommend just having one.)</li>
+<li><code>STORAGE_BACKEND</code>: Which backend you'd like to use for Will to store his long-term memory. (Built-in: 'redis', 'couchbase', 'file')</li>
+<li><code>PUBSUB_BACKEND</code>: Which backend you'd like to use for Will to use for his working memory. (Built-in: 'redis'.  Soon: 'zeromq', 'builtin')</li>
+<li><code>ENCYPTION_BACKEND</code>: Which backend you'd like to use for Will to encrypt his storage and memory. (Built-in: 'aes'.)</li>
 <li><code>PUBLIC_URL</code>: The publicly accessible URL will can reach himself at (used for <a href="../plugins/bundled/#administration">keepalive</a>),</li>
 <li><code>HTTPSERVER_PORT</code>: The port will should handle HTTP requests on.  Defaults to 80, set to &gt; 1024 if you don't have sudo,</li>
 <li><code>REDIS_MAX_CONNECTIONS</code>: The maximum number of connections to make to redis, for connection pooling.</li>
-<li><code>ROOMS</code>: The list of rooms to join,</li>
-<li><code>DEFAULT_ROOM</code>: The room to send messages that come from web requests to,</li>
+<li><code>FUZZY_MINIMUM_MATCH_CONFIDENCE</code>:  What percentage of confidence Will should have before replying to a fuzzy match.</li>
+<li><code>FUZZY_REGEX_ALLOWABLE_ERRORS</code>:  The maximum number of letters that can be wrong in trying to make a fuzzy match.</li>
+<li><code>SLACK_DEFAULT_CHANNEL</code>: The default Slack channel to send messages to (via webhooks, etc)</li>
+<li><code>HIPCHAT_ROOMS</code>: The list of rooms to join,</li>
+<li><code>HIPCHAT_DEFAULT_ROOM</code>: The room to send messages that come from web requests to,</li>
+<li><code>DEFAULT_BACKEND</code>: The service to send messages that come from web requests to,</li>
 <li><code>TEMPLATE_DIRS</code>: Extra directories to look for templates,</li>
 <li><code>ADMINS</code>: The mention names of all the admins,</li>
 <li><code>LOGLEVEL</code>: What logging level to use,</li>
 <li><code>HIPCHAT_SERVER</code>: if you're using the <a href="https://www.hipchat.com/server">HipChat server beta</a>, the hostname of the server,</li>
 <li><code>ALLOW_INSECURE_HIPCHAT_SERVER</code>: the option to disable SSL checks (seriously, don't),</li>
+<li><code>ENABLE_INTERNAL_ENCRYPTION</code>: the option to turn off internal encryption (not recommended, but you can do it.)</li>
 <li><code>PROXY_URL</code>: Proxy server to use, consider exporting it as <code>WILL_PROXY_URL</code> environment variable, if it contains sensitive information</li>
 <li>and all of your non-sensitive plugin settings.</li>
 </ul>
@@ -210,7 +284,7 @@ print settings.MY_SETTING_NAME
 <p>Some smart defaulting happens inside settings.py for important variables.  For the moment, I'm going to leave that out of the docs, and refer you to <code>settings.py</code> as I <em>believe</em> things should Just Work, and most people should never need to care.  If this decision's wrong, please open an issue, and these docs will be improved!</p>
 </li>
 </ol>
-<p>That's it for config.  Now, let's get your will <a href="../deploy/">deployed</a>!</p></div>
+<p>That's it for config.  Now, you can either do a deeper dive into <a href="../backends/overall/">Will's brain</a>, or just get your will <a href="../deploy/">deployed</a>!</p></div>
         </div>
 
         

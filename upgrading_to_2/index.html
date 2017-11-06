@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://skoczen.github.io/will/upgrading_to_2/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+        <title>Upgrade to 2.0</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/prettify-1.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link href="../css/style.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">Will</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
+            
+            
+                <li >
+                    <a href="..">Get Started</a>
+                </li>
+            
+            
+            
+                <li class="active">
+                    <a href="./">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../plugins/basics/">The Basics</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/notice/">What Will Can Notice</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/reply/">How Will Can Respond</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/create/">Creating and Organizing Plugins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/builtins/">Plugin Builtins</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../plugins/bundled/">Bundled Plugins</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../config/">Configure</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../deploy/">Deploy</a>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../improve/">Improve</a>
+                </li>
+            
+            
+            
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="../releases/">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="../roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li >
+                    <a rel="next" href="..">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li >
+                    <a rel="prev" href="../plugins/basics/">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="https://github.com/skoczen/will/">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#the-short-version-just-pip-install">The Short Version: Just pip install</a></li>
+        
+    
+        <li class="main "><a href="#the-long-version">The Long Version:</a></li>
+        
+            <li><a href="#1-add-io-backends">1. Add IO backends.</a></li>
+        
+            <li><a href="#2-update-the-hipchat-tokens-to-be-namespaced">2. Update the HipChat tokens to be namespaced.</a></li>
+        
+            <li><a href="#3-set-up-redis">3. Set up Redis</a></li>
+        
+            <li><a href="#4-set-your-encryption-secret-key">4. Set your encryption secret key.</a></li>
+        
+            <li><a href="#5-set-the-new-20-settings-to-your-liking">5. Set the new 2.0 settings to your liking.</a></li>
+        
+            <li><a href="#6-thats-it-let-us-know-how-it-goes">6. That's it - let us know how it goes!</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h1>Upgrading to Will 2.0</h1>
+
+<p>Will was born four years ago, and 0.x and 1.x lived long, good lives.</p>
+<p>But as the years passed, there were increasing concerns about HipChat lock-in, and it was time to make Will smarter.  </p>
+<p>So six months ago, work on Will 2.0 began, and today it's finally here! All of our Wills are free from lock-in, future-proofed, and whole lot smarter.  If you're just hearing about this, it's worth a quick read of the <a href="https://heywill.io/will2">release announcement</a> for a bit more context!</p>
+<h1 id="the-short-version-just-pip-install">The Short Version: Just pip install</h1>
+<p>While Will has picked up a bunch of features and improvements in 2.0, we've aimed to keep him backwards-compatable with 1.x and 0.x releases.  If you weren't using any undocumented internal methods and you're already using redis, upgrading should be as easy as:</p>
+<pre><code class="shell">pip install --upgrade will
+</code></pre>
+
+<p>From there, you can just <code>./run_will.py</code>, and things should Just Work.</p>
+<p>You will, however, see a lot of output from Will, telling you that some names have changed, and asking you to update them in your <code>config.py</code> when you have time.  You can either just follow those instructions, or the guide below.</p>
+<h1 id="the-long-version">The Long Version:</h1>
+<h2 id="1-add-io-backends">1. Add IO backends.</h2>
+<p>If you're planning to continue only using HipChat (until it's replaced by Stride), we'd recommend that you add this to your <code>config.py</code>:</p>
+<pre><code class="python">IO_BACKENDS = [
+    &quot;will.backends.io_adapters.hipchat&quot;,
+    &quot;will.backends.io_adapters.shell&quot;,
+    # &quot;will.backends.io_adapters.slack&quot;,
+    # &quot;will.backends.io_adapters.rocketchat&quot;,
+]
+</code></pre>
+
+<p>That will enable the HipChat and local shell stdin/stdout backend, for easy testing. </p>
+<p>If you want to also bring your Will into a Slack or Rocket.Chat room in the future, just uncomment that backend and restart!</p>
+<h2 id="2-update-the-hipchat-tokens-to-be-namespaced">2. Update the HipChat tokens to be namespaced.</h2>
+<p>You'll see this starting up, but when you have time, update your tokens as follows:<br />
+(If you're using <code>WILL_</code> environment variables, please add the <code>WILL_</code> as needed:)</p>
+<ul>
+<li><code>USERNAME</code> becomes <code>HIPCHAT_USERNAME</code></li>
+<li><code>TOKEN</code> or <code>V1_TOKEN</code> become <code>HIPCHAT_V1_TOKEN</code></li>
+<li><code>V2_TOKEN</code> becomes <code>HIPCHAT_V2_TOKEN</code></li>
+<li><code>DEFAULT_ROOM</code> becomes <code>HIPCHAT_DEFAULT_ROOM</code></li>
+<li><code>HANDLE</code> should be removed, as it's now pulled live from the HipChat servers and not used.</li>
+<li><code>NAME</code> should be removed, as it's now pulled live from the HipChat servers and not used.</li>
+<li><code>PASSWORD</code> becomes <code>HIPCHAT_PASSWORD</code></li>
+<li><code>ROOMS</code> becomes <code>HIPCHAT_ROOMS</code></li>
+</ul>
+<h2 id="3-set-up-redis">3. Set up Redis</h2>
+<p>At the moment, Redis is the only working pubsub backend, and is required to run Will. So, if you're not already running it, you'll need it for 2.x.</p>
+<p>If this is impossible for your setup, ZeroMQ support is in the works, and we're looking to add a pure-python backend as well in 2.1 or 2.2.  Creating a new pubsub backend just requires subclassing <code>BasePubSub</code> and implementing four methods - so if someone has a little time to bring those along, a pull request is welcome!</p>
+<h2 id="4-set-your-encryption-secret-key">4. Set your encryption secret key.</h2>
+<p>Will now encrypts all messages on the pubsub wire and in storage by default.  Without a <code>SECRET_KEY</code> set, he'll auto-generate one based on the machine MAC address, but this isn't a perfect solution, and will mean that he can't access his storage if there are hardware changes (or he's running in a virtualized environment that has shifting MACs.)</p>
+<p>Please set <code>SECRET_KEY</code> as soon as possible.</p>
+<p>The recommended way is to set it as an environmental variable, <code>WILL_SECRET_KEY</code>, in an environment that is secured and you trust.  Any string will work, and entropy is good. </p>
+<h2 id="5-set-the-new-20-settings-to-your-liking">5. Set the new 2.0 settings to your liking.</h2>
+<p>Will 2 ships with bunch of new features, and though we've provided sensible defaults, if you'd like, you can update your <code>config.py</code> with your preferences.</p>
+<p>The simplest way to see everything is to have Will generate a <code>config.py.dist</code> that you can use for comparison:</p>
+<pre><code class="shell">$ generate_will_project --config-dist-only
+...
+Created a config.py.dist.  Open it up to see what's new!
+</code></pre>
+
+<p>It's worth reading through the new <code>config.py</code>, but here's a few areas specifically worth a look:</p>
+<h3 id="platform-and-decision-making">Platform and Decision-making</h3>
+<p>As mentioned above, there are now multiple IO backends and platforms that Will can communicate on. It's also now easy to <a href="../backends/io">write your own</a>, pull requests are very welcome, and more are coming soon.  Here's all the options:</p>
+<pre><code class="python">IO_BACKENDS = [
+    &quot;will.backends.io_adapters.slack&quot;,
+    &quot;will.backends.io_adapters.hipchat&quot;,
+    &quot;will.backends.io_adapters.rocketchat&quot;,
+    &quot;will.backends.io_adapters.shell&quot;,
+]
+</code></pre>
+
+<p>Will 2 also comes with pluggable brains - split into Analysis, Generation, and Execution backends.  The defaults are solid and behave similarly to Will 1.0 (the only difference is a high-confidence fuzzy matching engine), but if you're interested in making your Will more flexible, or adding more context to his responses, building <a href="../backends/analysis">custom backends is easy</a>.</p>
+<p>Here's all of the options, with the defaults uncommented.   It's worth pulling this into your <code>config.py</code>.</p>
+<pre><code class="python"># Backends to analyze messages and generate useful metadata
+ANALYZE_BACKENDS = [
+    &quot;will.backends.analysis.nothing&quot;,
+    &quot;will.backends.analysis.history&quot;,
+]
+
+# Backends to generate possible actions, and metadata about them.
+GENERATION_BACKENDS = [
+    &quot;will.backends.generation.strict_regex&quot;,
+    &quot;will.backends.generation.fuzzy_all_matches&quot;,
+    # &quot;will.backends.generation.fuzzy_best_match&quot;,
+]
+
+# The &quot;decision making&quot; backends that look among the generated choices,
+# and decide which to follow. Backends are executed in order, and any
+# backend can stop further evaluation.
+EXECUTION_BACKENDS = [
+    &quot;will.backends.execution.best_score&quot;,
+    # &quot;will.backends.execution.all&quot;,
+]
+</code></pre>
+
+<p>There are also a few settings to tweak things like the fuzzy logic.  These have sensible defaults, but you can tweak them to your liking.</p>
+<pre><code class="python"># Confidence fuzzy generation backends require before Will responds
+# https://pypi.python.org/pypi/fuzzywuzzy
+FUZZY_MINIMUM_MATCH_CONFIDENCE = 90  # Defaults to 90%
+FUZZY_REGEX_ALLOWABLE_ERRORS = 3
+</code></pre>
+
+<h2 id="6-thats-it-let-us-know-how-it-goes">6. That's it - let us know how it goes!</h2>
+<p>That's all you really need to know to flip the switch to Will 2.0.  </p>
+<p>As there's a lot of new stuff in this release, it's possible that some bugs have slipped through the cracks.  Please submit anything you find, no matter how small, <a href="https://github.com/skoczen/will/issues">into the github issue tracker</a>.  We'll be active in fixing things ASAP and helping if you're stuck.</p>
+<p>Thanks for using Will, and for going through the big upgrade!  We're excited about what the future holds, and happy to get your bots free from platform lock-in.</p></div>
+        </div>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/prettify-1.0.min.js"></script>
+        <script src="../js/base.js"></script>
+    </body>
+</html>

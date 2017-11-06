@@ -56,6 +56,12 @@
             
             
             
+                <li >
+                    <a href="upgrading_to_2/">Upgrade to 2.0</a>
+                </li>
+            
+            
+            
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Teach Your Will <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -95,6 +101,47 @@
             
             
             
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Brain <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="backends/overall/">Overview</a>
+                        </li>
+                    
+                        <li >
+                            <a href="backends/io/">Noticing and Talking</a>
+                        </li>
+                    
+                        <li >
+                            <a href="backends/analysis/">Analysis and Context</a>
+                        </li>
+                    
+                        <li >
+                            <a href="backends/generation/">Generation</a>
+                        </li>
+                    
+                        <li >
+                            <a href="backends/execution/">Decisions and Execution</a>
+                        </li>
+                    
+                        <li >
+                            <a href="backends/pubsub/">Pubsub and short-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="backends/storage/">Storage and long-term memory</a>
+                        </li>
+                    
+                        <li >
+                            <a href="backends/encryption/">Encryption and privacy</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
                 <li >
                     <a href="deploy/">Deploy</a>
                 </li>
@@ -107,8 +154,19 @@
             
             
             
-                <li >
-                    <a href="roadmap/">Roadmap</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="releases/">Releases</a>
+                        </li>
+                    
+                        <li >
+                            <a href="roadmap/">Roadmap</a>
+                        </li>
+                    
+                    </ul>
                 </li>
             
             
@@ -123,7 +181,7 @@
                     </a>
                 </li>
                 <li >
-                    <a rel="prev" href="plugins/basics/">
+                    <a rel="prev" href="upgrading_to_2/">
                         Next <i class="fa fa-arrow-right"></i>
                     </a>
                 </li>
@@ -162,7 +220,7 @@
 
 <p><img align="right" src="img/will-head.png" alt="Will's smiling face" title="Will's smiling face" class="will_head" /></p>
 <h1 id="meet-will">Meet Will</h1>
-<p>Will is the friendliest, easiest-to-teach bot you've ever used.  He works on hipchat, in rooms and 1-1 chats.</p>
+<p>Will is the friendliest, easiest-to-teach bot you've ever used.  He works on Slack, HipChat, Rocket.Chat, and more.</p>
 <p>He makes teaching your chat bot this simple:</p>
 <pre><code>@respond_to(&quot;hi&quot;)
 def say_hello(self, message):
@@ -170,16 +228,18 @@ def say_hello(self, message):
 </code></pre>
 
 <p>Lots of batteries are included, and you can get your own will up and running in a couple of minutes.  </p>
-<p>Will started by <a href="http://www.inkandfeet.com">Steven Skoczen</a>, and has been <a href="improve/#shoulders">contributed to by lots of folks</a>.</p>
+<p>Will started by <a href="http://www.inkandfeet.com">Steven Skoczen</a>, and has been <a href="improve/#the-shoulders-of-giants">contributed to by lots of folks</a>.</p>
 <p>Check out the quickstart below!</p>
 <div style="width:100%;clear:both;"></div>
 
 <h1 id="quickstart">Quickstart</h1>
+<p><strong>Upgrading from Will 1.x or 0.x? <a href="./upgrading_to_2/">Check out the Upgrade Guide</a>.</strong></p>
 <p>Here's how to set up your system and get will running.  If you already write python, it'll probably take less than 5 minutes.</p>
 <hr />
 <h2 id="install-prerequisites">Install prerequisites</h2>
-<p>Will doesn't need much, just python and a place to store things.</p>
+<p>Will doesn't need much, just python, a place to store things, and a way to communicate.</p>
 <p>Will can store stuff in Redis, Couchbase, or local storage.  Our recommended backend is redis, and we'll describe getting it set up below. <a href="deploy/#Storage-Backends">Information on using Couchbase or local storage is here</a>.</p>
+<p>Will's communication layer works via publish-subscribe, and at the moment, only supports Redis.  If that's a blocker for you, ZeroMQ, and a pure python built-in layer are coming in 2.1.</p>
 <h4 id="install-redis-24">Install redis &gt; 2.4</h4>
 <p>Official documentation is at <a href="http://redis.io/">redis.io</a>.</p>
 <p>If you're on Mac OS X, and using <a href="http://brew.sh/">homebrew</a>, you can simply:</p>
@@ -221,18 +281,21 @@ $ workon my_will
 (my_will) $ generate_will_project
 # ... output from will making your new project
 
+(my_will) $ pip install -r requirements.txt
+# ... install any needed libraries for your chosen backends.
+
 (my_will) $ ./run_will.py
 # .. the magic begins
 </code></pre>
 
-<p>That's it!  </p>
+<p>That's it!</p>
 <p>Note that the first time you run, you'll probably be missing some configuration. That's OK - <code>run_will</code> will check your environment, and walk you through getting and setting any necessary config.  We'll go through the nitty-gritty later, but if you have any odd setup problems, look in <code>config.py</code> - that's where all of the non-sensitive data is stored.</p>
 <p><img alt="Uninitialized Environment output" src="./img/uninitialized_env.gif" />
 This is totally normal output.</p>
 <p>Eventually, you'll reach this screen of joy.  Now, it's time to play!</p>
 <p><img alt="Screen of Joy" src="./img/screen_of_joy.gif" /></p>
 <h4 id="testing-will-out">Testing will out</h4>
-<p>Once your will is up and running, hop into any of your hipchat rooms, and say hello!</p>
+<p>Once your will is up and running, hop into any of your chat rooms (or just the terminal), and say hello!</p>
 <p><code>@will hi</code></p>
 <p><img alt="Hi, Will" src="./img/hi.gif" /></p>
 <p><code>@will help</code></p>
