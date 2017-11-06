@@ -219,6 +219,8 @@
         
             <li><a href="#5-set-the-new-20-settings-to-your-liking">5. Set the new 2.0 settings to your liking.</a></li>
         
+            <li><a href="#platform-and-decision-making">Platform and Decision-making</a></li>
+        
             <li><a href="#6-thats-it-let-us-know-how-it-goes">6. That's it - let us know how it goes!</a></li>
         
     
@@ -239,7 +241,7 @@
 <p>From there, you can just <code>./run_will.py</code>, and things should Just Work.</p>
 <p>You will, however, see a lot of output from Will, telling you that some names have changed, and asking you to update them in your <code>config.py</code> when you have time.  You can either just follow those instructions, or the guide below.</p>
 <h1 id="the-long-version">The Long Version:</h1>
-<h2 id="1-add-io-backends">1. Add IO backends.</h2>
+<h3 id="1-add-io-backends">1. Add IO backends.</h3>
 <p>If you're planning to continue only using HipChat (until it's replaced by Stride), we'd recommend that you add this to your <code>config.py</code>:</p>
 <pre><code class="python">IO_BACKENDS = [
     &quot;will.backends.io_adapters.hipchat&quot;,
@@ -251,7 +253,7 @@
 
 <p>That will enable the HipChat and local shell stdin/stdout backend, for easy testing. </p>
 <p>If you want to also bring your Will into a Slack or Rocket.Chat room in the future, just uncomment that backend and restart!</p>
-<h2 id="2-update-the-hipchat-tokens-to-be-namespaced">2. Update the HipChat tokens to be namespaced.</h2>
+<h3 id="2-update-the-hipchat-tokens-to-be-namespaced">2. Update the HipChat tokens to be namespaced.</h3>
 <p>You'll see this starting up, but when you have time, update your tokens as follows:<br />
 (If you're using <code>WILL_</code> environment variables, please add the <code>WILL_</code> as needed:)</p>
 <ul>
@@ -264,14 +266,14 @@
 <li><code>PASSWORD</code> becomes <code>HIPCHAT_PASSWORD</code></li>
 <li><code>ROOMS</code> becomes <code>HIPCHAT_ROOMS</code></li>
 </ul>
-<h2 id="3-set-up-redis">3. Set up Redis</h2>
+<h3 id="3-set-up-redis">3. Set up Redis</h3>
 <p>At the moment, Redis is the only working pubsub backend, and is required to run Will. So, if you're not already running it, you'll need it for 2.x.</p>
 <p>If this is impossible for your setup, ZeroMQ support is in the works, and we're looking to add a pure-python backend as well in 2.1 or 2.2.  Creating a new pubsub backend just requires subclassing <code>BasePubSub</code> and implementing four methods - so if someone has a little time to bring those along, a pull request is welcome!</p>
-<h2 id="4-set-your-encryption-secret-key">4. Set your encryption secret key.</h2>
+<h3 id="4-set-your-encryption-secret-key">4. Set your encryption secret key.</h3>
 <p>Will now encrypts all messages on the pubsub wire and in storage by default.  Without a <code>SECRET_KEY</code> set, he'll auto-generate one based on the machine MAC address, but this isn't a perfect solution, and will mean that he can't access his storage if there are hardware changes (or he's running in a virtualized environment that has shifting MACs.)</p>
 <p>Please set <code>SECRET_KEY</code> as soon as possible.</p>
 <p>The recommended way is to set it as an environmental variable, <code>WILL_SECRET_KEY</code>, in an environment that is secured and you trust.  Any string will work, and entropy is good. </p>
-<h2 id="5-set-the-new-20-settings-to-your-liking">5. Set the new 2.0 settings to your liking.</h2>
+<h3 id="5-set-the-new-20-settings-to-your-liking">5. Set the new 2.0 settings to your liking.</h3>
 <p>Will 2 ships with bunch of new features, and though we've provided sensible defaults, if you'd like, you can update your <code>config.py</code> with your preferences.</p>
 <p>The simplest way to see everything is to have Will generate a <code>config.py.dist</code> that you can use for comparison:</p>
 <pre><code class="shell">$ generate_will_project --config-dist-only
@@ -321,7 +323,7 @@ FUZZY_MINIMUM_MATCH_CONFIDENCE = 90  # Defaults to 90%
 FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 </code></pre>
 
-<h2 id="6-thats-it-let-us-know-how-it-goes">6. That's it - let us know how it goes!</h2>
+<h3 id="6-thats-it-let-us-know-how-it-goes">6. That's it - let us know how it goes!</h3>
 <p>That's all you really need to know to flip the switch to Will 2.0.  </p>
 <p>As there's a lot of new stuff in this release, it's possible that some bugs have slipped through the cracks.  Please submit anything you find, no matter how small, <a href="https://github.com/skoczen/will/issues">into the github issue tracker</a>.  We'll be active in fixing things ASAP and helping if you're stuck.</p>
 <p>Thanks for using Will, and for going through the big upgrade!  We're excited about what the future holds, and happy to get your bots free from platform lock-in.</p></div>
