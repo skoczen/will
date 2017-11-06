@@ -1,6 +1,6 @@
 Here's who I know: <br>
 <ul>
-    {% for user in internal_roster %}
-    <li><b>@{{user.nick|lower}}</b> - {{user.name}}.  (# {{user.hipchat_id}})</li>
+    {% for person in people %}
+    <li><b>@{{person.nick|lower}}</b> - {{person.name}}.  (# {{person.hipchat_id}})</li>
     {% endfor %}
 </ul>

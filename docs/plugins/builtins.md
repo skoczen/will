@@ -73,7 +73,7 @@ class BonjourPlugin(WillPlugin):
     @respond_to("bonjour")
     def say_bonjour_will(self, message):
         """bonjour: I know how to say bonjour! In French!"""
-        self.reply(message, "bonjour!")
+        self.reply("bonjour!")
 ```
 
 ![Bonjour help](../img/bonjour_help.gif)
@@ -146,7 +146,7 @@ class BonjourPlugin(WillPlugin):
 
     @respond_to("bonjour")
     def say_bonjour_will(self, message):
-        self.reply(message, settings.HELLO_MESSAGE)
+        self.reply(settings.HELLO_MESSAGE)
 ```
 
 You can also mark one or more settings as required for your plugin with the `require_settings` decorator, and they'll be checked on startup.
@@ -159,7 +159,7 @@ class BonjourPlugin(WillPlugin):
     @require_settings("HELLO_MESSAGE", "ANOTHER_SETTING")
     @respond_to("bonjour")
     def say_bonjour_will(self, message):
-        self.reply(message, settings.HELLO_MESSAGE)
+        self.reply(settings.HELLO_MESSAGE)
 ```
 
 When will starts up, he'll make sure they've been set:
@@ -170,7 +170,7 @@ When will starts up, he'll make sure they've been set:
 
 ## Getting a room's history
 
-Sometimes you'll want to retrieve a room's history. No problem - get the room's object, and the last 75 messages are sitting on `.history`.
+Sometimes you'll want to retrieve a room's history. No problem - get the room's object, and the last 20 messages are sitting on `analysis.history`.
 
 ```python  
 class HistoryPlugin(WillPlugin):
@@ -178,37 +178,10 @@ class HistoryPlugin(WillPlugin):
     @respond_to("^get last message")
     def get_history(self, message):
         room = self.get_room_from_message(message)
-        self.reply(message, room.history[-1]["message"])
+        self.reply(room.analysis["history"][-1])
 ```
 
-`.history` is pretty much what's returned from the [HipChat room history API](https://www.hipchat.com/docs/apiv2/method/view_room_history) - the lone exception is that the date has been converted to a python datetime.
 
-```python
-    {
-        u'from':{
-            u'mention_name':u'First Last',
-            u'id':xxxx,
-            u'links':{
-                u'self': u'https://api.hipchat.com/v2/user/xxxx'
-            },
-            u'name':u'First Last'
-        },
-        u'date':datetime.datetime(2015, 1, 26, 15, 26, 52),
-        u'mentions':[
-            {
-                u'mention_name':u'FirstLast',
-                u'id':xyxy,
-                u'links':{
-                    u'self': u'https://api.hipchat.com/v2/user/xyxy'
-                },
-                u'name':u'First Last'
-            }
-        ],
-        u'message':u'Hi there!',
-        u'type':u'message',
-        u'id':u'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-    }
-```
 
 ## Parse natural time
 

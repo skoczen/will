@@ -1,4 +1,6 @@
-Last Update: May 5, 2017
+Last Update: November 7, 2017
+
+*Quick note*:  I'll be updating this with more information now that Will 2.0 is out, and we're learning what really makes sense in the wild.  What's below is roughly the roadmap from April 2017.
 
 ## A Note from Steven
 
@@ -41,23 +43,25 @@ Will the company will focus, like Wordpress, on running the PaaS and SaaS platfo
 
 Here's the nuts and bolts of how, today, we see this rolling out.
 
-0.9.4 - Just released, catches up almost all open PRs
+0.9.4 - Released April 25, 2017 - catches up almost all open PRs
 
-1.0 - Soon, closes up existing issues, code cleanup and prep for improvements
+1.0 - Released September 29, 2017 closes up existing issues, code cleanup and prep for improvements
 
-1.2 - Slack Support, `IOBackend` documented and working.  PRs for new IOs accepted.
+2.0 - November 4, 2017 - Slack Support, `IOBackend` documented and working.  PRs for new IOs accepted.
 
-1.3 - API Support released, via an `APIBackend` implementation of `IOBackend`.
+2.1 - A pure-python pubsub backend, Telegram Support, and a cleaned up API for introspecting and accessing the results of analysis and generation.
 
-1.4 - IFTTT Support, `SkillsBackend` documented and working.  PRs for new Skills accepted.
+2.2 - API Backend released, via an `APIBackend` implementation of `IOBackend`.  Allows folks to spin up Will and control him completely via a RESTful API.
 
-1.5 - Will UI, with on-the-fly config, plugin enable/disable, and restartability.
+2.3 - IFTTT Support, `SkillsBackend` documented and working.  PRs for new Skills accepted.
 
-1.6 - App specs for AIOS and `AIOSApp` class released.
+2.5 - Will UI, with on-the-fly config, plugin enable/disable, and restartability.
 
-1.7 - Release of first five apps. TBD, but considered: (Image me, Remind me, Groceries, News Summary, Scattegories, Stale Package Finder)
+2.6 - App specs for AIOS and `AIOSApp` class released.
 
-2.0 - App Marketplace released, Git library integration released, and all existing Will plugins released as AIOS apps.
+2.7 - Release of first five apps. TBD, but considered: (Image me, Remind me, Groceries, News Summary, Scattegories, Stale Package Finder)
+
+3.0 - App Marketplace released, Git library integration released, and all existing Will plugins released as AIOS apps.
 
 2.0+ - "The root of all evil is premature optimization."  Releases after 2.0 are likely to move in a direction of improved AIOS features, more built-in AI tools, smarter and richer message processing and context, cross-app communication, and speed/reliability bumps.  We'd also like to look at the feasibility of authoring apps in both Python and JS.  
 

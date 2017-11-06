@@ -11,6 +11,13 @@ from will import settings
 logger = logging.getLogger(__name__)
 
 
+class GoogleLocation(object):
+    def __init__(self, google_results, *args, **kwargs):
+        self.name = google_results["results"][0]["formatted_address"]
+        self.lat = google_results["results"][0]["geometry"]["location"]["lat"]
+        self.long = google_results["results"][0]["geometry"]["location"]["lng"]
+
+
 def get_location(place):
     try:
         payload = {'address': place, 'sensor': False}
@@ -19,7 +26,8 @@ def get_location(place):
         if resp["status"] != "OK":
             return None
         else:
-            location = resp["results"][0]["geometry"]["location"]
+            location = GoogleLocation(resp)
+
             return location
     except Exception as e:
         logger.error("Failed to fetch geocode for %(place)s. Error %(error)s" % {'place': place, 'error': e})
@@ -48,20 +56,20 @@ def get_timezone(lat, lng):
 
 class TimePlugin(WillPlugin):
 
-    @respond_to("what time is it in (?P<place>.*)")
+    @respond_to("what time is it in (?P<place>.*)?\?+")
     def what_time_is_it_in(self, message, place):
         """what time is it in ___: Say the time in almost any city on earth."""
         location = get_location(place)
         if location is not None:
-            tz = get_timezone(location['lat'], location['lng'])
+            tz = get_timezone(location.lat, location.long)
             if tz is not None:
                 ct = datetime.datetime.now(tz=pytz.timezone(tz))
                 self.say("It's %(time)s in %(place)s." % {'time': self.to_natural_day_and_time(ct),
-                                                          'place': place}, message=message)
+                                                          'place': location.name}, message=message)
             else:
-                self.say("I couldn't find timezone for %(place)s." % {'place': place}, message=message)
+                self.say("I couldn't find timezone for %(place)s." % {'place': location.name}, message=message)
         else:
-            self.say("I couldn't find anywhere named %(place)s." % {'place': place}, message=message)
+            self.say("I couldn't find anywhere named %(place)s." % {'place': location.name}, message=message)
 
     @respond_to("what time is it(\?)?$", multiline=False)
     def what_time_is_it(self, message):

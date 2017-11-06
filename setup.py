@@ -8,14 +8,32 @@ from will import VERSION
 DESCRIPTION = "A friendly python hipchat bot"
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
+REQS_DIR = os.path.join(ROOT_DIR, "will", "requirements")
 
 install_requires = []
-for req_file in ("requirements.base.txt", "requirements.txt"):
-    with open(req_file, "r+") as f:
+dependency_links = []
+with open("requirements.txt", "r+") as f:
+    for line in f.readlines():
+        if line[0] == "-":
+            continue
+        install_requires.append(line.strip())
+
+for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
+    with open(os.path.join(REQS_DIR, req_file), "r+") as f:
         for line in f.readlines():
-            if line[0] == "-":
+            if (
+                (line.startswith("-") and not line.startswith("-e"))
+                or line.startswith("#")
+            ):
                 continue
+
+            if "-e" in line:
+                line = line.replace("-e", "")
+                dependency_links.append(line)
+                line = line.split("#")[-1].split("=")[-1]
+
             install_requires.append(line.strip())
+
 
 tests_require = [
     'pytest==2.8.3',
@@ -51,11 +69,12 @@ setup(
     version=VERSION,
     download_url=['https://github.com/skoczen/will/tarball/%s' % VERSION, ],
     install_requires=install_requires,
+    dependency_links=dependency_links,
     setup_requires=setup_requires,
     tests_require=tests_require,
     packages=find_packages(),
     include_package_data=True,
-    keywords=["hipchat", "bot", "ai"],
+    keywords=["chatbot", "bot", "ai", "slack", "hipchat", "rocketchat", "stride"],
     classifiers=[
         "Programming Language :: Python",
         "License :: OSI Approved :: BSD License",
@@ -66,6 +85,12 @@ setup(
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Communications :: Chat",
         "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Framework :: Robot Framework",
+        "Framework :: Robot Framework :: Library",
+        "Framework :: Robot Framework :: Tool",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
     ],
     entry_points={
         'console_scripts': ['generate_will_project = will.scripts.generate_will_project:main'],
