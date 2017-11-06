@@ -19,7 +19,7 @@ You will, however, see a lot of output from Will, telling you that some names ha
 
 # The Long Version:
 
-## 1. Add IO backends.
+### 1. Add IO backends.
 
 If you're planning to continue only using HipChat (until it's replaced by Stride), we'd recommend that you add this to your `config.py`:
 
@@ -36,7 +36,7 @@ That will enable the HipChat and local shell stdin/stdout backend, for easy test
 
 If you want to also bring your Will into a Slack or Rocket.Chat room in the future, just uncomment that backend and restart!
 
-## 2. Update the HipChat tokens to be namespaced.  
+### 2. Update the HipChat tokens to be namespaced.  
 
 You'll see this starting up, but when you have time, update your tokens as follows:  
 (If you're using `WILL_` environment variables, please add the `WILL_` as needed:)
@@ -51,14 +51,14 @@ You'll see this starting up, but when you have time, update your tokens as follo
 - `ROOMS` becomes `HIPCHAT_ROOMS`
 
 
-## 3. Set up Redis
+### 3. Set up Redis
 
 At the moment, Redis is the only working pubsub backend, and is required to run Will. So, if you're not already running it, you'll need it for 2.x.
 
 If this is impossible for your setup, ZeroMQ support is in the works, and we're looking to add a pure-python backend as well in 2.1 or 2.2.  Creating a new pubsub backend just requires subclassing `BasePubSub` and implementing four methods - so if someone has a little time to bring those along, a pull request is welcome!
 
 
-## 4. Set your encryption secret key.
+### 4. Set your encryption secret key.
 
 Will now encrypts all messages on the pubsub wire and in storage by default.  Without a `SECRET_KEY` set, he'll auto-generate one based on the machine MAC address, but this isn't a perfect solution, and will mean that he can't access his storage if there are hardware changes (or he's running in a virtualized environment that has shifting MACs.)
 
@@ -67,7 +67,7 @@ Please set `SECRET_KEY` as soon as possible.
 The recommended way is to set it as an environmental variable, `WILL_SECRET_KEY`, in an environment that is secured and you trust.  Any string will work, and entropy is good. 
 
 
-## 5. Set the new 2.0 settings to your liking.
+### 5. Set the new 2.0 settings to your liking.
 
 Will 2 ships with bunch of new features, and though we've provided sensible defaults, if you'd like, you can update your `config.py` with your preferences.
 
@@ -131,7 +131,7 @@ FUZZY_MINIMUM_MATCH_CONFIDENCE = 90  # Defaults to 90%
 FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 ```
 
-## 6. That's it - let us know how it goes!
+### 6. That's it - let us know how it goes!
 
 That's all you really need to know to flip the switch to Will 2.0.  
 
