@@ -1,1 +1,1 @@
-MODULE_DESCRIPTION = "Hipchat actions"
+MODULE_DESCRIPTION = "HipChat actions"

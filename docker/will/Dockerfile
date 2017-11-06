@@ -1,15 +1,11 @@
-#Pull CENTOS
-FROM python:2.7-stretch
-
+#Pull from will-base
+FROM heywill/will-base:latest
+ARG branch=master
 # Maintainer
 # ----------
-MAINTAINER mlove@columnit.com 
+LABEL maintainer=mlove@columnit.com 
 
-ENV _WILL_HOME=/opt/will
-
-RUN mkdir -p $_WILL_HOME
-
-RUN pip install will
+RUN pip install git+https://github.com/skoczen/will.git@$branch 
 
 WORKDIR $_WILL_HOME
 RUN generate_will_project
