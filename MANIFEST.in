@@ -2,4 +2,7 @@ include README.md AUTHORS LICENSE
 include *.txt
 include *.md
 include *.py
+include requirements/*.txt
 recursive-include will/templates *
+recursive-include will/requirements *
+recursive-include will/scripts *

@@ -3,6 +3,7 @@ site_url: http://skoczen.github.io/will
 site_description: "Will is a simple, beautiful-to-code python hipchat bot"
 pages:
 - Get Started: index.md
+- Upgrade to 2.0: upgrading_to_2.md
 - Teach Your Will:
   - The Basics: plugins/basics.md
   - What Will Can Notice: plugins/notice.md
@@ -11,12 +12,36 @@ pages:
   - Plugin Builtins: plugins/builtins.md
   - Bundled Plugins: plugins/bundled.md
 - Configure: config.md
+- "Brain":
+   - Overview: backends/overall.md
+   - Noticing and Talking: backends/io.md
+   - Analysis and Context: backends/analysis.md
+   - Generation: backends/generation.md
+   - Decisions and Execution: backends/execution.md
+   - Pubsub and short-term memory: backends/pubsub.md
+   - Storage and long-term memory: backends/storage.md
+   - Encryption and privacy: backends/encryption.md
 - Deploy: deploy.md
 - Improve: improve.md
-- Roadmap: roadmap.md
+#    - Making Will Better and Better: improve.md
+- Project:
+  - Releases: releases.md
+  - Roadmap: roadmap.md
+# - "Will's Brain":
+extra_javascript:
+- themes/will/js/base.js
+- themes/will/js/bootstrap-3.0.3.min.js
+- themes/will/js/prettify-1.0.min.js
+extra_css:
+- css/docs.css
+- themes/will/css/base.css
+- themes/will/css/bootstrap-custom.min.css
+- themes/will/css/font-awesome-4.0.3.css
+- themes/will/css/prettify-1.0.css
+- themes/will/css/style.css
 # theme: will
 site_name: Will
 theme_dir: "docs/themes/will/"
 repo_url: https://github.com/skoczen/will/
-copyright: Copyright &copy; 2014, GreenKahuna, Steven Skoczen and the individual contributors.
+copyright: Copyright &copy; 2017, Steven Skoczen, Ink and Feet, and the individual contributors.
 # google_analytics: ['UA-1234567-8', 'skoczen.github.io/will']
