@@ -232,14 +232,14 @@
 <h2 id="choosing-your-backends">Choosing your backends</h2>
 <p>Like our brain processes, we can have lots of different ways to generate ideas, working together.  You don't have to pick just one generation backend for Will.  Depending on your setup, it might be the more, the merrier.</p>
 <p>Here's a bit more about the built-ins, and when they'd be a good fit:</p>
-<h3 id="fuzzy-match-all-willbackendsgenerationfuzzy_all_matches">Fuzzy Match (all) (<code>will.backends.generation.fuzzy_all_matches</code>)</h3>
+<h4 id="fuzzy-match-all-willbackendsgenerationfuzzy_all_matches">Fuzzy Match (all) (<code>will.backends.generation.fuzzy_all_matches</code>)</h4>
 <p>This uses the fantastic <a href="https://github.com/seatgeek/fuzzywuzzy">fuzzywuzzy</a> library to match strings with some fuzziness, as specified by <code>FUZZY_MINIMUM_MATCH_CONFIDENCE</code> (defaults to 90% confidence) and <code>FUZZY_REGEX_ALLOWABLE_ERRORS</code> (defaults to 3).</p>
 <p>Great if you'd like your Will to be a little flexible, sometimes get things wrong, but to handle typos.</p>
 <p><em>Required settings</em>: <code>FUZZY_MINIMUM_MATCH_CONFIDENCE</code> and <code>FUZZY_REGEX_ALLOWABLE_ERRORS</code></p>
-<h3 id="fuzzy-match-best-willbackendsgenerationfuzzy_best_match">Fuzzy Match (best) (<code>will.backends.generation.fuzzy_best_match</code>)</h3>
+<h4 id="fuzzy-match-best-willbackendsgenerationfuzzy_best_match">Fuzzy Match (best) (<code>will.backends.generation.fuzzy_best_match</code>)</h4>
 <p>This backend is very similar to <code>fuzzy_all_matches</code>, but instead of returning all matches above a certain confidence, it just returns the best one, regardless of how good it is.</p>
 <p>In general, there's no reason to use this over <code>fuzzy_all_matches</code>, unless you have a specific scenario that means you always want a response, but can't be sure of a confidence level.</p>
-<h3 id="strict-regex-willbackendsgenerationstrict_regex">Strict Regex (<code>will.backends.generation.strict_regex</code>)</h3>
+<h4 id="strict-regex-willbackendsgenerationstrict_regex">Strict Regex (<code>will.backends.generation.strict_regex</code>)</h4>
 <p>Great for exact matches only.  If you only want your Will to do thing when it hears an exact command, or you have a bunch of different commands you're worried about getting mixed up in the fuzziness, <code>strict_regex</code> is the way for you to go.</p>
 <p>This is the same behavior that was in Will 1.x and 0.x.</p>
 <h2 id="setting-your-backends">Setting your backends</h2>

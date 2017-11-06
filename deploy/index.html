@@ -210,6 +210,8 @@
         
             <li><a href="#deploy-in-docker">Deploy in Docker</a></li>
         
+            <li><a href="#deploy-everywhere-else">Deploy Everywhere Else</a></li>
+        
             <li><a href="#storage-backends">Storage Backends</a></li>
         
             <li><a href="#pubsub-backends">Pubsub Backends</a></li>
@@ -273,7 +275,7 @@ WILL_ROCKETCHAT_URL='https://heywill.rocket.chat'\
 <h2 id="deploy-in-docker">Deploy in Docker</h2>
 <p>Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis.</p>
 <h3 id="pre-requisites">Pre-requisites</h3>
-<p>You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you can still use the pre-defined  images from Docker Hub (https://hub.docker.com/r/heywill/will/). </p>
+<p>You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you can still also the <a href="https://hub.docker.com/r/heywill/will/">pre-defined images from Docker Hub</a>. </p>
 <h3 id="step-1-configure-your-containers-environment-variables">Step 1: Configure your container's environment variables</h3>
 <p>In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:</p>
 <pre><code class="bash"># For Slack
@@ -321,25 +323,17 @@ modifications.</p>
 <p>The heywill/will image is the container with Will executing as the
 container process.  A build arg is available for branch based builds from the Will
 repository.  To build from a specific branch use,</p>
-<pre><code>--build-arg branch=&lt;branch_name&gt;```
+<pre><code>--build-arg branch=&lt;branch_name&gt;
+</code></pre>
 
-otherwise master is the default.
-
-
-
-## Deploy Everywhere Else
-
-#### Will is Just Python
-
-That says it all. Will is just python, and you can deploy him *anywhere* you have python, an open port, and access to redis.
-
-In your chosen deploy environment and setup, you'll want to do a couple things:
-
-#### Replicate your environment settings
-
-At minimum, that's:
-```bash
-export WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot;
+<p>otherwise master is the default.</p>
+<h2 id="deploy-everywhere-else">Deploy Everywhere Else</h2>
+<h4 id="will-is-just-python">Will is Just Python</h4>
+<p>That says it all. Will is just python, and you can deploy him <em>anywhere</em> you have python, an open port, and access to redis.</p>
+<p>In your chosen deploy environment and setup, you'll want to do a couple things:</p>
+<h4 id="replicate-your-environment-settings">Replicate your environment settings</h4>
+<p>At minimum, that's:</p>
+<pre><code class="bash">export WILL_PUBLIC_URL=&quot;http://our-will-name.herokuapp.com&quot;
 export WILL_REDIS_URL='redis://some-domain.com/7/'
 export WILL_HTTPSERVER_PORT='80'
 

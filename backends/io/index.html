@@ -244,8 +244,10 @@ IO_BACKENDS = [
 
 <h2 id="implementing-a-new-backend">Implementing a new backend</h2>
 <p>Writing a new storage backend is fairly straightforward - simply subclass <code>BaseStorageBackend</code>, and implement:</p>
-<p>1) the five required methods, then
-2) specify any required settings with <code>required_settings</code>.</p>
+<ol>
+<li>the five required methods, then</li>
+<li>specify any required settings with <code>required_settings</code>.</li>
+</ol>
 <pre><code class="python">from will.backends.storage.base import BaseStorageBackend
 
 

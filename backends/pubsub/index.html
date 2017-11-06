@@ -235,8 +235,10 @@
 
 <h2 id="contributing-a-new-backend">Contributing a new backend</h2>
 <p>Writing a new pubsub backend is fairly straightforward - simply subclass <code>BasePubSub</code>, and implement:</p>
-<p>1) the four required methods, and
-2) a bootstrap method.</p>
+<ol>
+<li>the four required methods, and</li>
+<li>a bootstrap method.</li>
+</ol>
 <pre><code class="python">from will.backends.pubsub.base import BasePubSub
 
 

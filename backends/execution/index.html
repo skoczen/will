@@ -230,12 +230,12 @@
 </ul>
 <h2 id="choosing-your-backends">Choosing your backends</h2>
 <p>Here's a bit more about the built-ins, and when they'd be a good fit:</p>
-<h3 id="all-willbackendsexecutionall">All (<code>will.backends.execution.all</code>)</h3>
+<h4 id="best-score-willbackendsexecutionbest_score">Best Score (<code>will.backends.execution.best_score</code>)</h4>
+<p>This is the right fit for most people, and it's the most similar to how our brains work.  Will looks at the options he has, and picks the single one he thinks is the best.</p>
+<h4 id="all-willbackendsexecutionall">All (<code>will.backends.execution.all</code>)</h4>
 <p><img alt="All the things" src="../../img/all_the_things.jpg" /></p>
 <p>This is Will's crazy, do-everything mode.  He'll take every idea he got in the generation cycle and do <em>all</em> of them.  Why?  Because he's crazy like that.</p>
 <p>Or, more likely, because you've built a custom generation backend that limits him down to a set of options you always want done.</p>
-<h3 id="best-score-willbackendsexecutionbest_score">Best Score (<code>will.backends.execution.best_score</code>)</h3>
-<p>This is the right fit for most people, and it's the most similar to how our brains work.  Will looks at the options he has, and picks the single one he thinks is the best.</p>
 <h2 id="setting-your-backends">Setting your backends</h2>
 <p>To set your execution backends, just update the following in <code>config.py</code></p>
 <pre><code class="python"># The &quot;decision making&quot; backends that look among the generated choices,
