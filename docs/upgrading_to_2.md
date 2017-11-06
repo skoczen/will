@@ -138,3 +138,5 @@ That's all you really need to know to flip the switch to Will 2.0.
 As there's a lot of new stuff in this release, it's possible that some bugs have slipped through the cracks.  Please submit anything you find, no matter how small, [into the github issue tracker](https://github.com/skoczen/will/issues).  We'll be active in fixing things ASAP and helping if you're stuck.
 
 Thanks for using Will, and for going through the big upgrade!  We're excited about what the future holds, and happy to get your bots free from platform lock-in.
+
+If you'd like to do a deeper dive into what's new, check out the documentation [on Will's new brain](/backends/overall/)
