@@ -1,6 +1,6 @@
-Last Update: November 5, 2017
+Last Update: November 7, 2017
 
-Quick note:  I'll be updating this with more information now that Will 2.0 is out, and we're learning what really makes sense in the wild.  What's below is roughly the roadmap from April 2017.
+*Quick note*:  I'll be updating this with more information now that Will 2.0 is out, and we're learning what really makes sense in the wild.  What's below is roughly the roadmap from April 2017.
 
 ## A Note from Steven
 

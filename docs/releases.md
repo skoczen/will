@@ -1,6 +1,6 @@
 # Releases
 
-#### 2.0.1beta1 - November 4, 2017
+#### 2.0.1beta1 - November 7, 2017
 
 **TL;DR: Slack, Rocket.chat, and Shell support, and you can write full chatterbots with Will now!**
 
