@@ -34,8 +34,8 @@ IO_BACKENDS = [
 
 Writing a new storage backend is fairly straightforward - simply subclass `BaseStorageBackend`, and implement:
 
-1) the five required methods, then
-2) specify any required settings with `required_settings`.
+1. the five required methods, then
+2. specify any required settings with `required_settings`.
 
 
 ```python

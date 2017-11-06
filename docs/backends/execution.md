@@ -16,18 +16,18 @@ Will has the following execution backends built-in, and it's easy to make your o
 
 Here's a bit more about the built-ins, and when they'd be a good fit:
 
-### All (`will.backends.execution.all`)
+
+#### Best Score (`will.backends.execution.best_score`)
+
+This is the right fit for most people, and it's the most similar to how our brains work.  Will looks at the options he has, and picks the single one he thinks is the best.
+
+#### All (`will.backends.execution.all`)
 
 ![All the things](../img/all_the_things.jpg)
 
 This is Will's crazy, do-everything mode.  He'll take every idea he got in the generation cycle and do *all* of them.  Why?  Because he's crazy like that.
 
 Or, more likely, because you've built a custom generation backend that limits him down to a set of options you always want done.
-
-
-### Best Score (`will.backends.execution.best_score`)
-
-This is the right fit for most people, and it's the most similar to how our brains work.  Will looks at the options he has, and picks the single one he thinks is the best.
 
 ## Setting your backends
 

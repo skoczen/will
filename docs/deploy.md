@@ -82,7 +82,7 @@ Simple.  For best-practices, see our continuous deployment recommendations below
 Will is packaged with a Dockerfile and docker-compose files to allow deploying in a container with redis.
 
 ### Pre-requisites
-You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you can still use the pre-defined  images from Docker Hub (https://hub.docker.com/r/heywill/will/). 
+You should have docker already installed; additionally, the instructions require docker-compose.  If you're not using docker-compose, you can still also the [pre-defined images from Docker Hub](https://hub.docker.com/r/heywill/will/). 
 
 ### Step 1: Configure your container's environment variables
 In Will's docker directory, update the default.env file with your environment's settings.  At a minimum, this should contain:
@@ -137,7 +137,8 @@ The heywill/will image is the container with Will executing as the
 container process.  A build arg is available for branch based builds from the Will
 repository.  To build from a specific branch use,
 ```
---build-arg branch=<branch_name>```
+--build-arg branch=<branch_name>
+```
 
 otherwise master is the default.
 

@@ -24,8 +24,8 @@ PUBSUB_BACKEND = "redis"  # "redis", or "zeromq" (beta).
 
 Writing a new pubsub backend is fairly straightforward - simply subclass `BasePubSub`, and implement:
 
-1) the four required methods, and
-2) a bootstrap method.
+1. the four required methods, and
+2. a bootstrap method.
 
 ```python
 from will.backends.pubsub.base import BasePubSub
