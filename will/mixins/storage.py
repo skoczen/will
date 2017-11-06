@@ -2,6 +2,7 @@ import importlib
 import logging
 import dill as pickle
 from will import settings
+from will.abstractions import Person, Event, Channel, Message
 
 
 class StorageMixin(object):
@@ -15,9 +16,9 @@ class StorageMixin(object):
                 # couchbase => will.storage.couchbase_backend
                 # etc...
                 module_name = ''.join([
-                    'will.storage.',
+                    'will.backends.storage.',
                     getattr(settings, 'STORAGE_BACKEND', 'redis'),
-                    '_storage'
+                    '_backend'
                 ])
                 storage_module = importlib.import_module(module_name)
 
@@ -29,21 +30,21 @@ class StorageMixin(object):
         self.bootstrap_storage()
         try:
             return self.storage.save(key, pickle.dumps(value), expire=expire)
-        except Exception:
+        except:
             logging.exception("Unable to save %s", key)
 
     def clear(self, key):
         self.bootstrap_storage()
         try:
             return self.storage.clear(key)
-        except Exception:
+        except:
             logging.exception("Unable to clear %s", key)
 
     def clear_all_keys(self):
         self.bootstrap_storage()
         try:
             return self.storage.clear_all_keys()
-        except Exception:
+        except:
             logging.exception("Unable to clear all keys")
 
     def load(self, key, default=None):
@@ -53,8 +54,9 @@ class StorageMixin(object):
             if val is not None:
                 return pickle.loads(val)
             return default
-        except Exception:
-            logging.exception("Failed to load %s", key)
+        except:
+            # logging.exception("Failed to load %s", key)
+            return default
 
     def size(self):
         self.bootstrap_storage()

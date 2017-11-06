@@ -1,11 +1,29 @@
+
+def deprecation_warning_for_admin(f):
+    err = (
+        "admin_only=True is deprecated and is being used by the `%s` method.\n" % (f.__name__, ) +
+        "  Please use ACLs instead. admin_only will be removed at the end of 2017."
+    )
+    return err
+
+
+def passthrough_decorator(*args, **kwargs):
+    def wrap(f):
+        def wrapped_f(*args, **kwargs):
+            return f(*args, **kwargs)
+        return wrapped_f
+    return wrap
+
+
 def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
     def wrap(f):
         passed_args = []
+        if admin_only:
+            f.warnings = deprecation_warning_for_admin(f)
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
         wrapped_f.will_fn_metadata = getattr(f, "will_fn_metadata", {})
-
         wrapped_f.will_fn_metadata["listener_regex"] = regex
         wrapped_f.will_fn_metadata["case_sensitive"] = case_sensitive
         wrapped_f.will_fn_metadata["multiline"] = multiline
@@ -16,6 +34,9 @@ def respond_to(regex, include_me=False, case_sensitive=False, multiline=False, a
         wrapped_f.will_fn_metadata["listener_args"] = passed_args
         wrapped_f.will_fn_metadata["__doc__"] = f.__doc__
         wrapped_f.will_fn_metadata["listeners_acl"] = acl
+        if getattr(f, "warnings", None):
+            wrapped_f.will_fn_metadata["warnings"] = getattr(f, "warnings")
+
         return wrapped_f
     return wrap
 
@@ -30,6 +51,8 @@ def periodic(*sched_args, **sched_kwargs):
         wrapped_f.will_fn_metadata["function_name"] = f.__name__
         wrapped_f.will_fn_metadata["sched_args"] = sched_args
         wrapped_f.will_fn_metadata["sched_kwargs"] = sched_kwargs
+        if getattr(f, "warnings", None):
+            wrapped_f.will_fn_metadata["warnings"] = getattr(f, "warnings")
         return wrapped_f
     return wrap
 
@@ -37,6 +60,8 @@ def periodic(*sched_args, **sched_kwargs):
 def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_only=False, acl=set()):
     def wrap(f):
         passed_args = []
+        if admin_only:
+            f.warnings = deprecation_warning_for_admin(f)
 
         def wrapped_f(*args, **kwargs):
             f(*args, **kwargs)
@@ -51,6 +76,8 @@ def hear(regex, include_me=False, case_sensitive=False, multiline=False, admin_o
         wrapped_f.will_fn_metadata["listener_args"] = passed_args
         wrapped_f.will_fn_metadata["__doc__"] = f.__doc__
         wrapped_f.will_fn_metadata["listeners_acl"] = acl
+        if getattr(f, "warnings", None):
+            wrapped_f.will_fn_metadata["warnings"] = getattr(f, "warnings")
 
         return wrapped_f
 
@@ -68,6 +95,8 @@ def randomly(start_hour=0, end_hour=23, day_of_week="*", num_times_per_day=1):
         wrapped_f.will_fn_metadata["end_hour"] = int(end_hour)
         wrapped_f.will_fn_metadata["day_of_week"] = day_of_week
         wrapped_f.will_fn_metadata["num_times_per_day"] = int(num_times_per_day)
+        if getattr(f, "warnings", None):
+            wrapped_f.will_fn_metadata["warnings"] = getattr(f, "warnings")
 
         return wrapped_f
     return wrap
