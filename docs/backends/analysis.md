@@ -15,14 +15,14 @@ Will has the following analysis backends built-in, more are on the way (like sen
 
 Here's a bit more about the built-ins, and when they'd be a good fit:
 
-### History (`will.backends.analysis.history`)
+#### History (`will.backends.analysis.history`)
 
 Just adds the last 20 messages he heard into the context, and stores this one for the future. 
 
 *Required settings*: None
 
 
-### Nothing (`will.backends.analysis.nothing`)
+#### Nothing (`will.backends.analysis.nothing`)
 
 Does absolutely nothing.  But it is a nice template for building your own!
 

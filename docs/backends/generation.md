@@ -18,7 +18,7 @@ Like our brain processes, we can have lots of different ways to generate ideas, 
 
 Here's a bit more about the built-ins, and when they'd be a good fit:
 
-### Fuzzy Match (all) (`will.backends.generation.fuzzy_all_matches`)
+#### Fuzzy Match (all) (`will.backends.generation.fuzzy_all_matches`)
 
 This uses the fantastic [fuzzywuzzy](https://github.com/seatgeek/fuzzywuzzy) library to match strings with some fuzziness, as specified by `FUZZY_MINIMUM_MATCH_CONFIDENCE` (defaults to 90% confidence) and `FUZZY_REGEX_ALLOWABLE_ERRORS` (defaults to 3).
 
@@ -26,13 +26,13 @@ Great if you'd like your Will to be a little flexible, sometimes get things wron
 
 *Required settings*: `FUZZY_MINIMUM_MATCH_CONFIDENCE` and `FUZZY_REGEX_ALLOWABLE_ERRORS`
 
-### Fuzzy Match (best) (`will.backends.generation.fuzzy_best_match`)
+#### Fuzzy Match (best) (`will.backends.generation.fuzzy_best_match`)
 
 This backend is very similar to `fuzzy_all_matches`, but instead of returning all matches above a certain confidence, it just returns the best one, regardless of how good it is.
 
 In general, there's no reason to use this over `fuzzy_all_matches`, unless you have a specific scenario that means you always want a response, but can't be sure of a confidence level.
 
-### Strict Regex (`will.backends.generation.strict_regex`)
+#### Strict Regex (`will.backends.generation.strict_regex`)
 
 Great for exact matches only.  If you only want your Will to do thing when it hears an exact command, or you have a bunch of different commands you're worried about getting mixed up in the fuzziness, `strict_regex` is the way for you to go.
 

@@ -61,7 +61,7 @@ This one's hopefully straightforward:
 Shamefully, tests are just getting rolling, and a proper, well-architected test harness is in the works. However, there are *some* tests you can run by running:
 
 ```bash
-coverage run -m nose
+tox
 ```
 
 More soon!
