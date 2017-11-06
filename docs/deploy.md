@@ -122,6 +122,27 @@ or to run the container in the background,
 docker-compose up -d
 ```
 
+### Roll your Own Container
+Will docker file(s) are part of the main repository; this lets developers/teams
+build on the containers to embed configuration files, custom plugins etc... For
+now Will containers are represented in python 2.7 and python 3 flavors.
+##### Will-base
+Will is built on the alpine distribution(s) of python docker images. This was done
+to provide the smallest container footprint; yet, nothing is perfect so a few
+things need to be added.  Will-base provides the footprint to perform these base
+modifications.
+
+##### Will
+The heywill/will image is the container with Will executing as the
+container process.  A build arg is available for branch based builds from the Will
+repository.  To build from a specific branch use,
+```
+--build-arg branch=<branch_name>```
+
+otherwise master is the default.
+
+
+
 ## Deploy Everywhere Else
 
 #### Will is Just Python
