@@ -34,9 +34,9 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
     required_settings = [
         {
             "name": "SLACK_API_TOKEN",
-            "obtain_at": """1. Go to https://api.slack.com/tokens, and sign in.
-2. Search for Will, and then add will.
-3. Generate a new token (These instructions are incorrect!).""",
+            "obtain_at": """1. Go to https://api.slack.com/custom-integrations/legacy-tokens and sign in as yourself (or a user for Will).
+2. Find the workspace you want to use, and click "Create token."
+3. Set this token as SLACK_API_TOKEN."""
         }
     ]
 
