@@ -1,15 +1,15 @@
 
 declare -A dockerfiles
-dockerfiles=(["heywill/will-base:2.7-alpine"]="./will-base/base-2.7/"
-    ["heywill/will-base:3.7-alpine"]="./will-base/base-3.x/"
-    ["heywill/will:python2.7"]="./will/will-py2/"
-    ["heywill/will:python3.7"]="./will/will-py3/")
+dockerfiles=(["heywill/will-base:2.7-alpine"]="/will-base/base-2.7/"
+    ["heywill/will-base:3.7-alpine"]="/will-base/base-3.x/"
+    ["heywill/will:python2.7"]="/will/will-py2/"
+    ["heywill/will:python3.7"]="/will/will-py3/")
 build_containers() {
 
     for tag in "${!dockerfiles[@]}"; 
         do 
             echo "building $tag with context ${dockerfiles[$tag]}";
-            docker build -t $tag ${dockerfiles[$tag]};
+            docker build -t $tag $(dirname $(readlink -f ${BASH_SOURCE[0]}))${dockerfiles[$tag]};
             echo ""
         done;
 }
