@@ -1,4 +1,4 @@
-
+#!/bin/bash -e
 declare -A dockerfiles
 dockerfiles=(["heywill/will-base:2.7-alpine"]="/will-base/base-2.7/"
     ["heywill/will-base:3.7-alpine"]="/will-base/base-3.x/"
