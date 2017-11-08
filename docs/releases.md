@@ -1,5 +1,14 @@
 # Releases
 
+#### 2.0.1beta2 - November 9, 2017
+
+Bugfix release that fixes:
+
+* Fixes `scheduled_say` breakage.
+* Improves reminder plugins to capture and naturally handle "to"s, thanks to [wontonst](https://github.com/wontonst).
+* Gets docker builds working, thanks to [mike-love](https://github.com/mike-love).
+
+
 #### 2.0.1beta1 - November 7, 2017
 
 **TL;DR: Slack, Rocket.chat, and Shell support, and you can write full chatterbots with Will now!**
