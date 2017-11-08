@@ -82,7 +82,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
                 kwargs=kwargs,
             )
             if package_for_scheduling:
-                return e
+                return "message.outgoing.%s" % backend, e
             else:
                 logging.info("putting in queue: %s" % content)
                 self.publish("message.outgoing.%s" % backend, e)
@@ -184,12 +184,19 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             room = channel
         elif room:
             channel = room
-        packaged_event = self.reply(
-            None, content=content, message=message, channel=channel,
+
+        if "content" in kwargs:
+            if content:
+                del kwargs["content"]
+            else:
+                content = kwargs["content"]
+
+        topic, packaged_event = self.say(
+            content, message=message, channel=channel,
             service=service, package_for_scheduling=True, *args, **kwargs
         )
         self.add_outgoing_event_to_schedule(when, {
             "type": "message",
-            "topic": packaged_event.topic,
+            "topic": topic,
             "event": packaged_event,
         })
