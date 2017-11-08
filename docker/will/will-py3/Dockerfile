@@ -8,5 +8,5 @@ LABEL maintainer=mlove@columnit.com
 
 RUN pip install git+https://github.com/skoczen/will.git@$branch 
 WORKDIR $_WILL_HOME
-RUN generate_will_project
+RUN yes | generate_will_project
 CMD $_WILL_HOME/run_will.py
