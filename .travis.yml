@@ -6,7 +6,7 @@ install:
 
 script: 
     - tox
-    - export $BTAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo ""; else echo "-$COMMIT" ; fi`
+    - export BTAG=`if [ "$TRAVIS_BRANCH" != "master" ]; then echo "-$COMMIT" ; fi`
     - ./docker/buildwillcontainers.sh --build
 
 deploy:
