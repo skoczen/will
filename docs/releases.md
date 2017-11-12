@@ -1,5 +1,15 @@
 # Releases
 
+
+#### 2.0.1beta3 - November 13, 2017
+
+Bugfix release that fixes:
+
+* High CPU in some setups, thanks to [mattcl](https://github.com/mattcl) for the report and debuggging!
+* Updates to `markdownify` fork 0.4.1.
+
+
+
 #### 2.0.1beta2 - November 9, 2017
 
 Bugfix release that fixes:
