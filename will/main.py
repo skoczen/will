@@ -181,7 +181,6 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
                         puts(colored.red(error_message))
 
                     self.stdin_listener_thread = False
-                    self.has_stdin_io_backend = True
                     if self.has_stdin_io_backend:
 
                         self.current_line = ""
@@ -198,6 +197,7 @@ class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
                                     self.current_line = ""
                                 else:
                                     self.current_line += line
+                            self.sleep_for_event_loop(2)
                     else:
                         while True:
                             time.sleep(100)

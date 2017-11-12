@@ -139,4 +139,4 @@ As there's a lot of new stuff in this release, it's possible that some bugs have
 
 Thanks for using Will, and for going through the big upgrade!  We're excited about what the future holds, and happy to get your bots free from platform lock-in.
 
-If you'd like to do a deeper dive into what's new, check out the documentation [on Will's new brain](/backends/overall/)
+If you'd like to do a deeper dive into what's new, check out the documentation [on Will's new brain](/backends/overall/).
