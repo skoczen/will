@@ -1,9 +1,9 @@
 #!/bin/bash -e
+
 declare -A dockerfiles
-dockerfiles=(["heywill/will-base:2.7-alpine$BTAG"]="/will-base/base-2.7/"
-    ["heywill/will-base:3.7-alpine$BTAG"]="/will-base/base-3.x/"
-    ["heywill/will:python2.7$BTAG"]="/will/will-py2/"
-    ["heywill/will:python3.7$BTAG"]="/will/will-py3/")
+dockerfiles=(
+    ["heywill/will:python2.7$GTAG"]="/will/will-py2/"
+    ["heywill/will:python3.7$GTAG"]="/will/will-py3/")
 
 build_containers() {
 
@@ -15,24 +15,18 @@ build_containers() {
         done;
 }
 
-tag_latest(){
-
-    docker tag heywill/will-base:3.7-alpine heywill/will-base:latest
-    echo "tagged heywill/will-base:3.7-alpine as heywill/will-base:latest"
-    docker tag heywill/will:python3.7 heywill/will:latest
-    echo "tagged heywill/will:3.7 as heywill/will:latest"
+tag_production(){
+    docker tag heywill/will:python2.7$GTAG heywill/will:python2.7
+    echo "tagged heywill/will:python2.7$GTAG as heywill/will:latest"
+    
+    docker tag heywill/will:python3.7$GTAG heywill/will:python3.7
+    docker tag heywill/will:python3.7$GTAG heywill/will:latest
+    echo "tagged heywill/will:python3.7$GTAG as heywill/will:latest & heywill/will:python3.7"
 }
 
 
 push_containers(){
-    tag_latest
-    for tag in "${!dockerfiles[@]}"; 
-        do 
-            echo "pushing $tag";
-            docker push $tag;
-            echo ""
-        done;
-    
+   tag_latest
    docker push heywill/will-base:latest
    docker push heywill/will:latest
 }
