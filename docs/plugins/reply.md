@@ -28,6 +28,7 @@ self.say(content, channel=None, html=False, color="green", notify=False)
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". 
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
+- **`start_thread`**: whether Will should start a new thread, if the backend supports it.
 
 ## Reply with a mention
 
@@ -50,6 +51,7 @@ self.reply(content, html=False, color="green", notify=False)
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
+- **`start_thread`**: whether Will should start a new thread, if the backend supports it.
 
 
 
