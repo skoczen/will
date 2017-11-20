@@ -255,7 +255,20 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                         data.update({
                             "thread_ts": event.source_message.original_incoming_event["ts"]
                         })
-
+                    elif (
+                        hasattr(event.source_message, "data") and
+                        hasattr(event.source_message.data, "original_incoming_event") and
+                        "ts" in event.source_message.data.original_incoming_event
+                    ):
+                        logging.error(
+                            "Hm.  I was told to start a new thread, but while using .say(), instead of .reply().\n"
+                            "This doesn't really make sense, but I'm going to make the best of it by pretending you "
+                            "used .say() and threading off of your message.\n"
+                            "Please update your plugin to use .reply() when you have a second!"
+                        )
+                        data.update({
+                            "thread_ts": event.source_message.data.original_incoming_event["ts"]
+                        })
                 else:
                     data.update({
                         "thread_ts": event.data["original_incoming_event"].data.thread
