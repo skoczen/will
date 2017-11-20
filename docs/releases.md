@@ -5,9 +5,11 @@
 
 Bugfix release that fixes:
 
-* `color` parameter wasn't working properly in Slack.  Thanks to [@netjunki](https://github.com/netjunki) for the report!
-* Adds a new `start_thread` parameter to `say()` and `reply()` to allow Will to start slack threads.
+* `color` parameter wasn't working properly in Slack.
+* Fixes up slack escaping, to support `<slack formatted|https://example.com>` links.  Thanks to [@netjunki](https://github.com/netjunki) for the report on this and the above.
 
+Minor features:
+* Adds a new `start_thread` parameter to `say()` and `reply()` to allow Will to start slack threads.
 
 
 #### 2.0.1beta3 - November 13, 2017
