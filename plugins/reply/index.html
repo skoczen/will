@@ -257,7 +257,7 @@ def hi(self, message):
 
 <p><img alt="Hi, Hello, username!" src="../../img/hi_hello.gif" /></p>
 <p>All the options: </p>
-<pre><code class="python">self.reply(content, html=False, color=&quot;green&quot;, notify=False)
+<pre><code class="python">self.reply(content, html=False, color=&quot;green&quot;, notify=False, start_thread=False)
 </code></pre>
 
 <ul>
@@ -265,6 +265,7 @@ def hi(self, message):
 <li><strong><code>html</code></strong>: if the message is HTML. <code>True</code> or <code>False</code>.</li>
 <li><strong><code>color</code></strong>: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".</li>
 <li><strong><code>notify</code></strong>: whether the message should trigger a 'ping' notification. <code>True</code> or <code>False</code>.</li>
+<li><strong><code>start_thread</code></strong>: whether Will should start a new thread, if the backend supports it.</li>
 </ul>
 <h2 id="talk-to-the-room-from-a-webhook">Talk to the room from a webhook</h2>
 <p>When will recieves messages from webhooks and HTTP requests, he's still connected to chat, and you can use <code>.say()</code>. By default, he'll speak to <code>DEFAULT_ROOM</code>.</p>
