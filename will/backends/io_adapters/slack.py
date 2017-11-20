@@ -161,8 +161,6 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 event.content = SlackMarkdownConverter().convert(event.content)
 
             event.content = event.content.replace("&", "&amp;")
-            event.content = event.content.replace("<", "&lt;")
-            event.content = event.content.replace(">", "&gt;")
             event.content = event.content.replace("\_", "_")
 
             kwargs = {}
