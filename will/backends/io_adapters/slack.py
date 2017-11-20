@@ -251,9 +251,17 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                         channel_id = event.data["original_incoming_event"].data.channel
 
             try:
-                data.update({
-                    "thread_ts": event.data["original_incoming_event"].data.thread
-                })
+                # If we're starting a thread
+                if "start_thread" in event.kwargs and event.kwargs["start_thread"] and ("thread_ts" not in data or not data["thread_ts"]):
+                    if hasattr(event.source_message, "original_incoming_event"):
+                        data.update({
+                            "thread_ts": event.source_message.original_incoming_event["ts"]
+                        })
+
+                else:
+                    data.update({
+                        "thread_ts": event.data["original_incoming_event"].data.thread
+                    })
             except:
                 pass
         data.update({
@@ -289,9 +297,14 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         data = self.set_data_channel_and_thread(event, data=data)
 
         # Auto-link mention names
-        if data["text"].find("&lt;@") != -1:
-            data["text"] = data["text"].replace("&lt;@", "<@")
-            data["text"] = data["text"].replace("&gt;", ">")
+        if "text" in data:
+            if data["text"].find("&lt;@") != -1:
+                data["text"] = data["text"].replace("&lt;@", "<@")
+                data["text"] = data["text"].replace("&gt;", ">")
+        elif "attachments" in data and "text" in data["attachments"][0]:
+            if data["attachments"][0]["text"].find("&lt;@") != -1:
+                data["attachments"][0]["text"] = data["attachments"][0]["text"].replace("&lt;@", "<@")
+                data["attachments"][0]["text"] = data["attachments"][0]["text"].replace("&gt;", ">")
 
         data.update({
             "token": settings.SLACK_API_TOKEN,
