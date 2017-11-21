@@ -1,5 +1,8 @@
 # Releases
 
+#### 2.0.1 - November 21, 2017
+
+Same release as 2.0.1, removes beta tag.
 
 #### 2.0.1beta4 - November 20, 2017
 
