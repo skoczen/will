@@ -14,6 +14,4 @@ deploy:
     branch: master
 env:
   matrix:
-  - secure: VWKQxtbHsDnVk/IyqcGfkXVmGBM8WIzbrHgIXrJqvoyqDJDpg3HAPvFBuQb1ytRRxH5K9X40FQHFSduTkesGE+dNQHUewalzojvmq4zLRzzbz12kOZeCAg0derW+WBEQ//quDL5Z7Z7fmxcUOk9RSNVOuoQujs61bGvarKq2r8E=
-  - secure: o5sFN0mL0myWKGfmd2pr/skAsEupAPvAFLdiNRrqsW3LEEqypaRav04c6F/OAvV687AJ9EqoblHsMjapmnorWoLmnMSthyBhEL6jp04yUZCkxjyj/mdt84Th5t/6K4QtZLiEs7bmrEf+o2r4jhVfHxthuMGhLbg8VDk2UDqGsx4=
-  - secure: dRYwXOE5DXQKfsTMJHgYQX5fmwANFiD9jIvNx8IoTJUx42oUQ/IlTHZNNyscuRCjmfUg6U2q/FgvfRQHk4WbGjyNJyyURm5i4wzpDE7DDKz0MC9afIY6+YwiV7up99g4ZW8G664zO0PMEUIQ2N+ehOW6IwFoXoFT7VaDxs9Ebr8=
+    secure: SWBr2Ih6+vT0iX5CxqPT8ICmtFUcIk7MRfh21DnsGKpumz60mgRPnb+aMxagSDWrF0btGyI3vfD8nYEv6Vv+WDDCbeJCG3xExsIusiflaM1Vqo1OcUGlO55jQm1WtNub7SmiMSH8EY5GFFNfFn7CmSmU1xaM0p5q8Y0OTbZpku8=
