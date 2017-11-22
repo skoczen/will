@@ -129,18 +129,18 @@ now Will containers are represented in python 2.7 and python 3 flavors.
 ##### Will-base
 Will is built on the alpine distribution(s) of python docker images. This was done
 to provide the smallest container footprint; yet, nothing is perfect so a few
-things need to be added.  Will-base provides the footprint to perform these base
-modifications.
+things need to be added.  Will-base provides the foundation to perform these base
+modifications.  
 
 ##### Will
 The heywill/will image is the container with Will executing as the
-container process.  A build arg is available for branch based builds from the Will
-repository.  To build from a specific branch use,
+container process.  A build args are available for branch based builds from a
+repository.  To build from a specific repo and branch use, 
 ```
---build-arg branch=<branch_name>
+--build-arg repo=<repo_name> branch=<branch_name>
 ```
 
-otherwise master is the default.
+otherwise skoczen/will is the default repo, while  master is the default branch.
 
 
 

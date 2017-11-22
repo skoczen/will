@@ -6,3 +6,13 @@ install:
 
 script: 
     - tox
+    - export CTAG="-$TRAVIS_COMMIT"
+    - ./docker/buildwillcontainers.sh --build
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  script: ./docker/buildwillcontainers.sh --all
+  on:
+      branch: master
