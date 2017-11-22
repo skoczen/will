@@ -1,5 +1,11 @@
 # Releases
 
+#### 2.0.2 - November 22, 2017
+
+Bugfix release that fixes:
+
+* Will once again joins all hipchat rooms `HIPCHAT_ROOMS` was not specified.  Thanks to [vissree](https://github.com/vissree) for finding and reporting this bug!
+
 #### 2.0.1 - November 21, 2017
 
 Same release as 2.0.1, removes beta tag.
