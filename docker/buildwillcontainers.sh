@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-declare -A dockerfiles
+declare -a dockerfiles
 dockerfiles=(
     ["heywill/will:python2.7$CTAG"]="/will/will-py2/"
     ["heywill/will:python3.7$CTAG"]="/will/will-py3/")
@@ -26,7 +26,7 @@ tag_production(){
 
 
 push_containers(){
-   tag_latest
+   tag_production
    docker push heywill/will-base:latest
    docker push heywill/will:latest
 }
