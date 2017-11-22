@@ -268,18 +268,24 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
             )
 
         self.available_rooms
-        for r in settings.HIPCHAT_ROOMS:
-            if r != "":
-                if not hasattr(self, "default_room"):
-                    self.default_room = r
+        if hasattr(settings, "HIPCHAT_ROOMS") and settings.HIPCHAT_ROOMS:
+            for r in settings.HIPCHAT_ROOMS:
+                if r != "":
+                    if not hasattr(self, "default_room"):
+                        self.default_room = r
 
-                try:
-                    self.rooms.append(self.available_rooms[r])
-                except KeyError:
-                    logger.error(
-                        u'"{0}" is not an available room, ask'
-                        ' "@{1} what are the rooms?" for the full list.'
-                        .format(r, settings.HIPCHAT_HANDLE))
+                    try:
+                        self.rooms.append(self.available_rooms[r])
+                    except KeyError:
+                        logger.error(
+                            u'"{0}" is not an available room, ask'
+                            ' "@{1} what are the rooms?" for the full list.'
+                            .format(r, settings.HIPCHAT_HANDLE))
+        else:
+            for name, r in self.available_rooms.items():
+                if not hasattr(self, "default_room"):
+                        self.default_room = r
+                self.rooms.append(r)
 
         self.nick = settings.HIPCHAT_HANDLE
         self.handle = settings.HIPCHAT_HANDLE
