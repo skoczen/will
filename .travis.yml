@@ -1,9 +1,21 @@
 language: python
 sudo: false
 install:
-- pip install -U tox
-script:
-- tox
+    - pip install -U tox
+
+script: 
+    - tox
+    - export CTAG="-$TRAVIS_COMMIT"
+    - ./docker/buildwillcontainers.sh --build
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  script: ./docker/buildwillcontainers.sh --all
+  on:
+      branch: master
+
 env:
   matrix:
   - secure: VWKQxtbHsDnVk/IyqcGfkXVmGBM8WIzbrHgIXrJqvoyqDJDpg3HAPvFBuQb1ytRRxH5K9X40FQHFSduTkesGE+dNQHUewalzojvmq4zLRzzbz12kOZeCAg0derW+WBEQ//quDL5Z7Z7fmxcUOk9RSNVOuoQujs61bGvarKq2r8E=
