@@ -1,6 +1,5 @@
 language: python
 sudo: false
-
 install:
     - pip install -U tox
 
@@ -16,3 +15,9 @@ deploy:
   script: ./docker/buildwillcontainers.sh --all
   on:
       branch: master
+
+env:
+  matrix:
+  - secure: VWKQxtbHsDnVk/IyqcGfkXVmGBM8WIzbrHgIXrJqvoyqDJDpg3HAPvFBuQb1ytRRxH5K9X40FQHFSduTkesGE+dNQHUewalzojvmq4zLRzzbz12kOZeCAg0derW+WBEQ//quDL5Z7Z7fmxcUOk9RSNVOuoQujs61bGvarKq2r8E=
+  - secure: o5sFN0mL0myWKGfmd2pr/skAsEupAPvAFLdiNRrqsW3LEEqypaRav04c6F/OAvV687AJ9EqoblHsMjapmnorWoLmnMSthyBhEL6jp04yUZCkxjyj/mdt84Th5t/6K4QtZLiEs7bmrEf+o2r4jhVfHxthuMGhLbg8VDk2UDqGsx4=
+  - secure: qvhthBuMLLR8jsqHeY2YYHlTKL9nwTJSD3xSEcqniTlXS9QT252jl5ksUM0ks1S5V0RDgiJCFh5XqP11C6ljir8iZGr6h5yff5UC2iDxCv7fzE35TAiOIRXU7x6xJFur0aC5/WfIMZhNXz+FTw3w/SnYOPMlyxDIquXMqBkMwAg=
