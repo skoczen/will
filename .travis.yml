@@ -5,11 +5,11 @@ install:
 script:
 - tox
 - export CTAG="-$TRAVIS_COMMIT"
-- "./docker/buildwillcontainers.sh --build"
+- "fab docker_build"
 deploy:
   skip_cleanup: true
   provider: script
-  script: "./docker/buildwillcontainers.sh --all"
+  script: "fab docker_deploy"
   on:
     branch: beta
 env:

@@ -10,6 +10,19 @@ WHITELIST_FILES = [".gitignore", ]
 SANITY_CHECK_PROJECT_FILES = ["fabfile.py", "setup.py", "mkdocs.yml"]
 SANITY_CHECK_BUILD_FILES = ["index.html", "js", "css"]
 
+CTAG = os.environ.get("CTAG", "")
+
+DOCKER_BUILDS = [
+    {
+        "name": "heywill/will:python2.7%(CTAG)s" % os.environ,
+        "dir": "will/will-py2/",
+    },
+    {
+        "name": "heywill/will:python3.7%(CTAG)s" % os.environ,
+        "dir": "will/will-py3/",
+    },
+]
+DOCKER_PATH = os.path.join(os.getcwd(), "docker")
 
 def _splitpath(path):
     path = os.path.normpath(path)
@@ -78,3 +91,23 @@ def deploy_docs():
     else:
         print("No changes to the docs.")
     local("git checkout %s" % current_branch)
+
+def docker_build():
+    with lcd(DOCKER_PATH):
+        for c in DOCKER_BUILDS:
+            local("docker build -t %(name)s %(dir)s" % c)
+
+def docker_tag():
+    with lcd(DOCKER_PATH):
+        for c in DOCKER_BUILDS:
+            local("docker tag %(name)s %(dir)s" % c)
+
+def docker_push():
+    with lcd(DOCKER_PATH):
+        local("docker push heywill/will-base:latest")
+        local("docker push heywill/will:latest")
+
+def docker_deploy():
+    docker_build()
+    docker_tag()
+    docker_push()
