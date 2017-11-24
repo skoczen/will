@@ -15,11 +15,16 @@ CTAG = os.environ.get("CTAG", "")
 DOCKER_BUILDS = [
     {
         "ctagname": "heywill/will:python2.7%(CTAG)s" % os.environ,
-        "name": "heywill/will:python2.7%(CTAG)s" % os.environ,
+        "name": "heywill/will:python2.7" % os.environ,
         "dir": "will/will-py2/",
     },
     {
-        "ctagname": "heywill/will:python3.7" % os.environ,
+        "ctagname": "heywill/will:python2.7%(CTAG)s" % os.environ,
+        "name": "heywill/will:latest" % os.environ,
+        "dir": "will/will-py2/",
+    },
+    {
+        "ctagname": "heywill/will:python3.7%(CTAG)s" % os.environ,
         "name": "heywill/will:python3.7" % os.environ,
         "dir": "will/will-py3/",
     },
