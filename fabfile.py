@@ -107,7 +107,7 @@ def docker_tag():
     print("Building Docker Releases...")
     with lcd(DOCKER_PATH):
         for c in DOCKER_BUILDS:
-            local("docker tag %(name)s %(dir)s" % c)
+            local("docker tag %(ctagname)s %(name)s" % c)
 
 
 def docker_push():
