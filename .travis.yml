@@ -1,5 +1,7 @@
 language: python
 sudo: false
+services:
+    - docker
 install:
 - pip install -U tox
 - pip install -r will/requirements/dev.txt
