@@ -14,11 +14,13 @@ CTAG = os.environ.get("CTAG", "")
 
 DOCKER_BUILDS = [
     {
+        "ctagname": "heywill/will:python2.7%(CTAG)s" % os.environ,
         "name": "heywill/will:python2.7%(CTAG)s" % os.environ,
         "dir": "will/will-py2/",
     },
     {
-        "name": "heywill/will:python3.7%(CTAG)s" % os.environ,
+        "ctagname": "heywill/will:python3.7" % os.environ,
+        "name": "heywill/will:python3.7" % os.environ,
         "dir": "will/will-py3/",
     },
 ]
@@ -95,18 +97,21 @@ def deploy_docs():
 
 
 def docker_build():
+    print("Building Docker Images...")
     with lcd(DOCKER_PATH):
         for c in DOCKER_BUILDS:
-            local("docker build -t %(name)s %(dir)s" % c)
+            local("docker build -t %(ctagname)s %(dir)s" % c)
 
 
 def docker_tag():
+    print("Building Docker Releases...")
     with lcd(DOCKER_PATH):
         for c in DOCKER_BUILDS:
             local("docker tag %(name)s %(dir)s" % c)
 
 
 def docker_push():
+    print("Pushing Docker to Docker Cloud...")
     with lcd(DOCKER_PATH):
         local("docker push heywill/will-base:latest")
         local("docker push heywill/will:latest")
