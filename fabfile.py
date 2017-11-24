@@ -24,6 +24,7 @@ DOCKER_BUILDS = [
 ]
 DOCKER_PATH = os.path.join(os.getcwd(), "docker")
 
+
 def _splitpath(path):
     path = os.path.normpath(path)
     return path.split(os.sep)
@@ -92,20 +93,24 @@ def deploy_docs():
         print("No changes to the docs.")
     local("git checkout %s" % current_branch)
 
+
 def docker_build():
     with lcd(DOCKER_PATH):
         for c in DOCKER_BUILDS:
             local("docker build -t %(name)s %(dir)s" % c)
+
 
 def docker_tag():
     with lcd(DOCKER_PATH):
         for c in DOCKER_BUILDS:
             local("docker tag %(name)s %(dir)s" % c)
 
+
 def docker_push():
     with lcd(DOCKER_PATH):
         local("docker push heywill/will-base:latest")
         local("docker push heywill/will:latest")
+
 
 def docker_deploy():
     docker_build()
