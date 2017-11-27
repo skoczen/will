@@ -20,7 +20,7 @@ DOCKER_BUILDS = [
     },
     {
         "ctagname": "heywill/will:python2.7%(CTAG)s" % os.environ,
-        "name": "heywill/will:latest" % os.environ,
+        "name": "heywill/will-base:latest" % os.environ,
         "dir": "will/will-py2/",
     },
     {
@@ -118,7 +118,8 @@ def docker_tag():
 def docker_push():
     print("Pushing Docker to Docker Cloud...")
     with lcd(DOCKER_PATH):
-        local("docker push heywill/will-base:latest")
+        local("docker push heywill/will:python2.7")
+        local("docker push heywill/will:python3.7")
         local("docker push heywill/will:latest")
 
 
