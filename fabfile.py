@@ -20,7 +20,7 @@ DOCKER_BUILDS = [
     },
     {
         "ctagname": "heywill/will:python2.7%(CTAG)s" % os.environ,
-        "name": "heywill/will-base:latest" % os.environ,
+        "name": "heywill/will:latest" % os.environ,
         "dir": "will/will-py2/",
     },
     {
