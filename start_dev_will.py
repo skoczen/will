@@ -19,7 +19,7 @@ def start_will():
         try:
             import yappi
         except:
-            print "Unable to run Will in profiling mode without yappi.  Please `pip install yappi`."
+            print("Unable to run Will in profiling mode without yappi.  Please `pip install yappi`.")
             sys.exit(1)
         try:
             shutil.rmtree('will_profiles')

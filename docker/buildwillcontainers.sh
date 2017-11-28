@@ -27,6 +27,7 @@ tag_production(){
 
 push_containers(){
    tag_production
+   
    docker push heywill/will-base:latest
    docker push heywill/will:latest
 }
