@@ -1,17 +1,20 @@
 language: python
 sudo: false
+services:
+    - docker
 install:
 - pip install -U tox
+- pip install -r will/requirements/dev.txt
 script:
 - tox
 - export CTAG="-$TRAVIS_COMMIT"
-- "./docker/buildwillcontainers.sh --build"
+- "fab docker_build"
 deploy:
   skip_cleanup: true
   provider: script
-  script: "./docker/buildwillcontainers.sh --all"
+  script: "fab docker_deploy"
   on:
-    branch: beta
+    branch: master
 env:
   matrix:
     secure: SWBr2Ih6+vT0iX5CxqPT8ICmtFUcIk7MRfh21DnsGKpumz60mgRPnb+aMxagSDWrF0btGyI3vfD8nYEv6Vv+WDDCbeJCG3xExsIusiflaM1Vqo1OcUGlO55jQm1WtNub7SmiMSH8EY5GFFNfFn7CmSmU1xaM0p5q8Y0OTbZpku8=

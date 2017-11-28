@@ -10,6 +10,27 @@ WHITELIST_FILES = [".gitignore", ]
 SANITY_CHECK_PROJECT_FILES = ["fabfile.py", "setup.py", "mkdocs.yml"]
 SANITY_CHECK_BUILD_FILES = ["index.html", "js", "css"]
 
+CTAG = os.environ.get("CTAG", "")
+
+DOCKER_BUILDS = [
+    {
+        "ctagname": "heywill/will:python2.7%(CTAG)s" % os.environ,
+        "name": "heywill/will:python2.7" % os.environ,
+        "dir": "will/will-py2/",
+    },
+    {
+        "ctagname": "heywill/will:python2.7%(CTAG)s" % os.environ,
+        "name": "heywill/will:latest" % os.environ,
+        "dir": "will/will-py2/",
+    },
+    {
+        "ctagname": "heywill/will:python3.7%(CTAG)s" % os.environ,
+        "name": "heywill/will:python3.7" % os.environ,
+        "dir": "will/will-py3/",
+    },
+]
+DOCKER_PATH = os.path.join(os.getcwd(), "docker")
+
 
 def _splitpath(path):
     path = os.path.normpath(path)
@@ -78,3 +99,32 @@ def deploy_docs():
     else:
         print("No changes to the docs.")
     local("git checkout %s" % current_branch)
+
+
+def docker_build():
+    print("Building Docker Images...")
+    with lcd(DOCKER_PATH):
+        for c in DOCKER_BUILDS:
+            local("docker build -t %(ctagname)s %(dir)s" % c)
+
+
+def docker_tag():
+    print("Building Docker Releases...")
+    with lcd(DOCKER_PATH):
+        for c in DOCKER_BUILDS:
+            local("docker tag %(ctagname)s %(name)s" % c)
+
+
+def docker_push():
+    print("Pushing Docker to Docker Cloud...")
+    with lcd(DOCKER_PATH):
+        local("docker login -u $DOCKER_USER -p $DOCKER_PASS")
+        local("docker push heywill/will:python2.7")
+        local("docker push heywill/will:python3.7")
+        local("docker push heywill/will:latest")
+
+
+def docker_deploy():
+    docker_build()
+    docker_tag()
+    docker_push()
