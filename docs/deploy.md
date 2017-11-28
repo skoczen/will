@@ -126,6 +126,7 @@ docker-compose up -d
 Will docker file(s) are part of the main repository; this lets developers/teams
 build on the containers to embed configuration files, custom plugins etc... For
 now Will containers are represented in python 2.7 and python 3 flavors.
+
 ##### Will-base
 Will is built on the alpine distribution(s) of python docker images. This was done
 to provide the smallest container footprint; yet, nothing is perfect so a few

@@ -14,7 +14,7 @@ deploy:
   provider: script
   script: "fab docker_deploy"
   on:
-    branch: beta
+    branch: master
 env:
   matrix:
     secure: SWBr2Ih6+vT0iX5CxqPT8ICmtFUcIk7MRfh21DnsGKpumz60mgRPnb+aMxagSDWrF0btGyI3vfD8nYEv6Vv+WDDCbeJCG3xExsIusiflaM1Vqo1OcUGlO55jQm1WtNub7SmiMSH8EY5GFFNfFn7CmSmU1xaM0p5q8Y0OTbZpku8=

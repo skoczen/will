@@ -1,5 +1,14 @@
 # Releases
 
+#### 2.1.0 - November 28, 2017
+
+Planned release that includes:
+
+* Automatic [docker hub builds](https://hub.docker.com/r/heywill/will/) thanks to [@mike-love](https://github.com/mike-love)
+* Upgrades to use base markdownify package, as the proposed changes have been [merged and released](https://github.com/matthewwithanm/python-markdownify/pull/1).
+* New fabric commands to manage docker builds and releases.
+
+
 #### 2.0.2 - November 22, 2017
 
 Bugfix release that fixes:
