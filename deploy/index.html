@@ -317,16 +317,16 @@ now Will containers are represented in python 2.7 and python 3 flavors.</p>
 <h5 id="will-base">Will-base</h5>
 <p>Will is built on the alpine distribution(s) of python docker images. This was done
 to provide the smallest container footprint; yet, nothing is perfect so a few
-things need to be added.  Will-base provides the footprint to perform these base
-modifications.</p>
+things need to be added.  Will-base provides the foundation to perform these base
+modifications.  </p>
 <h5 id="will">Will</h5>
 <p>The heywill/will image is the container with Will executing as the
-container process.  A build arg is available for branch based builds from the Will
-repository.  To build from a specific branch use,</p>
-<pre><code>--build-arg branch=&lt;branch_name&gt;
+container process.  A build args are available for branch based builds from a
+repository.  To build from a specific repo and branch use, </p>
+<pre><code>--build-arg repo=&lt;repo_name&gt; branch=&lt;branch_name&gt;
 </code></pre>
 
-<p>otherwise master is the default.</p>
+<p>otherwise skoczen/will is the default repo, while  master is the default branch.</p>
 <h2 id="deploy-everywhere-else">Deploy Everywhere Else</h2>
 <h4 id="will-is-just-python">Will is Just Python</h4>
 <p>That says it all. Will is just python, and you can deploy him <em>anywhere</em> you have python, an open port, and access to redis.</p>
