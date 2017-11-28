@@ -118,6 +118,7 @@ def docker_tag():
 def docker_push():
     print("Pushing Docker to Docker Cloud...")
     with lcd(DOCKER_PATH):
+        local("docker login -u $DOCKER_USER -p $DOCKER_PASS")
         local("docker push heywill/will:python2.7")
         local("docker push heywill/will:python3.7")
         local("docker push heywill/will:latest")
