@@ -1095,5 +1095,5 @@ To set your %(name)s:
                                 show_valid(plugin_name)
                 except Exception as e:
                     self.startup_error("Error bootstrapping %s" % (plugin_info["class"],), e)
-
+            self.save("all_listener_regexes", self.all_listener_regexes)
         puts("")
