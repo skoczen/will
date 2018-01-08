@@ -87,6 +87,25 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
                 logging.info("putting in queue: %s" % content)
                 self.publish("message.outgoing.%s" % backend, e)
 
+    def notify(self, content, user=None, service=None, **kwargs):
+        logging.info("self.notify")
+        logging.info(content)
+
+        if not "user" in kwargs and user:
+            kwargs["user"] = user
+
+        backend = self.get_backend(None, service=service)
+
+        if backend:
+            e = Event(
+                type="notify",
+                content=content,
+                user=kwargs["user"],
+                kwargs=kwargs,
+            )
+            logging.info("putting in queue: %s" % content)
+            self.publish("message.outgoing.%s" % backend, e)
+
     def reply(self, event, content=None, message=None, package_for_scheduling=False, **kwargs):
         message = self.get_message(message)
 

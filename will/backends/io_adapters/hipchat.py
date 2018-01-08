@@ -716,6 +716,14 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
                 **kwargs
             )
 
+        elif event.type in ["notify"]:
+            # Private, 1-1 chats.
+            event.content = re.sub(r'>\s+<', '><', event.content)
+
+            if "user" in kwargs:
+                self.send_direct_message(kwargs["user"], event.content, **kwargs)
+                return
+
         elif event.type in ["topic_change", ]:
             if room_id:
                 self.set_room_topic(room_id, event.content)
