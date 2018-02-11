@@ -6,6 +6,7 @@ import requests
 import sys
 import time
 import traceback
+import websocket
 
 from markdownify import MarkdownConverter
 
@@ -438,31 +439,36 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         self._update_channels()
 
     def _watch_slack_rtm(self):
-        try:
-            if self.client.rtm_connect():
-                self._update_backend_metadata()
+        while True:
+            try:
+                if self.client.rtm_connect():
+                    self._update_backend_metadata()
 
-                num_polls_between_updates = 30 / settings.EVENT_LOOP_INTERVAL  # Every 30 seconds
-                current_poll_count = 0
-                while True:
-                    events = self.client.rtm_read()
-                    if len(events) > 0:
-                        # TODO: only handle events that are new.
-                        # print(len(events))
-                        for e in events:
-                            self.handle_incoming_event(e)
+                    num_polls_between_updates = 30 / settings.EVENT_LOOP_INTERVAL  # Every 30 seconds
+                    current_poll_count = 0
+                    while True:
+                        events = self.client.rtm_read()
+                        if len(events) > 0:
+                            # TODO: only handle events that are new.
+                            # print(len(events))
+                            for e in events:
+                                self.handle_incoming_event(e)
 
-                    # Update channels/people/me/etc every 10s or so.
-                    current_poll_count += 1
-                    if current_poll_count > num_polls_between_updates:
-                        self._update_backend_metadata()
-                        current_poll_count = 0
+                        # Update channels/people/me/etc every 10s or so.
+                        current_poll_count += 1
+                        if current_poll_count > num_polls_between_updates:
+                            self._update_backend_metadata()
+                            current_poll_count = 0
 
-                    self.sleep_for_event_loop()
-        except (KeyboardInterrupt, SystemExit):
-            pass
-        except:
-            logging.critical("Error in watching slack RTM: \n%s" % traceback.format_exc())
+                        self.sleep_for_event_loop()
+            except websocket.WebSocketConnectionClosedException:
+                logging.error('Encountered WebSocketConnectionClosedException attempting reconnect in 2 seconds')
+                time.sleep(2)
+            except (KeyboardInterrupt, SystemExit):
+                break
+            except:
+                logging.critical("Error in watching slack RTM: \n%s" % traceback.format_exc())
+                break
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:
