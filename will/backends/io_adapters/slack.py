@@ -463,8 +463,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         except (KeyboardInterrupt, SystemExit):
             pass
         except:
+            reconnect_attempt += 1
             if reconnect_attempt <= 3:
-                reconnect_attempt += 1
                 delay = reconnect_attempt * 0.5
                 logging.error("Error watching slack RTM. Attempting reconnect %d after %.1f second delay: \n%s" %
                               (reconnect_attempt, delay, traceback.format_exc()))
