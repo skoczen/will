@@ -6,7 +6,6 @@ import requests
 import sys
 import time
 import traceback
-import socket
 
 from markdownify import MarkdownConverter
 
@@ -449,7 +448,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                     events = self.client.rtm_read()
                     if len(events) > 0:
                         # TODO: only handle events that are new.
-                        print(len(events))
+                        # print(len(events))
                         for e in events:
                             self.handle_incoming_event(e)
 
@@ -463,18 +462,16 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                     reconnect_attempt = 0
         except (KeyboardInterrupt, SystemExit):
             pass
-        except socket.error, exc:
+        except:
             if reconnect_attempt <= 3:
                 reconnect_attempt += 1
                 delay = reconnect_attempt * 0.5
-                logging.error("Socket error watching slack RTM. Attempting reconnect %n after %n second delay: \n%s" %
+                logging.error("Error watching slack RTM. Attempting reconnect %d after %.1f second delay: \n%s" %
                               (reconnect_attempt, delay, traceback.format_exc()))
                 time.sleep(delay)
                 self._watch_slack_rtm(reconnect_attempt)
             else:
-                logging.critical("Socket error watching slack RTM. Retries exceeded: \n%s" % traceback.format_exc())
-        except:
-            logging.critical("Error in watching slack RTM: \n%s" % traceback.format_exc())
+                logging.critical("Error watching slack RTM. Retries exceeded: \n%s" % traceback.format_exc())
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:
