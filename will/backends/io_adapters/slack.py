@@ -437,7 +437,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         self._update_people()
         self._update_channels()
 
-    def _watch_slack_rtm(self):
+    def _watch_slack_rtm(self, reconnect_attempt=0):
         try:
             if self.client.rtm_connect():
                 self._update_backend_metadata()
@@ -459,10 +459,19 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                         current_poll_count = 0
 
                     self.sleep_for_event_loop()
+                    reconnect_attempt = 0
         except (KeyboardInterrupt, SystemExit):
             pass
         except:
-            logging.critical("Error in watching slack RTM: \n%s" % traceback.format_exc())
+            reconnect_attempt += 1
+            if reconnect_attempt <= 3:
+                delay = reconnect_attempt * 0.5
+                logging.error("Error watching slack RTM. Attempting reconnect %d after %.1f second delay: \n%s" %
+                              (reconnect_attempt, delay, traceback.format_exc()))
+                time.sleep(delay)
+                self._watch_slack_rtm(reconnect_attempt)
+            else:
+                logging.critical("Error watching slack RTM. Retries exceeded: \n%s" % traceback.format_exc())
 
     def bootstrap(self):
         # Bootstrap must provide a way to to have:
