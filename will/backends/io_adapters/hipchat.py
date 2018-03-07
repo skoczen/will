@@ -605,7 +605,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
                 r = requests.get(url, **settings.REQUESTS_OPTIONS)
 
                 for room in r.json()['items']:
-                    all_rooms["%s" % (room['id'],)] = Channel(
+                    all_rooms["%s" % (room['xmpp_jid'],)] = Channel(
                         id=room["id"],
                         name=room["name"],
                         source=clean_for_pickling(room),
