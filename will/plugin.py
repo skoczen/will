@@ -8,12 +8,12 @@ from will.abstractions import Event, Message
 # Backwards compatability with 1.x, eventually to be deprecated.
 from will.backends.io_adapters.hipchat import HipChatRosterMixin, HipChatRoomMixin
 from will.mixins import NaturalTimeMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
-    EmailMixin, PubSubMixin
+    EmailMixin, PubSubMixin, SmsMixin
 from will.utils import html_to_text
 
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, HipChatRosterMixin,
-                 ScheduleMixin, SettingsMixin, PubSubMixin):
+                 ScheduleMixin, SettingsMixin, PubSubMixin, SmsMixin):
     is_will_plugin = True
     request = request
 

@@ -226,6 +226,13 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # export WILL_MAILGUN_API_KEY="key-12398912329381"
 # export WILL_MAILGUN_API_URL="example.com"
 
+# Twilio config, if you'd like will to send sms.
+# DEFAULT_FROM_NUMBER="+18005551212"
+# TWILIO_API_VERSION="2010-04-01"
+# Set in your environment:
+# export WILL_TWILIO_ACCOUNT_SID="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+# export WILL_TWILIO_AUTH_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
 
 # Proxy settings
 # Use proxy to access hipchat servers
