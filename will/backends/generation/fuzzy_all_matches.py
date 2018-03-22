@@ -65,6 +65,7 @@ class FuzzyAllMatchesBackend(GenerationBackend):
             search_matches = fuzz_process.extract(message.content, self.match_choices)
 
             for match_str, confidence in search_matches:
+                logging.debug(" Potential (%s) - %s" % (confidence, match_str))
                 l = self.match_methods[match_str]
                 if (
                         # The search regex matches and
