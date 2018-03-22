@@ -14,7 +14,7 @@ class ErrorMixin(object):
         self._startup_errors.append(error_message)
 
     def startup_error(self, error_message, exception_instance):
-        traceback.print_exc();
+        traceback.print_exc()
         error_message = "%s%s" % (
             error_message,
             ":\n\n%s\nContinuing...\n" % traceback.format_exc(exception_instance)
