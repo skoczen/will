@@ -13,7 +13,11 @@ from .base import ExecutionBackend
 class BestScoreBackend(ExecutionBackend):
 
     def _publish_fingerprint(self, option, message):
-        return "%s - %s" % (option.context.plugin_info["full_module_name"], option.context.full_method_name)
+        if "say_content" in option.context:
+            # TODO: Fix this to properly fingerprint
+            return option.context["say_content"]
+        else:
+            return "%s - %s" % (option.context.plugin_info["full_module_name"], option.context.full_method_name)
 
     def handle_execution(self, message):
         published_list = []
