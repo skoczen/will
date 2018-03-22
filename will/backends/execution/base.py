@@ -62,32 +62,33 @@ class ExecutionBackend(object):
                     message,
                     explanation
                 )
+                return
+
+        if "say_content" in option.context:
+            # We're coming from a generation engine like a chatterbot, which doesn't *do* things.
+            self.bot.pubsub.publish(
+                "message.outgoing.%s" % message.data.backend,
+                Event(
+                    type="reply",
+                    content=option.context["say_content"],
+                    source_message=message,
+                ),
+                reference_message=message.data.original_incoming_event
+            )
         else:
-            if "say_content" in option.context:
-                # We're coming from a generation engine like a chatterbot, which doesn't *do* things.
-                self.bot.pubsub.publish(
-                    "message.outgoing.%s" % message.data.backend,
-                    Event(
-                        type="reply",
-                        content=option.context["say_content"],
-                        source_message=message,
-                    ),
-                    reference_message=message.data.original_incoming_event
-                )
-            else:
-                module = imp.load_source(option.context.plugin_info["parent_name"], option.context.plugin_info["parent_path"])
-                cls = getattr(module, option.context.plugin_info["name"])
+            module = imp.load_source(option.context.plugin_info["parent_name"], option.context.plugin_info["parent_path"])
+            cls = getattr(module, option.context.plugin_info["name"])
 
-                instantiated_module = cls(message=message)
-                method = getattr(instantiated_module, option.context.function_name)
+            instantiated_module = cls(message=message)
+            method = getattr(instantiated_module, option.context.function_name)
 
-                thread_args = [message, ] + option.context["args"]
+            thread_args = [message, ] + option.context["args"]
 
-                self.run_execute(
-                    method,
-                    *thread_args,
-                    **option.context.search_matches
-                )
+            self.run_execute(
+                method,
+                *thread_args,
+                **option.context.search_matches
+            )
 
     def run_execute(self, target, *args, **kwargs):
         try:

@@ -251,7 +251,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
 
             try:
                 # If we're starting a thread
-                if "start_thread" in event.kwargs and event.kwargs["start_thread"] and ("thread_ts" not in data or not data["thread_ts"]):
+                if "kwargs" in event and "start_thread" in event.kwargs and event.kwargs["start_thread"] and ("thread_ts" not in data or not data["thread_ts"]):
                     if hasattr(event.source_message, "original_incoming_event"):
                         data.update({
                             "thread_ts": event.source_message.original_incoming_event["ts"]
@@ -271,10 +271,16 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                             "thread_ts": event.source_message.data.original_incoming_event["ts"]
                         })
                 else:
-                    data.update({
-                        "thread_ts": event.data["original_incoming_event"].data.thread
-                    })
+                    if hasattr(event.data.original_incoming_event, "thread_ts"):
+                        data.update({
+                            "thread_ts": event.data.original_incoming_event.thread_ts
+                        })
+                    elif "thread" in event.data.original_incoming_event.data:
+                        data.update({
+                            "thread_ts": event.data.original_incoming_event.data.thread
+                        })
             except:
+                logging.info(traceback.format_exc().split(" ")[-1])
                 pass
         data.update({
             "channel": channel_id,
