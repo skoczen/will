@@ -1,6 +1,6 @@
 # Releases
 
-#### 2.1.1 - November 28, 2017
+#### 2.1.1 - March 22, 2018
 
 Bugfix release that includes:
 
