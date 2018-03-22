@@ -418,7 +418,7 @@ IO_BACKENDS = "
                     os.environ["WILL_EPHEMERAL_SECRET_KEY"] = "True"
 
         if "FUZZY_MINIMUM_MATCH_CONFIDENCE" not in settings:
-            settings["FUZZY_MINIMUM_MATCH_CONFIDENCE"] = 90
+            settings["FUZZY_MINIMUM_MATCH_CONFIDENCE"] = 91
         if "FUZZY_REGEX_ALLOWABLE_ERRORS" not in settings:
             settings["FUZZY_REGEX_ALLOWABLE_ERRORS"] = 3
 

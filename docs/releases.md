@@ -2,14 +2,17 @@
 
 #### 2.1.1 - November 28, 2017
 
-Catch-up release that includes
+Bugfix release that includes:
 
 * Fixes slack reconnect issues, thanks to [@mattcl](https://github.com/mattcl).  Props to [@cmachine](https://github.com/cmachine) for also submitting a fix.
+* Saying "G" will no longer give you a picture of a pug, using the default settings. This is both tragic, and necessary. (Actual fix: adjusted default fuziness settings.  If you have the fuzzy backend on, and were seeing the rather hilarious/annoying [#327](https://github.com/skoczen/will/issues/327), set `FUZZY_MINIMUM_MATCH_CONFIDENCE = 91` in your config.py)
 * Programmer help is working again, thanks to [@acommasplice](https://github.com/acommasplice).
 * Fixes word game to work in python 3 thanks to [@netjunki](https://github.com/netjunki), and [ptomkiel-oktawave](https://github.com/ptomkiel-oktawave)'s report.
 * Fixes up chat room rosters in HipChat with rosters > 1000 rooms, thanks to [@ostracon](https://github.com/ostracon)
 * Fixes `get_room_from_message`, thanks to [@TaunoTinits](https://github.com/TaunoTinits)'s fix and  [ptomkiel-oktawave](https://github.com/ptomkiel-oktawave)'s report.
 * Fixes an error that could occur on incoming webhooks on hipchat.  Thanks to [ptomkiel-oktawave](https://github.com/ptomkiel-oktawave) and others for a report.
+* Fixes Will incorrectly talking to the main slack room, when he's directly addressed in 1-1 with something he doesn't know how to do.  Thanks to [netjunki](https://github.com/netjunki) for the report!
+
 
 #### 2.1.0 - November 28, 2017
 
