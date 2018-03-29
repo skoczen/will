@@ -680,7 +680,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
             passed_room = kwargs["channel"]
 
         if passed_room:
-            if isinstance(passed_room, basestring):
+            if isinstance(passed_room, str):
                 # User passed in a room string
                 room = self.get_room_from_name_or_id(passed_room)
             else:
