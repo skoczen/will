@@ -1,5 +1,13 @@
 # Releases
 
+
+#### 2.1.2 - March 30, 2018
+
+Bugfix release that includes:
+
+* Fixes python 2 compatability (`str` instead of `basestring`) for the HipChat adapter, thanks to [wontonst](https://github.com/wontonst).
+
+
 #### 2.1.1 - March 22, 2018
 
 Bugfix release that includes:

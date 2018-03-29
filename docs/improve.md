@@ -137,7 +137,7 @@ Will's also has had help from lots of coders. Alphabetically:
 - [@TaunoTinits](https://github.com/TaunoTinits) fixed the `get_room_from_message` method in 2.x.
 - [wohali](https://github.com/wohali) tracked down the annoying DNS thread issue, and got will on the right path.
 - [woohgit](https://github.com/woohgit) added support for the v2 WorldWeatherOnline API, and fixed it when I broke it, and then fixed it again when they changed their endpoint.  He also taught will how to say his version number.  And `remind ___ to ___ at ___`.  Awesome. And fixed lots of docs.  And put the time zone with "what time is it?".  And then added an entire Pagerduty workflow.  And made message parsing more reliable.  And wrote the ACL support.  And even more doc fixes. And improvements on uptime monitoring edge cases. And kept Pagerduty working. And added `append` and `pop` list support. And ditched WorldWeatherOnline when it started to hurt. Yep.
-- [wontonst](https://github.com/wontonst) made it simple to have will reply to a specific room, and made reminders more friendly.
+- [wontonst](https://github.com/wontonst) made it simple to have will reply to a specific room, made reminders more friendly, and kept py2/3 compatability working on HipChat.
 - [woparry](https://github.com/woparry) made sure that Will could handle organizations with a massive (>2000) number of rooms.
 
 
