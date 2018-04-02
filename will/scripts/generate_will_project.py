@@ -8,6 +8,7 @@ from six.moves import input
 from clint.textui import puts
 from will.utils import print_head
 
+SERVICE_BACKENDS = ('Slack', 'HipChat', 'Rocket.chat', 'Shell')
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.append(PROJECT_ROOT)
 sys.path.append(os.getcwd())
@@ -18,6 +19,9 @@ parser.add_argument(
     action='store_true',
     help='Only output a config.py.dist.'
 )
+parser.add_argument('--backends', nargs='+',
+                    choices=SERVICE_BACKENDS,
+                    help='Choose service backends to support.')
 args = parser.parse_args()
 requirements_txt = "will\n"
 
@@ -39,18 +43,28 @@ def ask_user(question):
     return response.startswith("y")
 
 
-def enable_disable_service(service_name, source):
+def _enable_service(service_name, source):
     global requirements_txt
-    if ask_user("  Do you want to enable %s support?" % (service_name)):
-        source = source.replace("# will.backends.io_adapters.%s" % cleaned(service_name), "will.backends.io_adapters.%s" % cleaned(service_name))
-        req_path = os.path.join(os.path.join(PROJECT_ROOT, "..", "requirements"), "%s.txt" % cleaned(service_name))
-        print(req_path)
-        if os.path.exists(req_path):
-            with open(req_path, 'r') as f:
-                requirements_txt = "%s\n# %s\n%s" % (requirements_txt, service_name, f.read())
-    else:
-        source = source.replace("will.backends.io_adapters.%s" % cleaned(service_name), "# will.backends.io_adapters.%s" % cleaned(service_name))
+    source = source.replace("# will.backends.io_adapters.%s" % cleaned(service_name),
+                            "will.backends.io_adapters.%s" % cleaned(service_name))
+    req_path = os.path.join(os.path.join(PROJECT_ROOT, "..", "requirements"), "%s.txt" % cleaned(service_name))
+    print(req_path)
+    if os.path.exists(req_path):
+        with open(req_path, 'r') as f:
+            requirements_txt = "%s\n# %s\n%s" % (requirements_txt, service_name, f.read())
     return source
+
+
+def __disable_service(service_name, source):
+    return source.replace("will.backends.io_adapters.%s" % cleaned(service_name),
+                          "# will.backends.io_adapters.%s" % cleaned(service_name))
+
+
+def enable_disable_service(service_name, source):
+    if ask_user("  Do you want to enable %s support?" % (service_name)):
+        return _enable_service(service_name, source)
+    else:
+        return __disable_service(service_name, source)
 
 
 def main():
@@ -159,12 +173,19 @@ if __name__ == '__main__':
     if not os.path.exists(config_path) or ask_user("! config.py.dist exists.  Overwrite it?"):
         with open(os.path.join(PROJECT_ROOT, "config.py.dist"), "r") as source_f:
             source = source_f.read()
-            # Ask on backends
-            print("\nWill supports a few different service backends.  Let's set up the ones you want:\n")
-            source = enable_disable_service("Slack", source)
-            source = enable_disable_service("HipChat", source)
-            source = enable_disable_service("Rocket.Chat", source)
-            source = enable_disable_service("Shell", source)
+            if args.backends:
+                for backend in SERVICE_BACKENDS:
+                    if backend in args.backends:
+                        _enable_service(backend, source)
+                    else:
+                        __disable_service(backend, source)
+            else:
+                # Ask user thru cmd line what backends to enable
+                print("\nWill supports a few different service backends.  Let's set up the ones you want:\n")
+                source = enable_disable_service("Slack", source)
+                source = enable_disable_service("HipChat", source)
+                source = enable_disable_service("Rocket.Chat", source)
+                source = enable_disable_service("Shell", source)
 
             with open(config_path, "w+") as f:
                 config = source
