@@ -178,8 +178,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 elif "channel" in kwargs:
                     event.channel = self.get_channel_from_name(kwargs["channel"])
                 else:
-                    if hasattr(settings, "SLACK_DEFAULT_ROOM"):
-                        event.channel = self.get_channel_from_name(settings.SLACK_DEFAULT_ROOM)
+                    if hasattr(settings, "SLACK_DEFAULT_CHANNEL"):
+                        event.channel = self.get_channel_from_name(settings.SLACK_DEFAULT_CHANNEL)
                     else:
                         # Set self.me
                         self.people
