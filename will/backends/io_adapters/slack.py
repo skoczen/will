@@ -131,7 +131,16 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 backend_supports_acl=True,
                 original_incoming_event=clean_for_pickling(event),
             )
-            return m
+            # We have no control over what channels we join if we're a slack bot
+            # as such we have to check each message to see if it's from an allowed room
+            # and ignore if it's not
+            if hasattr(settings, "SLACK_ROOMS") and not is_private_chat:
+                if channel.name.lower() in settings.SLACK_ROOMS:
+                    return m
+                else:
+                    pass
+            else:
+                return m
         else:
             # An event type the slack ba has no idea how to handle.
             pass
