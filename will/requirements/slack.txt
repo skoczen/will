@@ -1,4 +1,4 @@
 -r base.txt
-slackclient>=1.0.5<1.1.0
+slackclient>=1.2.1<1.3.0
 markdownify==0.4.1
 
