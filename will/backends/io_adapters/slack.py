@@ -17,7 +17,7 @@ from will.mixins import SleepMixin, StorageMixin
 from multiprocessing import Process
 from will.abstractions import Event, Message, Person, Channel
 from slackclient import SlackClient
-from slackclient._server import SlackConnectionError
+from slackclient.server import SlackConnectionError
 
 SLACK_SEND_URL = "https://slack.com/api/chat.postMessage"
 SLACK_SET_TOPIC_URL = "https://slack.com/api/channels.setTopic"
