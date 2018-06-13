@@ -6,6 +6,7 @@ ARG backends="HipChat Rocket.chat Slack Shell"
 # ----------
 LABEL maintainer=mlove@columnit.com 
 
+RUN apt-get install -y libffi-dev
 RUN pip install git+https://github.com/skoczen/will.git@$branch 
 
 WORKDIR $_WILL_HOME
