@@ -2,11 +2,18 @@
 FROM heywill/will-base:latest
 ARG branch=master
 ARG backends="HipChat Rocket.chat Slack Shell"
+ENV PACKAGES="\
+  dumb-init \
+  bash \
+  ca-certificates \
+  python2 \
+  py-setuptools \
+  libffi-dev \
+"
 # Maintainer
 # ----------
 LABEL maintainer=mlove@columnit.com 
 
-RUN apt-get install -y libffi-dev
 RUN pip install git+https://github.com/skoczen/will.git@$branch 
 
 WORKDIR $_WILL_HOME
