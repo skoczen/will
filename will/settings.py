@@ -296,6 +296,10 @@ IO_BACKENDS = "
         if settings["STORAGE_BACKEND"] == "redis" or settings["PUBSUB_BACKEND"] == "redis":
             if "REDIS_URL" not in settings:
                 # For heroku
+                if "REDIS_URL" in os.environ:
+                    settings["REDIS_URL"] = os.environ["REDIS_URL"]
+                    if not quiet:
+                        note("WILL_REDIS_URL not set, but it appears you're using Heroku Redis or another standard REDIS_URL. If so, all good.")
                 if "REDISCLOUD_URL" in os.environ:
                     settings["REDIS_URL"] = os.environ["REDISCLOUD_URL"]
                     if not quiet:
