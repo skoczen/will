@@ -1,5 +1,22 @@
 # Releases
 
+#### 2.1.3 - June 13, 2018
+
+Bugfix & feature release that includes:
+
+Bugfixes: 
+* Will is now robust against slack disconnects, and automatically handles reconnects, thanks to [https://github.com/Ashex](Ashex)!
+* Will also now doesn't respond to every single message when he joins a new channel. Please send your thank-you cards to [https://github.com/Ashex](Ashex). 
+* Makes will more robust at handling incorrect channel names in slack, thanks to [reist](https://github.com/reist).
+* Properly renames `SLACK_DEFAULT_ROOM` to `SLACK_DEFAULT_CHANNEL` (with backwards-compatability) thanks (again!) to [reist](https://github.com/reist).
+
+
+New features:
+* Adds support for slack attachments, thanks to [https://github.com/Ashex](Ashex)
+* Adds support for fabric v2, thanks to [reist](https://github.com/reist).
+* Reminders now notify the person making the reminder, thanks to [unicolet](https://github.com/unicolet).
+* `generate_will_project` now supports a `--backends` flag, thanks to [wontonst](https://github.com/wontonst).
+* Will now explicitly notes if he's automagically using `REDIS_URL` to find the redis backend.
 
 #### 2.1.2 - March 30, 2018
 

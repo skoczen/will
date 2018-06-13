@@ -24,3 +24,5 @@ regex==2017.9.23
 redis==2.10.6
 requests==2.18.4
 six==1.10.0
+urllib3[secure]
+websocket-client==0.44.0

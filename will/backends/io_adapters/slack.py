@@ -96,7 +96,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             # If the parent thread is a 1-1 between Will and I, also treat that as direct.
             # Since members[] still comes in on the thread event, we can trust this, even if we're
             # in a thread.
-            if len(channel.members.keys()) == 0:
+            if channel.id == channel.name:
                 is_private_chat = True
 
             # <@U5GUL9D9N> hi
