@@ -2,7 +2,7 @@
 
 # Dev only
 pyandoc
-mkdocs>=0.14
+mkdocs==0.16
 fabric<2
 flake8
 mock

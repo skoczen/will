@@ -90,7 +90,8 @@ def deploy_docs():
                     os.remove(os.path.join(root, name))
 
     local("cp -rv %s/* ." % tempdir)
-    result = local("git diff --exit-code", warn_only=True)
+    with settings(warn_only=True):
+        result = local("git diff --exit-code")
 
     if result.return_code != 0:
         local("git add -A .")
