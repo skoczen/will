@@ -54,3 +54,5 @@ redis-stable.tar.gz
 # Profiling files
 will_profiles/*
 .python-version
+
+docker/.docker/.buildNodeID
