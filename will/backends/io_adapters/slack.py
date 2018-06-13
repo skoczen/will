@@ -173,21 +173,29 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             else:
                 # Came from webhook/etc
                 # TODO: finish this.
-                if "room" in kwargs:
-                    event.channel = self.get_channel_from_name(kwargs["room"])
-                elif "channel" in kwargs:
-                    event.channel = self.get_channel_from_name(kwargs["channel"])
-                else:
-                    if hasattr(settings, "SLACK_DEFAULT_ROOM"):
-                        event.channel = self.get_channel_from_name(settings.SLACK_DEFAULT_ROOM)
+                target_channel = kwargs.get("room", kwargs.get("channel", None))
+                if target_channel:
+                    event.channel = self.get_channel_from_name(target_channel)
+                    if event.channel:
+                        self.send_message(event)
                     else:
-                        # Set self.me
-                        self.people
-                        for c in self.channels.values():
-                            if c.name != c.id and self.me.id in c.members:
-                                event.channel = c
-                                break
-                self.send_message(event)
+                        logging.error(
+                            "I was asked to post to the slack %s channel, but it doesn't exist.",
+                            target_channel
+                        )
+                        if self.default_channel:
+                            event.channel = self.get_channel_from_name(self.default_channel)
+                            event.content = event.content + " (for #%s)" % target_channel
+                            self.send_message(event)
+
+                elif self.default_channel:
+                    event.channel = self.get_channel_from_name(self.default_channel)
+                    self.send_message(event)
+                else:
+                    logging.critical(
+                        "I was asked to post to a slack default channel, but I'm nowhere."
+                        "Please invite me somewhere with '/invite @%s'", self.me.handle
+                    )
 
         if event.type in ["topic_change", ]:
             self.set_topic(event)
@@ -303,6 +311,11 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                         }
                     ]),
                 })
+            elif "attachments" in event.kwargs:
+                data.update({
+                    "text": event.content,
+                    "attachments": json.dumps(event.kwargs["attachments"])
+                })
             else:
                 data.update({
                     "text": event.content,
@@ -366,6 +379,12 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         return self._people
 
     @property
+    def default_channel(self):
+        if not hasattr(self, "_default_channel") or not self._default_channel:
+            self._decide_default_channel()
+        return self._default_channel
+
+    @property
     def channels(self):
         if not hasattr(self, "_channels") or self._channels is {}:
             self._update_channels()
@@ -376,6 +395,33 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         if not hasattr(self, "_client"):
             self._client = SlackClient(settings.SLACK_API_TOKEN)
         return self._client
+
+    def _decide_default_channel(self):
+        self._default_channel = None
+        if not hasattr(self, "complained_about_default"):
+            self.complained_about_default = False
+            self.complained_uninvited = False
+
+        # Set self.me
+        self.people
+
+        if hasattr(settings, "SLACK_DEFAULT_CHANNEL"):
+            channel = self.get_channel_from_name(settings.SLACK_DEFAULT_CHANNEL)
+            if channel:
+                if self.me.id in channel.members:
+                    self._default_channel = channel.id
+                    return
+            elif not self.complained_about_default:
+                self.complained_about_default = True
+                logging.error("The defined default channel(%s) does not exist!",
+                              settings.SLACK_DEFAULT_CHANNEL)
+
+        for c in self.channels.values():
+            if c.name != c.id and self.me.id in c.members:
+                self._default_channel = c.id
+        if not self._default_channel and not self.complained_uninvited:
+            self.complained_uninvited = True
+            logging.critical("No channels with me invited! No messages will be sent!")
 
     def _update_channels(self):
         channels = {}
