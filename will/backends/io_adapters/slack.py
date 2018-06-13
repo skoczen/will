@@ -303,6 +303,11 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                         }
                     ]),
                 })
+            elif "attachments" in event.kwargs:
+                data.update({
+                    "text": event.content,
+                    "attachments": json.dumps(event.kwargs["attachments"])
+                })
             else:
                 data.update({
                     "text": event.content,
