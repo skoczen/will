@@ -3,6 +3,7 @@ sudo: false
 services:
     - docker
 install:
+- apt-get install -y libffi-dev
 - pip install -U tox
 - pip install -r will/requirements/dev.txt
 script:
