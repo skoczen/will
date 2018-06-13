@@ -45,8 +45,8 @@ def ask_user(question):
 
 def _enable_service(service_name, source):
     global requirements_txt
-    source = source.replace("# will.backends.io_adapters.%s" % cleaned(service_name),
-                            "will.backends.io_adapters.%s" % cleaned(service_name))
+    source = source.replace('# "will.backends.io_adapters.%s"' % cleaned(service_name),
+                            '"will.backends.io_adapters.%s"' % cleaned(service_name))
     req_path = os.path.join(os.path.join(PROJECT_ROOT, "..", "requirements"), "%s.txt" % cleaned(service_name))
     print(req_path)
     if os.path.exists(req_path):
@@ -56,8 +56,8 @@ def _enable_service(service_name, source):
 
 
 def __disable_service(service_name, source):
-    return source.replace("will.backends.io_adapters.%s" % cleaned(service_name),
-                          "# will.backends.io_adapters.%s" % cleaned(service_name))
+    return source.replace('"will.backends.io_adapters.%s"' % cleaned(service_name),
+                          '"# will.backends.io_adapters.%s"' % cleaned(service_name))
 
 
 def enable_disable_service(service_name, source):
