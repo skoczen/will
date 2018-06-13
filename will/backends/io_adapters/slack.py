@@ -6,7 +6,7 @@ import requests
 import sys
 import time
 import traceback
-import websocket
+from websocket import WebSocketConnectionClosedException
 
 from markdownify import MarkdownConverter
 
@@ -17,6 +17,7 @@ from will.mixins import SleepMixin, StorageMixin
 from multiprocessing import Process
 from will.abstractions import Event, Message, Person, Channel
 from slackclient import SlackClient
+from slackclient.server import SlackConnectionError
 
 SLACK_SEND_URL = "https://slack.com/api/chat.postMessage"
 SLACK_SET_TOPIC_URL = "https://slack.com/api/channels.setTopic"
@@ -493,7 +494,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
     def _watch_slack_rtm(self):
         while True:
             try:
-                if self.client.rtm_connect():
+                if self.client.rtm_connect(auto_reconnect=True):
                     self._update_backend_metadata()
 
                     num_polls_between_updates = 30 / settings.EVENT_LOOP_INTERVAL  # Every 30 seconds
@@ -513,8 +514,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                             current_poll_count = 0
 
                         self.sleep_for_event_loop()
-            except websocket.WebSocketConnectionClosedException:
-                logging.error('Encountered WebSocketConnectionClosedException attempting reconnect in 2 seconds')
+            except (WebSocketConnectionClosedException, SlackConnectionError):
+                logging.error('Encountered connection error attempting reconnect in 2 seconds')
                 time.sleep(2)
             except (KeyboardInterrupt, SystemExit):
                 break
