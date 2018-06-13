@@ -120,6 +120,8 @@ Eventually, you'll reach this screen of joy.  Now, it's time to play!
 
 ![Screen of Joy](img/screen_of_joy.gif)
 
+You can also use `generate_will_project` with the `--backends {Slack,HipChat,Rocket.chat,Shell}` option.
+
 #### Testing will out
 
 Once your will is up and running, hop into any of your chat rooms (or just the terminal), and say hello!
