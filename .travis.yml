@@ -2,8 +2,10 @@ language: python
 sudo: false
 services:
     - docker
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y libffi-dev libxml2-dev
 install:
-- apt-get install -y libffi-dev
 - pip install -U tox
 - pip install -r will/requirements/dev.txt
 script:
