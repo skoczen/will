@@ -19,7 +19,7 @@ class RemindPlugin(WillPlugin):
             "reminder_text": reminder_text,
             "to_string": formatted_to_string,
         }
-        self.schedule_say(formatted_reminder_text, parsed_time, message=message)
+        self.schedule_say(formatted_reminder_text, parsed_time, message=message, notify=True)
         self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
 
     @respond_to("(?:can|will you )?remind (?P<reminder_recipient>(?!me).*?)(?P<to_string> to>) ?(?P<reminder_text>.*?) (at|on|in) (?P<remind_time>.*)?\??")
@@ -39,5 +39,5 @@ class RemindPlugin(WillPlugin):
                 "to_string": formatted_to_string,
             }
 
-        self.schedule_say(formatted_reminder_text, parsed_time, message=message)
+        self.schedule_say(formatted_reminder_text, parsed_time, message=message, notify=True)
         self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
