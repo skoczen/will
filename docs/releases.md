@@ -14,7 +14,6 @@ Bugfixes:
 
 New features:
 * Adds support for slack attachments, thanks to [https://github.com/Ashex](Ashex)
-* Adds support for fabric v2, thanks to [reist](https://github.com/reist).
 * Reminders now notify the person making the reminder, thanks to [unicolet](https://github.com/unicolet).
 * `generate_will_project` now supports a `--backends` flag, thanks to [wontonst](https://github.com/wontonst).
 * Will now explicitly notes if he's automagically using `REDIS_URL` to find the redis backend.
