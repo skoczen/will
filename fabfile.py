@@ -104,21 +104,21 @@ def deploy_docs():
 @task
 def docker_build():
     print("Building Docker Images...")
-    with .cd(DOCKER_PATH):
+    with lcd(DOCKER_PATH):
         for b in DOCKER_BUILDS:
             local("docker build -t %(ctagname)s %(dir)s" % b)
 
 
 def docker_tag():
     print("Building Docker Releases...")
-    with .cd(DOCKER_PATH):
+    with lcd(DOCKER_PATH):
         for b in DOCKER_BUILDS:
             local("docker tag %(ctagname)s %(name)s" % b)
 
 
 def docker_push():
     print("Pushing Docker to Docker Cloud...")
-    with .cd(DOCKER_PATH):
+    with lcd(DOCKER_PATH):
         local("docker login -u $DOCKER_USER -p $DOCKER_PASS")
         local("docker push heywill/will:python2.7")
         local("docker push heywill/will:python3.7")
