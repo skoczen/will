@@ -206,6 +206,8 @@
     
         <li class="main active"><a href="#releases">Releases</a></li>
         
+            <li><a href="#213-june-13-2018">2.1.3 - June 13, 2018</a></li>
+        
             <li><a href="#212-march-30-2018">2.1.2 - March 30, 2018</a></li>
         
             <li><a href="#211-march-22-2018">2.1.1 - March 22, 2018</a></li>
@@ -314,6 +316,19 @@
             <div class="col-md-9" role="main">
 
 <h1 id="releases">Releases</h1>
+<h4 id="213-june-13-2018">2.1.3 - June 13, 2018</h4>
+<p>Bugfix &amp; feature release that includes:</p>
+<p>Bugfixes: 
+<em> Will is now robust against slack disconnects, and automatically handles reconnects, thanks to <a href="../Ashex">https://github.com/Ashex</a>!
+</em> Will also now doesn't respond to every single message when he joins a new channel. Please send your thank-you cards to <a href="../Ashex">https://github.com/Ashex</a>. 
+<em> Makes will more robust at handling incorrect channel names in slack, thanks to <a href="https://github.com/reist">reist</a>.
+</em> Properly renames <code>SLACK_DEFAULT_ROOM</code> to <code>SLACK_DEFAULT_CHANNEL</code> (with backwards-compatability) thanks (again!) to <a href="https://github.com/reist">reist</a>.
+* Enable/disable backends from <code>generate_will_project</code> now properly puts the comment outside the strong.  Thanks to <a href="https://github.com/phiro69">phiro69</a> for the report.</p>
+<p>New features:
+<em> Adds support for slack attachments, thanks to <a href="../Ashex">https://github.com/Ashex</a>
+</em> Reminders now notify the person making the reminder, thanks to <a href="https://github.com/unicolet">unicolet</a>.
+<em> <code>generate_will_project</code> now supports a <code>--backends</code> flag, thanks to <a href="https://github.com/wontonst">wontonst</a>.
+</em> Will now explicitly notes if he's automagically using <code>REDIS_URL</code> to find the redis backend.</p>
 <h4 id="212-march-30-2018">2.1.2 - March 30, 2018</h4>
 <p>Bugfix release that includes:</p>
 <ul>
