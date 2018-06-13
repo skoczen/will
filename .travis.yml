@@ -11,11 +11,11 @@ install:
 script:
 - tox
 - export CTAG="-$TRAVIS_COMMIT"
-# - "fab docker-build"
+# - "fab docker_build"
 # deploy:
 #   skip_cleanup: true
 #   provider: script
-#   script: "fab docker-deploy"
+#   script: "fab docker_deploy"
 #   on:
 #     branch: master
 env:

@@ -3,7 +3,7 @@
 # Dev only
 pyandoc
 mkdocs>=0.14
-fabric
+fabric<2
 flake8
 mock
 nose

@@ -1,6 +1,6 @@
 import os
 import tempfile
-from invoke import task
+from fabric.api import *
 from will import VERSION
 
 SITE_DIR = "site"
@@ -37,39 +37,39 @@ def _splitpath(path):
     return path.split(os.sep)
 
 
-def tag_release(ctx):
+def tag_release():
     # Tag the release:
-    ctx.run("git tag %s" % VERSION)
-    ctx.run("git push --tags")
+    local("git tag %s" % VERSION)
+    local("git push --tags")
 
 
-def upload_release(ctx):
-    ctx.run("python setup.py sdist upload")
+def upload_release():
+    local("python setup.py sdist upload")
 
 
 @task
-def release(ctx):
-    deploy_docs(ctx)
-    upload_release(ctx)
-    tag_release(ctx)
+def release():
+    deploy_docs()
+    upload_release()
+    tag_release()
 
 
-def deploy_docs(ctx):
+def deploy_docs():
     # Sanity check dir.
     root_dir = os.getcwd()
     assert all([os.path.exists(os.path.join(root_dir, f)) for f in SANITY_CHECK_PROJECT_FILES])
 
-    ctx.run("rm -rf %s" % SITE_DIR)
-    ctx.run("mkdocs build")
+    local("rm -rf %s" % SITE_DIR)
+    local("mkdocs build")
     tempdir = tempfile.mkdtemp()
 
-    ctx.run("mv %s/* %s" % (SITE_DIR, tempdir))
+    local("mv %s/* %s" % (SITE_DIR, tempdir))
 
-    current_branch = ctx.run("git rev-parse --abbrev-ref HEAD", capture=True)
-    last_commit = ctx.run("git log -1 --pretty=\%B", capture=True)
+    current_branch = local("git rev-parse --abbrev-ref HEAD", capture=True)
+    last_commit = local("git log -1 --pretty=\%B", capture=True)
 
     # Add the new site to build
-    ctx.run("git checkout gh-pages")
+    local("git checkout gh-pages")
 
     # Sanity check dir.
     root_dir = os.getcwd()
@@ -89,44 +89,44 @@ def deploy_docs(ctx):
                     # Handle symlinks
                     os.remove(os.path.join(root, name))
 
-    ctx.run("cp -rv %s/* ." % tempdir)
-    result = ctx.run("git diff --exit-code", warn_only=True)
+    local("cp -rv %s/* ." % tempdir)
+    result = local("git diff --exit-code", warn_only=True)
 
     if result.return_code != 0:
-        ctx.run("git add -A .")
-        ctx.run("git commit -m 'Auto-update of docs: %s'" % last_commit)
-        ctx.run("git push")
+        local("git add -A .")
+        local("git commit -m 'Auto-update of docs: %s'" % last_commit)
+        local("git push")
     else:
         print("No changes to the docs.")
-    ctx.run("git checkout %s" % current_branch)
+    local("git checkout %s" % current_branch)
 
 
 @task
-def docker_build(ctx):
+def docker_build():
     print("Building Docker Images...")
-    with ctx.cd(DOCKER_PATH):
+    with .cd(DOCKER_PATH):
         for b in DOCKER_BUILDS:
-            ctx.run("docker build -t %(ctagname)s %(dir)s" % b)
+            local("docker build -t %(ctagname)s %(dir)s" % b)
 
 
-def docker_tag(ctx):
+def docker_tag():
     print("Building Docker Releases...")
-    with ctx.cd(DOCKER_PATH):
+    with .cd(DOCKER_PATH):
         for b in DOCKER_BUILDS:
-            ctx.run("docker tag %(ctagname)s %(name)s" % b)
+            local("docker tag %(ctagname)s %(name)s" % b)
 
 
-def docker_push(ctx):
+def docker_push():
     print("Pushing Docker to Docker Cloud...")
-    with ctx.cd(DOCKER_PATH):
-        ctx.run("docker login -u $DOCKER_USER -p $DOCKER_PASS")
-        ctx.run("docker push heywill/will:python2.7")
-        ctx.run("docker push heywill/will:python3.7")
-        ctx.run("docker push heywill/will:latest")
+    with .cd(DOCKER_PATH):
+        local("docker login -u $DOCKER_USER -p $DOCKER_PASS")
+        local("docker push heywill/will:python2.7")
+        local("docker push heywill/will:python3.7")
+        local("docker push heywill/will:latest")
 
 
 @task
-def docker_deploy(ctx):
-    docker_build(ctx)
-    docker_tag(ctx)
-    docker_push(ctx)
+def docker_deploy():
+    docker_build()
+    docker_tag()
+    docker_push()
