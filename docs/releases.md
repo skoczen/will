@@ -9,6 +9,7 @@ Bugfixes:
 * Will also now doesn't respond to every single message when he joins a new channel. Please send your thank-you cards to [https://github.com/Ashex](Ashex). 
 * Makes will more robust at handling incorrect channel names in slack, thanks to [reist](https://github.com/reist).
 * Properly renames `SLACK_DEFAULT_ROOM` to `SLACK_DEFAULT_CHANNEL` (with backwards-compatability) thanks (again!) to [reist](https://github.com/reist).
+* Enable/disable backends from `generate_will_project` now properly puts the comment outside the strong.  Thanks to [phiro69](https://github.com/phiro69) for the report.
 
 
 New features:
