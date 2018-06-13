@@ -138,6 +138,7 @@ def import_settings(quiet=True):
             "NAME": "HIPCHAT_NAME",
             "HANDLE": "HIPCHAT_HANDLE",
             "DEFAULT_ROOM": "HIPCHAT_DEFAULT_ROOM",
+            "SLACK_DEFAULT_ROOM": "SLACK_DEFAULT_CHANNEL",
         }
         deprecation_warn_shown = False
         for k, v in DEPRECATED_BUT_MAPPED_SETTINGS.items():
