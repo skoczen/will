@@ -14,8 +14,8 @@ MarkupSafe==0.23
 will-natural==0.2.1.1
 parsedatetime==1.1.2
 python-Levenshtein==0.12.0
-pyasn1-modules==0.0.5
-pyasn1==0.1.7
+pyasn1-modules>=0.0.5,<=0.1.5
+pyasn1>=0.1.8,<=0.3.7
 pycrypto==2.6.1
 pygerduty==0.28
 pytz==2017.2
