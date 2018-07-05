@@ -11,7 +11,7 @@ Currently pco bot can:
 
 To install follow the instruction in the Will Bot docs but use this repository instead.
 
-###PCO Bot Specific Instructions
+### PCO Bot Specific Instructions
 You need to put your Planning Center API Personal access token application key and secret in your environment variables.
 
 1. Get a Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
@@ -21,7 +21,7 @@ You need to put your Planning Center API Personal access token application key a
 PCO Bot is a hobby project and is not affiliated with the awesome folks at Planning Center Online.
 Though they think it's super cool.
 
-###Contribute!
+### Contribute!
 I'd love to have your help building PCO Bot. 
 If there's something you want to add 
 1. Look to see if your feature is already an issue.
@@ -31,7 +31,7 @@ or add an issue if it's not there.
 4. Write awesome code and submit a pull request!
 
 
-###PCO Bot is built on Will Bot
+### PCO Bot is built on Will Bot
 
 The first version of Will was built by [Steven Skoczen](http://stevenskoczen.com) while in the Greenkahuna Skunkworks (now defunct), was extended by [Ink and Feet](https://inkandfeet.com) and has been [contributed to by lots of awesome people](http://skoczen.github.io/will/improve/#the-shoulders-of-giants).
 
