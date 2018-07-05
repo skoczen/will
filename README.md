@@ -7,9 +7,9 @@ but they think it's supper cool!
 I use it in Slack.
 
 Currently pco bot can help with:
-* Do you have a number for John Doe
-* Do you know the birthday for John
-* Show the set list for Sunday
+* Do you have a number for John Doe (Any Name)
+* Do you know the birthday for John (Any Name)
+* Show the set list for Sunday (Any future service date)
 
 ### Install
 To install follow the instruction in the Will Bot docs but use this repository instead.
@@ -24,7 +24,8 @@ You need to put your Planning Center API Personal access token application key a
 
 In your config.py file you'll find an ACL section. The birthday and phone number commands are limited to 
 people in the staff, and pastors groups.
-The set list command is not restricted.
+The set list command is not restricted. Add the slack handles to this acl list. You can add any other 
+acl groups you'd like.
 ```
 # Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
 # in respond_to and hear actions.
@@ -40,9 +41,9 @@ ACL = {
 I'd love to have your help building PCO Bot. 
 If there's something you want to add 
 1. Look to see if your feature is already an issue.
-2. If it is then comment that you're working on it. If it's not then make an issue and comment that you're working on it.
-or add an issue if it's not there.
-3. Tag the issue People, Services, Check-in's etc
+2. If it is then comment that you're working on it. 
+If it's not then make an issue and comment that you're working on it.
+3. Tag the issue as Enhancement and People, Services, Check-in's etc
 4. Write awesome code and submit a pull request!
 
 
