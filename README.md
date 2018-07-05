@@ -22,7 +22,8 @@ You need to put your Planning Center API Personal access token application key a
 2. Set your "Application ID" as WILL_PCO_APPLICATION_KEY environment variable.
 3. Set your "Secret" as WILL_PCO_API_SECRET environment variable.
 
-In your config.py file you'll find an ACL section. The birthday and phone number commands are limited to people ing the staff, and pastors groups.
+In your config.py file you'll find an ACL section. The birthday and phone number commands are limited to 
+people in the staff, and pastors groups.
 The set list command is not restricted.
 ```
 # Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
