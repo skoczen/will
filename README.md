@@ -2,7 +2,7 @@
 PCO Bot is a bot that integrates with the Planning Center Online API.
 
 PCO Bot is a is a hobby project. It is not affiliated with the awesome team at Planning Center Online, 
-But they think it's supper cool!
+but they think it's supper cool!
 
 I use it in Slack.
 
