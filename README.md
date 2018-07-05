@@ -6,13 +6,14 @@ But they think it's supper cool!
 
 I use it in Slack.
 
-Currently pco bot can:
-* Find a phone number
+Currently pco bot can help with:
+* Do you have a number for John Doe
+* Do you know the birthday for John
+* Show the set list for Sunday
 
-* Find a birthday
-* Show the setlist for future dates
-
+### Install
 To install follow the instruction in the Will Bot docs but use this repository instead.
+http://skoczen.github.io/will/
 
 ### PCO Bot Specific Instructions
 You need to put your Planning Center API Personal access token application key and secret in your environment variables.
@@ -20,6 +21,19 @@ You need to put your Planning Center API Personal access token application key a
 1. Get a Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
 2. Set your "Application ID" as WILL_PCO_APPLICATION_KEY environment variable.
 3. Set your "Secret" as WILL_PCO_API_SECRET environment variable.
+
+In your config.py file you'll find an ACL section. The birthday and phone number commands are limited to people ing the staff, and pastors groups.
+The set list command is not restricted.
+```
+# Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
+# in respond_to and hear actions.
+# Group names can be any string, and the list is composed of user handles.
+ACL = {
+    "staff": ["johnell", "leigh", "pastorjoe","pastorhudson"],
+    "pastors": ["pastorjoe","pastorhudson"],
+	"media_team": ["joe.eafrati"],
+}
+```
 
 ### Contribute!
 I'd love to have your help building PCO Bot. 
