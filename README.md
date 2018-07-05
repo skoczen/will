@@ -1,7 +1,10 @@
 # PCO Bot:
 PCO Bot is a bot that integrates with the Planning Center Online API.
 
-I use it in slack.
+PCO Bot is a is a hobby project. It is not affiliated with the awesome team at Planning Center Online, 
+But they think it's supper cool!
+
+I use it in Slack.
 
 Currently pco bot can:
 * Find a phone number
@@ -17,9 +20,6 @@ You need to put your Planning Center API Personal access token application key a
 1. Get a Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
 2. Set your "Application ID" as WILL_PCO_APPLICATION_KEY environment variable.
 3. Set your "Secret" as WILL_PCO_API_SECRET environment variable.
-
-PCO Bot is a hobby project and is not affiliated with the awesome folks at Planning Center Online.
-Though they think it's super cool.
 
 ### Contribute!
 I'd love to have your help building PCO Bot. 
