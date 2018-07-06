@@ -127,9 +127,6 @@ class PcoPeoplePlugin(WillPlugin):
     @hear("(?:do you |find |got |a |need to |can somebody )?(number for |!number |!phone |call )"
           "(?P<pco_name>.*?(?=(?:\'|\?|\.)|$))", acl=["pastors", "staff"])
     def pco_phone_lookup(self, message, pco_name):
-        print("got request for phone number from ", message.author)
-        # print("Sending phone number from pco")
-        # print(pco_name)
         self.reply("I might have that number I'll check.")
         numbers = ""
         numbers = get_phone_numbers(pco_name)
