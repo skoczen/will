@@ -216,43 +216,43 @@ class PcoPeoplePlugin(WillPlugin):
     @hear("(?:do you |find |got |a |need to |can somebody )?(number for |!number |!phone |call )"
           "(?P<pco_name>.*?(?=(?:\'|\?|\.)|$))", acl=["pastors", "staff"])
     def pco_phone_lookup(self, message, pco_name):
+        print("got phone request")
         self.reply("I might have that number I'll check.")
         numbers = ""
         numbers = get_phone_numbers(pco_name)
-        if numbers is "":
-            self.reply("Sorry I don't have " + pco_name + "'s number.")
-        else:
+        if numbers:
             self.reply("Here you go!", message=message, attachments=numbers)
+        else:
+            self.reply("Sorry I don't have " + pco_name + "'s number.")
 
     @hear("(?:do you |find |got |a )?(birthday for |!birthday |!birth )(?P<pco_name>.*?(?=(?:\'|\?)|$))",
           acl=["pastors", "staff"])
     def pco_birthday_lookup(self, message, pco_name):
         self.reply("I might have that birthdate.")
         bdays = get_birthday(pco_name)
-        if bdays is None:
+        if bdays:
+            self.reply("Happy Birthday!", message=message, attachments=bdays)
+        else:
             self.reply("Sorry I don't have " + pco_name + "'s birthdate.")
-
-        self.reply("Happy Birthday!", message=message, attachments=bdays)
 
     @hear("(?:do you |find |got |a )?(address for |!address )(?P<pco_name>.*?(?=(?:\'|\?)|$))",
               acl=["pastors", "staff"])
     def pco_address_lookup(self, message, pco_name):
         self.reply("I might have that address.")
         address = get_address(pco_name)
-        if address is None:
-            self.reply("Sorry I don't have " + pco_name + "'s address. You should add it to Planning Center.")
-        else:
+        if address:
             self.reply("Found it!", message=message, attachments=address)
-
+        else:
+            self.reply("Sorry I don't have " + pco_name + "'s address. You should add it to Planning Center.")
 
 # Test your setup by running this file.
 # If you add functions in this file please add a test below.
 
 
 if __name__ == '__main__':
-    print("Getting phone numbers for 'John'")
-    print(get_phone_numbers('John'))
-    print("Getting birthdays  for 'John'")
-    print(get_birthday('John'))
-    print("Getting address for John")
-    print(get_address('John'))
+    # print("Getting phone numbers for 'John'")
+    # print(get_phone_numbers('John'))
+    # print("Getting birthdays  for 'John'")
+    # print(get_birthday('John'))
+    # print("Getting address for John")
+    print(get_address('Tom'))
