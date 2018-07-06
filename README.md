@@ -1,7 +1,7 @@
 # PCO Bot:
 PCO Bot is a bot that integrates with the Planning Center Online API.
 
-PCO Bot is a is a hobby project. It is not affiliated with the awesome team at Planning Center Online, 
+PCO Bot is a hobby project. It is not affiliated with the awesome team at Planning Center Online, 
 but they think it's supper cool!
 
 I use it in Slack.
@@ -20,20 +20,22 @@ Currently pco bot can help with:
 3. Setup virtualenv ```virtualenv .```
 4. Activate your virtual environment. ```source bin/activate```
 5. Get the requirements. ```pip install -r requirements.txt```
-6. Add your API Keys in the start.sh file. This is just for setting environment
+6. You need to put your Planning Center API Personal access token application key and secret in start.sh.
+Get a Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
+7. Add your API Keys in the start.sh file. This is just for setting environment
 variables and executing as sudo user. Sudo is needed to open port 80.
-7. Do ```chmod +x ./start.sh``` to make your startup executable.
+```
+export WILL_PCO_API_SECRET=asdflaksjdflaksjdf
+export WILL_PCO_APPLICATION_KEY=lkjasdlfkjasd;lfkjasdf
+export WILL_SLACK_API_TOKEN=kjasd;flkjasdflkj
+```
+8. Do ```chmod +x ./start.sh``` to make your startup executable.
 Then run ```./start.sh```
 
 Find more install help here:
 http://skoczen.github.io/will/
 
 ### PCO Bot Specific Instructions
-You need to put your Planning Center API Personal access token application key and secret in your environment variables.
-
-1. Get a Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
-2. Set your "Application ID" as WILL_PCO_APPLICATION_KEY environment variable.
-3. Set your "Secret" as WILL_PCO_API_SECRET environment variable.
 
 In your config.py file you'll find an ACL section. The birthday and phone number commands are limited to 
 people in the staff, and pastors groups.
