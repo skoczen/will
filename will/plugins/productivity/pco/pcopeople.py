@@ -246,21 +246,6 @@ class PcoPeoplePlugin(WillPlugin):
         else:
             self.reply("Found it!", message=message, attachments=address)
 
-    @respond_to("attachment")
-    def attachments(self, message):
-        attachments = []
-        attachments += attachments
-        attachments = [
-            {
-                "fallback": "Support ticket #1943",
-                "pretext": "A new ticket has been filed",
-                "title": "Ticket #1943: Can't reset my password",
-                "text": "Help! I tried to reset my password but nothing happened!",
-                "color": "#7CD197"
-            }
-        ]
-        self.say("Found it!", message=message, attachments=attachments)
-
 
 # Test your setup by running this file.
 # If you add functions in this file please add a test below.
@@ -268,8 +253,8 @@ class PcoPeoplePlugin(WillPlugin):
 
 if __name__ == '__main__':
     print("Getting phone numbers for 'John'")
-    print(get_phone_numbers('Ron'))
-    # print("Getting birthdays  for 'John'")
-    # print(get_birthday('John'))
-    # print("Getting address for John")
-    # print(get_address('John'))
+    print(get_phone_numbers('John'))
+    print("Getting birthdays  for 'John'")
+    print(get_birthday('John'))
+    print("Getting address for John")
+    print(get_address('John'))
