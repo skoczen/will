@@ -19,13 +19,11 @@ def get_phone_numbers(name):
         for x in pco.people.people.list(where={'first_name': name.split()[0], 'last_name': name.split()[1]}):
             for pnumber in x.rel.phone_numbers.list():
                 number = {'name': x.name, 'phone': pnumber.number}
-                # print("\n".join([number["name" ""], number["phone" ""]]))
-                rrphone_numbers = "\n".join([phone_numbers, number["name" ""], number["phone" ""]])
-    except Exception as e:
+                phone_numbers = "\n".join([phone_numbers, number["name" ""], number["phone" ""]])
+    except IndexError:
         for x in pco.people.people.list(where={'first_name': name.split()[0]}):
             for pnumber in x.rel.phone_numbers.list():
                 number = {'name': x.name, 'phone': pnumber.number}
-                # print("\n".join([number["name" ""], number["phone" ""]]))
                 phone_numbers = "\n".join([phone_numbers, number["name" ""], number["phone" ""]])
     finally:
         return phone_numbers
@@ -36,25 +34,92 @@ def get_birthday(name):
     bdays = ""
     try:
         for x in pco.people.people.list(where={'first_name': name.split()[0], 'last_name': name.split()[1]}):
-            # print(x.name)
-            # print(x.birthdate)
             if x.birthdate is None:
-                bdays = bdays + " " + " ".join([x.name, " needs birthday added to pco."])
+                bdays = bdays + " " + " ".join([x.name, "needs birthday added to pco."])
             else:
                 bdays = bdays + " " + " ".join([x.name, x.birthdate])
 
-    # TODO make this a popper exception catcher
-    except:
+    except IndexError:
         for x in pco.people.people.list(where={'first_name': name.split()[0]}):
-            # print(x.name)
-            # print(x.birthdate)
             if x.birthdate is None:
-                bdays = bdays + " " + " ".join([x.name, " needs birthday added to pco."])
+                bdays = bdays + " " + " ".join([x.name, "needs birthday added to pco."])
             else:
                 bdays = bdays + " " + " ".join([x.name, x.birthdate])
 
     finally:
-        return bdays
+       return bdays
+
+
+def get_address(name):
+    gotaddress = ""
+    attachment = []
+    try:
+        for x in pco.people.people.list(where={'first_name': name.split()[0], 'last_name': name.split()[1]}):
+            for address in x.rel.addresses.list():
+                address = {'name': x.name, 'location': address.location, 'street': address.street,
+                           'city': address.city, 'state': address.state, 'zip': address.zip}
+                gotaddress = "\n".join([gotaddress, address["name" ""], address["location" ""],
+                                          address["street" ""], " ".join([address["city" ""], address["state" ""],
+                                                                          address["zip" ""]])])
+                googleaddress = "+".join(["https://www.google.com/maps/dir/?api=1&destination=",
+                                          address["street" ""].replace(" ", "+"), address["city" ""].replace(" ", "+"),
+                                          address["state" ""].replace(" ", "+"), address["zip" ""]])
+                attachment += [
+                    {
+                        "fallback": gotaddress,
+                        "color": "#007AB8",
+                        "text": gotaddress,
+                        "actions": [
+                            {
+                                "color": "#3B80C6",
+                                "type": "button",
+                                "text": "Google Map",
+                                "url": googleaddress
+                            }
+                        ],
+                        "footer": "Planning Center Online API",
+                        "footer_icon": "https://d1pz3w4vu41eda.cloudfront.net/assets/people/favicon-128-9da4ee8f3ce3ec27b9ae86cceb4f3bb5c4e58c2becf38bee6850ff3923415e50.png"
+
+                    }
+                ]
+                gotaddress = ""
+                googleaddress = ""
+
+    except IndexError:
+        for x in pco.people.people.list(where={'first_name': name.split()[0]}):
+            for address in x.rel.addresses.list():
+                address = {'name': x.name, 'location': address.location, 'street': address.street,
+                           'city': address.city, 'state': address.state, 'zip': address.zip}
+                gotaddress = "\n".join([gotaddress, address["name" ""], address["location" ""],
+                                          address["street" ""], " ".join([address["city" ""], address["state" ""],
+                                                                          address["zip" ""]])])
+                googleaddress = "+".join(["https://www.google.com/maps/dir/?api=1&destination=",
+                                          address["street" ""].replace(" ", "+"), address["city" ""].replace(" ", "+"),
+                                          address["state" ""].replace(" ", "+"), address["zip" ""]])
+                # Build Slack style 'attachment'
+                attachment += [
+                    {
+                        "fallback": gotaddress,
+                        "color": "#007AB8",
+                        "text": gotaddress,
+                        "actions": [
+                            {
+                                "color": "#3B80C6",
+                                "type": "button",
+                                "text": "Google Map",
+                                "url": googleaddress
+                            }
+                        ],
+                        "footer": "Planning Center Online API",
+                        "footer_icon": "https://d1pz3w4vu41eda.cloudfront.net/assets/people/favicon-128-9da4ee8f3ce3ec27b9ae86cceb4f3bb5c4e58c2becf38bee6850ff3923415e50.png"
+
+                    }
+                ]
+                gotaddress = ""
+                googleaddress = ""
+
+    finally:
+        return attachment
 
 
 class PcoPeoplePlugin(WillPlugin):
@@ -62,12 +127,12 @@ class PcoPeoplePlugin(WillPlugin):
     @hear("(?:do you |find |got |a |need to |can somebody )?(number for |!number |!phone |call )"
           "(?P<pco_name>.*?(?=(?:\'|\?|\.)|$))", acl=["pastors", "staff"])
     def pco_phone_lookup(self, message, pco_name):
+        print("got request for phone number from ", message.author)
         # print("Sending phone number from pco")
         # print(pco_name)
         self.reply("I might have that number I'll check.")
         numbers = ""
         numbers = get_phone_numbers(pco_name)
-        # print(numbers)
         if numbers is "":
             self.reply("Sorry I don't have " + pco_name + "'s number.")
         else:
@@ -84,12 +149,40 @@ class PcoPeoplePlugin(WillPlugin):
 
         self.reply(bdays)
 
+    @hear("(?:do you |find |got |a )?(address for |!address )(?P<pco_name>.*?(?=(?:\'|\?)|$))",
+              acl=["pastors", "staff"])
+    def pco_address_lookup(self, message, pco_name):
+        self.reply("I might have that address.")
+        address = get_address(pco_name)
+        if address is None:
+            self.reply("Sorry I don't have " + pco_name + "'s address. You should add it to Planning Center.")
+        else:
+            self.reply("Found it!", message=message, attachments=address)
+
+    @respond_to("attachment")
+    def attachments(self, message):
+        attachments = []
+        attachments += attachments
+        attachments = [
+            {
+                "fallback": "Support ticket #1943",
+                "pretext": "A new ticket has been filed",
+                "title": "Ticket #1943: Can't reset my password",
+                "text": "Help! I tried to reset my password but nothing happened!",
+                "color": "#7CD197"
+            }
+        ]
+        self.say("Found it!", message=message, attachments=attachments)
+
+
 # Test your setup by running this file.
 # If you add functions in this file please add a test below.
 
 
 if __name__ == '__main__':
     print("Getting phone numbers for 'John'")
-    get_phone_numbers('John')
+    print(get_phone_numbers('John'))
     print("Getting birthdays  for 'John'")
-    get_birthday('John')
+    print(get_birthday('John'))
+    print("Getting address for John")
+    print(get_address('John'))
