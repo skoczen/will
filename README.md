@@ -20,10 +20,10 @@ Currently pco bot can help with:
 3. Setup virtualenv ```virtualenv .```
 4. Activate your virtual environment. ```source bin/activate```
 5. Get the requirements. ```pip install -r requirements.txt```
-6. Add your API Keys in the start.sh file.
-7. Run the start.sh ```./start.sh``` 
-If it won't run do ```chmod +x ./start.sh```
-Then try ```./start.sh``` again.
+6. Add your API Keys in the start.sh file. This is just for setting environment
+variables and executing as sudo user. Sudo is needed to open port 80.
+7. Do ```chmod +x ./start.sh``` to make your startup executable.
+Then run ```./start.sh```
 
 Find more install help here:
 http://skoczen.github.io/will/
