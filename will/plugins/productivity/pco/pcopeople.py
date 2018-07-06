@@ -107,7 +107,6 @@ def get_birthday(name):
                 pcoaddress = ""
 
     except IndexError:
-        print("except")
         for x in pco.people.people.list(where={'first_name': name.split()[0]}):
             pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
             if x.birthdate is None:
@@ -228,7 +227,6 @@ class PcoPeoplePlugin(WillPlugin):
     @hear("(?:do you |find |got |a )?(birthday for |!birthday |!birth )(?P<pco_name>.*?(?=(?:\'|\?)|$))",
           acl=["pastors", "staff"])
     def pco_birthday_lookup(self, message, pco_name):
-        # print("Looking up birthday")
         self.reply("I might have that birthdate.")
         bdays = get_birthday(pco_name)
         if bdays is None:
