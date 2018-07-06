@@ -12,8 +12,20 @@ Currently pco bot can help with:
 * Show the set list for Sunday (Any future service date)
 * Do you have the address for John (Any Name)
 
-### Install
-To install follow the instruction in the Will Bot docs but use this repository instead.
+### Install on Linux
+
+1. Clone this repository
+ ```git clone https://github.com/pastorhudson/pcobot.git```
+2. Change to pcobot directory. ```cd pcobot```
+3. Setup virtualenv ```virtualenv .```
+4. Activate your virtual environment. ```source bin/activate```
+5. Get the requirements. ```pip install -r requirements.txt```
+6. Add your API Keys in the start.sh file.
+7. Run the start.sh ```./start.sh``` 
+If it won't run do ```chmod +x ./start.sh```
+Then try ```./start.sh``` again.
+
+Find more install help here:
 http://skoczen.github.io/will/
 
 ### PCO Bot Specific Instructions
