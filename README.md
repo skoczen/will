@@ -10,6 +10,7 @@ Currently pco bot can help with:
 * Do you have a number for John Doe (Any Name)
 * Do you know the birthday for John (Any Name)
 * Show the set list for Sunday (Any future service date)
+* Do you have the address for John (Any Name)
 
 ### Install
 To install follow the instruction in the Will Bot docs but use this repository instead.
