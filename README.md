@@ -11,6 +11,7 @@ Currently pco bot can help with:
 * Do you know the birthday for John (Any Name)
 * Show the set list for Sunday (Any future service date)
 * Do you have the address for John (Any Name)
+* When was the last time John (Any Name) was here?
 
 ### Install on Linux
 
