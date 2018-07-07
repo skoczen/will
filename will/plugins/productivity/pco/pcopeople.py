@@ -273,7 +273,7 @@ def get_attendance(name):
                         last_checkin = last_checkin.strftime('%B %#d, %Y')  # windows
                     last_checkin = str(last_checkin)
                     first_record = False
-
+            pco_id = "AC" + pco_id
             attachment += [
                 {
                     "fallback": "",
@@ -331,7 +331,7 @@ class PcoPeoplePlugin(WillPlugin):
         else:
             self.reply("Sorry I don't have " + pco_name + "'s address. You should add it to Planning Center.")
 
-    @hear("(when was |was )?(last time |!checkin |!attendance )(?P<pco_name>.*?(?=(?:\'|\?)|$|))(here last |was here)",
+    @hear("(when was )?(last time |!checkin |!attendance |was )(?P<pco_name>.*?(?=(?:\'|\?)|$|))( here sunday?|here last |was here)",
           acl=["pastors", "staff"])
     def pco_checkin_lookup(self, message, pco_name):
         self.reply("Let me check.")
