@@ -2,7 +2,10 @@ import pypco
 import os
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-
+import datetime
+import parsedatetime
+import os
+from sys import platform
 
 # You need to put your Personal access token application key and secret in your environment variables.
 # Get a Personal Access Key: https://api.planningcenteronline.com/oauth/applications
@@ -211,10 +214,93 @@ def get_address(name):
         return attachment
 
 
+def get_attendance(name):
+    # get the last attended date of a person to any service by name
+    last_checkin = ""
+    attachment = []
+    try:
+        for x in pco.people.people.list(where={'first_name': name.split()[0], 'last_name': name.split()[1]}):
+            pco_id = x.id
+            check_ins = pco.check_ins.people.list_by_url(
+                'https://api.planningcenteronline.com/check_ins/v2/people/' + pco_id + '/check_ins?order=-created_at')
+            first_record = True
+            time_stamp = datetime.datetime
+            for a in check_ins:
+                while first_record:
+                    last_checkin = a.created_at
+                    last_checkin = datetime.datetime.strptime(last_checkin, '%Y-%m-%dT%H:%M:%SZ')
+                    if platform == "linux" or platform == "linux2":
+                        last_checkin = last_checkin.strftime('%B %-d, %Y')  # linux
+                    elif platform == "win32":
+                        last_checkin = last_checkin.strftime('%B %#d, %Y')  # windows
+                    last_checkin = str(last_checkin)
+                    first_record = False
+            pco_id = "AC" + pco_id
+            attachment += [
+                {
+                    "fallback": "",
+                    "color": "#876096",
+                    "text": (" ".join(["The last time", x.first_name,x.last_name, "checked in was: ", last_checkin])),
+                    "actions": [
+                        {
+                            "color": "#3B80C6",
+                            "type": "button",
+                            "text": "Open in PCO",
+                            "url": (
+                                "/".join(["https://check-ins.planningcenteronline.com/people", pco_id, "activity"])),
+                        }
+                    ],
+                    "footer": "Planning Center Online API",
+                    "footer_icon": "https://d20n8yffv74pqs.cloudfront.net/assets/check-ins/favicon-128-4ba5f33023f9771353564e67c6e1e049b0e7eea2f0c881c58432a3adc93a44ab.png"
+
+                }
+            ]
+            last_checkin = ""
+
+    except IndexError:
+        for x in pco.people.people.list(where={'first_name': name.split()[0]}):
+            pco_id = x.id
+            check_ins = pco.check_ins.people.list_by_url(
+                'https://api.planningcenteronline.com/check_ins/v2/people/' + pco_id + '/check_ins?order=-created_at')
+            first_record = True
+            for a in check_ins:
+                while first_record:
+                    last_checkin = a.created_at
+                    last_checkin = datetime.datetime.strptime(last_checkin, '%Y-%m-%dT%H:%M:%SZ')
+                    if platform == "linux" or platform == "linux2":
+                        last_checkin = last_checkin.strftime('%B %-d, %Y')  # linux
+                    elif platform == "win32":
+                        last_checkin = last_checkin.strftime('%B %#d, %Y')  # windows
+                    last_checkin = str(last_checkin)
+                    first_record = False
+
+            attachment += [
+                {
+                    "fallback": "",
+                    "color": "#876096",
+                    "text": (" ".join(["The last time", x.first_name,x.last_name,"checked in was: ", last_checkin])),
+                    "actions": [
+                        {
+                            "color": "#3B80C6",
+                            "type": "button",
+                            "text": "Open in PCO",
+                            "url": (
+                                "/".join(["https://check-ins.planningcenteronline.com/people", pco_id, "activity"])),
+                        }
+                    ],
+                    "footer": "Planning Center Online API",
+                    "footer_icon": "https://d20n8yffv74pqs.cloudfront.net/assets/check-ins/favicon-128-4ba5f33023f9771353564e67c6e1e049b0e7eea2f0c881c58432a3adc93a44ab.png"
+
+                }
+            ]
+            last_checkin = ""
+    finally:
+        return attachment
+
 class PcoPeoplePlugin(WillPlugin):
 
     @hear("(?:do you |find |got |a |need to |can somebody )?(number for |!number |!phone |call )"
-          "(?P<pco_name>.*?(?=(?:\'|\?|\.)|$))", acl=["pastors", "staff"])
+          "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))", acl=["pastors", "staff"])
     def pco_phone_lookup(self, message, pco_name):
         print("got phone request")
         self.reply("I might have that number I'll check.")
@@ -245,14 +331,26 @@ class PcoPeoplePlugin(WillPlugin):
         else:
             self.reply("Sorry I don't have " + pco_name + "'s address. You should add it to Planning Center.")
 
+    @hear("(when was |was )?(last time |!checkin |!attendance )(?P<pco_name>.*?(?=(?:\'|\?)|$|))(here last |was here)",
+          acl=["pastors", "staff"])
+    def pco_checkin_lookup(self, message, pco_name):
+        self.reply("Let me check.")
+        attendance = get_attendance(pco_name)
+        if attendance:
+            self.reply("Looks like: ", message=message, attachments=attendance)
+        else:
+            self.reply("Sorry I don't have any records for " + pco_name + "'s check-in's")
+
 # Test your setup by running this file.
 # If you add functions in this file please add a test below.
 
 
 if __name__ == '__main__':
-    # print("Getting phone numbers for 'John'")
-    # print(get_phone_numbers('John'))
-    # print("Getting birthdays  for 'John'")
-    # print(get_birthday('John'))
-    # print("Getting address for John")
-    print(get_address('Tom'))
+    name = "John"
+    date = "sunday"
+    print("Getting phone numbers for ", name)
+    print(get_phone_numbers(name))
+    print("Getting birthdays for ", name)
+    print(get_birthday(name))
+    print("Checking attendance for", name)
+    print(get_attendance(name))
