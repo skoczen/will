@@ -12,6 +12,7 @@ Currently pco bot can help with:
 * Show the set list for Sunday (Any future service date)
 * Do you have the address for John (Any Name)
 * When was the last time John (Any Name) was here?
+* What is the arrangement for Mighty To Save? (any song)
 
 ### Install on Linux
 
