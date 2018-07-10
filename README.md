@@ -9,10 +9,11 @@ I use it in Slack.
 Currently pco bot can help with:
 * Do you have a number for John Doe (Any Name)
 * Do you know the birthday for John (Any Name)
+* Do you have an email address for John (Any Name)
 * Show the set list for Sunday (Any future service date)
 * Do you have the address for John (Any Name)
 * When was the last time John (Any Name) was here?
-* What is the arrangement for Mighty To Save? (any song)
+* What is the arrangement for Mighty To Save? (Any Song)
 
 ### Install on Linux
 
