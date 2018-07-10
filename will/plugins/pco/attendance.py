@@ -37,7 +37,7 @@ def get(name):
                         {
                             "color": "#3B80C6",
                             "type": "button",
-                            "text": "Open in PCO",
+                            "text": "Open in Check-ins",
                             "url": (
                                 "/".join(["https://check-ins.planningcenteronline.com/people", pco_id, "activity"])),
                         }
@@ -75,7 +75,7 @@ def get(name):
                         {
                             "color": "#3B80C6",
                             "type": "button",
-                            "text": "Open in PCO",
+                            "text": "Open in Check-ins",
                             "url": (
                                 "/".join(["https://check-ins.planningcenteronline.com/people", pco_id, "activity"])),
                         }
