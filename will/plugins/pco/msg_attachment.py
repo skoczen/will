@@ -2,14 +2,26 @@
 
 class SlackAttachment:
 
-    def __init__(self,fallback="", pco="people",text="", button_color="people", action_type="button", button_text="Open in PCO", button_url=""):
+    def __init__(self,fallback="", pco="people", text="", button_color=None, action_type="button", button_text="Open in PCO", button_url=""):
         self.fallback = fallback
         self.text = text
         self.footer = "Planning Center Online API"
-        self.button_color = button_color
+        if button_color is None:
+            self.button_color = "#3B80C6"
+        else:
+            self.button_color = button_color
         self.action_type = action_type
         self.button_text = button_text
         self.button_url = button_url
+        self.actions = [
+                            {
+                                "color": self.button_color,
+                                "type": self.action_type,
+                                "text": self.button_text,
+                                "url": self.button_url
+                            }
+                        ]
+
         if pco == "people":
             self.color = "#3B80C6"
             self.button_color = "#3B80C6"
@@ -46,9 +58,24 @@ class SlackAttachment:
         text = " ".join([self.text, self.fallback])
         return text
 
-    def set_actions(self,text,url):
+    def set_actions(self, text, url):
         self.button_text = text
         self.button_url = url
+
+    def add_button(self, text, url=None, button_color=None, button_action_type="button",):
+        if url is None:
+            url = "No URL"
+        if button_color is None:
+            button_color = self.button_color
+
+        self.actions += [
+                {
+                    "color": button_color,
+                    "type": button_action_type,
+                    "text": text,
+                    "url": url
+                }
+            ]
 
     def slack(self):
         attachment = [
@@ -56,21 +83,15 @@ class SlackAttachment:
                         "fallback": self.fallback,
                         "color": self.color,
                         "text": self.text,
-                        "actions": [
-                            {
-                                "color": self.button_color,
-                                "type": self.action_type,
-                                "text": self.button_text,
-                                "url": self.button_url
-                            }
-                        ],
+                        "actions": self.actions,
                         "footer": self.footer,
                         "footer_icon": self.footer_icon,
                         }
         ]
         return attachment
 
+
 if __name__ == '__main__':
     x = SlackAttachment(fallback="YOU NEED ME",pco="services")
-    x.set_actions(text="test",url="google.com")
-    print(x.slack())
+    x.set_actions(text="test", url="google.com")
+    print(x.txt())

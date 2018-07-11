@@ -1,5 +1,6 @@
 import pypco
 import os
+from will.plugins.pco import msg_attachment
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
 
@@ -8,76 +9,49 @@ def get(name):
     gotaddress = ""
     attachment = []
     try:
-        for x in pco.people.people.list(where={'first_name': name.split()[0], 'last_name': name.split()[1]}):
-            for address in x.rel.addresses.list():
-                address = {'name': x.name, 'location': address.location, 'street': address.street,
-                           'city': address.city, 'state': address.state, 'zip': address.zip}
-                gotaddress = "\n".join([gotaddress, address["name" ""], address["location" ""],
-                                          address["street" ""], " ".join([address["city" ""], address["state" ""],
-                                                                          address["zip" ""]])])
-                googleaddress = "+".join(["https://www.google.com/maps/dir/?api=1&destination=",
-                                          address["street" ""].replace(" ", "+"), address["city" ""].replace(" ", "+"),
-                                          address["state" ""].replace(" ", "+"), address["zip" ""]])
-                attachment += [
-                    {
-                        "fallback": gotaddress,
-                        "color": "#007AB8",
-                        "text": gotaddress,
-                        "actions": [
-                            {
-                                "color": "#3B80C6",
-                                "type": "button",
-                                "text": "Google Map",
-                                "url": googleaddress
-                            }
-                        ],
-                        "footer": "Planning Center Online API",
-                        "footer_icon": "https://d1pz3w4vu41eda.cloudfront.net/assets/people/favicon-128-9da4ee8f3ce3ec27b9ae86cceb4f3bb5c4e58c2becf38bee6850ff3923415e50.png"
-
-                    }
-                ]
-                gotaddress = ""
-                googleaddress = ""
+        fl_name = {'first_name': name.split()[0], 'last_name': name.split()[1]}
 
     except IndexError:
-        for x in pco.people.people.list(where={'first_name': name.split()[0]}):
-            for address in x.rel.addresses.list():
-                address = {'name': x.name, 'location': address.location, 'street': address.street,
-                           'city': address.city, 'state': address.state, 'zip': address.zip}
-                gotaddress = "\n".join([gotaddress, address["name" ""], address["location" ""],
-                                          address["street" ""], " ".join([address["city" ""], address["state" ""],
-                                                                          address["zip" ""]])])
-                googleaddress = "+".join(["https://www.google.com/maps/dir/?api=1&destination=",
-                                          address["street" ""].replace(" ", "+"), address["city" ""].replace(" ", "+"),
-                                          address["state" ""].replace(" ", "+"), address["zip" ""]])
-                # Build Slack style 'attachment'
-                attachment += [
-                    {
-                        "fallback": gotaddress,
-                        "color": "#007AB8",
-                        "text": gotaddress,
-                        "actions": [
-                            {
-                                "color": "#3B80C6",
-                                "type": "button",
-                                "text": "Google Map",
-                                "url": googleaddress
-                            }
-                        ],
-                        "footer": "Planning Center Online API",
-                        "footer_icon": "https://d1pz3w4vu41eda.cloudfront.net/assets/people/favicon-128-9da4ee8f3ce3ec27b9ae86cceb4f3bb5c4e58c2becf38bee6850ff3923415e50.png"
-
-                    }
-                ]
-                gotaddress = ""
-                googleaddress = ""
+        fl_name = {'first_name': name.split()[0]}
 
     finally:
-        return attachment
+        attachment_list = []
+        for x in pco.people.people.list(where=fl_name):
+            print("Your mom loves ", x.name)
+            try:
+                print("in the try with ", x.name)
+                pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
+                for address in x.rel.addresses.list():
+                    print("in the for with ",x.name)
+                    address = {'name': x.name, 'location': address.location, 'street': address.street,
+                               'city': address.city, 'state': address.state, 'zip': address.zip}
+                    gotaddress = "\n".join([gotaddress, address["name" ""], address["location" ""],
+                                            address["street" ""],
+                                            " ".join([address["city" ""], address["state" ""], address["zip" ""]])])
+                    googleaddress = "+".join(["https://www.google.com/maps/dir/?api=1&destination=",
+                                              address["street" ""].replace(" ", "+"),
+                                              address["city" ""].replace(" ", "+"),
+                                              address["state" ""].replace(" ", "+"), address["zip" ""]])
+                    print(gotaddress)
+                    attachment = (msg_attachment.SlackAttachment(pco="people", text=gotaddress,
+                                                                 button_text="Open in People", button_url=pcoaddress))
+                    attachment.add_button(text="Google Maps", url=googleaddress)
+                    attachment_list.append(attachment)
+                    address = ""
+                    gotaddress = ""
+            except TypeError:
+                print("your mom sucks")
+                attachment_list.append(msg_attachment.SlackAttachment(fallback="Couldn't find address.",
+                                                                      text=" ".join(
+                                                                          ["There's a problem with the address for", x.name + ".",
+                                                                           "Maybe you can fix it?"]),
+                                                                      button_url=pcoaddress,
+                                                                      button_text="Open in People", pco="people"))
+        return attachment_list
 
 
 if __name__ == '__main__':
     name = "John"
-    date = "sunday"
     print("Getting address for ", name)
-    print(get(name))
+    for y in get(name):
+        print(y.slack())

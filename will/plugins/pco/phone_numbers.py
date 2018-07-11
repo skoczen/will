@@ -12,26 +12,28 @@ def get(name):
     attachment_list = []
 
     try:
-        for x in pco.people.people.list(where={'first_name': name.split()[0], 'last_name': name.split()[1]}):
-            pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
-            for pnumber in x.rel.phone_numbers.list():
-                number = {'name': x.name, 'phone': pnumber.number}
-                attachment_list.append(msg_attachment.SlackAttachment(
-                    fallback=pcoaddress,
-                    text="\n".join([phone_numbers, number["name" ""], number["phone" ""]]),
-                    button_url=pcoaddress,button_text="Open in People", pco="people"))
+        fl_name ={'first_name': name.split()[0], 'last_name': name.split()[1]}
 
     except IndexError:
-        for x in pco.people.people.list(where={'first_name': name.split()[0]}):
+        fl_name = {'first_name': name.split()[0]}
+
+    finally:
+        for x in pco.people.people.list(where=fl_name):
             pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
             for pnumber in x.rel.phone_numbers.list():
+                if pnumber.number is None:
+                    attachment_list.append(msg_attachment.SlackAttachment(fallback=pcoaddress,
+                                                                          text=" ".join(
+                                                                              ["I can't find a number for ", x.name,
+                                                                               "Maybe you could add it?"]),
+                                                                          button_url=pcoaddress,
+                                                                          button_text="Open in People", pco="people"))
+
                 number = {'name': x.name, 'phone': pnumber.number}
                 attachment_list.append(msg_attachment.SlackAttachment(
                     fallback=pcoaddress,
                     text="\n".join([phone_numbers, number["name" ""], number["phone" ""]]),
-                    button_url=pcoaddress,button_text="Open in People", pco="people"))
-
-    finally:
+                    button_url=pcoaddress, button_text="Open in People", pco="people"))
         return attachment_list
 
 
@@ -40,4 +42,4 @@ if __name__ == '__main__':
     print("Getting phone numbers for ", name)
     x = get(name)
     for i in x:
-        print(i.slack())
+        print(i.txt())

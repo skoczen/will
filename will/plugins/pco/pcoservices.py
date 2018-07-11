@@ -7,11 +7,8 @@ class PcoServicesPlugin(WillPlugin):
     @respond_to("(?:do you |find |got |a )?(set list for |!setlist |setlist for |!sunday |songs for |order of service for )(?P<pco_date>.*?(?=(?:\'|\?)|$))")
     def pco_setlist_lookup(self, message , pco_date):
         self.reply("Let me get that for you.")
-        setList = set_list.get(pco_date)
-        if setList is None:
-            self.reply("Sorry I don't have " + setList + "'s set list.")
-        # print(setList)
-        self.reply(setList)
+        attachment = set_list.get(pco_date)
+        self.reply("", message=message, attachments=attachment.slack())
 
     @respond_to("(?:what is |show me |what's |a )?(arrangement for |!song )(?P<pco_song>.*?(?=(?:\'|\?)|$))")
     def pco_song_lookup(self, message , pco_song):

@@ -3,6 +3,7 @@ import datetime
 import parsedatetime
 import os
 from sys import platform
+from will.plugins.pco import msg_attachment
 
 
 # You need to put your Personal access token Application key and secret in your environment variables.
@@ -12,6 +13,8 @@ from sys import platform
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
 
+# TODO convert to msg_attachment format add Open in Services button
+
 
 def get(set_date):
     # Get the Order of Service of a date and return a formatted string ready to send back.
@@ -19,6 +22,7 @@ def get(set_date):
     cal = parsedatetime.Calendar()
     set_date, parse_status = cal.parse(set_date)
     set_date = datetime.datetime(*set_date[:6])
+    service_id = ""
     # If you're running this on windows this needs to be: %#d rather than %-d
     if platform == "linux" or platform == "linux2":
         set_date = set_date.strftime('%B %-d, %Y')  # linux
@@ -28,6 +32,7 @@ def get(set_date):
     for serviceType in pco.services.service_types.list():
         for plan in serviceType.rel.plans.list(filter=['future']):
             if set_date in plan.dates:
+                service_id = plan.id
 
                 for items in plan.rel.items.list():
                     if items.attributes['item_type' ''] == 'header':
@@ -40,10 +45,14 @@ def get(set_date):
     if set_list == set_date:
         set_list = "Sorry, I couldn't fine a plan for that date ¯\_(ツ)_/¯"
     # print(set_list)
-    return set_list
+    attachment = msg_attachment.SlackAttachment(fallback=set_list,
+                                                pco="services", text=set_list, button_text="Open in Services",
+                                                button_url="https://services.planningcenteronline.com/plans/" + service_id)
+    return attachment
 
 
 if __name__ == '__main__':
     date = "Sunday"
     print("Getting set list for ", date)
-    print(get(date))
+    x = get(date)
+    print(x.slack())
