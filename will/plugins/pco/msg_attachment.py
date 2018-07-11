@@ -10,18 +10,6 @@ class SlackAttachment:
             self.button_color = "#3B80C6"
         else:
             self.button_color = button_color
-        self.action_type = action_type
-        self.button_text = button_text
-        self.button_url = button_url
-        self.actions = [
-                            {
-                                "color": self.button_color,
-                                "type": self.action_type,
-                                "text": self.button_text,
-                                "url": self.button_url
-                            }
-                        ]
-
         if pco == "people":
             self.color = "#3B80C6"
             self.button_color = "#3B80C6"
@@ -30,7 +18,7 @@ class SlackAttachment:
             self.color = "#0e8a16"
             self.button_color = "#0e8a16"
             self.footer_icon = "https://d1th6rei50eu1y.cloudfront.net/assets/services/favicon-128-54e6ba6447212021931bde30a181c31ec57056fd3d99d6e3a8b1bd0eddca7c1d.png"
-        if pco == "checkins":
+        if pco == "check_ins":
             self.color = "#876096"
             self.button_color = "#876096"
             self.footer_icon = "https://d20n8yffv74pqs.cloudfront.net/assets/check-ins/favicon-128-4ba5f33023f9771353564e67c6e1e049b0e7eea2f0c881c58432a3adc93a44ab.png"
@@ -46,6 +34,17 @@ class SlackAttachment:
             self.color = "#007AB8"
             self.button_color = "#007AB8"
             self.footer_icon = "https://d141ugdjiohsni.cloudfront.net/assets/registrations/favicon-128-0c011b11e8e7ac883933b1004306d55485c08e8c3d95779a39b02caa92f47249.png"
+        self.action_type = action_type
+        self.button_text = button_text
+        self.button_url = button_url
+        self.actions = [
+            {
+                "color": self.button_color,
+                "type": self.action_type,
+                "text": self.button_text,
+                "url": self.button_url
+            }
+        ]
 
     def dump(self):
         print("dump")
@@ -55,7 +54,7 @@ class SlackAttachment:
         pass
 
     def txt(self):
-        text = " ".join([self.text, self.fallback])
+        text = " ".join([self.text])
         return text
 
     def set_actions(self, text, url):
@@ -92,6 +91,6 @@ class SlackAttachment:
 
 
 if __name__ == '__main__':
-    x = SlackAttachment(fallback="YOU NEED ME",pco="services")
+    x = SlackAttachment(fallback="YOU NEED ME", pco="check_ins")
     x.set_actions(text="test", url="google.com")
-    print(x.txt())
+    print(x.slack())

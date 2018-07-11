@@ -1,6 +1,6 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from will.plugins.pco import birthday, address, phone_numbers, attendance, msg_attachment
+from will.plugins.pco import birthday, address, phone_numbers, checkins, msg_attachment
 
 # You need to put your Personal access token application key and secret in your environment variables.
 # Get a Personal Access Key: https://api.planningcenteronline.com/oauth/applications
@@ -14,19 +14,22 @@ class PcoPeoplePlugin(WillPlugin):
                 "(?P<pco_name>.*?(?=(?:\'|\?|\.|and|was|attended|checked|check|attend)|$))", acl=["pastors", "staff"])
     def pco_checkin_lookup(self, message, pco_name):
         self.reply("Let me check.")
-        attachment = attendance.get(pco_name)
-        if attachment:
-            self.reply("Looks like: ", message=message, attachments=attachment)
-        else:
-            attachment = msg_attachment.SlackAttachment(text="Sorry I don't have any records for " + pco_name + "'s last checkin.",
-                                                        button_text="Open People",
-                                                        button_url="https://people.planningcenteronline.com/people?q=" + pco_name.replace(
+        attachment = []
+        for x in checkins.get(pco_name):
+            attachment += x.slack()
+        if not attachment:
+            attachment = msg_attachment.SlackAttachment(text="Sorry I don't have a Check-in for " + pco_name, pco="check_ins",
+                                                        button_text="Search Check-ins",
+                                                        button_url="https://check-ins.planningcenteronline.com/people?q=" + pco_name.replace(
                                                             " ", "%20"))
+            print(attachment.slack())
             self.reply("", message=message, attachments=attachment.slack())
+        else:
+            self.reply("Here you go!", message=message, attachments=attachment)
 
 
 if __name__ == '__main__':
     name = "John"
     print("Checking attendance for", name)
-    for x in attendance.get(name):
-        print(x.txt)
+    for x in checkins.get(name):
+        print(x.txt())

@@ -1,6 +1,6 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from will.plugins.pco import birthday, address, phone_numbers, attendance, emails, msg_attachment
+from will.plugins.pco import birthday, address, phone_numbers, checkins, emails, msg_attachment
 
 # You need to put your Personal access token application key and secret in your environment variables.
 # Get a Personal Access Key: https://api.planningcenteronline.com/oauth/applications
@@ -11,7 +11,7 @@ from will.plugins.pco import birthday, address, phone_numbers, attendance, email
 class PcoPeoplePlugin(WillPlugin):
 
     @respond_to("(?:do you |find |got |a |need to |can somebody )?(number for |!number |!phone |call )"
-          "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))", acl=["pastors", "staff"])
+                "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))", acl=["pastors", "staff"])
     def pco_phone_lookup(self, message, pco_name):
         self.reply("I might have that number I'll look.")
         attachment = []
@@ -31,10 +31,10 @@ class PcoPeoplePlugin(WillPlugin):
     def pco_birthday_lookup(self, message, pco_name):
         self.reply("I might have that birthday I'll look.")
         attachment = []
-        for x in address.get(pco_name):
+        for x in birthday.get(pco_name):
             attachment += x.slack()
         if not attachment:
-            attachment = msg_attachment.SlackAttachment(text="Sorry I don't have an address for " + pco_name,
+            attachment = msg_attachment.SlackAttachment(text="Sorry I don't have a birthday for " + pco_name,
                                                         button_text="Search People",
                                                         button_url="https://people.planningcenteronline.com/people?q=" + pco_name.replace(
                                                             " ", "%20"))
@@ -82,15 +82,13 @@ class PcoPeoplePlugin(WillPlugin):
 
 
 if __name__ == '__main__':
-    name = "Joe Eafrati"
-    date = "sunday"
-    # print("Getting phone numbers for ", name)
-    # print(phone_numbers.get(name))
-    # for x in phone_numbers.get(name):
-    #     print(x.slack())
+    name = "John"
+    print("Getting phone numbers for ", name)
+    for x in phone_numbers.get(name):
+        print(x.txt())
     print("Getting address for ", name)
     for x in address.get(name):
-        print(x.slack())
-    # print("Getting birthdays for ", name)
-    # print(birthday.get(name))
-
+        print(x.txt())
+    print("Getting birthdays for ", name)
+    for x in birthday.get(name):
+        print(x.txt())

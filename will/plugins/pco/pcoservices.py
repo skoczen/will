@@ -27,7 +27,7 @@ if __name__ == '__main__':
     date = "sunday"
     song_name = "Mighty to Save"
     print("Getting set list for ", date)
-    print(set_list.get(date))
+    for x in set_list.get(date):
+        print(x.txt())
     print("Getting song info for ", song_name)
-    song = song_info.get(song_name)
-    print(song.slack())
+    print(song_info.get(song_name).txt())

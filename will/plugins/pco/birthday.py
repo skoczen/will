@@ -4,36 +4,42 @@ from will.plugins.pco import msg_attachment
 
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
+attachment_list = []
 
 
 def get(name):
-    # Get the birthday of person(s) and return a formated string ready to send back.
-    bdays = ""
-    attachment_list = []
     try:
-        fl_name ={'first_name': name.split()[0], 'last_name': name.split()[1]}
+        fl_name = {'first_name': name.split()[0], 'last_name': name.split()[1]}
 
     except IndexError:
         fl_name = {'first_name': name.split()[0]}
 
     finally:
         for x in pco.people.people.list(where=fl_name):
-            pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
-            print(x.name,x.birthdate)
-            if x.birthdate is None:
-                attachment_list.append(msg_attachment.SlackAttachment(fallback=pcoaddress,
-                                                                      text=" ".join(["I can't find a birthday for ", x.name,
-                                                                                     "Maybe you could add it?"]),
-                                                                      button_url=pcoaddress, button_text="Open in People", pco="people"))
-            else:
-                bdays = {'name': x.name, 'birthday': x.birthdate}
-                attachment_list.append(msg_attachment.SlackAttachment(
-                    fallback=pcoaddress,
-                    text="\n".join([bdays["name" ""], bdays["birthday" ""]]),
-                    button_url=pcoaddress,button_text="Open in People", pco="people"))
-                bdays = ""
+            build(x)
+        fl_name = fl_name = {'nickname': name}
+        for x in pco.people.people.list(where=fl_name):
+            build(x)
 
         return attachment_list
+
+def build(x):
+    nickname = ""
+    bdays = {}
+    pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
+    if x.birthdate is None:
+        return
+    else:
+        if x.nickname:
+            nickname = '"' + x.nickname + '"'
+        else:
+            nickname = ""
+        msg = " ".join([x.first_name, nickname, x.last_name, "\n" + x.birthdate])
+        attachment_list.append(msg_attachment.SlackAttachment(
+            fallback=pcoaddress,
+            text=msg,
+            button_url=pcoaddress, button_text="Open in People", pco="people"))
+        return
 
 
 if __name__ == '__main__':

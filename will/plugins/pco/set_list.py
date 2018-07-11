@@ -13,10 +13,11 @@ from will.plugins.pco import msg_attachment
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
 
-# TODO convert to msg_attachment format add Open in Services button
+# TODO see what happens with multiple plans and multiple service types on the same day
 
 
 def get(set_date):
+    attachment_list = []
     # Get the Order of Service of a date and return a formatted string ready to send back.
     # This only works for future dates since PCO API doesn't let us quarry plans by date.
     cal = parsedatetime.Calendar()
@@ -44,15 +45,14 @@ def get(set_date):
 
     if set_list == set_date:
         set_list = "Sorry, I couldn't fine a plan for that date ¯\_(ツ)_/¯"
-    # print(set_list)
-    attachment = msg_attachment.SlackAttachment(fallback=set_list,
+    attachment_list.append(msg_attachment.SlackAttachment(fallback=set_list,
                                                 pco="services", text=set_list, button_text="Open in Services",
-                                                button_url="https://services.planningcenteronline.com/plans/" + service_id)
-    return attachment
+                                                button_url="https://services.planningcenteronline.com/plans/" + service_id))
+    return attachment_list
 
 
 if __name__ == '__main__':
     date = "Sunday"
     print("Getting set list for ", date)
-    x = get(date)
-    print(x.slack())
+    for x in get(date):
+        print(x.txt())
