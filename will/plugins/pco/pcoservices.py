@@ -6,8 +6,10 @@ from will.plugins.pco import set_list, song_info
 class PcoServicesPlugin(WillPlugin):
     @respond_to("(?:do you |find |got |a )?(set list for |!setlist |setlist for |!sunday |songs for |order of service for )(?P<pco_date>.*?(?=(?:\'|\?)|$))")
     def pco_setlist_lookup(self, message , pco_date):
+        attachment = []
         self.reply("Let me get that for you.")
-        attachment = set_list.get(pco_date)
+        for x in set_list.get(pco_date):
+            attachment += x.slack()
         self.reply("", message=message, attachments=attachment.slack())
 
     @respond_to("(?:what is |show me |what's |a )?(arrangement for |!song )(?P<pco_song>.*?(?=(?:\'|\?)|$))")
