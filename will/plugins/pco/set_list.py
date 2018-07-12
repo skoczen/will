@@ -42,12 +42,14 @@ def get(set_date):
                         set_list = "\n".join([set_list, "• _" + str(items.title) + "_"])
                     else:
                         set_list = "\n".join([set_list,"• " + items.title])
+                attachment_list.append(msg_attachment.SlackAttachment(fallback=set_list,
+                                                                      pco="services", text=set_list,
+                                                                      button_text="Open in Services",
+                                                                      button_url="https://services.planningcenteronline.com/plans/" + service_id))
 
     if set_list == set_date:
         set_list = "Sorry, I couldn't fine a plan for that date ¯\_(ツ)_/¯"
-    attachment_list.append(msg_attachment.SlackAttachment(fallback=set_list,
-                                                pco="services", text=set_list, button_text="Open in Services",
-                                                button_url="https://services.planningcenteronline.com/plans/" + service_id))
+
     return attachment_list
 
 
