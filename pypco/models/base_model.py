@@ -4,6 +4,7 @@
 import copy
 from .. import models
 
+
 class BaseModel():
     """Base model class from which all models inherit."""
 
@@ -85,7 +86,7 @@ class BaseModel():
             pulled from PCO at some point during its lifecycle.)
         """
 
-        if self._user_created == True or not self._data or not 'id' in self._data:
+        if self._user_created is True or not self._data or not 'id' in self._data:
             raise PCOModelStateError("Couldn't delete this object; it appears it was never synced with PCO.")
 
         self._endpoint.delete(self.links['self'])
@@ -100,7 +101,7 @@ class BaseModel():
             on the PCO API via the create function).
         """
 
-        if self._user_created == True or not self._data or not 'id' in self._data:
+        if self._user_created is True or not self._data or not 'id' in self._data:
             raise PCOModelStateError("Couldn't delete this object; it appears it was never synced with PCO.")
 
         self._data = self._endpoint.update(self.links['self'], self._serialize_updates())['data']
@@ -218,6 +219,7 @@ class BaseModel():
 
         return self.__str__()
 
+
 class RelationWrapper():
     """A wrapper class for relationship management. 
 
@@ -265,6 +267,7 @@ class RelationWrapper():
 
         return RelationManager(name, self._model)
 
+
 class RelationManager():
     """Provides facilities for managing relationships between objects."""
 
@@ -305,10 +308,11 @@ class RelationManager():
                 not self._rel_name in self._model._update_relationships):
             
             # Return None/null value if that's what we have, and there's nothing in 
-            if self._model._data['links'][self._rel_name] == None:
+            if self._model._data['links'][self._rel_name] is None:
                 return None
             
             # We now know we have a value in links and it's not null; fetch and return
+            print(self._model._endpoint.get_by_url(self._model._data['links'][self._rel_name]))
             return self._model._endpoint.get_by_url(self._model._data['links'][self._rel_name])
 
         # We don't have a matching link; raise an error if we don't have
@@ -317,7 +321,7 @@ class RelationManager():
             raise PCORelationDoesNotExistError("The relation or link \"{}\" does not exist on this object.".format(self._rel_name))
 
         # We know we have a matching relationship; let's check for a None value
-        if self._relationships[self._rel_name]['data'] == None:
+        if self._relationships[self._rel_name]['data'] is None:
             return None
 
         # The relationship exists and is not None; fetch and return
@@ -578,16 +582,19 @@ class RelationManager():
         # resolve the correct endpoint
         return getattr(base_endpoint, model_class.ENDPOINT_NAME)
 
+
 class PCOModelStateError(Exception):
     """An exception representing a function call against a model that is
     in an invalid state."""
 
     pass
 
+
 class PCOInvalidModelError(Exception):
     """Exception raised when an invalid model as provided as a function argument."""
 
     pass
+
 
 class PCORelationDoesNotExistError(Exception):
     """An exception thrown when the requested relation does not exist on the current object."""

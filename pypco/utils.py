@@ -32,6 +32,7 @@ def get_browser_redirect_url(client_id, redirect_uri, scopes):
 
     return "{}{}".format(url, urllib.parse.urlencode(params))
 
+
 def get_oauth_access_token(client_id, client_secret, code, redirect_uri):
     """Get the access token for the client.
 

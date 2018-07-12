@@ -4,11 +4,13 @@ To add additional models, simply add additional classes
 subclassing the ServicesModel class.
 """
 
-#pylint: disable=C0321,R0903,C0111
+# pylint: disable=C0321,R0903,C0111
 
 from .base_model import BaseModel
 
 # The base people model
+
+
 class ServicesModel(BaseModel): pass
 
 # Services models
