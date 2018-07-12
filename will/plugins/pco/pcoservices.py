@@ -10,7 +10,7 @@ class PcoServicesPlugin(WillPlugin):
         self.reply("Let me get that for you.")
         for x in set_list.get(pco_date):
             attachment += x.slack()
-        self.reply("", message=message, attachments=attachment.slack())
+        self.reply("", message=message, attachments=attachment)
 
     @respond_to("(?:what is |show me |what's |a )?(arrangement for |!song )(?P<pco_song>.*?(?=(?:\'|\?)|$))")
     def pco_song_lookup(self, message , pco_song):
