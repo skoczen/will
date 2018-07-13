@@ -18,7 +18,7 @@ class PcoServicesPlugin(WillPlugin):
         attachment = song_info.get(pco_song)
         if attachment is None:
             self.reply("Sorry I don't find " + song + "in services.")
-        self.reply("Here you go: ", message=message, attachments=attachment)
+        self.reply("Here you go: ", message=message, attachments=attachment.slack())
 
 
 # Test your setup by running this file.
