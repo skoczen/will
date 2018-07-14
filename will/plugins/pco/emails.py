@@ -44,7 +44,7 @@ def get_nickname(name):
 
 
 if __name__ == '__main__':
-    name = "John"
+    name = "Ron Hudson"
     print("Getting emails for ", name)
     x = get(name)
     for i in x:
