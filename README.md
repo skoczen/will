@@ -8,18 +8,25 @@ It is intended for use with [Slack](https://slack.com/), and it is built upon an
 
 ### Usage
 
-Certain commands are :lock: restricted by ACL to "Pastors" and "Staff" groups by default.
+All commands are restricted by planning center App access. 
+When you run a command it will look up your Planning Center permissions. 
+If you have access to that app the command will work.
+
+#### Check your permissions
+*  ```... !apps *[App Name]*```
+If no app name is provided it will list all the apps you can access. 
+
 
 #### People
 
 ```I need the | Do you know the | Do you have a | Can somebody tell me the...```
 
-* :lock: ```... number for *[Any Name]*```   
-* :lock: ```... birthday for *[Any Name]*```
-* :lock: ```... email address for *[Any Name]*```
-* :lock: ```... address for  *[Any Name]*```
+*  ```... number for *[Any Name]*```   
+*  ```... birthday for *[Any Name]*```
+*  ```... email address for *[Any Name]*```
+*  ```... address for  *[Any Name]*```
 
-#### Services (Scheduling)
+#### Check-ins (Attendance)
 * ```When was the last time *[Any Name]* was here?```
 * ```Was *[Any Name]* here Sunday?```
 
@@ -29,6 +36,7 @@ Certain commands are :lock: restricted by ACL to "Pastors" and "Staff" groups by
 * ```What is the arrangement for [Any Song]?```
 
 #### Access Control Lists
+This isn't really used in the pcobot but it is used for Will bot commands
 * :lock: ```!acl``` (Displays the current access lists.)
 
 To change the access control list, see configuration instructions below and this [enhancement](https://github.com/pastorhudson/pcobot/issues/17)
@@ -64,7 +72,7 @@ http://skoczen.github.io/will/
 
 In your config.py file you'll find an ACL section. Certain commands are limited to people in the *staff* and *pastors* groups.
 The set list command is not restricted. Add the slack handles to this acl list. You can add any other 
-acl groups you'd like.
+acl groups you'd like. Each entry must be in lower case!
 ```
 # Access Control: Specify groups of users to be used in the acl=["pastors","staff"] parameter
 # in respond_to and hear actions.
