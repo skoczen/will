@@ -23,9 +23,8 @@ def get(name):
 
         return attachment_list
 
+
 def build(x):
-    nickname = ""
-    bdays = {}
     pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
     if x.birthdate is None:
         return
