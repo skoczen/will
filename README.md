@@ -63,10 +63,12 @@ sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
 
 10. Add your API Keys in the start.sh file. This is just for setting environment
 variables and executing as sudo user. Sudo is needed to open port 80.
+
+e.g. (using random strings as keys)
 ```
-export "WILL_PCO_API_SECRET=asdflaksjdflaksjdf"
-export "WILL_PCO_APPLICATION_KEY=lkjasdlfkjasd;lfkjasdf"
-export "WILL_SLACK_API_TOKEN=kjasd;flkjasdflkj"
+export WILL_PCO_API_SECRET=AJS7F7ZIJ2
+export WILL_PCO_APPLICATION_KEY=X0579RTGV7
+export WILL_SLACK_API_TOKEN=X3WTBK0PZL
 ```
   * Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
   * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
