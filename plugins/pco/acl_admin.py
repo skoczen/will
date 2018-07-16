@@ -1,7 +1,8 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, hear
-from will.acl import get_acl_members, get_acl_groups
 from plugins.pco import msg_attachment, authenticate
+from will import settings
+from will.acl import get_acl_members
 
 
 class AclAdmin(WillPlugin):
@@ -43,8 +44,18 @@ class AclAdmin(WillPlugin):
             self.reply("Here are the apps you have access to: ", message=message, attachments=your_apps)
 
 
+def get_acl_groups():
+    acl_groups = []
+    if getattr(settings, "ACL", None):
+        # Case-insensitive checks
+        for k in settings.ACL.keys():
+            print(k.lower())
+            acl_groups.append(k.lower())
+
+        return acl_groups
+
+
 if __name__ == '__main__':
     acl = "pastors"
-    get_acl_members(acl)
     list = get_acl_groups()
     print(str(list))
