@@ -58,7 +58,7 @@ sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
  ```git clone https://github.com/pastorhudson/pcobot.git```
 4. Change to pcobot directory. ```cd pcobot```
 5. Setup the pcobot folder as a virtualenv using the following command. ```virtualenv .```  (**Important:** the `.` references the current folder)
-6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt (e.g. ```my_project)Your-Computer:your_project UserName$``` to let you know that it’s active. From now on, any package that you install using pip will be placed in the my_project folder, isolated from the global Python installation.)
+6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be isntalled to the viertual environment, isolated from the global Python installation.)
 7. Get the requirements. ```pip install -r requirements.txt``` 
 
 10. Add your API Keys in the start.sh file. This is just for setting environment
