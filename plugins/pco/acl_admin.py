@@ -1,8 +1,7 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, hear
 from will.acl import get_acl_members, get_acl_groups
-from will.plugins.pco import msg_attachment, authenticate
-import will.abstractions
+from plugins.pco import msg_attachment, authenticate
 
 
 class AclAdmin(WillPlugin):
@@ -25,7 +24,7 @@ class AclAdmin(WillPlugin):
 
         self.reply("Here are all the access control lists I have:", message=message, attachments=attachment.slack())
 
-    @hear("(?:Can I |do I have )?(access |!app)(?P<app>.*?(?=(?:\?)|$))")
+    @respond_to("(?:Can I |do I have )?(access |!app)(?P<app>.*?(?=(?:\?)|$))")
     def message_test(self, message, app):
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         print("This is what's in app: " + app)

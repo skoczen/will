@@ -1,7 +1,7 @@
 import pypco
 import datetime
 import os
-from will.plugins.pco import msg_attachment
+from plugins.pco import msg_attachment
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
 
@@ -48,7 +48,8 @@ def build(x):
                     nickname = ""
                 pco_id = "AC" + pco_id
                 if nickname:
-                    msg = " ".join(["The last time", x.first_name, nickname, x.last_name, "checked in was:\n" + last_checkin])
+                    msg = " ".join(["The last time", x.first_name, nickname, x.last_name, "checked in was:\n" +
+                                    last_checkin])
                 else:
                     msg = " ".join(["The last time", x.first_name, x.last_name, "checked in was:\n" + last_checkin])
                 url = "/".join(["https://check-ins.planningcenteronline.com/people", pco_id, "activity"])

@@ -1,6 +1,6 @@
 import pypco
 import os
-from will.plugins.pco import msg_attachment
+from plugins.pco import msg_attachment
 
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])

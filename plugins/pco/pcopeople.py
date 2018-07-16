@@ -1,6 +1,6 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from will.plugins.pco import birthday, address, phone_numbers, checkins, emails, msg_attachment, authenticate
+from plugins.pco import birthday, address, phone_numbers, checkins, emails, msg_attachment, authenticate
 
 # You need to put your Personal access token application key and secret in your environment variables.
 # Get a Personal Access Key: https://api.planningcenteronline.com/oauth/applications

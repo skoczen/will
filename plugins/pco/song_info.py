@@ -1,6 +1,6 @@
 import pypco
 import os
-from will.plugins.pco import msg_attachment
+from plugins.pco import msg_attachment
 
 
 # You need to put your Personal access token Application key and secret in your environment variables.

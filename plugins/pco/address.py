@@ -1,6 +1,6 @@
 import pypco
 import os
-from will.plugins.pco import msg_attachment
+from plugins.pco import msg_attachment
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
 attachment_list = []
@@ -47,7 +47,8 @@ def build(x):
             attachment.add_button(text="Google Maps", url=googleaddress)
             attachment_list.append(attachment)
     except TypeError:
-        attachment_list.append(msg_attachment.SlackAttachment(pco="people", text="There's a problem with " + name + "'s address.",
+        attachment_list.append(msg_attachment.SlackAttachment(pco="people", text="There's a problem with " + name +
+                                                                                 "'s address.",
                                                               button_text="Open in People", button_url=pcoaddress))
 
     finally:

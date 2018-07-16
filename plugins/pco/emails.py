@@ -1,6 +1,6 @@
 import pypco
 import os
-from will.plugins.pco import msg_attachment
+from plugins.pco import msg_attachment
 
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
@@ -44,7 +44,7 @@ def get_nickname(name):
 
 
 if __name__ == '__main__':
-    name = "Ron Hudson"
+    name = "John"
     print("Getting emails for ", name)
     x = get(name)
     for i in x:
