@@ -47,19 +47,19 @@ To change the access control list, see configuration instructions below and this
 ### Install on Linux 
 *(example code assumes Debian - including Ubuntu, Mint, KNOPPIX, Raspbian)*
 
-1. Install virtualenv ```pip install virtualenv```. (If there are exceptions you may need to use sudo permissions ```sudo pip install virtualenv```
-2. Install redis. 
-```sudo apt-get install redis-server```
-```redis-server```
+1. Install virtualenv ```pip install virtualenv```.
 3. Clone this repository
  ```git clone https://github.com/pastorhudson/pcobot.git```
 4. Change to pcobot directory. ```cd pcobot```
 5. Setup virtualenv ```virtualenv my_pcobot``` (You can replace *'my_pcobot'* with a folder/project name of your choice)
 6. Activate your virtual environment. ```source my_pcobot/bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt (e.g. ```my_project)Your-Computer:your_project UserName$``` to let you know that it’s active. From now on, any package that you install using pip will be placed in the my_project folder, isolated from the global Python installation.)
-7. Get the requirements. ```pip install -r requirements.txt```
-8. You need to put your Planning Center API Personal access token application key and secret in start.sh.
-Get a Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
-9. Get your Slack API legacy token here: https://api.slack.com/custom-integrations/legacy-tokens 
+6. If deploying on Rasbian Jessie (Raspberry Pi), run the additional commands below, or the requirements file in the next step will fail. 
+```
+sudo apt-get update
+sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
+```
+7. Get the requirements. ```pip install -r requirements.txt``` 
+
 10. Add your API Keys in the start.sh file. This is just for setting environment
 variables and executing as sudo user. Sudo is needed to open port 80.
 ```
@@ -67,6 +67,9 @@ export WILL_PCO_API_SECRET=asdflaksjdflaksjdf
 export WILL_PCO_APPLICATION_KEY=lkjasdlfkjasd;lfkjasdf
 export WILL_SLACK_API_TOKEN=kjasd;flkjasdflkj
 ```
+	* Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
+	* Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
+	
 11. Do ```chmod +x ./start.sh``` to make your startup executable.
 Then run ```./start.sh```
 
