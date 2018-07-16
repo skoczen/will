@@ -68,9 +68,9 @@ export WILL_PCO_API_SECRET=asdflaksjdflaksjdf
 export WILL_PCO_APPLICATION_KEY=lkjasdlfkjasd;lfkjasdf
 export WILL_SLACK_API_TOKEN=kjasd;flkjasdflkj
 ```
-	* Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
-	* Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
-	* Create a bot user. https://my.slack.com/services/new/bot
+  * Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
+  * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
+  * Create a bot user. https://my.slack.com/services/new/bot
 	
 11. Do ```chmod +x ./start.sh``` to make your startup executable.
 Then run ```./start.sh```
