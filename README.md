@@ -49,10 +49,12 @@ To change the access control list, see configuration instructions below and this
 1. Get a Heroku account.
 2. Add a redis add-on from [Elements](https://elements.heroku.com/addons). (e.g. Redis Cloud will work automatically) Note: You will need to verify your account with a credit card even to install a free add-on.
 4. Enter your config vars on the [settings](https://dashboard.heroku.com/apps/your_app/settings) page.
+
 		WILL_PCO_API_SECRET
 		WILL_PCO_APPLICATION_KEY
 		WILL_PUBLIC_URL (http://your-will-name.herokuapp.com)
 		WILL_SLACK_API_TOKEN
+		
 5. Ensure your timezone is set correctly.
 2. Choose github as your deployment method in heroku.
 4. Deploy the master branch.
