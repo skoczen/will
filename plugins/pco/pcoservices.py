@@ -10,6 +10,7 @@ class PcoServicesPlugin(WillPlugin):
     @respond_to("(?:do you |find |got |a )?(set list for |!setlist |setlist for |"
                 "!sunday |songs for |order of service for )(?P<pco_date>.*?(?=(?:\'|\?)|$))")
     def pco_setlist_lookup(self, message, pco_date):
+        """set list for Sunday: tells you the set list for a certain date)""
         # credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         # if authenticate.get(credentials, app):
         attachment = []
