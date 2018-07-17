@@ -59,7 +59,7 @@ class PcoPeoplePlugin(WillPlugin):
 
     @respond_to("(?:do you |find |got |a )?(address for |!address )(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_address_lookup(self, message, pco_name):
-         """!address | "address for" (name): tells you the street address of a certain user"""
+        """!address | "address for" (name): tells you the street address of a certain user"""
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         if authenticate.get(credentials, app):
             self.reply("I might have that address.")
