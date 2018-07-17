@@ -24,20 +24,27 @@ def get(credentials, app):
 def get_apps(credentials):
     fl_name = {'first_name': credentials['name' ''].split()[0], 'last_name': credentials['name' ''].split()[1]}
     app_list = ""
+    pcoaddress = ""
     for x in pco.people.people.list(where=fl_name):
         pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
         for apps in x.rel.apps.list():
             app_list += "\n" + apps.name
+    print(app_list)
+    if app_list is "":
+        print("else")
+        pcoaddress = ("https://people.planningcenteronline.com/people?q=" + "%20".join([fl_name['first_name' ''],
+                                                                                        fl_name['last_name' '']]))
+        app_list = "Whoops! Something went wrong. I couldn't find your permissions."
     attachment = msg_attachment.SlackAttachment(fallback=app_list, text=app_list,
                                                 button_text="Open in People", button_url=pcoaddress)
     return attachment
 
 
 if __name__ == '__main__':
-    name = "John"
-    email = "john@somesite.com"
+    name = "Bill Hudson"
+    email = "pastorron@yourcbcfamily.org"
+    credentials = {"name": name, "email": email}
     app = "people"
     credentials = {"name": name, "email": email}
-    print(get(credentials, app))
-    # info = get_apps(credentials)
-    # print(info.txt())
+    print("Access to People: ", get(credentials, app))
+    print("Apps you have access to: ", get_apps(credentials).slack())

@@ -16,7 +16,6 @@ def get(name):
         fl_name = {'first_name': name.split()[0]}
 
     finally:
-        count = 0
         for x in pco.people.people.list(where=fl_name):
                 print("https://people.planningcenteronline.com/people/" + x.id)
 
