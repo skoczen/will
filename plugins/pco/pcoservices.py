@@ -13,7 +13,7 @@ class PcoServicesPlugin(WillPlugin):
         # credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         # if authenticate.get(credentials, app):
         attachment = []
-        self.reply("Let me get that for you.")
+        self.reply("Let me get that for you. This might take a bit if you have a lot of services.")
         for x in set_list.get(pco_date):
             attachment += x.slack()
         self.reply("", message=message, attachments=attachment)
