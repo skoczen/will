@@ -49,7 +49,7 @@ To change the access control list, see configuration instructions below and this
   * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
   * Create a bot user. https://my.slack.com/services/new/bot
   
-  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. Also, most of the "people" commands won't work if you don't have the "People" app.
+  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access.
 
 ### Install on Heroku
 
