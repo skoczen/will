@@ -49,7 +49,7 @@ To change the access control list, see configuration instructions below and this
   * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
   * Create a bot user. https://my.slack.com/services/new/bot
   
-  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!)
+  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one o your PCO *Organization Administrators*, or you may even choose to create a dedicated user just for this bot.
 
 ### Install on Heroku
 
