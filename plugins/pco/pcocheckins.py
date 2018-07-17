@@ -15,6 +15,7 @@ class PcoPeoplePlugin(WillPlugin):
     @respond_to("(?:when was )?(last time |!checkin |attended |when did )"
                 "(?P<pco_name>.*?(?=(?:\'|\?|\.|and|was|attended|checked|check|attend)|$))")
     def pco_checkin_lookup(self, message, pco_name):
+        """!checkin [name]: tells you the last time someone checked-in"""
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         if authenticate.get(credentials, app):
             print("checkin request")
