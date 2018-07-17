@@ -15,6 +15,7 @@ class PcoPeoplePlugin(WillPlugin):
     @respond_to("(?:do you |find |got |a |need to |can somebody )?(number for |!number |!phone |call )"
                 "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
     def pco_phone_lookup(self, message, pco_name):
+        """!phone | "number for" (name): tells you the phone number of a certain user"""
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         if authenticate.get(credentials, app):
             self.reply("I might have that number I'll look.")
@@ -36,6 +37,7 @@ class PcoPeoplePlugin(WillPlugin):
 
     @respond_to("(?:do you |find |got |a )?(birthday for |!birthday |!birth )(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_birthday_lookup(self, message, pco_name):
+        """!birthday | "birthday for" (name): tells you the birthday of a certain user"""
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         if authenticate.get(credentials, app):
             self.reply("I might have that birthday I'll look.")
@@ -57,6 +59,7 @@ class PcoPeoplePlugin(WillPlugin):
 
     @respond_to("(?:do you |find |got |a )?(address for |!address )(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_address_lookup(self, message, pco_name):
+        """!address | "address for" (name): tells you the street address of a certain user"""
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         if authenticate.get(credentials, app):
             self.reply("I might have that address.")
@@ -80,6 +83,7 @@ class PcoPeoplePlugin(WillPlugin):
     @respond_to("(?:do you |find |got |a |need to |can somebody )?(email for |!email |email )"
                 "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
     def pco_email_lookup(self, message, pco_name):
+        """!email | "email for" (name): tells you the email address of a certain user"""
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         if authenticate.get(credentials, app):
             self.reply("I might have that email address. I'll look.")
