@@ -52,7 +52,7 @@ To change the access control list, see configuration instructions below and this
 
 		WILL_PCO_API_SECRET
 		WILL_PCO_APPLICATION_KEY
-		WILL_PUBLIC_URL (http://your-will-name.herokuapp.com)
+		WILL_PUBLIC_URL (https://your-will-name.herokuapp.com)
 		WILL_SLACK_API_TOKEN
 		
 5. Ensure your timezone is set correctly.
