@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Chalta/pcobot.svg?branch=master)](https://travis-ci.org/Chalta/pcobot)
+[![Build Status](https://travis-ci.org/pastorhudson/pcobot.svg?branch=master)](https://travis-ci.org/pastorhudson/pcobot)
 # PCO Bot:
 PCO Bot is a bot that integrates with the Planning Center Online API.
 
@@ -43,7 +43,21 @@ This isn't really used in the pcobot but it is used for Will bot commands
 To change the access control list, see configuration instructions below and this [enhancement](https://github.com/pastorhudson/pcobot/issues/17)
 
 ----------------------------------
+### Install on Heroku
 
+1. Fork this repository.
+2. Get a Heroku account.
+3. Add a redis add-on from [Elements](https://elements.heroku.com/addons). (e.g. Redis Cloud will work automatically) Note: You will need to verify your account with a credit card even to install a free add-on.
+4. Enter your config vars on the [settings](https://dashboard.heroku.com/apps/your_app/settings) page. You can set your timezone with a variable. Permissible values can be found in the [IANA TZ list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+ 	* WILL_PCO_API_SECRET		```AJS7F7ZIJ2...```
+ 	* WILL_PCO_APPLICATION_KEY	```X0579RTGV7...```
+ 	* WILL_SLACK_API_TOKEN		```xoxb-X3WTBK0PZL...```
+	* WILL_PUBLIC_URL 		```https://your-heroku-app-name.herokuapp.com```
+	* TZ    			```America/Los_Angeles```
+		
+5. Choose github as your deployment method in heroku and connect to your fork of pcobot.
+6. Deploy the master branch.
 
 ### Install on Linux 
 *(example code assumes Debian - including Ubuntu, Mint, KNOPPIX, Raspbian)*
@@ -69,7 +83,7 @@ e.g. (using random strings as keys)
 ```
 export WILL_PCO_API_SECRET=AJS7F7ZIJ2
 export WILL_PCO_APPLICATION_KEY=X0579RTGV7
-export WILL_SLACK_API_TOKEN=X3WTBK0PZL
+export WILL_SLACK_API_TOKEN=xoxb-X3WTBK0PZL
 ```
   * Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
   * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
