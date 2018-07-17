@@ -14,7 +14,7 @@ install:
 - pip install -r will/requirements/dev.txt
 script:
 - tox
-- export CTAG="-$TRAVIS_COMMIT"
+#- export CTAG="-$TRAVIS_COMMIT"
 # - "fab docker_build"
 # deploy:
 #   skip_cleanup: true
