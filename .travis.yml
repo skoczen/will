@@ -1,5 +1,6 @@
 language: python
 python:
+  - "2.7"
   - "3.5"
   - "3.6"
 sudo: false
@@ -14,7 +15,6 @@ install:
 - pip install -r will/requirements/dev.txt
 script:
 - tox
-#- export CTAG="-$TRAVIS_COMMIT"
 # - "fab docker_build"
 # deploy:
 #   skip_cleanup: true
