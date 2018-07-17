@@ -43,6 +43,14 @@ This isn't really used in the pcobot but it is used for Will bot commands
 To change the access control list, see configuration instructions below and this [enhancement](https://github.com/pastorhudson/pcobot/issues/17)
 
 ----------------------------------
+### Get API Tokens
+
+  * Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
+  * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
+  * Create a bot user. https://my.slack.com/services/new/bot
+  
+  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one o your PCO *Organization Administrators*, or you may even choose to create a dedicated user just for this bot.
+
 ### Install on Heroku
 
 1. Fork this repository.
@@ -85,9 +93,6 @@ export WILL_PCO_API_SECRET=AJS7F7ZIJ2
 export WILL_PCO_APPLICATION_KEY=X0579RTGV7
 export WILL_SLACK_API_TOKEN=xoxb-X3WTBK0PZL
 ```
-  * Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
-  * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
-  * Create a bot user. https://my.slack.com/services/new/bot
 	
 11. Do ```chmod +x ./start.sh``` to make your startup executable.
 Then run ```./start.sh```
