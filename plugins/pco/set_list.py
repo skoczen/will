@@ -3,8 +3,6 @@ import datetime
 import parsedatetime
 import os
 import re
-from sys import platform
-from will.mixins.naturaltime import NaturalTimeMixin
 from plugins.pco import msg_attachment
 
 
@@ -14,8 +12,6 @@ from plugins.pco import msg_attachment
 # Secret: WILL_PCO_API_SECRET environment variable
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
-
-# Solution has been proposed. We will only return first plan from first campus and see if that works.
 
 
 def get(set_date="sunday"):
@@ -30,32 +26,60 @@ def get(set_date="sunday"):
     set_date = set_date.strftime('%B %d, %Y')  # linux
     set_date = strip_leading_zeros(set_date)
     set_list = str(set_date)
-    for site in pco.people.campuses.list():
-        print("Working on:", site.name)
+
+    try:
+        for site in pco.people.campuses.list():
+            print("Working on:", site.name)
+            for serviceType in pco.services.service_types.list():
+                    for plan in serviceType.rel.plans.list(filter=['future']):
+                        if set_date.lstrip('0') in plan.dates:
+                            for items in plan.rel.items.list():
+                                # set_list = "\n".join([set_list, site.name])
+                                if items.attributes['item_type' ''] == 'header':
+                                    set_list = "\n".join([set_list, "*" + str(items.title) + "*"])
+                                elif items.attributes['item_type' ''] == 'song':
+                                    set_list = "\n".join([set_list, "• _" + str(items.title) + "_"])
+                                else:
+                                    set_list = "\n".join([set_list, "• " + items.title])
+                                if set_list == set_date:
+                                    set_list = "Sorry, I couldn't fine a plan for that date ¯\_(ツ)_/¯"
+                            if set_list is not set_date:
+                                attachment_list.append(msg_attachment.
+                                                       SlackAttachment(fallback=set_list,
+                                                                       pco="services", text="\n".join([site.name,
+                                                                                                       set_date,
+                                                                                                       serviceType.name,
+                                                                                                       set_list]),
+                                                                       button_text="Open in Services",
+                                                                       button_url="https://services.planningcenteronline."
+                                                                                  "com/plans/" + plan.id))
+                        set_list = ""
+    except Exception as e:
+        print(type(e))
         for serviceType in pco.services.service_types.list():
-                for plan in serviceType.rel.plans.list(filter=['future']):
-                    if set_date.lstrip('0') in plan.dates:
-                        for items in plan.rel.items.list():
-                            # set_list = "\n".join([set_list, site.name])
-                            if items.attributes['item_type' ''] == 'header':
-                                set_list = "\n".join([set_list, "*" + str(items.title) + "*"])
-                            elif items.attributes['item_type' ''] == 'song':
-                                set_list = "\n".join([set_list, "• _" + str(items.title) + "_"])
-                            else:
-                                set_list = "\n".join([set_list, "• " + items.title])
-                            if set_list == set_date:
-                                set_list = "Sorry, I couldn't fine a plan for that date ¯\_(ツ)_/¯"
-                        if set_list is not set_date:
-                            attachment_list.append(msg_attachment.
-                                                   SlackAttachment(fallback=set_list,
-                                                                   pco="services", text="\n".join([site.name,
-                                                                                                   serviceType.name,
-                                                                                                   set_list]),
-                                                                   button_text="Open in Services",
-                                                                   button_url="https://services.planningcenteronline."
-                                                                              "com/plans/" + plan.id))
-                    set_list = ""
-    return attachment_list
+            for plan in serviceType.rel.plans.list(filter=['future']):
+                if set_date.lstrip('0') in plan.dates:
+                    for items in plan.rel.items.list():
+                        # set_list = "\n".join([set_list, site.name])
+                        if items.attributes['item_type' ''] == 'header':
+                            set_list = "\n".join([set_list, "*" + str(items.title) + "*"])
+                        elif items.attributes['item_type' ''] == 'song':
+                            set_list = "\n".join([set_list, "• _" + str(items.title) + "_"])
+                        else:
+                            set_list = "\n".join([set_list, "• " + items.title])
+                        if set_list == set_date:
+                            set_list = "Sorry, I couldn't fine a plan for that date ¯\_(ツ)_/¯"
+                    if set_list is not set_date:
+                        attachment_list.append(msg_attachment.
+                                               SlackAttachment(fallback=set_list,
+                                                               pco="services", text="\n".join([serviceType.name,
+                                                                                               set_date,
+                                                                                               set_list]),
+                                                               button_text="Open in Services",
+                                                               button_url="https://services.planningcenteronline."
+                                                                          "com/plans/" + plan.id))
+    finally:
+        return attachment_list
 
 
 def strip_leading_zeros(date_str):
