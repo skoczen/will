@@ -3,8 +3,6 @@ import datetime
 import parsedatetime
 import os
 import re
-from sys import platform
-from will.mixins.naturaltime import NaturalTimeMixin
 from plugins.pco import msg_attachment
 
 
@@ -14,8 +12,6 @@ from plugins.pco import msg_attachment
 # Secret: WILL_PCO_API_SECRET environment variable
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
-
-# Solution has been proposed. We will only return first plan from first campus and see if that works.
 
 
 def get(set_date="sunday"):
