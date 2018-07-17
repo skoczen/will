@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/pastorhudson/pcobot.svg?branch=master)](https://travis-ci.org/pastorhudson/pcobot)
 # PCO Bot:
 PCO Bot is a bot that integrates with the Planning Center Online API.
 
