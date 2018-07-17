@@ -1,11 +1,13 @@
 import pypco
 import os
-from will.plugins.pco import msg_attachment
+from plugins.pco import msg_attachment
 
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
 
 attachment_list = []
+
+
 def get(name):
     # Get the phone number of person(s) and return a formatted string ready to send back.
     phone_numbers = ""
@@ -59,8 +61,9 @@ def get_nickname(name):
                 button_url=pcoaddress, button_text="Open in People", pco="people"))
         return
 
+
 if __name__ == '__main__':
-    name = "JR"
+    name = "John"
     print("Getting phone numbers for ", name)
     x = get(name)
     for i in x:

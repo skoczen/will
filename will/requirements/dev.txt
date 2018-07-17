@@ -10,3 +10,6 @@ nose
 coverage
 yappi
 tox
+
+# Using this fork because it has all the Planning Center Endpoints
+-e git://github.com/pastorhudson/pypco.git#egg=pypco
