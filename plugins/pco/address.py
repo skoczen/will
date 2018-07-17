@@ -22,9 +22,9 @@ def get(name):
 
         return attachment_list
 
+
 def build(x):
-    gotaddress = ""
-    address = ""
+    got_address = ""
     pcoaddress = "https://people.planningcenteronline.com/people/" + x.id
     if x.nickname:
         name = " ".join([x.first_name, '"' + x.nickname + '"', x.last_name])
@@ -35,16 +35,16 @@ def build(x):
         for address in x.rel.addresses.list():
             address = {'name': name, 'location': address.location, 'street': address.street,
                        'city': address.city, 'state': address.state, 'zip': address.zip}
-            gotaddress = "\n".join([gotaddress, address["name" ""], address["location" ""],
+            got_address = "\n".join([got_address, address["name" ""], address["location" ""],
                                     address["street" ""],
                                     " ".join([address["city" ""], address["state" ""], address["zip" ""]])])
-            googleaddress = "+".join(["https://www.google.com/maps/dir/?api=1&destination=",
+            google_address = "+".join(["https://www.google.com/maps/dir/?api=1&destination=",
                                       address["street" ""].replace(" ", "+"),
                                       address["city" ""].replace(" ", "+"),
                                       address["state" ""].replace(" ", "+"), address["zip" ""]])
-            attachment = (msg_attachment.SlackAttachment(pco="people", text=gotaddress,
+            attachment = (msg_attachment.SlackAttachment(pco="people", text=got_address,
                                                          button_text="Open in People", button_url=pcoaddress))
-            attachment.add_button(text="Google Maps", url=googleaddress)
+            attachment.add_button(text="Google Maps", url=google_address)
             attachment_list.append(attachment)
     except TypeError:
         attachment_list.append(msg_attachment.SlackAttachment(pco="people", text="There's a problem with " + name +

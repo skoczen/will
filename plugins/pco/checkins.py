@@ -26,10 +26,7 @@ def get(name):
 
 
 def build(x):
-    last_checkin = ""
     nickname = ""
-    msg = ""
-    url = ""
     pco_id = x.id
     try:
         check_ins = pco.check_ins.people.list_by_url(
@@ -59,7 +56,7 @@ def build(x):
     except:
         pco_id = "AC" + pco_id
         if nickname:
-            msg = " ".join(["No check-ins found for:", x.first_name,nickname, x.last_name])
+            msg = " ".join(["No check-ins found for:", x.first_name, nickname, x.last_name])
         else:
             msg = " ".join(["No check-ins found for:", x.first_name, x.last_name])
         url = "/".join(["https://check-ins.planningcenteronline.com/people", pco_id, "activity"])

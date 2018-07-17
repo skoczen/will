@@ -18,9 +18,8 @@ def get(song_title):
     arrangement_str = ""
     for song in pco.services.songs.list(where={'title': song_title}):
         for arng in song.rel.arrangements.list():
-            seq = arng.sequence_short
-            arrangement_str = ("\n".join([song.title, " ".join([arng.name,arng.chord_chart_key]),
-                                      ", ".join([x for x in arng.sequence_short]), "Last Used:\n"]))
+            arrangement_str = ("\n".join([song.title, " ".join([arng.name, arng.chord_chart_key]),
+                                          ", ".join([x for x in arng.sequence_short]), "Last Used:\n"]))
         for used in song.rel.song_schedules.list(filter=['three_most_recent']):
             used_dates.append(used.plan_dates)
     used_dates.reverse()
@@ -39,7 +38,6 @@ def get_last_used(song_title):
             last_used = used.plan_dates
             last_used = reversed(last_used)
 
-    arrangement = msg_attachment.SlackAttachment(fallback="fallback", pco="services", text=last_used)
     return last_used
 
 
@@ -48,4 +46,3 @@ if __name__ == '__main__':
     print("Getting song info for ", song)
     x = get(song)
     print(x.slack())
-
