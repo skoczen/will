@@ -47,13 +47,13 @@
 PLUGINS = [
     # Built-ins
     "will.plugins.admin",
-#    "will.plugins.chat_room",
-#    "will.plugins.devops",
+    # "will.plugins.chat_room",
+    # "will.plugins.devops",
     "will.plugins.friendly",
-#    "will.plugins.fun",
+    # "will.plugins.fun",
     "will.plugins.help",
-#    "will.plugins.productivity",
-#    "will.plugins.web",
+    # "will.plugins.productivity",
+    # "will.plugins.web",
 
     # All plugins in your project.
     "plugins",
@@ -81,9 +81,9 @@ PLUGIN_BLACKLIST = [
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
     "will.backends.io_adapters.slack",
-#   "will.backends.io_adapters.hipchat",
-#    "will.backends.io_adapters.rocketchat",
-#    "will.backends.io_adapters.shell",
+    # "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.rocketchat",
+    # "will.backends.io_adapters.shell",
 ]
 
 # Backends to analyze messages and generate useful metadata
