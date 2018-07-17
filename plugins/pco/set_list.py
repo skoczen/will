@@ -47,7 +47,10 @@ def get(set_date="sunday"):
                                 attachment_list.append(msg_attachment.
                                                        SlackAttachment(fallback=set_list,
                                                                        pco="services", text="\n".join([site.name,
+<<<<<<< HEAD
                                                                                                        set_date,
+=======
+>>>>>>> refs/remotes/pastorhudson/master
                                                                                                        serviceType.name,
                                                                                                        set_list]),
                                                                        button_text="Open in Services",
@@ -73,11 +76,18 @@ def get(set_date="sunday"):
                         attachment_list.append(msg_attachment.
                                                SlackAttachment(fallback=set_list,
                                                                pco="services", text="\n".join([serviceType.name,
+<<<<<<< HEAD
                                                                                                set_date,
+=======
+>>>>>>> refs/remotes/pastorhudson/master
                                                                                                set_list]),
                                                                button_text="Open in Services",
                                                                button_url="https://services.planningcenteronline."
                                                                           "com/plans/" + plan.id))
+<<<<<<< HEAD
+=======
+                        set_list = ""
+>>>>>>> refs/remotes/pastorhudson/master
     finally:
         return attachment_list
 
