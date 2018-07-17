@@ -24,6 +24,7 @@ class PcoServicesPlugin(WillPlugin):
 
     @respond_to("(?:what is |show me |what's |a )?(arrangement for |!song )(?P<pco_song>.*?(?=(?:\'|\?)|$))")
     def pco_song_lookup(self, message, pco_song):
+        """arrangement for [song]: tells you the arrangement for a certain song"""
         credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         if authenticate.get(credentials, app):
             self.reply("Let me get that song for you.")
