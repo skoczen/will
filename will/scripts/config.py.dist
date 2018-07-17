@@ -47,13 +47,13 @@
 PLUGINS = [
     # Built-ins
     "will.plugins.admin",
-    "will.plugins.chat_room",
-    "will.plugins.devops",
+    # "will.plugins.chat_room",
+    # "will.plugins.devops",
     "will.plugins.friendly",
-    "will.plugins.fun",
+    # "will.plugins.fun",
     "will.plugins.help",
-    "will.plugins.productivity",
-    "will.plugins.web",
+    # "will.plugins.productivity",
+    # "will.plugins.web",
 
     # All plugins in your project.
     "plugins",
@@ -81,9 +81,9 @@ PLUGIN_BLACKLIST = [
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
     "will.backends.io_adapters.slack",
-#    "will.backends.io_adapters.hipchat",
-#    "will.backends.io_adapters.rocketchat",
-    "will.backends.io_adapters.shell",
+    # "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.rocketchat",
+    # "will.backends.io_adapters.shell",
 ]
 
 # Backends to analyze messages and generate useful metadata
@@ -170,9 +170,9 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
 # in respond_to and hear actions.
 # Group names can be any string, and the list is composed of user handles.
-# ACL = {
-#     "admins": ["sarah", "sue", "steven"]
-# }
+ACL = {
+    "admins": [""],
+}
 #
 # By default, if no ACL is set, all users can perform all actions - but warnings
 # will be printed to the console.  To disable those warnings, set DISABLE_ACL to True
