@@ -53,7 +53,7 @@ PLUGINS = [
     # "will.plugins.fun",
     "will.plugins.help",
     # "will.plugins.productivity",
-    # "will.plugins.web",
+    "will.plugins.web",
 
     # All plugins in your project.
     "plugins",
