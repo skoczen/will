@@ -103,7 +103,7 @@ http://skoczen.github.io/will/
 Invite your bot to the #bot and #general channels, and any other channels you'd like.
 
 #### #bot 
-This channel is where webhook announcements will be posted. It is configurable in by editing the SLACK_DEFAULT_CHANNEL environment variable.
+This channel is where webhook announcements will be posted. It is configurable by editing the relevant environment variable.
 
 	####.herokuapp.com/ping    			"Someone pinged me!"
 	####.herokuapp.com/say/Cogito Ergo Sum  	"Cogito Ergo Sum"
