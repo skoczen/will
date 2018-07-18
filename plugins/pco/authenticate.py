@@ -11,7 +11,7 @@ pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API
 def get(message, app):
     try:
         fl_name = {'first_name': message.sender['source']['real_name'].split()[0],
-               'last_name': message.sender['source']['real_name'].split()[1]}
+                   'last_name': message.sender['source']['real_name'].split()[1]}
         app = app.lower().lstrip()
         for x in pco.people.people.list(where=fl_name):
             for email in x.rel.emails.list():
