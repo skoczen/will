@@ -46,31 +46,31 @@ To change the access control list, see configuration instructions below and this
 ----------------------------------
 ### Prepare API Tokens and Environment Variables
 
-  * Get a Planning Center Personal Access Key here: https://api.planningcenteronline.com/oauth/applications
-  * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
-  * Create a bot user. https://my.slack.com/services/new/bot
+Make a list of your environment variables. 
   
-**All Installs**
- 	* WILL_PCO_API_SECRET		```AJS7F7ZIJ2...```
- 	* WILL_PCO_APPLICATION_KEY	```X0579RTGV7...```
- 	* WILL_SLACK_API_TOKEN		```xoxb-X3WTBK0PZL...```
-	* WILL_SECRET_KEY 		[Make your own](https://www.random.org/strings/?num=10&len=20&digits=on&loweralpha=on&unique=on&format=html&rnd=new```)
-	* SLACK_DEFAULT_CHANNEL 	```bot```
+#### All Installs  
+| Env Var      		       | Value   										| Example    |   
+| ------------- 	       |--------------										| --------   |
+| WILL_PCO_API_SECRET	       | [GET PCO PERSONAL KEY*](https://api.planningcenteronline.com/oauth/applications)       | ```AJS7F7ZIJ2...```|
+| WILL_PCO_APPLICATION_KEY     | [GET PCO PERSONAL KEY*](https://api.planningcenteronline.com/oauth/applications)       | ```X0579RTGV7...```|
+| WILL_SLACK_API_TOKEN         | [GET SLACK API TOKEN](https://my.slack.com/services/new/bot)  				| ```xoxb-X3WTL...```|
+| WILL_SECRET_KEY	       | [Make your own](https://www.random.org/strings/?num=10&len=20&digits=on&loweralpha=on&unique=on&format=html&rnd=new```)  | - |    
 
-**Heroku-Only**
-	* WILL_PUBLIC_URL		```http://your-app-name.herokuapp.com```
-	* TZ    			```America/Los_Angeles```  ([permissible values here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
+#### Heroku-Only
+| Env Var      		       | Value   										|  Example   |   
+| ------------- 	       |--------------										| --------   |
+| WILL_PUBLIC_URL	       | The URL of your Heroku App 			        | ```http://your-app-name.herokuapp.com``` |
+| TZ			       | [IANA tz code](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)       | ```America/Los_Angeles``` |
+
   
-  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one of your PCO [Organization Administrators](https://pcoaccounts.zendesk.com/hc/en-us/articles/204462420-Organization-Administrators-Billing-Managers), or you may even choose to create a dedicated user just for this bot.
+ **Note:** The user who owns the PCO Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one of your PCO [Organization Administrators](https://pcoaccounts.zendesk.com/hc/en-us/articles/204462420-Organization-Administrators-Billing-Managers), or you may even choose to create a dedicated user just for this bot.
 
 ### Install on Heroku
 
 1. Fork this repository.
 2. Get a Heroku account.
 3. Add a redis add-on from [Elements](https://elements.heroku.com/addons). (e.g. Redis Cloud will work automatically) Note: You will need to verify your account with a credit card even to install a free add-on.
-4. Enter your config vars on the [settings](https://dashboard.heroku.com/apps/your_app/settings) page. 
-
-
+4. Enter your config/environment variables on the settings page of your app. (dashboard.heroku.com/apps/**your_app**/settings) 
 5. Choose github as your deployment method in heroku and connect to your fork of pcobot.
 6. Deploy the master branch.
 
