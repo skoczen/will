@@ -6,8 +6,8 @@ class HelpPlugin(WillPlugin):
 
     @hear("^help$")  # responds if hears the single word "help" in any channel
     def help(self):
-        self.reply("Are you looking for help from me? Be sure to message me directly.")
-        
+        self.say("Are you looking for help from me? Be sure to message me directly.")
+
     @respond_to("^help(?: (?P<plugin>.*))?$")
     def help(self, message, plugin=None):
         """help: the normal help you're reading."""
