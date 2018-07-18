@@ -57,8 +57,8 @@ def get_apps(credentials):
 
 
 if __name__ == '__main__':
-    name = "Bill Hudson"
-    email = "pastorron@yourcbcfamily.org"
+    name = "john"
+    email = "john@someemail.com"
     credentials = {"name": name, "email": email}
     app = "people"
     credentials = {"name": name, "email": email}
