@@ -87,16 +87,8 @@ Make a list of your environment variables.
 5. Setup the pcobot folder as a virtualenv using the following command. ```virtualenv .```  (**Important:** the `.` references the current folder)
 6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be installed to the virtual environment, isolated from the global Python installation.)
 7. Get the requirements. ```pip install -r requirements.txt``` 
-10. Add your API Keys in the start.sh file. This is just for setting environment
+10. Add your API Keys and environment variables in the start.sh file. This file is just for setting environment
 variables and executing as sudo user. (Sudo is needed to open port 80.)
-
-e.g. (using random strings as keys)
-```
-export WILL_PCO_API_SECRET=AJS7F7ZIJ2
-export WILL_PCO_APPLICATION_KEY=X0579RTGV7
-export WILL_SLACK_API_TOKEN=xoxb-X3WTBK0PZL
-```
-	
 11. Do ```chmod +x ./start.sh``` to make your startup executable.
 Then run ```./start.sh```
 
