@@ -42,6 +42,7 @@ This isn't really used in the pcobot but it is used for Will bot commands
 
 To change the access control list, see configuration instructions below and this [enhancement](https://github.com/pastorhudson/pcobot/issues/17)
 
+## Installation
 ----------------------------------
 ### Get API Tokens
 
@@ -97,8 +98,13 @@ Then run ```./start.sh```
 Find more install help here:
 http://skoczen.github.io/will/
 
-### PCO Bot Configuration Instructions
+## Configuration
 
+### Slack
+
+Invite your bot to the #alpha and #general channels, and any other channels you'd like.
+
+### Bot Admins
 Most user permissions are inherited directly from Planning Center Online.  However, a *very* limited number of commands are limited to people in the pcobot *botadmin* group. 
 
 In your config.py file you'll find an ACL section. Add the slack handles to this acl list. You can add any other acl groups you'd like. Each entry must be in lower case!
