@@ -30,9 +30,6 @@ class HelpPlugin(WillPlugin):
 
         self.say(help_text, html=True)
 
-
-class NosyHelpPlugin(WillPlugin):
-
     @hear("^help$")  # responds if hears the single word "help" in any channel
     def help_helper(self):
         self.say("%s, are you looking for help from me? Be sure to message me directly." % message.sender.first_name)
