@@ -98,12 +98,12 @@ http://skoczen.github.io/will/
 
 ## Configuration
 
-### Slack
+### Slack Channels
 
-Invite your bot to the #bot and #general channels, and any other channels you'd like.
+Invite your bot to the #bot and #general channels, and any other channels you'd like. Make sure it has permissions to post. If a channel is restricted to Workspace Owners and Workspace Admins, the bot will not be able to post.
 
 #### #bot 
-This channel is where webhook announcements will be posted. It is configurable by editing the relevant environment variable.
+This channel is where webhook announcements will be posted. It can be changed by editing the relevant environment variable. Example webhooks:
 
 	####.herokuapp.com/ping    			"Someone pinged me!"
 	####.herokuapp.com/say/Cogito Ergo Sum  	"Cogito Ergo Sum"
