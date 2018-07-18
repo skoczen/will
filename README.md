@@ -49,14 +49,14 @@ To change the access control list, see configuration instructions below and this
   * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
   * Create a bot user. https://my.slack.com/services/new/bot
   
-  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one o your PCO *Organization Administrators*, or you may even choose to create a dedicated user just for this bot.
+  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one of your PCO [Organization Administrators](https://pcoaccounts.zendesk.com/hc/en-us/articles/204462420-Organization-Administrators-Billing-Managers), or you may even choose to create a dedicated user just for this bot.
 
 ### Install on Heroku
 
 1. Fork this repository.
 2. Get a Heroku account.
 3. Add a redis add-on from [Elements](https://elements.heroku.com/addons). (e.g. Redis Cloud will work automatically) Note: You will need to verify your account with a credit card even to install a free add-on.
-4. Enter your config vars on the [settings](https://dashboard.heroku.com/apps/your_app/settings) page. You can set your timezone with a variable. Permissible values can be found in the [IANA TZ list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+4. Enter your config vars on the [settings](https://dashboard.heroku.com/apps/your_app/settings) page. You can set your time zone with a variable. Permissible values can be found in the [IANA TZ list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
  	* WILL_PCO_API_SECRET		```AJS7F7ZIJ2...```
  	* WILL_PCO_APPLICATION_KEY	```X0579RTGV7...```
@@ -78,7 +78,7 @@ To change the access control list, see configuration instructions below and this
  ```git clone https://github.com/pastorhudson/pcobot.git```
 4. Change to pcobot directory. ```cd pcobot```
 5. Setup the pcobot folder as a virtualenv using the following command. ```virtualenv .```  (**Important:** the `.` references the current folder)
-6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be isntalled to the virtual environment, isolated from the global Python installation.)
+6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be installed to the virtual environment, isolated from the global Python installation.)
 7. Get the requirements. ```pip install -r requirements.txt``` 
 10. Add your API Keys in the start.sh file. This is just for setting environment
 variables and executing as sudo user. (Sudo is needed to open port 80.)
