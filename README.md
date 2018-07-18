@@ -55,6 +55,7 @@ Make a list of your environment variables.
 | WILL_PCO_APPLICATION_KEY     | [GET PCO PERSONAL KEY*](https://api.planningcenteronline.com/oauth/applications)       | ```X0579RTGV7...```|
 | WILL_SLACK_API_TOKEN         | [GET SLACK API TOKEN](https://my.slack.com/services/new/bot)  				| ```xoxb-X3WTL...```|
 | WILL_SECRET_KEY	       | [Make your own](https://www.random.org/strings/?num=10&len=20&digits=on&loweralpha=on&unique=on&format=html&rnd=new```)  | - |    
+| WILL_SLACK_DEFAULT_CHANNEL   | bot  |  bot |    
 
 #### Heroku-Only
 | Env Var      		       | Value   										|  Example   |   
@@ -102,7 +103,7 @@ http://skoczen.github.io/will/
 Invite your bot to the #bot and #general channels, and any other channels you'd like.
 
 #### #bot 
-This channel is where webhook announcements will be posted. It is configurable in by editing the WILL_DEFAULT_ROOM environment variable.
+This channel is where webhook announcements will be posted. It is configurable in by editing the SLACK_DEFAULT_CHANNEL environment variable.
 
 	####.herokuapp.com/ping    			"Someone pinged me!"
 	####.herokuapp.com/say/Cogito Ergo Sum  	"Cogito Ergo Sum"
