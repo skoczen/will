@@ -99,27 +99,26 @@ http://skoczen.github.io/will/
 
 ### PCO Bot Configuration Instructions
 
-In your config.py file you'll find an ACL section. Certain commands are limited to people in the *staff* and *pastors* groups.
-The set list command is not restricted. Add the slack handles to this acl list. You can add any other 
-acl groups you'd like. Each entry must be in lower case!
+Most user permissions are inherited directly from Planning Center Online.  However, a *very* limited number of commands are limited to people in the pcobot *botadmin* group. 
+
+In your config.py file you'll find an ACL section. Add the slack handles to this acl list. You can add any other acl groups you'd like. Each entry must be in lower case!
+
 ```
-# Access Control: Specify groups of users to be used in the acl=["pastors","staff"] parameter
+# Access Control: Specify groups of users to be used in the acl=["botadmin"] parameter
 # in respond_to and hear actions.
 # Group names can be any string, and the list is composed of user handles.
 ACL = {
-    "staff": ["johnell", "leigh", "pastorjoe","pastorhudson"],
-    "pastors": ["pastorjoe","pastorhudson"],
-	"media_team": ["joe.eafrati"],
+    "botadmin": ["johnell", "leigh", "pastorjoe","pastorhudson"]
 }
 ```
 
 ### Contribute!
-I'd love to have your help building PCO Bot. 
-If there's something you want to add 
+We'd love to have your help building PCO Bot. If there's something you want to add:
+
 1. Look to see if your feature is already an issue.
 2. If it is not then make it an issue and submit it. Ideally, you can take ownership of it and comment that you're working on it!
 3. Make sure it is clear whether this issue is an Enhancement or Bug and which PCO product(s) it applies to. (People, Services, Check-in, Resources, etc.)
-4. Write awesome code and submit a pull request!
+4. See the guidelines in CONTRIBUTING.MD, write awesome code, and submit a pull request!
 
 
 ### PCO Bot is built on Will Bot and PyPCO
