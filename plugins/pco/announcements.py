@@ -4,7 +4,7 @@ from plugins.pco import birthday, address, phone_numbers, checkins, msg_attachme
 
 
 class AnnouncementPlugin(WillPlugin):
-    @periodic(hour='14', minute='00')
+    @periodic(hour='14', minute='10')
     # @periodic(second=0)
     def announcetime(self):
-        self.say("2 PM!", channel="general")
+        self.say("2:10 PM!", channel="general")
