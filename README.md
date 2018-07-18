@@ -70,22 +70,18 @@ To change the access control list, see configuration instructions below and this
 ### Install on Linux 
 *(example code assumes Debian - including Ubuntu, Mint, KNOPPIX, Raspbian)*
 
-Note: If deploying on Rasbian Jessie (Raspberry Pi), run the commands below, or the requirements step will fail. 
-```
-sudo apt-get update
-sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
-```
+**Note:** If deploying on Rasbian Jessie (Raspberry Pi), you will need to ensure you build your virtual environment with Python3, and you may need to ```pip install redis-server``` as well.
+
 
 1. Install virtualenv ```pip install virtualenv```.
 3. Clone this repository
  ```git clone https://github.com/pastorhudson/pcobot.git```
 4. Change to pcobot directory. ```cd pcobot```
 5. Setup the pcobot folder as a virtualenv using the following command. ```virtualenv .```  (**Important:** the `.` references the current folder)
-6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be isntalled to the viertual environment, isolated from the global Python installation.)
+6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be isntalled to the virtual environment, isolated from the global Python installation.)
 7. Get the requirements. ```pip install -r requirements.txt``` 
-
 10. Add your API Keys in the start.sh file. This is just for setting environment
-variables and executing as sudo user. Sudo is needed to open port 80.
+variables and executing as sudo user. (Sudo is needed to open port 80.)
 
 e.g. (using random strings as keys)
 ```
