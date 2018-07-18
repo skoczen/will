@@ -22,10 +22,10 @@ If no app name is provided it will list all the apps you can access.
 
 ```I need the | Do you know the | Do you have a | Can somebody tell me the...```
 
-*  ```... number for *[Any Name]*```   
-*  ```... birthday for *[Any Name]*```
-*  ```... email address for *[Any Name]*```
-*  ```... address for  *[Any Name]*```
+*  :lock:  ```... number for *[Any Name]*```   
+*  :lock: ```... birthday for *[Any Name]*```
+*  :lock: ```... email address for *[Any Name]*```
+*  :lock: ```... address for  *[Any Name]*```
 
 #### Check-ins (Attendance)
 * ```When was the last time *[Any Name]* was here?```
