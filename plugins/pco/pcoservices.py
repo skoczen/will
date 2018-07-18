@@ -5,46 +5,41 @@ from plugins.pco import song_info, authenticate, set_list
 app = "services"
 
 
+# I turned off credentials for this because it's not sensitive info.
 class PcoServicesPlugin(WillPlugin):
-    # I turned off credentials for this because it's not sensitive info.
     @respond_to("(?:do you |find |got |a )?(set list for |!setlist|setlist for |"
                 "!sunday |songs for |order of service for )(?P<pco_date>.*?(?=(?:\'|\?)|$))")
     def pco_setlist_lookup(self, message, pco_date):
         if pco_date is "":
             pco_date = 'sunday'
         """set list for Sunday: tells you the set list for a certain date"""
-        # credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
-        # if authenticate.get(credentials, app):
         attachment = []
         self.reply("Let me get that for you. This might take a bit if you have a lot of services.")
         for x in set_list.get(pco_date):
             attachment += x.slack()
-        self.reply("", message=message, attachments=attachment)
-        # else:
-        #     self.reply("Sorry but you don't have access to the Services App. "
-        #                "Please contact your administrator.")
+        if attachment:
+            self.reply("", message=message, attachments=attachment)
+        else:
+            self.reply("Sorry I don't find any set lists scheduled on" + pco_date + " in Services.")
 
     @respond_to("(?:what is |show me |what's |a )?(song list for |!songlist|!checksongs|!setsongs|!songcheck)"
                 "(?P<pco_date>.*?(?=(?:\'|\?)|$))")
     def pco_setlist_songs(self, message, pco_date):
         if pco_date is "":
             pco_date = 'sunday'
-        print(pco_date)
         self.reply("Let me get that song list for you.")
-        print(pco_date)
         song_list = set_list.get_set_songs(pco_date)
         attachment = []
         for result in song_list:
             attachment += result.slack()
-        if attachment is None:
-            self.reply("Sorry I don't find any songs scheduled on " + pco_date + " in services.")
-        self.reply("", message=message, attachments=attachment)
+        if attachment:
+            self.reply("Here's the songs scheduled for " + pco_date, message=message, attachments=attachment)
+        else:
+            self.reply("Sorry I don't find any songs scheduled on " + pco_date + " in Services.")
 
     @respond_to("(?:what is |show me |what's |a )?(arrangement for |!song )(?P<pco_song>.*?(?=(?:\'|\?)|$))")
     def pco_song_lookup(self, message, pco_song):
         """arrangement for [song]: tells you the arrangement for a certain song"""
-        # if authenticate.check_name(message):
-        #     if authenticate.get(message, app):
         self.reply("Let me get that song for you.")
         song = song_info.get(pco_song)
         attachment = []
@@ -53,12 +48,6 @@ class PcoServicesPlugin(WillPlugin):
         if attachment is None:
             self.reply("Sorry I don't find " + song + "in services.")
         self.reply("", message=message, attachments=attachment)
-        #     else:
-        #         self.reply("Sorry but you don't have access to the Services App. "
-        #                    "Please contact your administrator.")
-        # else:
-        #     self.reply('I could not authenticate you. Please make sure your "Full name"'
-        #                ' is in your Slack profile and matches your Planning Center Profile.')
 
 
 # Test your setup by running this file.

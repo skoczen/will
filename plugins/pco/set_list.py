@@ -16,7 +16,6 @@ pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API
 
 def get(set_date="sunday"):
     attachment_list = []
-    print(set_date)
     # Get the Order of Service of a date and return a formatted string ready to send back.
     # This only works for future dates since PCO API doesn't let us quarry plans by date.
     cal = parsedatetime.Calendar()
@@ -82,7 +81,6 @@ def get(set_date="sunday"):
 
 
 def get_set_songs(set_date="sunday"):
-    print("Here's the set_date ", set_date)
     attachment_list = []
     song_list = []
     # Get the Order of Service of a date and return a formatted string ready to send back.
@@ -103,7 +101,6 @@ def get_set_songs(set_date="sunday"):
                         if set_date.lstrip('0') in plan.dates:
                             for items in plan.rel.items.list():
                                 if items.attributes['item_type' ''] == 'song':
-                                    print(str(items.title))
                                     song_list.append(str(items.title))
 
             for song_title in song_list:

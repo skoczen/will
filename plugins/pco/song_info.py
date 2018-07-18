@@ -40,7 +40,6 @@ def get(song_title):
                     arrangement_str += rdates + "\n"
             else:
                 arrangement_str += "\nNever Used."
-            print(arrangement_str)
             arrangement = msg_attachment.SlackAttachment(fallback="Open in Services",
                                                          pco="services", text=arrangement_str)
             arrangement.add_button(text="Open in PCO",
