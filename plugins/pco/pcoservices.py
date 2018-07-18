@@ -7,9 +7,11 @@ app = "services"
 
 class PcoServicesPlugin(WillPlugin):
     # I turned off credentials for this because it's not sensitive info.
-    @respond_to("(?:do you |find |got |a )?(set list for |!setlist |setlist for |"
+    @respond_to("(?:do you |find |got |a )?(set list for |!setlist|setlist for |"
                 "!sunday |songs for |order of service for )(?P<pco_date>.*?(?=(?:\'|\?)|$))")
     def pco_setlist_lookup(self, message, pco_date):
+        if pco_date is "":
+            pco_date = 'sunday'
         """set list for Sunday: tells you the set list for a certain date"""
         # credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
         # if authenticate.get(credentials, app):
@@ -21,6 +23,22 @@ class PcoServicesPlugin(WillPlugin):
         # else:
         #     self.reply("Sorry but you don't have access to the Services App. "
         #                "Please contact your administrator.")
+
+    @respond_to("(?:what is |show me |what's |a )?(song list for |!songlist|!checksongs|!setsongs|!songcheck)"
+                "(?P<pco_date>.*?(?=(?:\'|\?)|$))")
+    def pco_setlist_songs(self, message, pco_date):
+        if pco_date is "":
+            pco_date = 'sunday'
+        print(pco_date)
+        self.reply("Let me get that song list for you.")
+        print(pco_date)
+        song_list = set_list.get_set_songs(pco_date)
+        attachment = []
+        for result in song_list:
+            attachment += result.slack()
+        if attachment is None:
+            self.reply("Sorry I don't find any songs scheduled on " + pco_date + " in services.")
+        self.reply("", message=message, attachments=attachment)
 
     @respond_to("(?:what is |show me |what's |a )?(arrangement for |!song )(?P<pco_song>.*?(?=(?:\'|\?)|$))")
     def pco_song_lookup(self, message, pco_song):
@@ -55,3 +73,6 @@ if __name__ == '__main__':
         print(x.txt())
     print("Getting song info for ", song_name)
     print(song_info.get(song_name).txt())
+    print("Getting this weeks songs.")
+    for attachment in set_list.get_set_songs(date):
+        print(attachment.txt())
