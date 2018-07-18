@@ -25,17 +25,21 @@ class PcoServicesPlugin(WillPlugin):
     @respond_to("(?:what is |show me |what's |a )?(arrangement for |!song )(?P<pco_song>.*?(?=(?:\'|\?)|$))")
     def pco_song_lookup(self, message, pco_song):
         """arrangement for [song]: tells you the arrangement for a certain song"""
-        credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
-        if authenticate.get(credentials, app):
-            self.reply("Let me get that song for you.")
-            song = song_info.get(pco_song)
-            attachment = song.slack()
-            if attachment is None:
-                self.reply("Sorry I don't find " + song + "in services.")
-            self.reply("", message=message, attachments=attachment)
-        else:
-            self.reply("Sorry but you don't have access to the Services App. "
-                       "Please contact your administrator.")
+        # if authenticate.check_name(message):
+        #     if authenticate.get(message, app):
+        self.reply("Let me get that song for you.")
+        song = song_info.get(pco_song)
+        attachment = song.slack()
+        if attachment is None:
+            self.reply("Sorry I don't find " + song + "in services.")
+        self.reply("", message=message, attachments=attachment)
+        #     else:
+        #         self.reply("Sorry but you don't have access to the Services App. "
+        #                    "Please contact your administrator.")
+        # else:
+        #     self.reply('I could not authenticate you. Please make sure your "Full name"'
+        #                ' is in your Slack profile and matches your Planning Center Profile.')
+
 
 # Test your setup by running this file.
 # If you add functions in this file please add a test below.

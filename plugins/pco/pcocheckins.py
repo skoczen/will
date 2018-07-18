@@ -13,31 +13,34 @@ app = "check-ins"
 class PcoPeoplePlugin(WillPlugin):
 
     @respond_to("(?:when was )?(last time |!checkin |attended |when did )"
-                "(?P<pco_name>.*?(?=(?:\'|\?|\.|and|was|attended|checked|check|attend)|$))")
+                "(?P<pco_name>.*?(?=(?:\'|\?|\.|and |was |attended|checked |check|attend)|$))")
     def pco_checkin_lookup(self, message, pco_name):
         """!checkin [name]: tells you the last time someone checked-in"""
-        credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
-        if authenticate.get(credentials, app):
-            print("checkin request")
-            self.reply("Let me check.")
-            attachment = []
-            attachment_txt = ""
-            for x in checkins.get(pco_name):
-                attachment += x.slack()
-                attachment_txt += x.txt()
-            if not attachment:
-                attachment = msg_attachment.SlackAttachment(text="Sorry I don't have a Check-in for " + pco_name,
-                                                            pco="check_ins",
-                                                            button_text="Search Check-ins",
-                                                            button_url="https://check-ins."
-                                                                       "planningcenteronline.com/people?q="
-                                                                       + pco_name.replace(" ", "%20"))
-                self.reply("", message=message, attachments=attachment.slack())
+        if authenticate.check_name(message):
+            if authenticate.get(message, app):
+                print("checkin request")
+                self.reply("Let me check.")
+                attachment = []
+                attachment_txt = ""
+                for x in checkins.get(pco_name):
+                    attachment += x.slack()
+                    attachment_txt += x.txt()
+                if not attachment:
+                    attachment = msg_attachment.SlackAttachment(text="Sorry I don't have a Check-in for " + pco_name,
+                                                                pco="check_ins",
+                                                                button_text="Search Check-ins",
+                                                                button_url="https://check-ins."
+                                                                           "planningcenteronline.com/people?q="
+                                                                           + pco_name.replace(" ", "%20"))
+                    self.reply("", message=message, attachments=attachment.slack())
+                else:
+                    self.reply("Here you go!", message=message, attachments=attachment)
             else:
-                self.reply("Here you go!", message=message, attachments=attachment)
+                self.reply("Sorry but you don't have access to the Check-ins App. "
+                           "Please contact your administrator.")
         else:
-            self.reply("Sorry but you don't have access to the Check-ins App. "
-                       "Please contact your administrator.")
+            self.reply('I could not authenticate you. Please make sure your "Full name"'
+                       ' is in your Slack profile and matches your Planning Center Profile.')
 
 
 if __name__ == '__main__':
