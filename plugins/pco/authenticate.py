@@ -8,17 +8,33 @@ pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API
 # This checks to see if the credentials {"name": "", "email": ""} have access to the app
 # Apps: services, people, accounts, resources, check-ins, registrations, giving
 # You should call this before accessing sensitive Planning Center Information
-def get(credentials, app):
-    fl_name = {'first_name': credentials['name' ''].split()[0], 'last_name': credentials['name' ''].split()[1]}
-    app = app.lower().lstrip()
-    for x in pco.people.people.list(where=fl_name):
-        for email in x.rel.emails.list():
-            if credentials['email' ''] in email.address:
-                for apps in x.rel.apps.list():
-                    if app in apps.name.lower():
-                        return True
+def get(message, app):
+    try:
+        fl_name = {'first_name': message.sender['source']['real_name'].split()[0],
+               'last_name': message.sender['source']['real_name'].split()[1]}
+        app = app.lower().lstrip()
+        for x in pco.people.people.list(where=fl_name):
+            for email in x.rel.emails.list():
+                if message.sender['source']['email'] in email.address:
+                    for apps in x.rel.apps.list():
+                        if app in apps.name.lower():
+                            return True
+    except IndexError:
+        return False
+    finally:
+        return False
 
-    return False
+
+def check_name(message):
+    print("Checking Slack name for First Last name:")
+    print(message.sender['source']['real_name'])
+    try:
+        fl_name = (message.sender['source']['real_name'].split()[0], message.sender['source']['real_name'].split()[1])
+        print(fl_name)
+    except IndexError:
+        print(message.sender['source']['real_name'])
+        return False
+    return True
 
 
 def get_apps(credentials):
