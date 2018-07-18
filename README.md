@@ -22,10 +22,10 @@ If no app name is provided it will list all the apps you can access.
 
 ```I need the | Do you know the | Do you have a | Can somebody tell me the...```
 
-*  ```... number for *[Any Name]*```   
-*  ```... birthday for *[Any Name]*```
-*  ```... email address for *[Any Name]*```
-*  ```... address for  *[Any Name]*```
+*  :lock:  ```... number for *[Any Name]*```   
+*  :lock: ```... birthday for *[Any Name]*```
+*  :lock: ```... email address for *[Any Name]*```
+*  :lock: ```... address for  *[Any Name]*```
 
 #### Check-ins (Attendance)
 * ```When was the last time *[Any Name]* was here?```
@@ -49,19 +49,20 @@ To change the access control list, see configuration instructions below and this
   * Get a Slack legacy token here: https://api.slack.com/custom-integrations/legacy-tokens
   * Create a bot user. https://my.slack.com/services/new/bot
   
-  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one o your PCO *Organization Administrators*, or you may even choose to create a dedicated user just for this bot.
+  **Note:** The user who owns the Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one of your PCO [Organization Administrators](https://pcoaccounts.zendesk.com/hc/en-us/articles/204462420-Organization-Administrators-Billing-Managers), or you may even choose to create a dedicated user just for this bot.
 
 ### Install on Heroku
 
 1. Fork this repository.
 2. Get a Heroku account.
 3. Add a redis add-on from [Elements](https://elements.heroku.com/addons). (e.g. Redis Cloud will work automatically) Note: You will need to verify your account with a credit card even to install a free add-on.
-4. Enter your config vars on the [settings](https://dashboard.heroku.com/apps/your_app/settings) page. You can set your timezone with a variable. Permissible values can be found in the [IANA TZ list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+4. Enter your config vars on the [settings](https://dashboard.heroku.com/apps/your_app/settings) page. You can set your time zone with a variable. Permissible values can be found in the [IANA TZ list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
  	* WILL_PCO_API_SECRET		```AJS7F7ZIJ2...```
  	* WILL_PCO_APPLICATION_KEY	```X0579RTGV7...```
  	* WILL_SLACK_API_TOKEN		```xoxb-X3WTBK0PZL...```
-	* WILL_PUBLIC_URL 		```https://your-heroku-app-name.herokuapp.com```
+	* WILL_SECRET_KEY 		[Make your own](https://www.random.org/strings/?num=10&len=20&digits=on&loweralpha=on&unique=on&format=html&rnd=new```)
+	* WILL_PUBLIC_URL		```http://your-app-name.herokuapp.com```
 	* TZ    			```America/Los_Angeles```
 		
 5. Choose github as your deployment method in heroku and connect to your fork of pcobot.
@@ -70,22 +71,18 @@ To change the access control list, see configuration instructions below and this
 ### Install on Linux 
 *(example code assumes Debian - including Ubuntu, Mint, KNOPPIX, Raspbian)*
 
-Note: If deploying on Rasbian Jessie (Raspberry Pi), run the commands below, or the requirements step will fail. 
-```
-sudo apt-get update
-sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
-```
+**Note:** If deploying on Rasbian Jessie (Raspberry Pi), you will need to ensure you build your virtual environment with Python3, and you may need to ```pip install redis-server``` as well.
+
 
 1. Install virtualenv ```pip install virtualenv```.
 3. Clone this repository
  ```git clone https://github.com/pastorhudson/pcobot.git```
 4. Change to pcobot directory. ```cd pcobot```
 5. Setup the pcobot folder as a virtualenv using the following command. ```virtualenv .```  (**Important:** the `.` references the current folder)
-6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be isntalled to the viertual environment, isolated from the global Python installation.)
+6. Activate your virtual environment. ```source bin/activate``` . (The name of the current virtual environment will now appear on the left of the prompt to let you know that it’s active. From now on, any package that you install using pip will be installed to the virtual environment, isolated from the global Python installation.)
 7. Get the requirements. ```pip install -r requirements.txt``` 
-
 10. Add your API Keys in the start.sh file. This is just for setting environment
-variables and executing as sudo user. Sudo is needed to open port 80.
+variables and executing as sudo user. (Sudo is needed to open port 80.)
 
 e.g. (using random strings as keys)
 ```
