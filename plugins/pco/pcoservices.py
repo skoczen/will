@@ -27,10 +27,11 @@ class PcoServicesPlugin(WillPlugin):
         """arrangement for [song]: tells you the arrangement for a certain song"""
         # if authenticate.check_name(message):
         #     if authenticate.get(message, app):
-        song = ""
         self.reply("Let me get that song for you.")
         song = song_info.get(pco_song)
-        attachment = song.slack()
+        attachment = []
+        for result in song:
+            attachment += result.slack()
         if attachment is None:
             self.reply("Sorry I don't find " + song + "in services.")
         self.reply("", message=message, attachments=attachment)
