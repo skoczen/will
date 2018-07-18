@@ -5,7 +5,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 class HelpPlugin(WillPlugin):
 
     @hear("^help$")  # responds if hears the single word "help" in any channel
-    def helphelp(self):
+    def help_helper(self):
         self.say("Are you looking for help from me? Be sure to message me directly.")
 
     @respond_to("^help(?: (?P<plugin>.*))?$")
