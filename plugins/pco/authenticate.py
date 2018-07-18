@@ -19,9 +19,9 @@ def get(message, app):
                     for apps in x.rel.apps.list():
                         if app in apps.name.lower():
                             return True
-    except IndexError:
+                            print("TRUE")
         return False
-    finally:
+    except IndexError:
         return False
 
 
