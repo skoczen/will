@@ -71,7 +71,7 @@ Make a list of your environment variables.
 1. Fork this repository.
 2. Get a Heroku account.
 3. Add a redis add-on from [Elements](https://elements.heroku.com/addons). (e.g. Redis Cloud will work automatically) Note: You will need to verify your account with a credit card even to install a free add-on.
-4. Enter your config/environment variables on the settings page of your app. (dashboard.heroku.com/apps/**your_app**/settings) 
+4. Enter your config/environment variables on the settings page of your app. (http://<i></i>dashboard.heroku.com/apps/**your_app**/settings) 
 5. Choose github as your deployment method in heroku and connect to your fork of pcobot.
 6. Deploy the master branch.
 
