@@ -28,22 +28,26 @@ class AclAdmin(WillPlugin):
 
     @respond_to("(?:Can I |do I have )?(access |!app)(?P<app>.*?(?=(?:\?)|$))")
     def message_test(self, message, app):
-        """!app: tells you which PCO apps you have permissions to"""
-        credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
-        print("This is what's in app: " + app)
-        if app:
-            print("checking credentials")
-            if authenticate.get(credentials, app):
-                self.reply("You have access to: " + app)
+        if authenticate.check_name(message):
+            """!app: tells you which PCO apps you have permissions to"""
+            credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
+            print("This is what's in app: " + app)
+            if app:
+                print("checking credentials")
+                if authenticate.get(credentials, app):
+                    self.reply("You have access to: " + app)
+                else:
+                    self.reply("Sorry but you don't have access to that Planning Center App. "
+                               "Please contact your administrator.")
             else:
-                self.reply("Sorry but you don't have access to that Planning Center App. "
-                           "Please contact your administrator.")
+                self.reply("Getting your permissions. . .", message=message)
+                print("calling app_list")
+                attachment = authenticate.get_apps(credentials)
+                your_apps = attachment.slack()
+                self.reply("Here are the apps you have access to: ", message=message, attachments=your_apps)
         else:
-            self.reply("Getting your permissions. . .", message=message)
-            print("calling app_list")
-            attachment = authenticate.get_apps(credentials)
-            your_apps = attachment.slack()
-            self.reply("Here are the apps you have access to: ", message=message, attachments=your_apps)
+            self.reply('I could not authenticate you. Please make sure your "Full name"'
+                       ' is in your Slack profile and matches your Planning Center Profile.')
 
 
 def get_acl_groups():
