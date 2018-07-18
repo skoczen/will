@@ -104,6 +104,15 @@ http://skoczen.github.io/will/
 
 Invite your bot to the #bot and #general channels, and any other channels you'd like.
 
+#### #bot 
+This channel is where webhook announcements will be posted. It is configurable in config.py by editing DEFAULT_ROOM.
+
+	####.herokuapp.com/ping    			"Someone pinged me!"
+	####.herokuapp.com/say/Cogito Ergo Sum  	"Cogito Ergo Sum"
+
+#### #general 
+This channel is where scheduled announcements will be posted. Optionally, the channel can be configured per announcement in `plugins/pco/announcements.py`. You'll need to invite the bot to any channel you want it to post.
+
 ### Bot Admins
 Most user permissions are inherited directly from Planning Center Online.  However, a *very* limited number of commands are limited to people in the pcobot *botadmin* group. 
 
