@@ -49,7 +49,8 @@ def get(set_date="sunday"):
                                                                                                        serviceType.name,
                                                                                                        set_list]),
                                                                        button_text="Open in Services",
-                                                                       button_url="https://services.planningcenteronline."
+                                                                       button_url="https://services."
+                                                                                  "planningcenteronline."
                                                                                   "com/plans/" + plan.id))
                         set_list = ""
     except Exception as e:
@@ -114,7 +115,7 @@ def get_set_songs(set_date="sunday"):
                             song_key = arng.chord_chart_key
                         else:
                             song_key = "No key set."
-                        msg = "\n".join(["*" + song.title + "*", "Sequence: " + sequence , "Key: " + song_key, ""])
+                        msg = "\n".join(["*" + song.title + "*", "Sequence: " + sequence, "Key: " + song_key, ""])
                         attachment = msg_attachment.SlackAttachment(fallback=msg,
                                                                     pco='services',
                                                                     text=msg,
@@ -147,5 +148,3 @@ if __name__ == '__main__':
         print(attachment.txt())
     for attachment in get_set_songs():
         print(attachment.txt())
-
-
