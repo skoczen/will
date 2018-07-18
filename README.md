@@ -62,6 +62,7 @@ To change the access control list, see configuration instructions below and this
  	* WILL_PCO_APPLICATION_KEY	```X0579RTGV7...```
  	* WILL_SLACK_API_TOKEN		```xoxb-X3WTBK0PZL...```
 	* WILL_SECRET_KEY 		[Make your own](https://www.random.org/strings/?num=10&len=20&digits=on&loweralpha=on&unique=on&format=html&rnd=new```)
+	* WILL_PUBLIC_URL		```http://your-app-name.herokuapp.com```
 	* TZ    			```America/Los_Angeles```
 		
 5. Choose github as your deployment method in heroku and connect to your fork of pcobot.
