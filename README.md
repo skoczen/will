@@ -102,7 +102,7 @@ http://skoczen.github.io/will/
 
 ### Slack
 
-Invite your bot to the #alpha and #general channels, and any other channels you'd like.
+Invite your bot to the #bot and #general channels, and any other channels you'd like.
 
 ### Bot Admins
 Most user permissions are inherited directly from Planning Center Online.  However, a *very* limited number of commands are limited to people in the pcobot *botadmin* group. 
