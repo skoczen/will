@@ -4,7 +4,6 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class HelpPlugin(WillPlugin):
 
-    @hear("^!help*")
     @respond_to("^help(?: (?P<plugin>.*))?$")
     def help(self, message, plugin=None):
         """help: the normal help you're reading."""
