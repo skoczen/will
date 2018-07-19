@@ -56,7 +56,7 @@ class PcoServicesPlugin(WillPlugin):
         if not pco_team:
             self.reply("Hold on I'll look up the teams for you.")
         else:
-            self.reply("Hold on I'll look up tha team for you.")
+            self.reply("Hold on I'll look up that team for you.")
         team_list = teams.get(pco_team)
         attachment = []
         for result in team_list:
