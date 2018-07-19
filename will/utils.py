@@ -5,7 +5,7 @@ from six.moves import html_parser
 
 UNSURE_REPLIES = [
     "Hmm.  I'm not sure what to say. (Type !help for help)",
-    "I didn't understand that. Message me directly with the word "help" to see what I can do.",
+    "I didn't understand that. Message me directly with the word *help* to see what I can do.",
     "I heard you, but I'm not sure what to do. Type !help to see my commands.",
     "I'm not sure what that means. (Type !help for help)",
 ]
