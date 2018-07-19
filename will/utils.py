@@ -4,12 +4,10 @@ from six.moves import html_parser
 
 
 UNSURE_REPLIES = [
-    "Hmm.  I'm not sure what to say.",
-    "I didn't understand that.",
-    "I heard you, but I'm not sure what to do.",
-    "Darn.  I'm not sure what that means.  Maybe you can teach me?",
-    "I really wish I knew how to do that.",
-    "Hm. I heard you, but I'm not sure what to do.",
+    "Hmm.  I'm not sure what to say.)",
+    "I didn't understand that. Message me directly with the word *help* to see what I can do.",
+    "I heard you, but I'm not sure what to do. Direct message me *help* to see my commands.",
+    "I'm not sure what that means.",
 ]
 
 DO_NOT_PICKLE = [
