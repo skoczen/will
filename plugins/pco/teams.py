@@ -19,7 +19,7 @@ def get(team):
                 msg += " " + t.name + ":*"
                 for id_number in t.rel.people.list():
                     msg += "\n" + " ".join([pco.services.people.get(id_number.id).first_name,
-                                       pco.services.people.get(id_number.id).last_name])
+                                            pco.services.people.get(id_number.id).last_name])
                 attachment_list.append(msg_attachment.SlackAttachment(fallback=msg, pco='services',
                                                                       text=msg, button_text="Open in Services",
                                                                       button_url="/".join(["https://services."
