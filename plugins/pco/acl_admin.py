@@ -26,23 +26,25 @@ class AclAdmin(WillPlugin):
 
         self.reply("Here are all the access control lists I have:", message=message, attachments=attachment.slack())
 
-    @respond_to("(?:Can I |do I have )?(access |!app)(?P<app>.*?(?=(?:\?)|$))")
-    def message_test(self, message, app):
+    @respond_to("(?:Can I |do I have )?(!apps|access |!app)(?P<app>.*?(?=(?:\?)|$))")
+    def app_lookup(self, message, app):
+        """!app: tells you which PCO apps you have permissions to"""
+        print("This is what's in app: " + app)
+        app = app.strip()
         if authenticate.check_name(message):
-            """!app: tells you which PCO apps you have permissions to"""
-            credentials = {"name": message.sender['source']['real_name'], "email": message.sender['source']['email']}
-            print("This is what's in app: " + app)
             if app:
                 print("checking credentials")
-                if authenticate.get(credentials, app):
-                    self.reply("You have access to: " + app)
+                if authenticate.get(message, app):
+                    msg = "You have access to: " + app.title()
+                    attachment = msg_attachment.SlackAttachment(fallback=msg, pco=app, text=msg)
+                    self.reply("", message=message, attachments=attachment.slack())
                 else:
                     self.reply("Sorry but you don't have access to that Planning Center App. "
                                "Please contact your administrator.")
             else:
                 self.reply("Getting your permissions. . .", message=message)
                 print("calling app_list")
-                attachment = authenticate.get_apps(credentials)
+                attachment = authenticate.get_apps(message)
                 your_apps = attachment.slack()
                 self.reply("Here are the apps you have access to: ", message=message, attachments=your_apps)
         else:
