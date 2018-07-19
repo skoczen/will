@@ -3,7 +3,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 
 class HelpPlugin(WillPlugin):
-    
+
     @hear("^!help*")
     @respond_to("^help(?: (?P<plugin>.*))?$")
     def help(self, message, plugin=None):
@@ -30,6 +30,3 @@ class HelpPlugin(WillPlugin):
                         help_text += "<br/> %s" % line
 
         self.say(help_text, html=True)
-
-   
-  
