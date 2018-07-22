@@ -42,13 +42,10 @@ def get(team):
     # print("msg before assigning to attachment: ", msg)
     return attachment_list
 
+
 def get_team_assignments(team):
-    msg = ""
     if team:
             for t in pco.services.teams.list(where={'name': team}, include='people'):
-                service = t.rel.service_type.get().id
-                team_id = t.id
-
                 for member in t.rel.people.list():
                     print(pco.services.people.get(member.id).first_name)
                     print(pco.services.people.get(member.id).last_name)
@@ -61,11 +58,10 @@ def get_team_assignments(team):
     return
 
 
-
 if __name__ == '__main__':
     team = 'Band'
-    # print("Getting a team:")
-    # for x in get(team):
-    #     print(x.slack())
+    print("Getting a team:")
+    for x in get(team):
+        print(x.slack())
     print("Getting Team Assignments:")
     get_team_assignments(team)
