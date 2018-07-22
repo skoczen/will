@@ -56,7 +56,7 @@ def get_timezone(lat, lng):
 
 class TimePlugin(WillPlugin):
 
-    @respond_to("what time is it in (?P<place>.*)?\?+")
+    @respond_to("what time is it in (?P<place>.*)?(\?)$")
     def what_time_is_it_in(self, message, place):
         """what time is it in ___: Say the time in almost any city on earth."""
         location = get_location(place)
@@ -76,3 +76,11 @@ class TimePlugin(WillPlugin):
         """what time is it: Say the time where I am."""
         now = datetime.datetime.now()
         self.say("It's %s." % self.to_natural_day_and_time(now, with_timezone=True), message=message)
+
+
+if __name__ == '__main__':
+    place = "New York"
+    location = get_location(place)
+    tz = get_timezone(location.lat, location.long)
+    ct = datetime.datetime.now(tz=pytz.timezone(tz))
+    print("It's %(time)s in %(place)s." % {'time': ct, 'place': location.name})
