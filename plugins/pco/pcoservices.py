@@ -44,6 +44,7 @@ class PcoServicesPlugin(WillPlugin):
         song = song_info.get(pco_song)
         attachment = []
         for result in song:
+            print(result.pco)
             attachment += result.slack()
         if attachment is None:
             self.reply("Sorry I don't find " + song + "in services.")
@@ -56,7 +57,7 @@ class PcoServicesPlugin(WillPlugin):
         if not pco_team:
             self.reply("Hold on I'll look up the teams for you.")
         else:
-            self.reply("Hold on I'll look up tha team for you.")
+            self.reply("Hold on I'll look up that team for you.")
         team_list = teams.get(pco_team)
         attachment = []
         for result in team_list:
@@ -74,7 +75,7 @@ class PcoServicesPlugin(WillPlugin):
 if __name__ == '__main__':
     date = "sunday"
     song_name = "Mighty to Save"
-    team_name = "oasis"
+    team_name = "Audio/Visual"
     # print("Getting set list for ", date)
     # for x in set_list.get(date):
     #     print(x.txt())
