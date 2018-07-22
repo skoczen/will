@@ -205,7 +205,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             event.data.is_direct and
             event.data.will_said_it is False
         ):
-            event.content = random.choice(UNSURE_REPLIES)
+            self.people  # get the object that contains bot's handle
+            event.content = random.choice(UNSURE_REPLIES) + " Try `@%s help`" % self.me.handle
             self.send_message(event)
 
     def handle_request(self, r, data):
