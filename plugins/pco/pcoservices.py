@@ -1,6 +1,6 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from plugins.pco import song_info, authenticate, set_list
+from plugins.pco import song_info, authenticate, set_list, teams
 
 app = "services"
 
@@ -44,10 +44,29 @@ class PcoServicesPlugin(WillPlugin):
         song = song_info.get(pco_song)
         attachment = []
         for result in song:
+            print(result.pco)
             attachment += result.slack()
         if attachment is None:
             self.reply("Sorry I don't find " + song + "in services.")
         self.reply("", message=message, attachments=attachment)
+
+    @respond_to("(!teams|!team)(?P<pco_team>.*?(?=(?:\?)|$))")
+    def pco_team_lookup(self, message, pco_team):
+        pco_team = pco_team.strip()
+        """Lookup a [team] and print it's members"""
+        if not pco_team:
+            self.reply("Hold on I'll look up the teams for you.")
+        else:
+            self.reply("Hold on I'll look up that team for you.")
+        team_list = teams.get(pco_team)
+        attachment = []
+        for result in team_list:
+            attachment += result.slack()
+        if not attachment:
+            self.reply('Sorry I don\'t find a team named "' + pco_team + '" in services.')
+        else:
+            self.reply("", message=message, attachments=attachment)
+
 
 # Test your setup by running this file.
 # If you add functions in this file please add a test below.
@@ -56,11 +75,16 @@ class PcoServicesPlugin(WillPlugin):
 if __name__ == '__main__':
     date = "sunday"
     song_name = "Mighty to Save"
-    print("Getting set list for ", date)
-    for x in set_list.get(date):
-        print(x.txt())
-    print("Getting song info for ", song_name)
-    print(song_info.get(song_name).txt())
-    print("Getting this weeks songs.")
-    for attachment in set_list.get_set_songs(date):
+    team_name = "Audio/Visual"
+    # print("Getting set list for ", date)
+    # for x in set_list.get(date):
+    #     print(x.txt())
+    # print("Getting song info for ", song_name)
+    # for x in song_info.get(song_name):
+    #     print(x.txt())
+    # print("Getting this weeks songs.")
+    # for attachment in set_list.get_set_songs(date):
+    #     print(attachment.txt())
+    print("Getting the team list")
+    for attachment in teams.get(team_name):
         print(attachment.txt())
