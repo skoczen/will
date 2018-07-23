@@ -81,6 +81,14 @@ def get(set_date="sunday"):
         return attachment_list
 
 
+def announce_setlist(will, channel='announcements', date='sunday'):
+    setlist = []
+    for x in get(date):
+        setlist += x.slack()
+
+    will.say("", attachments=setlist, channel=channel)
+
+
 def get_set_songs(set_date="sunday"):
     attachment_list = []
     song_list = []
