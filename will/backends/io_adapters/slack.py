@@ -374,6 +374,11 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             channel=channel_id,
         )
 
+    def get_im(self, user_id):
+        return self.client.api_call(
+            "im.open",
+            user=user_id)['channel']['id']
+
     @property
     def people(self):
         if not hasattr(self, "_people") or self._people is {}:
@@ -461,6 +466,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 handle=v.name,
                 source=clean_for_pickling(v),
                 name=v.real_name,
+                channel=self.get_im(v.id)
             )
             if v.name == self.handle:
                 self.me = Person(
@@ -469,6 +475,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                     handle=v.name,
                     source=clean_for_pickling(v),
                     name=v.real_name,
+                    channel=self.get_im(v.id)
                 )
             if user_timezone and user_timezone != 'unknown':
                 people[k].timezone = user_timezone
