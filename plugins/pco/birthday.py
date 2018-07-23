@@ -42,23 +42,6 @@ def build(x):
         return
 
 
-def get(name):
-    try:
-        fl_name = {'first_name': name.split()[0], 'last_name': name.split()[1]}
-
-    except IndexError:
-        fl_name = {'first_name': name.split()[0]}
-
-    finally:
-        for x in pco.people.people.list(where=fl_name):
-            build(x)
-        fl_name = fl_name = {'nickname': name}
-        for x in pco.people.people.list(where=fl_name):
-            build(x)
-
-        return attachment_list
-
-
 # This returns one attachment not a list.
 def get_todays_birthdays():
     msg = "*Today's Birthdays!*\n"
