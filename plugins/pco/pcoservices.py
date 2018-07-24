@@ -44,7 +44,6 @@ class PcoServicesPlugin(WillPlugin):
         song = song_info.get(pco_song)
         attachment = []
         for result in song:
-            print(result.pco)
             attachment += result.slack()
         if attachment is None:
             self.reply("Sorry I don't find " + song + "in services.")
