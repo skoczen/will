@@ -53,7 +53,7 @@ PLUGINS = [
     # "will.plugins.fun",
     "will.plugins.help",
     # "will.plugins.productivity",
-    "will.plugins.web",
+    # "will.plugins.web",
 
     # All plugins in your project.
     "plugins",
@@ -120,7 +120,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # ------------------------------------------------------------------------------------
 # Slack settings
 # ------------------------------------------------------------------------------------
-# SLACK_DEFAULT_CHANNEL = "bot"
+# SLACK_DEFAULT_CHANNEL = "alpha"
 
 # ------------------------------------------------------------------------------------
 # Rocket.chat settings
@@ -149,7 +149,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Note no trailing slash.
 # PUBLIC_URL = "http://my-will.herokuapp.com"
 
-# The hipchat backend and room Will should talk to if the trigger is a webhook and he isn't told
+# The backend and room Will should talk to if the trigger is a webhook and he isn't told
 # a specific room.  Default is the first of IO_BACKENDS and ROOMS.
 # DEFAULT_BACKEND = "will.backends.io_adapters.slack"
 # DEFAULT_ROOM = 'Notifications'
@@ -167,11 +167,11 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # ]
 
 
-# Access Control: Specify groups of users to be used in the acl=["botadmin"] parameter
+# Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
 # in respond_to and hear actions.
 # Group names can be any string, and the list is composed of user handles.
 ACL = {
-    "botadmin": [""],
+    "admins": [""],
 }
 #
 # By default, if no ACL is set, all users can perform all actions - but warnings
