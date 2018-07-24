@@ -56,7 +56,7 @@ def get_timezone(lat, lng):
 
 class TimePlugin(WillPlugin):
 
-    @respond_to("what time is it in |time in)(?P<place>.*[^\?]")
+    @respond_to("(what time is it in |time in)(?P<place>.*[^\?])")
     def what_time_is_it_in(self, message, place):
         """what time is it in ___: Say the time in almost any city on earth."""
         location = get_location(place)
