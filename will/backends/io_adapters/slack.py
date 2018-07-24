@@ -291,9 +291,19 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             except:
                 logging.info(traceback.format_exc().split(" ")[-1])
                 pass
-        data.update({
-            "channel": channel_id,
-        })
+                
+        if event["type"] == "upload_file" and "channel" in event:
+            data.update({
+                "channels": str("#" + self.get_channel_name_from_id(channel_id)),
+            })
+        elif event["type"] == "upload_file" and "channel" not in event:
+            data.update({
+                "channels": str(self.get_channel_name_from_id(channel_id)),
+            })
+        else:
+            data.update({
+                "channel": channel_id,
+            })
         return data
 
     def send_message(self, event):
@@ -355,6 +365,34 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             **settings.REQUESTS_OPTIONS
         )
         self.handle_request(r, data)
+
+    def upload_file(self, event):
+        data = {}
+        if hasattr(event, "kwargs"):
+            data.update(event.kwargs)
+
+        for attribute in event.kwargs:
+            if attribute in ("title", "filetype", "filename", "initial_comment", "is_private_chat"):
+                data.update({
+                    attribute: event.kwargs[attribute]
+                })
+
+        if isinstance(event.content, bytes):
+            data.update({
+                "file": event.content,
+            })
+        else:
+            data.update({
+                "content": event.content,
+            })
+
+        data = self.set_data_channel_and_thread(event, data=data)
+
+        ret = self.client.api_call("files.upload",
+                                   **data)
+        if not 'ok' in ret or not ret['ok']:
+            # error
+            logging.error('fileUpload failed %s', ret['error'])
 
     def _map_color(self, color):
         # Turn colors into hex values, handling old slack colors, etc

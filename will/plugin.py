@@ -87,6 +87,32 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
                 logging.info("putting in queue: %s" % content)
                 self.publish("message.outgoing.%s" % backend, e)
 
+    def upload_file(self, content, message=None, room=None, channel=None, service=None, package_for_scheduling=False, **kwargs):
+        if channel:
+            room = channel
+        elif room:
+            channel = room
+
+        if not "channel" in kwargs and channel:
+            kwargs["channels"] = channel
+
+        message = self.get_message(message)
+        message = self._trim_for_execution(message)
+        backend = self.get_backend(message, service=service)
+
+        if backend:
+            e = Event(
+                type="upload_file",
+                content=content,
+                source_message=message,
+                kwargs=kwargs,
+            )
+            if package_for_scheduling:
+                return "message.outgoing.%s" % backend, e
+            else:
+                logging.info("putting in queue: %s" % content)
+                self.publish("message.outgoing.%s" % backend, e)
+
     def reply(self, event, content=None, message=None, package_for_scheduling=False, **kwargs):
         message = self.get_message(message)
 
