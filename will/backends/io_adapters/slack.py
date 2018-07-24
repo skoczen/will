@@ -46,6 +46,13 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         for k, c in self.channels.items():
             if c.name.lower() == name.lower() or c.id.lower() == name.lower():
                 return c
+            # We need to check if a user id was passed as a channel
+            # and get the correct IM channel if it was.
+            elif name.startswith('U') or name.startswith('W'):
+                return self.get_im_channel(name)
+
+    def get_im_channel(self, user_id):
+        return self.client.api_call("im.open", user=user_id)['channel']['id']
 
     def normalize_incoming_event(self, event):
 
@@ -228,7 +235,11 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
     def set_data_channel_and_thread(self, event, data={}):
         if "channel" in event:
             # We're coming off an explicit set.
-            channel_id = event.channel.id
+            try:
+                channel_id = event.channel.id
+            # This was a user ID so we will get channel from event.channel
+            except AttributeError:
+                channel_id = event.channel
         else:
             if "source_message" in event:
                 # Mentions that come back via self.say()
