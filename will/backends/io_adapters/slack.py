@@ -291,7 +291,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             except:
                 logging.info(traceback.format_exc().split(" ")[-1])
                 pass
-                
+
         if event["type"] == "upload_file" and "channel" in event:
             data.update({
                 "channels": str("#" + self.get_channel_name_from_id(channel_id)),
