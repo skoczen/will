@@ -2,15 +2,6 @@ from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 
 
-class PublicHelpPlugin(WillPlugin):
-
-    # If a user posts the single word `help` in chat, we'll help them.
-    @hear("help")
-    def public_help(self, message):
-        HelpPlugin.help(self, message, plugin=None)
-        self.say("And remember %s, I'll always respond when you message me directly!" % message.sender.first_name, color="yellow")
-
-
 class HelpPlugin(WillPlugin):
 
     @respond_to("^help(?: (?P<plugin>.*))?$")
@@ -19,7 +10,7 @@ class HelpPlugin(WillPlugin):
         # help_data = self.load("help_files")
         selected_modules = help_modules = self.load("help_modules")
 
-        self.say("Sure thing, %s." % message.sender.first_name)
+        self.say("Sure thing, %s." % message.sender.handle)
 
         help_text = "Here's what I know how to do:"
         if plugin and plugin in help_modules:

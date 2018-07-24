@@ -1,7 +1,4 @@
 language: python
-python:
-  - "3.5"
-  - "3.6"
 sudo: false
 services:
     - docker
@@ -10,10 +7,10 @@ before_install:
   - sudo apt-get install -y libffi-dev libxml2-dev
 install:
 - pip install -U tox
-#- pip install codev
 - pip install -r will/requirements/dev.txt
 script:
 - tox
+- export CTAG="-$TRAVIS_COMMIT"
 # - "fab docker_build"
 # deploy:
 #   skip_cleanup: true
@@ -23,3 +20,4 @@ script:
 #     branch: master
 env:
   matrix:
+    secure: SWBr2Ih6+vT0iX5CxqPT8ICmtFUcIk7MRfh21DnsGKpumz60mgRPnb+aMxagSDWrF0btGyI3vfD8nYEv6Vv+WDDCbeJCG3xExsIusiflaM1Vqo1OcUGlO55jQm1WtNub7SmiMSH8EY5GFFNfFn7CmSmU1xaM0p5q8Y0OTbZpku8=
