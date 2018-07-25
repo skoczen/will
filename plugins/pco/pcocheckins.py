@@ -1,6 +1,7 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 from plugins.pco import birthday, address, phone_numbers, checkins, msg_attachment, authenticate
+from will.mixins.slackwhitelist import wl_chan_id
 
 # You need to put your Personal access token application key and secret in your environment variables.
 # Get a Personal Access Key: https://api.planningcenteronline.com/oauth/applications
@@ -32,9 +33,9 @@ class PcoPeoplePlugin(WillPlugin):
                                                                 button_url="https://check-ins."
                                                                            "planningcenteronline.com/people?q="
                                                                            + pco_name.replace(" ", "%20"))
-                    self.reply("", message=message, attachments=attachment.slack())
+                    self.reply("", message=message, attachments=attachment.slack(), channel=wl_chan_id(self))
                 else:
-                    self.reply("Here you go!", message=message, attachments=attachment)
+                    self.reply("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
                 self.reply("Sorry but you don't have access to the Check-ins App. "
                            "Please contact your administrator.")
