@@ -24,10 +24,11 @@ class PcoPeoplePlugin(WillPlugin):
                     for x in phone_numbers.get(pco_name):
                         attachment += x.slack()
                     if not attachment:
-                        attachment = msg_attachment.SlackAttachment(text="Sorry I don't have a number for " + pco_name,
-                                                                    button_text="Search People",
-                                                                    button_url="https://people.planningcenteronline.com/"
-                                                                               "people?q=" + pco_name.replace(" ", "%20"))
+                        attachment = msg_attachment.\
+                            SlackAttachment(text="Sorry I don't have a number for " + pco_name,
+                                            button_text="Search People",
+                                            button_url="https://people.planningcenteronline.com/people?q="
+                                                       + pco_name.replace(" ", "%20"))
                         print(attachment.slack())
                         self.say("", message=message, attachments=attachment.slack())
                     else:
@@ -36,8 +37,8 @@ class PcoPeoplePlugin(WillPlugin):
                 self.say("Sorry but you don't have access to the People App. "
                          "Please contact your administrator.", channel=wl_chan_id(self))
         else:
-            self.say('I could not authenticate you. Please make sure your "Full name"'
-                       ' is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
+            self.say('I could not authenticate you. Please make sure your "Full name" '
+                     'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
     @respond_to("(?:do you |find |got |a )?(birthday for |!birthday |!birth )(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_birthday_lookup(self, message, pco_name):
