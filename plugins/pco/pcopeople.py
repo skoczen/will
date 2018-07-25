@@ -29,15 +29,15 @@ class PcoPeoplePlugin(WillPlugin):
                                                                     button_url="https://people.planningcenteronline.com/"
                                                                                "people?q=" + pco_name.replace(" ", "%20"))
                         print(attachment.slack())
-                        self.reply("", message=message, attachments=attachment.slack())
+                        self.say("", message=message, attachments=attachment.slack())
                     else:
                         self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
-                self.reply("Sorry but you don't have access to the People App. "
-                           "Please contact your administrator.")
+                self.say("Sorry but you don't have access to the People App. "
+                         "Please contact your administrator.", channel=wl_chan_id(self))
         else:
-            self.reply('I could not authenticate you. Please make sure your "Full name"'
-                       ' is in your Slack profile and matches your Planning Center Profile.')
+            self.say('I could not authenticate you. Please make sure your "Full name"'
+                       ' is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
     @respond_to("(?:do you |find |got |a )?(birthday for |!birthday |!birth )(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_birthday_lookup(self, message, pco_name):
@@ -54,15 +54,15 @@ class PcoPeoplePlugin(WillPlugin):
                                                                 button_url="https://people.planningcenteronline.com/"
                                                                            "people?q=" + pco_name.replace(" ", "%20"))
                     print(attachment.slack())
-                    self.reply("", message=message, attachments=attachment.slack())
+                    self.say("", message=message, attachments=attachment.slack(), channel=wl_chan_id(self))
                 else:
                     self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
-                self.reply("Sorry but you don't have access to the People App. "
-                           "Please contact your administrator.")
+                self.say("Sorry but you don't have access to the People App. "
+                           "Please contact your administrator.", channel=wl_chan_id(self))
         else:
-            self.reply('I could not authenticate you. Please make sure your "Full name"'
-                       ' is in your Slack profile and matches your Planning Center Profile.')
+            self.say('I could not authenticate you. Please make sure your "Full name"'
+                       ' is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
     @respond_to("(?:do you |find |got |a )?(address for |!address )(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_address_lookup(self, message, pco_name):
@@ -80,15 +80,15 @@ class PcoPeoplePlugin(WillPlugin):
                                                                 button_url="https://people.planningcenteronline.com/"
                                                                            "people?q=" + pco_name.replace(" ", "%20"))
                     print(attachment.slack())
-                    self.reply("", message=message, attachments=attachment.slack())
+                    self.say("", message=message, attachments=attachment.slack(), channel=wl_chan_id(self))
                 else:
                     self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
-                self.reply("Sorry but you don't have access to the People App. "
-                           "Please contact your administrator.")
+                self.say("Sorry but you don't have access to the People App. "
+                         "Please contact your administrator.", channel=wl_chan_id(self))
         else:
-            self.reply('I could not authenticate you. Please make sure your "Full name"'
-                       ' is in your Slack profile and matches your Planning Center Profile.')
+            self.say('I could not authenticate you. Please make sure your "Full name" '
+                     'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
     @respond_to("(?:do you |find |got |a |need to |can somebody )?(email for |!email |email )"
                 "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
@@ -101,20 +101,21 @@ class PcoPeoplePlugin(WillPlugin):
                 for x in emails.get(pco_name):
                     attachment += x.slack()
                 if not attachment:
-                    attachment = msg_attachment.SlackAttachment(text="Sorry I don't have an email address for " + pco_name,
+                    attachment = msg_attachment.SlackAttachment(text="Sorry I don't have an email address for "
+                                                                     + pco_name,
                                                                 button_text="Search People",
                                                                 button_url="https://people.planningcenteronline.com/"
                                                                            "people?q=" + pco_name.replace(" ", "%20"))
                     print(attachment.slack())
-                    self.reply("", message=message, attachments=attachment.slack())
+                    self.say("", message=message, attachments=attachment.slack(), channel=wl_chan_id(self))
                 else:
                     self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
-                self.reply("Sorry but you don't have access to the People App. "
-                           "Please contact your administrator.")
+                self.say("Sorry but you don't have access to the People App. "
+                         "Please contact your administrator.", channel=wl_chan_id(self))
         else:
-            self.reply('I could not authenticate you. Please make sure your "Full name"'
-                       ' is in your Slack profile and matches your Planning Center Profile.')
+            self.say('I could not authenticate you. Please make sure your "Full name" '
+                     'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
 
 # Test your setup by running this file.
