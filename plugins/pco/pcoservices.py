@@ -1,6 +1,7 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 from plugins.pco import song_info, authenticate, set_list, teams
+from will.mixins.slackwhitelist import wl_chan_id
 
 app = "services"
 
@@ -62,9 +63,9 @@ class PcoServicesPlugin(WillPlugin):
         for result in team_list:
             attachment += result.slack()
         if not attachment:
-            self.reply('Sorry I don\'t find a team named "' + pco_team + '" in services.')
+            self.say('Sorry I don\'t find a team named "' + pco_team + '" in services.', channel=wl_chan_id(self))
         else:
-            self.reply("", message=message, attachments=attachment)
+            self.say("", message=message, attachments=attachment, channel=wl_chan_id(self))
 
 
 # Test your setup by running this file.
