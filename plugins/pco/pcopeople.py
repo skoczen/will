@@ -1,6 +1,7 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
 from plugins.pco import birthday, address, phone_numbers, checkins, emails, msg_attachment, authenticate
+from will.mixins.slackwhitelist import wl_chan_id
 
 # You need to put your Personal access token application key and secret in your environment variables.
 # Get a Personal Access Key: https://api.planningcenteronline.com/oauth/applications
@@ -30,7 +31,7 @@ class PcoPeoplePlugin(WillPlugin):
                         print(attachment.slack())
                         self.reply("", message=message, attachments=attachment.slack())
                     else:
-                        self.reply("Here you go!", message=message, attachments=attachment)
+                        self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
                 self.reply("Sorry but you don't have access to the People App. "
                            "Please contact your administrator.")
@@ -55,7 +56,7 @@ class PcoPeoplePlugin(WillPlugin):
                     print(attachment.slack())
                     self.reply("", message=message, attachments=attachment.slack())
                 else:
-                    self.reply("Here you go!", message=message, attachments=attachment)
+                    self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
                 self.reply("Sorry but you don't have access to the People App. "
                            "Please contact your administrator.")
@@ -81,7 +82,7 @@ class PcoPeoplePlugin(WillPlugin):
                     print(attachment.slack())
                     self.reply("", message=message, attachments=attachment.slack())
                 else:
-                    self.reply("Here you go!", message=message, attachments=attachment)
+                    self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
                 self.reply("Sorry but you don't have access to the People App. "
                            "Please contact your administrator.")
@@ -107,7 +108,7 @@ class PcoPeoplePlugin(WillPlugin):
                     print(attachment.slack())
                     self.reply("", message=message, attachments=attachment.slack())
                 else:
-                    self.reply("Here you go!", message=message, attachments=attachment)
+                    self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
                 self.reply("Sorry but you don't have access to the People App. "
                            "Please contact your administrator.")
