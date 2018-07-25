@@ -54,6 +54,7 @@ PLUGINS = [
     "will.plugins.help",
     # "will.plugins.productivity",
     "will.plugins.web",
+    "will.plugins.slack",
 
     # All plugins in your project.
     "plugins",
@@ -171,7 +172,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # in respond_to and hear actions.
 # Group names can be any string, and the list is composed of user handles.
 ACL = {
-    "botadmin": [""],
+    "admins": [""],
 }
 #
 # By default, if no ACL is set, all users can perform all actions - but warnings
