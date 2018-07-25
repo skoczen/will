@@ -60,10 +60,10 @@ class PcoPeoplePlugin(WillPlugin):
                     self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
             else:
                 self.say("Sorry but you don't have access to the People App. "
-                           "Please contact your administrator.", channel=wl_chan_id(self))
+                         "Please contact your administrator.", channel=wl_chan_id(self))
         else:
-            self.say('I could not authenticate you. Please make sure your "Full name"'
-                       ' is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
+            self.say('I could not authenticate you. Please make sure your "Full name" '
+                     'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
     @respond_to("(?:do you |find |got |a )?(address for |!address )(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_address_lookup(self, message, pco_name):
