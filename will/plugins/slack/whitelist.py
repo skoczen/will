@@ -1,6 +1,7 @@
 from will.plugin import WillPlugin
 from will.decorators import hear
-from will.mixins.slackwhitelist import whitelist_remove, whitelist_add, wl_chan_id, whitelist_list, wl_check, whitelist_wipe
+from will.mixins.slackwhitelist import whitelist_remove, whitelist_add, wl_chan_id, whitelist_list, wl_check, \
+    whitelist_wipe
 
 
 # This is a group of commands for administering the Slack Channel Whitelist.
