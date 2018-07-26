@@ -1,6 +1,6 @@
 from will.plugin import WillPlugin
 from will.decorators import hear
-from will.mixins.slackwhitelist import whitelist_remove, whitelist_add, wl_chan_id, whitelist_list, wl_check
+from will.mixins.slackwhitelist import whitelist_remove, whitelist_add, wl_chan_id, whitelist_list, wl_check, whitelist_wipe
 
 
 # This is a group of commands for administering the Slack Channel Whitelist.
@@ -43,3 +43,11 @@ class WhitelistPlugin(WillPlugin):
         # NOTE You need to use self.say for this to work!
         self.say("This response goes to the channel if it is a whitelisted channel, "
                  "but goes to a DM if the channel isn't whitelisted.", channel=wl_chan_id(self))
+
+    # Testing function for wiping the whitelist
+    @hear("(!wlwipe)", acl=["admins"])
+    def whitelist_wipe(self, message):
+        # NOTE You need to use self.say for this to work!
+        if not self.load("whitelist"):
+            whitelist_wipe(self)
+        self.reply("Whitelist Wiped!", message=message)

@@ -2,13 +2,30 @@
 # Use this to control what commands are allowed to run in a channel
 
 
+# Initilizes a whitelist if none exists
+def whitelist_init(will):
+    whitelist = []
+    will.save("whitelist", whitelist)
+    return
+
+
 # This cleans the whitelist, and then lists the channels.
 def whitelist_list(will):
-    white_list = whitelist_clean(will)
-    response = get_slack_channels(will, white_list)
-    will.reply("Sending you the whitelist as a direct message.")
-    will.say("This is the whitelist: %s" % response, channel=will.message.data.sender.id)
-    return
+    try:
+        white_list = whitelist_clean(will)
+    except TypeError:
+        print("No whitelist to list, we'll make an empty one.")
+        whitelist_init(will)
+        white_list = []
+    finally:
+        if white_list:
+            response = get_slack_channels(will, white_list)
+            will.reply("Sending you the whitelist as a direct message.")
+            will.say("This is the whitelist: %s" % response, channel=will.message.data.sender.id)
+        else:
+            will.reply("The whitelist is empty.")
+
+        return
 
 
 # This removes duplicates from the whitelist,
@@ -61,11 +78,15 @@ def whitelist_add(will, channel_name=None):
         if not channel_id:
             will.reply('I coulnd\'t find a channel named "%s"' % channel_name)
         else:
-            white_list = will.load("whitelist")
-            for c_id in channel_id:
-                white_list.append(c_id)
-            will.save("whitelist", white_list)
-            will.reply('"%s" channel(s) added to the whitelist.' % channel_name)
+            try:
+                white_list = will.load("whitelist")
+            except:
+                white_list = []
+            finally:
+                for c_id in channel_id:
+                    white_list.append(c_id)
+                will.save("whitelist", white_list)
+                will.reply('"%s" channel(s) added to the whitelist.' % channel_name)
     except Exception as e:
         print(type(e))
     return
@@ -142,3 +163,13 @@ def get_slack_archived_channels(will, id_list):
                 if not c.members:
                     channel_ids.append(c.id)
     return channel_ids
+
+
+def whitelist_wipe(will):
+    try:
+        will.clear("whitelist")
+    except Exception as e:
+        print("There isn't a whitelist to clear.")
+        will.reply("There isn't a whitelist to clear.")
+    finally:
+        return
