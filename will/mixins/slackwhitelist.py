@@ -99,7 +99,8 @@ def wl_chan_id(will):
     channel = ""
     try:
         whitelist = will.load("whitelist")
-        if will.message.data.channel.id not in whitelist:
+        if will.message.data.channel.id not in whitelist and not will.message.data.channel.id.startswith("DB"):
+            print(will.message.data.channel.id)
             will.reply('The "%s" channel is not whitelisted. So I sent it as a direct message.'
                        % will.message.data.channel.name.title())
             channel = will.message.data.sender.id
