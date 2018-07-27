@@ -58,7 +58,7 @@ def announce_todays_birthdays(will, channel='announcements'):
     if attachment.txt() != "*Today's Birthdays!*\n":
         will.say("", attachments=attachment.slack(), channel=channel)
     else:
-        print("Skipping birthday announcement because their are no birthdays today.")
+        print("Skipping birthday announcement because there are no birthdays today.")
 
 
 if __name__ == '__main__':
