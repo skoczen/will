@@ -106,8 +106,10 @@ def wl_chan_id(will):
             channel = will.message.data.sender.id
         else:
             channel = will.message.data.channel.id
-    except Exception as e:
-        will.reply("Exception: %s" % type(e))
+    except TypeError:
+        channel = will.message.data.sender.id
+        whitelist_init(will)
+        will.reply("Whitelist initialized")
     finally:
         return channel
 
