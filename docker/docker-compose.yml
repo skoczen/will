@@ -6,7 +6,7 @@ services:
         volumes:
             - ./data/redis:/data
     pcobot:
-        image: pastorhudson/pcobot:alpha
+        image: pastorhudson/pcobot
         ports:
             - 8081:8080
         env_file:
