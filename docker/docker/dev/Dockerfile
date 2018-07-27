@@ -1,5 +1,5 @@
 #Pull from pcobot-base
-FROM pastorhudson/pcobot-base
+FROM pastorhudson/pcobot:base
 ARG repo=https://github.com/pastorhudson/pcobot.git
 ARG branch=dev
 ARG backends="Slack Shell"
