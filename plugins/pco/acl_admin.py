@@ -6,7 +6,7 @@ from will.acl import get_acl_members
 
 
 class AclAdmin(WillPlugin):
-    @respond_to("(?:show | )?(!acl)(?P<acl_list>.*?(?=(?:\?)|$))", acl=["botadmin"])
+    @respond_to("(?:show | )?(!acl)(?P<acl_list>.*?(?=(?:\?)|$))", acl=["admins"])
     def acl_lookup(self, message, acl_list):
         """!acl: lists the users who can adminster this bot"""
         msg = ""
