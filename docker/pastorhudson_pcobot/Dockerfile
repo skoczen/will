@@ -5,7 +5,7 @@
 #Pull from will-base
 FROM heywill/will-base:3.7-alpine
 ARG repo=https://github.com/pastorhudson/pcobot.git
-ARG branch=master
+ARG branch=dev
 ARG backends="Slack"
 ENV PACKAGES="\
   dumb-init \
