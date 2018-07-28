@@ -171,9 +171,9 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Access Control: Specify groups of users to be used in the acl=["botadmin"] parameter
 # in respond_to and hear actions.
 # Group names can be any string, and the list is composed of user handles.
-ACL = {
-    "admins": [""],
-}
+# ACL = {
+#     "admins": [""],
+# }
 #
 # By default, if no ACL is set, all users can perform all actions - but warnings
 # will be printed to the console.  To disable those warnings, set DISABLE_ACL to True
