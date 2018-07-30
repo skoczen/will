@@ -636,11 +636,11 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
             if is_private_chat or event["body"].startswith(interpolated_handle):
                 is_direct = True
 
-            if event["body"].startswith(interpolated_handle):
-                event["body"] = event["body"][len(interpolated_handle):].strip()
-
             if interpolated_handle in event["body"]:
                 will_is_mentioned = True
+
+            if event["body"].startswith(interpolated_handle):
+                event["body"] = event["body"][len(interpolated_handle):].strip()
 
             if sender and self.me and sender.id == self.me.id:
                 will_said_it = True
