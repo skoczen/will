@@ -46,8 +46,9 @@ def build(x):
 def get_todays_birthdays():
     msg = "*Today's Birthdays!*\n"
     today = datetime.datetime.today().strftime('%m-%d')
+    print(today)
     for x in pco.people.people.list():
-        if today in str(x.birthdate):
+        if today in str(x.birthdate)[5:]:
             msg += "%s\n" % x.name
     attachment = msg_attachment.SlackAttachment(fallback=msg, text=msg)
     return attachment
@@ -62,9 +63,9 @@ def announce_todays_birthdays(will, channel='announcements'):
 
 
 if __name__ == '__main__':
-    name = "John"
-    print("Getting birthdays for ", name)
-    for x in get(name):
-        print(x.slack())
+    # name = "John"
+    # print("Getting birthdays for ", name)
+    # for x in get(name):
+    #     print(x.slack())
     print("Getting today's birthdays")
     print(get_todays_birthdays().txt())
