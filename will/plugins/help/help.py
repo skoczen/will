@@ -5,7 +5,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 class PublicHelpPlugin(WillPlugin):
 
     # If a user posts the single word `help` in chat, we'll help them.
-    @hear("help")
+    @respond_to("help")
     def public_help(self, message):
         HelpPlugin.help(self, message, plugin=None)
         self.say("And remember %s, I'll always respond when you message me directly!" % message.sender.first_name, color="yellow")
