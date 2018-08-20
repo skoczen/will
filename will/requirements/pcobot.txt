@@ -1,13 +1,5 @@
-hiredis==0.2.0
-
 requests_oauthlib
 bottle_session
 # Using this fork because it has all the Planning Center Endpoints
 -e git://github.com/pastorhudson/pypco.git#egg=pypco
 -e git://github.com/pastorhudson/PCO-oauth2.git#egg=requests_oauth2
-
--r will/requirements/base.txt
--r will/requirements/slack.txt
--r will/requirements/hipchat.txt
--r will/requirements/rocketchat.txt
--r will/requirements/pcobot.txt
