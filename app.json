@@ -7,8 +7,8 @@
   "addons": [ "rediscloud:30" ],
   "env": {
     "WILL_ADMINS": {
-      "description": "At least one admin user. Put the first part of their email address.",
-      "value": "bill@aol.com would be just bill. You can add multiple with semicolons. These users can whitelist channels."
+      "description": "At least one admin user. Put the first part of their email address. bill@aol.com would be just bill. You can add multiple admins with semicolons(pastorhudson;jason). These users can whitelist channels.",
+      "value": ""
     },
     "WILL_PCO_API_KEY": {
       "description": "Application ID from your Planning Center personal Access Token",
@@ -16,7 +16,7 @@
     },
     "WILL_PCO_API_SECRET": {
       "description": "Secret from your Planning Center personal Access Token",
-      "valuer": "Put your Planning Center Secret here"
+      "value": "Put your Planning Center Secret here"
     },
     "WILL_SLACK_API_TOKEN": {
       "description": "Legacy API token for SLACK user.",
