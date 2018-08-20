@@ -10,7 +10,7 @@
       "description": "At least one admin user. Put the first part of their email address. bill@aol.com would be just bill. You can add multiple admins with semicolons(pastorhudson;jason). These users can whitelist channels.",
       "value": ""
     },
-    "WILL_PCO_API_KEY": {
+    "WILL_PCO_APPLICATION_KEY": {
       "description": "Application ID from your Planning Center personal Access Token",
       "value": "Put your Planning Center Application ID here"
     },
