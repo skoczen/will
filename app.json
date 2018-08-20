@@ -1,0 +1,7 @@
+{
+  "name": "PCO Bot",
+  "description": "PCO Bot is a bot that integrates with the Planning Center Online API. It's built on Will Bot.",
+  "repository": "https://github.com/pastorhudson/pcobot",
+  "logo": "https://raw.githubusercontent.com/pastorhudson/pcobot/master/docs/img/pcobot.png",
+  "keywords": ["pco", "pcobot", "planning center"]
+}
