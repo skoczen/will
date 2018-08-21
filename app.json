@@ -1,0 +1,42 @@
+{
+  "name": "PCO Bot",
+  "description": "PCO Bot is a bot that integrates with the Planning Center Online API. It's built on Will Bot.",
+  "repository": "https://github.com/pastorhudson/pcobot",
+  "logo": "https://raw.githubusercontent.com/pastorhudson/pcobot/master/docs/img/pcobot.png",
+  "keywords": ["pco", "pcobot", "planning center"],
+  "addons": [ "rediscloud:30" ],
+  "env": {
+    "WILL_ADMINS": {
+      "description": "At least one admin user. Put the first part of their email address. bill@aol.com would be just bill. You can add multiple admins with semicolons(pastorhudson;jason). These users can whitelist channels.",
+      "value": ""
+    },
+    "WILL_PCO_APPLICATION_KEY": {
+      "description": "Application ID from your Planning Center personal Access Token",
+      "value": "Put your Planning Center Application ID here"
+    },
+    "WILL_PCO_API_SECRET": {
+      "description": "Secret from your Planning Center personal Access Token",
+      "value": "Put your Planning Center Secret here"
+    },
+    "WILL_SLACK_API_TOKEN": {
+      "description": "Legacy API token for SLACK user.",
+      "value": "Put your Slack token starting with xoxb here"
+    },
+    "WILL_SECRET_KEY": {
+      "description": "A random string used for encrypting the database database. This is auto generated.",
+      "generator": "secret"
+    },
+    "WILL_SLACK_DEFAULT_CHANNEL": {
+      "description": "The default channel the bot posts to. This is mostly used for admin and testing.",
+      "value": "bot"
+    },
+    "WILL_PUBLIC_URL": {
+      "description": "The url of your deployed heroku app.",
+      "value": "http://your-app-name.herokuapp.com"
+    },
+    "TZ": {
+      "description": "The IANA Time Zone code for your location. This is for the time scheduler for announcements.",
+      "value": "America/New_York"
+    }
+  }
+}

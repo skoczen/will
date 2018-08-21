@@ -1,24 +1,218 @@
 {% extends "base.html" %}
 
+{% block title %}PyCO{% endblock %}
+
 {% block css %}
 <style type="text/css">
-    body {
-        font-family: Helvetica, Arial, Sans-serif;
-    }
-    .will_head {
-        text-align: center;
-        margin: 50px auto 0 auto;
-    }
-    .hello {
-        font-size: 50;
-    }
+@import url(https://fonts.googleapis.com/css?family=Montserrat:300);
+body, html {
+  padding: 0;
+  margin: 0;
+  background: #0c1c40;
+}
+
+.img {
+	background-color: transparent;
+}
+
+h1 {
+  font-size: 4em;
+  color: white;
+  font-family: 'Montserrat', serif;
+  letter-spacing: 2px;
+  pointer-events: none;
+  font-weight: 300;
+  position: absolute;
+  top: 60%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  }
+  
+  #particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+  
+  img {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 10;
+  width: 200px;
+  height: 200px;
+  }
+ 
+ .blinking-cursor {
+
+  color: white;
+  -webkit-animation: 1s blink step-end infinite;
+  -moz-animation: 1s blink step-end infinite;
+  -ms-animation: 1s blink step-end infinite;
+  -o-animation: 1s blink step-end infinite;
+  animation: 1s blink step-end infinite;
+}
+
+@keyframes "blink" {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: white;
+  }
+}
+
+@-moz-keyframes blink {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: white;
+  }
+}
+
+@-webkit-keyframes "blink" {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: white;
+  }
+}
+
+@-ms-keyframes "blink" {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: white;
+  }
+}
+
+@-o-keyframes "blink" {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: white;
+  }
+}
+ 
 </style>
 {% endblock %}
 
 
 {% block content %}
-<div class="will_head">
-    <img src="https://gk-will.s3.amazonaws.com/will-head.png" alt="">
-    <div class="hello">&nbsp; Hi!</div>
-</div>
+
+<section id="home">
+
+    <div class="text" >
+        <img src="https://raw.githubusercontent.com/pastorhudson/pcobot/master/docs/img/pcobot.png" style="display: block; margin: 0 auto;" />
+		<h1>Hello<span class="blinking-cursor">|</span></h1>
+    
+    </div>
+</section>
+
+
+<canvas id="particles"></canvas>
+
+    <script >
+      var canvas = document.querySelector("canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var ctx = canvas.getContext("2d");
+
+var TAU = 2 * Math.PI;
+
+times = [];
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function Ball (startX, startY, startVelX, startVelY) {
+  this.x = startX || Math.random() * canvas.width;
+  this.y = startY || Math.random() * canvas.height;
+  this.vel = {
+    x: startVelX || Math.random() * 2 - 1,
+    y: startVelY || Math.random() * 2 - 1
+  };
+  this.update = function(canvas) {
+    if (this.x > canvas.width + 50 || this.x < -50) {
+      this.vel.x = -this.vel.x;
+    }
+    if (this.y > canvas.height + 50 || this.y < -50) {
+      this.vel.y = -this.vel.y;
+    }
+    this.x += this.vel.x;
+    this.y += this.vel.y;
+  };
+  this.draw = function(ctx, can) {
+    ctx.beginPath();
+    ctx.globalAlpha = .4;
+    ctx.fillStyle = '#152d5e';
+    ctx.arc((0.5 + this.x) | 0, (0.5 + this.y) | 0, 3, 0, TAU, false);
+    ctx.fill();
+  }
+}
+
+var balls = [];
+for (var i = 0; i < canvas.width * canvas.height / (65*65); i++) {
+  balls.push(new Ball(Math.random() * canvas.width, Math.random() * canvas.height));
+}
+
+var lastTime = Date.now();
+function update() {
+  var diff = Date.now() - lastTime;
+  for (var frame = 0; frame * 16.6667 < diff; frame++) {
+    for (var index = 0; index < balls.length; index++) {
+      balls[index].update(canvas);
+    }
+  }
+  lastTime = Date.now();
+}
+var mouseX = -1e9, mouseY = -1e9;
+document.addEventListener('mousemove', function(event) {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+});
+
+function distMouse(ball) {
+  return Math.hypot(ball.x - mouseX, ball.y - mouseY);
+}
+
+function draw() {
+  ctx.globalAlpha=1;
+  ctx.fillStyle = '#0c1c41';
+  ctx.fillRect(0,0,canvas.width, canvas.height);
+  for (var index = 0; index < balls.length; index++) {
+    var ball = balls[index];
+    ball.draw(ctx, canvas);
+    ctx.beginPath();
+    for (var index2 = balls.length - 1; index2 > index; index2 += -1) {
+      var ball2 = balls[index2];
+      var dist = Math.hypot(ball.x - ball2.x, ball.y - ball2.y);
+        if (dist < 100) {
+          ctx.strokeStyle = "#163063";
+          ctx.globalAlpha = 1 - (dist > 100 ? .8 : dist / 150);
+          ctx.lineWidth = "2px";
+          ctx.moveTo((0.5 + ball.x) | 0, (0.5 + ball.y) | 0);
+          ctx.lineTo((0.5 + ball2.x) | 0, (0.5 + ball2.y) | 0);
+        }
+    }
+    ctx.stroke();
+  }
+}
+
+// Start
+loop();
+  
+    </script>
+
 {% endblock %}

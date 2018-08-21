@@ -20,6 +20,17 @@ def get_acl_members(acl):
     return acl_members
 
 
+def get_acl_groups():
+    acl_groups = []
+    if getattr(settings, "ACL", None):
+        # Case-insensitive checks
+        for k in settings.ACL.keys():
+            print(k.lower())
+            acl_groups.append(k.lower())
+
+        return acl_groups
+
+
 def is_acl_allowed(nick, acl):
     if not getattr(settings, "ACL", None):
         logging.warn(

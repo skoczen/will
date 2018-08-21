@@ -46,6 +46,13 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         for k, c in self.channels.items():
             if c.name.lower() == name.lower() or c.id.lower() == name.lower():
                 return c
+            # We need to check if a user id was passed as a channel
+            # and get the correct IM channel if it was.
+            elif name.startswith('U') or name.startswith('W'):
+                return self.get_im_channel(name)
+
+    def get_im_channel(self, user_id):
+        return self.client.api_call("im.open", user=user_id)['channel']['id']
 
     def normalize_incoming_event(self, event):
 
@@ -195,7 +202,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 else:
                     logging.critical(
                         "I was asked to post to a slack default channel, but I'm nowhere."
-                        "Please invite me somewhere with '/invite @%s'", self.me.handle
+                        "Please invite me somewhere with '/invite @%s'" % (self.me.name if self.me.name else self.me.handle)
                     )
 
         if event.type in ["topic_change", ]:
@@ -205,7 +212,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             event.data.is_direct and
             event.data.will_said_it is False
         ):
-            event.content = random.choice(UNSURE_REPLIES)
+            self.people  # get the object that contains bot's handle
+            event.content = random.choice(UNSURE_REPLIES) + " Try `@%s help`" % (self.me.name if self.me.name else self.me.handle)
             self.send_message(event)
 
     def handle_request(self, r, data):
@@ -218,7 +226,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
 
                 logging.critical(
                     "I was asked to post to the slack %s channel, but I haven't been invited. "
-                    "Please invite me with '/invite @%s'" % (channel.name, self.me.handle)
+                    "Please invite me with '/invite @%s'" % (channel.name, (self.me.name if self.me.name else self.me.handle))
                 )
             else:
                 logging.error("Error sending to slack: %s" % resp_json["error"])
@@ -228,7 +236,11 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
     def set_data_channel_and_thread(self, event, data={}):
         if "channel" in event:
             # We're coming off an explicit set.
-            channel_id = event.channel.id
+            try:
+                channel_id = event.channel.id
+            # This was a user ID so we will get channel from event.channel
+            except AttributeError:
+                channel_id = event.channel
         else:
             if "source_message" in event:
                 # Mentions that come back via self.say()
