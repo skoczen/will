@@ -7,6 +7,14 @@ but they think it's super cool!
 
 It is intended for use with [Slack](https://slack.com/), and it is built upon an extensible and modular framework.
 
+## Accounts you will / may need:
+* [Heroku Account](http://heroku.com)(if launching on Heroku)
+* [GitHub Account](http://github.com) - Not needed to launch via Heroku.
+* [PCO Admin access / API Tokens.]((https://api.planningcenteronline.com)
+* [Slack account and API Token](https://my.slack.com/services/new/bot)
+* redis add-on from [Elements](https://elements.heroku.com/addons). *see Heroku install instructions for details.
+
+
 ### Usage
 
 All commands are restricted by planning center App access. 
@@ -42,11 +50,24 @@ This isn't really used in the pcobot but it is used for Will bot commands
 
 To change the access control list, see configuration instructions below and this [enhancement](https://github.com/pastorhudson/pcobot/issues/17)
 
-## Installation
-----------------------------------
-### Prepare API Tokens and Environment Variables
+### Before You Install
 
-Make a list of your environment variables. 
+1. Create a #bot and # general channel.
+
+2. Verify Slack account(s) Profile Names
+  *Slack accounts should match name / email of your PCO users accounts.* 
+  
+3. Create a Slack Bot and [generate an API Token](https://my.slack.com/services/new/bot)
+	*Keep this Token handy, you'll need it when installing your app.
+	
+4. Create API Keys for PCO
+	To Create an PCO API Key, [log on here.](https://api.planningcenteronline.com)
+	Click on *‘Create Personal Access Token’*
+	Create a Name for the Token, i.e. PCO Slack Bot, etc.
+	*Keep these tokens handy; you will need the PCO API Token and Secret key for your environment variables.
+	
+4. Make a list of your environment variables listed below.
+
   
 #### All Installs  
 | Env Var      		       | Value   										| Example    |   
@@ -65,6 +86,10 @@ Make a list of your environment variables.
 
   
  **Note:** The user who owns the PCO Personal Access Key must have permissions to access to all the apps you want the bot to access. You'll also need to ensure that your church has signed up to the People app. (It's free with any other app!) You can use the Personal access key from one of your PCO [Organization Administrators](https://pcoaccounts.zendesk.com/hc/en-us/articles/204462420-Organization-Administrators-Billing-Managers), or you may even choose to create a dedicated user just for this bot.
+
+## Installation
+----------------------------------
+
 
 ### Install on Heroku
 Click the button!
