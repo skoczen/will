@@ -89,6 +89,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                     handle=bot['name'],
                     source=event
                 )
+
+                event["text"] = event["attachments"][0]["fallback"]
             else:
                 sender = self.people[event["user"]]
 
