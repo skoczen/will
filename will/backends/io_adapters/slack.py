@@ -55,7 +55,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             ("subtype" not in event or event["subtype"] != "message_changed") and
             # Ignore thread summary events (for now.)
             # TODO: We should stack these into the history.
-            ("subtype" not in event or ("message" in event and "thread_ts" not in event["message"]))
+            ("subtype" not in event or ("message" in event and "thread_ts" not in event["message"]) or event["subtype"] == "bot_message")
         ):
             # print("slack: normalize_incoming_event - %s" % event)
             # Sample of group message
@@ -79,7 +79,21 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             # u'type': u'message', u'bot_id': u'B5HL9ABFE'},
             # u'type': u'message', u'hidden': True, u'channel': u'D5HGP0YE7'}
 
-            sender = self.people[event["user"]]
+            if event.get("subtype") == "bot_message":
+                bot = self.get_bot(event["bot_id"])
+
+                sender = Person(
+                    id=event["bot_id"],
+                    mention_handle="<@%s>" % event["bot_id"],
+                    name=bot['name'],
+                    handle=bot['name'],
+                    source=event
+                )
+
+                event["text"] = event["attachments"][0]["fallback"]
+            else:
+                sender = self.people[event["user"]]
+
             channel = clean_for_pickling(self.channels[event["channel"]])
             # print "channel: %s" % channel
             interpolated_handle = "<@%s>" % self.me.id
@@ -114,7 +128,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             if interpolated_handle in event["text"] or real_handle in event["text"]:
                 will_is_mentioned = True
 
-            if event["user"] == self.me.id:
+            if event.get("user") == self.me.id:
                 will_said_it = True
 
             m = Message(
@@ -372,6 +386,33 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             "channels.join",
             channel=channel_id,
         )
+
+    def get_bot(self, bot_id):
+        # Uses the bots.info Slack method to retrieve info on a bot by ID,
+        # and saves it locally on self._bots. If the bot is already saved,
+        # we return the saved copy.
+        bot = None
+
+        if not hasattr(self, '_bots'):
+            self._bots = {}
+
+        if bot_id in self._bots:
+            bot = self._bots[bot_id]
+        else:
+            bot_api_data = self.client.api_call("bots.info", bot=bot_id)
+
+            if bot_api_data['ok']:
+                self._bots[bot_id] = {
+                    'name': bot_api_data['bot']['name'],
+                    'app_id': bot_api_data['bot']['app_id'],
+                    'id': bot_api_data['bot']['id']
+                }
+
+                bot = self._bots[bot_id]
+            else:
+                logging.error("Failed to find bot with id: {0}".format(bot_id))
+
+        return bot
 
     @property
     def people(self):

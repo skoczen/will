@@ -37,7 +37,7 @@ for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
 
 tests_require = [
     'pytest==2.8.3',
-    'pytest-cov',
+    'pytest-cov==2.5.1',
     'pytest-runner',
     'mock'
 ]
