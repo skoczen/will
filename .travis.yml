@@ -1,12 +1,6 @@
 language: python
 python:
   - "3.6"
-# Enable 3.7 without globally enabling sudo and dist: xenial for other build jobs
-  matrix:
-    include:
-    - python: 3.7
-      dist: xenial
-      sudo: true
 sudo: false
 services:
     - docker
@@ -15,16 +9,8 @@ before_install:
   - sudo apt-get install -y libffi-dev libxml2-dev
 install:
 - pip install -U tox
-#- pip install codev
 - pip install -r will/requirements/dev.txt
 script:
 - tox
-# - "fab docker_build"
-# deploy:
-#   skip_cleanup: true
-#   provider: script
-#   script: "fab docker_deploy"
-#   on:
-#     branch: master
 env:
   matrix:
