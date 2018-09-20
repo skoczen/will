@@ -13,7 +13,7 @@ class PublicHelpPlugin(WillPlugin):
 
 class HelpPlugin(WillPlugin):
 
-    @respond_to("^help(?: (?P<plugin>.*))?$")
+    @respond_to("help(?: (?P<plugin>.*))?$")
     def help(self, message, plugin=None):
         """help: the normal help you're reading."""
         # help_data = self.load("help_files")
