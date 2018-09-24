@@ -50,4 +50,3 @@ class PcoWebhook(WillPlugin):
             self.save('announcement_channel', 'announcements')
             channel = 'announcements'
         return channel
-
