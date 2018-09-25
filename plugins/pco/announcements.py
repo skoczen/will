@@ -8,7 +8,7 @@ class ScheduledAnnounce(WillPlugin):
     # @hear("announce birthdays")
     # @periodic(hour='14', minute='10')  # at a certain time
     @periodic(hour='07', minute='50')  # at a certain time
-    def announce_birthdays(self, channel='announcements'):
+    def announce_birthdays(self):
         birthday.announce_todays_birthdays(self, channel=self.announcement_channel())
 
     # @periodic(hour='14', minute='10')  # at a certain time
@@ -22,8 +22,32 @@ class ScheduledAnnounce(WillPlugin):
         self.say("This channel's name is %s" % self.message.data.channel.name, channel=self.announcement_channel())
         self.say("This channel's id is %s" % self.message.data.channel.id, channel=self.announcement_channel())
 
+    @hear("(!toggle)(?P<toggle>.*?(?=(?:\?)|$))", acl=["admins"])
+    def toggle_announcements(self, message, toggle):
+        """!toggle: Toggles what announcements will be sent. Use !toggle without an
+        announcement name to get a list of current toggles."""
+        toggle = toggle.strip(' ')
+        toggle = toggle.lower()
+        toggle = toggle.replace(" ", "_")
+        if self.load('announcement_toggles'):
+            announcement_toggles = self.load('announcement_toggles')
+            if toggle is '':
+                self.reply("", attachments=self.get_toggles())
+                return
+            elif toggle:
+                try:
+                    announcement_toggles[toggle] = not announcement_toggles[toggle]
+                    self.save('announcement_toggles', announcement_toggles)
+                    self.reply("", message=message, attachments=self.get_toggles())
+                except KeyError:
+                    self.reply("Sorry I need the fully toggle name. Like `!toggle birthdays`", attachments=self.get_toggles())
+        else:
+            self.initialize_announcement_toggles()
+
     @hear("(!achannel)(?P<new_channel>.*?(?=(?:\?)|$))", acl=["admins"])
     def set_announcement_channel(self, message, new_channel):
+        """!achannel: Sets the channel announcements will be sent to. `!achannel #channel`"""
+
         if new_channel:
             try:
                 new_channel = new_channel.split('|')[1]
@@ -64,3 +88,32 @@ class ScheduledAnnounce(WillPlugin):
             self.save('announcement_channel', 'announcements')
             channel = 'announcements'
         return channel
+
+    def initialize_announcement_toggles(self):
+        announcement_toggles = {'birthdays': True,
+                                'new_person_created': True}
+        self.save('announcement_toggles', announcement_toggles)
+        self.reply('Initilized Toggles!\n', attachments=self.get_toggles())
+        return announcement_toggles
+
+    # Testing function for wiping the announcement_toggles
+    @hear("(!twipe)", acl=["admins"])
+    def toggle_wipe(self, message):
+        if self.load("announcement_toggles"):
+            try:
+                self.clear("announcement_toggles")
+            except Exception as e:
+                self.reply("There isn't an announcement toggle list to clear.")
+            finally:
+                self.reply("Announcement Toggles Wiped!", message=message)
+
+    def get_toggles(self):
+        """Returns a string formated list of current announcement toggles"""
+        announcement_toggles = self.load('announcement_toggles')
+        toggle_msg = "\nCurrent Announcement Toggles:\n"
+        for toggle, value in announcement_toggles.items():
+            toggle_msg += ": ".join([toggle.replace("_", " ").title(),
+                                     str(value).replace('False', 'Off').replace('True', 'On') + "\n"])
+        toggle_attachment = msg_attachment.SlackAttachment(fallback=toggle_msg,
+                                                           text=toggle_msg)
+        return toggle_attachment.slack()
