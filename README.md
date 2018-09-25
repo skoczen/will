@@ -96,14 +96,6 @@ Click the button!
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-Or Manual Heroku Install 
-1. Fork this repository.
-2. Get a Heroku account.
-3. Add a redis add-on from [Elements](https://elements.heroku.com/addons). (e.g. Redis Cloud will work automatically) Note: You will need to verify your account with a credit card even to install a free add-on.
-4. Enter your config/environment variables on the settings page of your app. (http://<i></i>dashboard.heroku.com/apps/**your_app**/settings) 
-5. Choose github as your deployment method in heroku and connect to your fork of pcobot.
-6. Deploy the master branch.
-
 ### Install on Linux 
 *(example code assumes Debian - including Ubuntu, Mint, KNOPPIX, Raspbian)*
 
@@ -129,19 +121,30 @@ http://skoczen.github.io/will/
 
 ### Slack Channels
 
-Invite your bot to the #bot and #general channels, and any other channels you'd like. Make sure it has permissions to post. If a channel is restricted to Workspace Owners and Workspace Admins, the bot will not be able to post.
-
-#### #bot 
-This channel is where webhook announcements will be posted. It can be changed by editing the relevant environment variable. Example webhooks:
-
-	####.herokuapp.com/ping    			"Someone pinged me!"
-	####.herokuapp.com/say/Cogito Ergo Sum  	"Cogito Ergo Sum"
+Invite your bot to the #announcements and #general channels, and any other channels you'd like. Make sure it has permissions to post. If a channel is restricted to Workspace Owners and Workspace Admins, the bot will not be able to post.
 
 #### #announcements 
 This channel is where scheduled announcements will be posted. You can change this using the !achannel command. 
 * ```!achannel``` Responds with the current announcement channel
 * ```!achannel [any channel]``` Sets the announcement channel for all announcements.
 You'll need to invite the bot to any channel you want it to post.
+
+* ```!toggle``` Responds with a list of the current announcement toggles.
+* ```!toggle <announcement name>``` Turns announcements on and off.
+
+#### WebHooks
+Some announcements like "New Person Created" need to have Planning Center webhooks configured.
+
+Current webhooks PCObot will need:
+* people.v2.events.person.created (Needed for "New Person Created Announcement")
+
+##### Create the webhook:
+* [Open PCO Webhooks](https://api.planningcenteronline.com/webhooks#/)
+* Click "Add" button
+* Check the box(es) for the webhooks you want to enable from the list above
+* In the URL box put your heroku url ```https://<your-app-name>.herokuapp.com/pco/webhook``` 
+* Click Subscribe
+* Use the !toggle command to turn on any announcements you would like to use.
 
 ### Bot Admins
 Most user permissions are inherited directly from Planning Center Online.  However, a *very* limited number of commands are limited to people in the pcobot *botadmin* group. 
