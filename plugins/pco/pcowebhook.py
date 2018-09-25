@@ -1,6 +1,6 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from plugins.pco import birthday, address, phone_numbers, checkins, msg_attachment, authenticate, pcoservices
+from plugins.pco import msg_attachment, announcements
 import logging
 import json
 
@@ -32,7 +32,7 @@ class PcoWebhook(WillPlugin):
             self.person_created(payload)
 
     def person_created(self, data):
-        if self.announcement_is_enabled("new_person_created"):
+        if announcements.announcement_is_enabled(self, announcement='new_person_created'):
             logging.info('Pco Person Created Webhook Triggered')
             pcoaddress = "https://people.planningcenteronline.com/people/" + data['id']
             attachment = msg_attachment.SlackAttachment("Lets all welcome %s!" % data['attributes']['name'],
@@ -42,24 +42,4 @@ class PcoWebhook(WillPlugin):
                                                         button_text="Open in People",
                                                         button_url=pcoaddress)
             logging.info(attachment.slack())
-            self.say("", channel=self.announcement_channel(), attachments=attachment.slack())
-
-    def announcement_channel(self):
-        """Used for retrieving the current announcement channel"""
-        if self.load('announcement_channel'):
-            channel = self.load('announcement_channel')
-        else:
-            self.save('announcement_channel', 'announcements')
-            channel = 'announcements'
-        return channel
-
-    def announcement_is_enabled(self, announcement):
-        if self.load('announcement_toggles'):
-            announcement_toggles = self.load('announcement_toggles')
-            is_enabled = True
-            try:
-                is_enabled = announcement_toggles[announcement]
-            except KeyError:
-                logging.info("Couldn't find this announcement toggle so letting it pass.")
-        else:
-            self.initialize_announcement_toggles()
+            self.say("", channel=announcements.announcement_channel(self), attachments=attachment.slack())
