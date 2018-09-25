@@ -36,7 +36,7 @@ class ScheduledAnnounce(WillPlugin):
         if self.load('announcement_toggles'):
             announcement_toggles = self.load('announcement_toggles')
             if toggle is '':
-                self.reply("", attachments=announcements.get_toggles(announcements))
+                self.reply("", attachments=announcements.get_toggles(self))
                 return
             elif toggle:
                 try:
