@@ -24,7 +24,7 @@ class ScheduledAnnounce(WillPlugin):
 
     @hear("(!toggle)(?P<toggle>.*?(?=(?:\?)|$))", acl=["admins"])
     def toggle_announcements(self, message, toggle):
-        """Toggles what announcements will be sent"""
+        """!toggle Toggles what announcements will be sent `!toggle announcement`"""
         toggle = toggle.strip(' ')
         toggle = toggle.lower()
         toggle = toggle.replace(" ", "_")
@@ -45,7 +45,7 @@ class ScheduledAnnounce(WillPlugin):
 
     @hear("(!achannel)(?P<new_channel>.*?(?=(?:\?)|$))", acl=["admins"])
     def set_announcement_channel(self, message, new_channel):
-        """Sets the channel announcements will be sent to."""
+        """!achannel Sets the channel announcements will be sent to. `!achannel #channel`"""
 
         if new_channel:
             try:
