@@ -28,7 +28,7 @@ self.say(content, channel=None, html=False, color="green", notify=False)
 - **`html`**: if the message is HTML. `True` or `False`.
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green". 
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
-
+- **`attachments`**: A json formated slack attachment. You can build these using the slack_msg_attachment mixin.
 ## Reply with a mention
 
 Sometimes you want will to ping you - that's where @name mentions are great.  To do those in will, you'll want to use `self.reply()`
@@ -51,7 +51,7 @@ self.reply(content, html=False, color="green", notify=False, start_thread=False)
 - **`color`**: (chat room only) the hipchat color to send. "yellow", "red", "green", "purple", "gray", or "random". Default is "green".
 - **`notify`**: whether the message should trigger a 'ping' notification. `True` or `False`.
 - **`start_thread`**: whether Will should start a new thread, if the backend supports it.
-
+- **`attachments`**: A json formated slack attachment. You can build these using the slack_msg_attachment mixin.
 
 
 ## Talk to the room from a webhook
