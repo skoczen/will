@@ -28,7 +28,7 @@ def initialize_announcement_toggles(will):
     announcement_toggles = {'birthdays': True,
                             'new_person_created': True}
     will.save('announcement_toggles', announcement_toggles)
-    will.reply('Initilized Toggles!\n', attachments=will.get_toggles())
+    will.reply('Initilized Toggles!\n', attachments=get_toggles(will))
     return announcement_toggles
 
 
