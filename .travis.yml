@@ -24,5 +24,5 @@ matrix:
     - python: 3.6
       env: TOXENV=py36
     - python: 3.7
-      sudo: true
+      sudo: required
       env: TOXENV=py37
