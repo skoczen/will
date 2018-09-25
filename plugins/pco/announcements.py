@@ -56,4 +56,3 @@ def announcement_is_enabled(will, announcement):
         will.initialize_announcement_toggles()
 
     return is_enabled
-
