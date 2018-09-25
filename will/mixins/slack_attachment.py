@@ -97,7 +97,7 @@ class SlackAttachment:
 
 
 if __name__ == '__main__':
-    """Here's a demo of how to use the slack attachment. First create your attachment object. 
+    """Here's a demo of how to use the slack attachment. First create your attachment object.
     You can fill all the data at initilization."""
     demo_attachment = SlackAttachment(
         fallback="This is incase webcontent doesn't load. Here's the sample content!",
@@ -125,4 +125,3 @@ if __name__ == '__main__':
     for a in attachments:
         demo2_attachment += str(a.slack())
     print("Here's multiple attachments ready to send:\n %s" % demo2_attachment)
-
