@@ -32,15 +32,17 @@ class PcoWebhook(WillPlugin):
             self.person_created(payload)
 
     def person_created(self, data):
-        logging.info('Pco Person Created Webhook Triggered')
-        pcoaddress = "https://people.planningcenteronline.com/people/" + data['id']
-        attachment = msg_attachment.SlackAttachment("Lets all welcome %s!" % data['attributes']['name'],
-                                                    text="New Person added to Planning Center!\nLets all welcome %s!" %
-                                                         data['attributes']['name'],
-                                                    button_text="Open in People",
-                                                    button_url=pcoaddress)
-        logging.info(attachment.slack())
-        self.say("", channel=self.announcement_channel(), attachments=attachment.slack())
+        if self.announcement_is_enabled("new_person_created"):
+            logging.info('Pco Person Created Webhook Triggered')
+            pcoaddress = "https://people.planningcenteronline.com/people/" + data['id']
+            attachment = msg_attachment.SlackAttachment("Lets all welcome %s!" % data['attributes']['name'],
+                                                        text="New Person added to Planning Center!\n"
+                                                             "Lets all welcome %s!" %
+                                                             data['attributes']['name'],
+                                                        button_text="Open in People",
+                                                        button_url=pcoaddress)
+            logging.info(attachment.slack())
+            self.say("", channel=self.announcement_channel(), attachments=attachment.slack())
 
     def announcement_channel(self):
         """Used for retrieving the current announcement channel"""
@@ -50,3 +52,14 @@ class PcoWebhook(WillPlugin):
             self.save('announcement_channel', 'announcements')
             channel = 'announcements'
         return channel
+
+    def announcement_is_enabled(self, announcement):
+        if self.load('announcement_toggles'):
+            announcement_toggles = self.load('announcement_toggles')
+            is_enabled = True
+            try:
+                is_enabled = announcement_toggles[announcement]
+            except KeyError:
+                logging.info("Couldn't find this announcement toggle so letting it pass.")
+        else:
+            self.initialize_announcement_toggles()
