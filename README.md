@@ -125,12 +125,12 @@ Invite your bot to the #announcements and #general channels, and any other chann
 
 #### #announcements 
 This channel is where scheduled announcements will be posted. You can change this using the !achannel command. 
-* ```!achannel``` Responds with the current announcement channel
-* ```!achannel [any channel]``` Sets the announcement channel for all announcements.
+* :lock:```!achannel``` Responds with the current announcement channel
+* :lock:```!achannel [any channel]``` Sets the announcement channel for all announcements.
 You'll need to invite the bot to any channel you want it to post.
 
-* ```!toggle``` Responds with a list of the current announcement toggles.
-* ```!toggle <announcement name>``` Turns announcements on and off.
+* :lock:```!toggle``` Responds with a list of the current announcement toggles.
+* :lock:```!toggle <announcement name>``` Turns announcements on and off.
 
 #### WebHooks
 Some announcements like "New Person Created" need to have Planning Center webhooks configured.
