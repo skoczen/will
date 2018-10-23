@@ -297,6 +297,9 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         return data
 
     def send_message(self, event):
+        if event.content == '' or event.content is None:
+            # slack errors with no_text if empty message
+            return
         data = {}
         if hasattr(event, "kwargs"):
             data.update(event.kwargs)
