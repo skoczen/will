@@ -1,0 +1,21 @@
+version: "2.0"
+
+services:
+    pcobot-redis:
+        image: redis:alpine
+        volumes:
+            - ./data/redis:/data
+    pcobot:
+        image: pastorhudson/pcobot:base
+        ports:
+            - 4000:4000
+        env_file:
+            - default.env
+        volumes:
+            - ../plugins:/opt/plugins
+            - ../will/templates:/opt/will/templates
+            - ../will/plugins:/opt/will/plugins
+            - ../config.py:/opt/will/config.py
+        depends_on:
+            - pcobot-redis
+            
