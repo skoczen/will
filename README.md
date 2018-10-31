@@ -1,4 +1,18 @@
 [![Build Status](https://travis-ci.org/pastorhudson/pcobot.svg?branch=master)](https://travis-ci.org/pastorhudson/pcobot)
+
+# Welcome to PCO-BOT Hackathon!
+### Setup your Dev environment:
+* If you don't have docker installed [install it here](https://store.docker.com/search?offering=community&type=edition)
+* If you're on linux `sudo apt-get install docker-ce docker-compose` should work.
+* Clone the repository `git clone https://github.com/pastorhudson/pcobot`
+* Edit the default.env file in the `pcobot/docker-dev` folder.
+* From command line run `docker-compose up` to start pcobot!
+* It will run all the code from your local repository
+* [Join us on Slack](https://join.slack.com/t/pcobot/shared_invite/enQtNDY4MDUxNTI2Mjc5LTk4MzAxYTAyNzRkYzhkMDM2NGQ5YzU2OTdkNWU1MTMwMjc1OTFhNzY0Y2MxMDQ0NzljZmUzZGU5YmI3MzE3M2M)
+
+
+
+
 # PCO Bot:
 PCO Bot is a bot that integrates with the Planning Center Online API.
 
