@@ -6,7 +6,7 @@ services:
         volumes:
             - ./data/redis:/data
     pcobot:
-        image: pastorhudson/pcobot:base
+        image: pastorhudson/pcobot:dev
         ports:
             - 4000:4000
         env_file:
@@ -15,7 +15,7 @@ services:
             - ../plugins:/opt/plugins
             - ../will/templates:/opt/will/templates
             - ../will/plugins:/opt/will/plugins
-            - ../config.py:/opt/will/config.py
+            - ./config.py:/opt/will/config.py
         depends_on:
             - pcobot-redis
             
