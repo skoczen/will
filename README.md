@@ -9,7 +9,8 @@
 * From command line run `docker-compose up` to start pcobot!
 * It will run all the code from your local repository
 * [Join us on Slack](https://join.slack.com/t/pcobot/shared_invite/enQtNDY4MDUxNTI2Mjc5LTk4MzAxYTAyNzRkYzhkMDM2NGQ5YzU2OTdkNWU1MTMwMjc1OTFhNzY0Y2MxMDQ0NzljZmUzZGU5YmI3MzE3M2M)
-
+* Please make all pull requests on the Dev Branch.
+* All pull requests are required to pass PEP8 and Travis CI
 
 
 
