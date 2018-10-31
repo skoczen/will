@@ -12,7 +12,7 @@ services:
         env_file:
             - default.env
         volumes:
-            - ../plugins:/opt/plugins
+            - ../plugins/pco:/opt/will/plugins/pco
             - ../will/templates:/opt/will/templates
             - ../will/plugins:/opt/will/plugins
             - ./config.py:/opt/will/config.py
