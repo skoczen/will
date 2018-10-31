@@ -1,0 +1,242 @@
+# Welcome to Will's settings.
+#
+
+# Config and the environment:
+# ---------------------------
+# Will can use settings from the environment or this file, and sets reasonable defaults.
+#
+# Best practices: set keys and the like in the environment, and anything you'd be ok
+# with other people knowing in this file.
+#
+# To specify in the environment, just prefix with WILL_
+# (i.e. WILL_DEFAULT_ROOM becomes DEFAULT_ROOM).
+# In case of conflict, you will see a warning message, and the value in this file will win.
+
+# ------------------------------------------------------------------------------------
+# Required settings
+# ------------------------------------------------------------------------------------
+
+# The list of plugin modules will should load.
+# Will recursively loads all plugins contained in each module.
+
+
+# This list can contain:
+#
+# Built-in core plugins:
+# ----------------------
+# All built-in modules:     will.plugins
+# Built-in modules:         will.plugins.module_name
+# Specific plugins:         will.plugins.module_name.plugin
+#
+# Plugins in your will:
+# ----------------------
+# All modules:              plugins
+# A specific module:        plugins.module_name
+# Specific plugins:         plugins.module_name.plugin
+#
+# Plugins anywhere else on your PYTHONPATH:
+# -----------------------------------------
+# All modules:              someapp
+# A specific module:        someapp.module_name
+# Specific plugins:         someapp.module_name.plugin
+
+
+# By default, the list below includes all the core will plugins and
+# all your project's plugins.
+
+PLUGINS = [
+    # Built-ins
+    "will.plugins.admin",
+    # "will.plugins.chat_room",
+    # "will.plugins.devops",
+    "will.plugins.friendly",
+    # "will.plugins.fun",
+    "will.plugins.help",
+    # "will.plugins.productivity",
+    # "will.plugins.web",
+
+    # All plugins in your project.
+    "plugins",
+]
+
+# Don't load any of the plugins in this list.  Same options as above.
+PLUGIN_BLACKLIST = [
+    "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
+    "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
+    "will.plugins.devops.bitbucket_is_up",   # Because most folks use github.
+    "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
+]
+
+# A secret key, used to namespace this instance of will and secure pubsub contents.
+# Do *NOT* keep it in config.py.  *DO* set it in the environment as WILL_SECRET_KEY,
+# in a secured session. If a SECRET_KEY is not set, one will be auto-generated,
+# but it may limit Will to reading data from this excecution only, and may not work
+# on virtualized machines, or machines with many or changing MAC addresses
+# SECRET_KEY = "DXQnJ2eHD6k2w3DvBTstN6kw9d9N4CeCLbjoK"
+
+# ------------------------------------------------------------------------------------
+# Platform and Decision-making
+# ------------------------------------------------------------------------------------
+
+# Platforms and mediums messages can come in and go out on.
+IO_BACKENDS = [
+    "will.backends.io_adapters.slack",
+    # "will.backends.io_adapters.hipchat",
+    # "will.backends.io_adapters.rocketchat",
+    # "will.backends.io_adapters.shell",
+]
+
+# Backends to analyze messages and generate useful metadata
+ANALYZE_BACKENDS = [
+    "will.backends.analysis.nothing",
+    "will.backends.analysis.history",
+]
+
+# Backends to generate possible actions, and metadata about them.
+GENERATION_BACKENDS = [
+    # "will.backends.generation.fuzzy_best_match",
+    "will.backends.generation.fuzzy_all_matches",
+    "will.backends.generation.strict_regex",
+]
+
+# The "decision making" backends that look among the generated choices,
+# and decide which to follow. Backends are executed in order, and any
+# backend can stop further evaluation.
+EXECUTION_BACKENDS = [
+    "will.backends.execution.best_score",
+    # "will.backends.execution.all",
+]
+
+# ------------------------------------------------------------------------------------
+# Backend-specific settings
+# ------------------------------------------------------------------------------------
+
+# Confidence fuzzy generation backends require before Will responds
+# https://pypi.python.org/pypi/fuzzywuzzy
+FUZZY_MINIMUM_MATCH_CONFIDENCE = 91
+FUZZY_REGEX_ALLOWABLE_ERRORS = 3
+
+
+# ------------------------------------------------------------------------------------
+# Slack settings
+# ------------------------------------------------------------------------------------
+# SLACK_DEFAULT_CHANNEL = "alpha"
+
+# ------------------------------------------------------------------------------------
+# Rocket.chat settings
+# ------------------------------------------------------------------------------------
+
+# Rocket.Chat server URL and port as necessary
+# ROCKETCHAT_URL = "http://localhost:3000"
+
+
+# ------------------------------------------------------------------------------------
+# HipChat settings
+# ------------------------------------------------------------------------------------
+
+# The list of rooms will should join.  Default is all rooms.
+# HIPCHAT_ROOMS = ['Will Testing', 'Will and I']
+
+# Disable HipChat SSL checks.  Strongly reccomended this is not set to True.
+# ALLOW_INSECURE_HIPCHAT_SERVER = False
+
+
+# ------------------------------------------------------------------------------------
+# Potentially required settings
+# ------------------------------------------------------------------------------------
+
+# If will isn't accessible at localhost, you must set this for his keepalive to work.
+# Note no trailing slash.
+# PUBLIC_URL = "http://my-will.herokuapp.com"
+
+# The backend and room Will should talk to if the trigger is a webhook and he isn't told
+# a specific room.  Default is the first of IO_BACKENDS and ROOMS.
+# DEFAULT_BACKEND = "will.backends.io_adapters.slack"
+# DEFAULT_ROOM = 'Notifications'
+
+# Port to bind the web server to (defaults to $PORT, then 80.)
+# Set > 1024 to run without elevated permission.
+# HTTPSERVER_PORT = "9000"
+
+# Fully-qualified folders to look for templates in, beyond the two that
+# are always included: core will's templates folder, your project's templates folder, and
+# all templates folders in included plugins, if they exist.
+#
+# TEMPLATE_DIRS = [
+#   os.path.abspath("other_folder/templates")
+# ]
+
+
+# Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
+# in respond_to and hear actions.
+# Group names can be any string, and the list is composed of user handles.
+ACL = {
+    "admins": [""],
+}
+#
+# By default, if no ACL is set, all users can perform all actions - but warnings
+# will be printed to the console.  To disable those warnings, set DISABLE_ACL to True
+# DISABLE_ACL = False
+
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# STORAGE_BACKEND = "redis"  # "redis", "couchbase", or "file".
+
+
+# Sets a different storage backend.  If unset, defaults to redis.
+# If you use a different backend, make sure to add their required settings.
+# PUBSUB_BACKEND = "redis"  # "redis", or "zeromq" (beta).
+# ZEROMQ_URL = "tcp://127.0.0.1:15555"
+
+
+# Your will's mention handle. (aka @will)  Note that this is not backend-specific,
+# and is only used for the generation of help text.
+# WILL_HANDLE = "will"
+
+
+# ------------------------------------------------------------------------------------
+# Optional settings
+# ------------------------------------------------------------------------------------
+
+# The maximum number of milliseconds to wait for an analysis backend to finish
+# ANALYSIS_TIMEOUT_MS = 2000
+
+# The maximum number of milliseconds to wait for a generation backend to finish
+# GENERATION_TIMEOUT_MS = 2000
+
+# The interval will checks his internal cross-thread messaging queues, in seconds.
+# Increasing the value will make will slower, but consume fewer resources.
+# EVENT_LOOP_INTERVAL = 0.025
+
+# Turn up or down Will's logging level
+# LOGLEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+# LOGLEVEL = "DEBUG"
+
+# Turn on or off Will's profiling
+# PROFILING_ENABLED = False
+
+# Turn on/off encryption in pub/sub and storage (default is on).
+# Causes a small speed bump, but secures messages in an untrusted environment.
+# ENABLE_INTERNAL_ENCRYPTION = True
+# ENCRYPTION_BACKEND = "aes"
+
+# Mailgun config, if you'd like will to send emails.
+# DEFAULT_FROM_EMAIL="will@example.com"
+# Set in your environment:
+# export WILL_MAILGUN_API_KEY="key-12398912329381"
+# export WILL_MAILGUN_API_URL="example.com"
+
+
+# Proxy settings
+# Use proxy to access hipchat servers
+# Make sure your proxy allows CONNECT method to port 5222
+# PROXY_URL = "http://user:pass@corpproxy.example.com:3128"
+# or
+# PROXY_URL = "http://myproxy:80
+
+# Google Application key for "image me" command
+# GOOGLE_API_KEY = "FILL THIS IN"
+# GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "FILL THIS IN"
+
+# Internal, used for helpful output when upgrades are installed
+WILL_RELEASE_VERSION = 2.0

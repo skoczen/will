@@ -7,4 +7,4 @@ This allows all testing to be done in the same environment as production.
 
 If you want to change things in the config just make the changes in config.py.
 
-This container is built of the master github branch.
+This container is built of the dev github branch.
