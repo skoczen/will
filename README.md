@@ -4,7 +4,8 @@
 ### Setup your Dev environment:
 * If you don't have docker installed [install it here](https://store.docker.com/search?offering=community&type=edition)
 * If you're on linux `sudo apt-get install docker-ce docker-compose` should work.
-* Clone the repository `git clone https://github.com/pastorhudson/pcobot`
+* Fork this repository.
+* Clone your repository to your local computer
 * Edit the default.env file in the `pcobot/docker-dev` folder.
 * From command line run `docker-compose up` to start pcobot!
 * It will run all the code from your local repository
