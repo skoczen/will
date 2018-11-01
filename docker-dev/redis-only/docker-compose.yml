@@ -1,0 +1,9 @@
+version: "2.0"
+
+services:
+    redis-dev-pcobot:
+        image: redis:alpine
+        ports:
+            - 6379:6379
+        volumes:
+            - ./data/redis:/data
