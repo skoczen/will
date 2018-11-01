@@ -107,10 +107,16 @@ def wl_chan_id(will):
         else:
             channel = will.message.data.channel.id
     except TypeError:
+        msg = ""
+        if will.message.data.channel.id.startswith("DB"):
+            msg = 'Whitelist Initialized'
+        else:
+            print("Test")
+            msg = 'Whitelist Initialized\nThe "%s" channel is not whitelisted. So I sent it as a direct message.' \
+                  % will.message.data.channel.name.title()
         channel = will.message.data.sender.id
         whitelist_init(will)
-        will.reply('Whitelist Initialized\nThe "%s" channel is not whitelisted. So I sent it as a direct message.'
-                   % will.message.data.channel.name.title())
+        will.reply(msg)
     finally:
         return channel
 
