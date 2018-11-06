@@ -19,10 +19,10 @@ pyasn1==0.1.7
 pycrypto==2.6.1
 pygerduty==0.28
 pytz==2017.2
-PyYAML==3.10
+PyYAML==3.13
 regex==2017.9.23
 redis==2.10.6
 requests==2.18.4
 six==1.10.0
-urllib3[secure]
+urllib3
 websocket-client==0.44.0
