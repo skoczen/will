@@ -29,6 +29,15 @@ class SlackMarkdownConverter(MarkdownConverter):
     def convert_strong(self, el, text):
         return '*%s*' % text if text else ''
 
+    def convert_a(self, el, text):
+        href = el.get('href')
+        title = el.get('title')
+        if self.options['autolinks'] and text == href and not title:
+            # Shortcut syntax
+            return '<%s>' % href
+        title_part = ' "%s"' % title.replace('"', r'\"') if title else ''
+        return '<%s%s|%s>' % (href, title_part, text or '') if href else text or ''
+
 
 class SlackBackend(IOBackend, SleepMixin, StorageMixin):
     friendly_name = "Slack"
