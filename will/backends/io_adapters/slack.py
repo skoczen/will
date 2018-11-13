@@ -353,7 +353,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         })
         if hasattr(event, "kwargs") and "html" in event.kwargs and event.kwargs["html"]:
             data.update({
-                "parse": "full",
+                "parse": "none",
             })
 
         headers = {'Accept': 'text/plain'}
