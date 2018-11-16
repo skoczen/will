@@ -1,7 +1,8 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from plugins.pco import birthday, address, phone_numbers, checkins, emails, msg_attachment, authenticate
+from plugins.pco import birthday, address, phone_numbers, checkins, emails, msg_attachment, authenticate, forms
 from will.mixins.slackwhitelist import wl_chan_id
+import logging
 
 # You need to put your Personal access token application key and secret in your environment variables.
 # Get a Personal Access Key: https://api.planningcenteronline.com/oauth/applications
@@ -91,6 +92,7 @@ class PcoPeoplePlugin(WillPlugin):
             self.say('I could not authenticate you. Please make sure your "Full name" '
                      'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
+    @hear("(!email)(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
     @respond_to("(?:do you |find |got |a |need to |can somebody )?(email for |!email |email )"
                 "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
     def pco_email_lookup(self, message, pco_name):
@@ -107,6 +109,33 @@ class PcoPeoplePlugin(WillPlugin):
                                                                 button_text="Search People",
                                                                 button_url="https://people.planningcenteronline.com/"
                                                                            "people?q=" + pco_name.replace(" ", "%20"))
+                    print(attachment.slack())
+                    self.say("", message=message, attachments=attachment.slack(), channel=wl_chan_id(self))
+                else:
+                    self.say("Here you go!", message=message, attachments=attachment, channel=wl_chan_id(self))
+            else:
+                self.say("Sorry but you don't have access to the People App. "
+                         "Please contact your administrator.", channel=wl_chan_id(self))
+        else:
+            self.say('I could not authenticate you. Please make sure your "Full name" '
+                     'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
+
+    @hear("(!forms)")
+    def pco_forms(self, message):
+        """!forms lists the forms available on people"""
+        if authenticate.check_name(message):
+            if authenticate.get(message, app):
+                self.reply("Looking up forms. . .")
+                logging.info("looking up forms")
+                attachment = []
+                for x in forms.get_forms():
+                    logging.info(x.slack())
+                    attachment += x.slack()
+                if not attachment:
+                    attachment = msg_attachment.SlackAttachment(text="Sorry I couldn't find any forms",
+                                                                button_text="Search People",
+                                                                button_url="https://people.planningcenteronline.com/"
+                                                                           "people/forms")
                     print(attachment.slack())
                     self.say("", message=message, attachments=attachment.slack(), channel=wl_chan_id(self))
                 else:
