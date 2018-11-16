@@ -1,5 +1,6 @@
 # Whitelist allows you to configure a list of channels that are whitelisted.
 # Use this to control what commands are allowed to run in a channel
+import logging
 
 
 # Initilizes a whitelist if none exists
@@ -14,7 +15,7 @@ def whitelist_list(will):
     try:
         white_list = whitelist_clean(will)
     except TypeError:
-        print("No whitelist to list, we'll make an empty one.")
+        logging.info("No whitelist to list, we'll make an empty one.")
         whitelist_init(will)
         white_list = []
     finally:
@@ -34,7 +35,7 @@ def whitelist_clean(will):
     white_list = will.load("whitelist")
     white_list = list(set(white_list))
     for entry in white_list:
-        if entry.startswith('DB'):
+        if entry.startswith('D'):
             white_list.remove(entry)
     will.save("whitelist", white_list)
     return white_list
@@ -60,7 +61,7 @@ def whitelist_remove(will, channel_name=None):
             will.save("whitelist", white_list)
             will.reply('"%s" channel(s) removed from the whitelist.' % channel_name)
     except Exception as e:
-        print(type(e))
+        logging.info(type(e))
     return
 
 
@@ -88,7 +89,7 @@ def whitelist_add(will, channel_name=None):
                 will.save("whitelist", white_list)
                 will.reply('"%s" channel(s) added to the whitelist.' % channel_name)
     except Exception as e:
-        print(type(e))
+        logging.info(type(e))
     return
 
 
@@ -99,8 +100,7 @@ def wl_chan_id(will):
     channel = ""
     try:
         whitelist = will.load("whitelist")
-        if will.message.data.channel.id not in whitelist and not will.message.data.channel.id.startswith("DB"):
-            print(will.message.data.channel.id)
+        if will.message.data.channel.id not in whitelist and not will.message.data.channel.id.startswith("D"):
             will.reply('The "%s" channel is not whitelisted. So I sent it as a direct message.'
                        % will.message.data.channel.name.title())
             channel = will.message.data.sender.id
@@ -108,10 +108,9 @@ def wl_chan_id(will):
             channel = will.message.data.channel.id
     except TypeError:
         msg = ""
-        if will.message.data.channel.id.startswith("DB"):
+        if will.message.data.channel.id.startswith("D"):
             msg = 'Whitelist Initialized'
         else:
-            print("Test")
             msg = 'Whitelist Initialized\nThe "%s" channel is not whitelisted. So I sent it as a direct message.' \
                   % will.message.data.channel.name.title()
         channel = will.message.data.sender.id
@@ -179,7 +178,7 @@ def whitelist_wipe(will):
     try:
         will.clear("whitelist")
     except Exception as e:
-        print("There isn't a whitelist to clear.")
+        logging.info("There isn't a whitelist to clear.")
         will.reply("There isn't a whitelist to clear.")
     finally:
         return
