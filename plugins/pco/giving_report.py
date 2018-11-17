@@ -46,6 +46,7 @@ def get_giving(report_date=None):
     for fund, amount in fund_totals.items():
         total_giving += amount
         msg += ": $".join([pco.giving.funds.get(fund).name, '{:,.2f}'.format(amount / 100)]) + "\n"
+    total_giving += fee_total
     if online_giving:
         msg += "\n".join(["Online Giving: %s%%" % '{:,.2f}'.format(online_giving / total_giving * 100),
                           "Fees: $%s" % '{:,.2f}'.format(fee_total / 100),
