@@ -120,7 +120,7 @@ class PcoPeoplePlugin(WillPlugin):
             self.say('I could not authenticate you. Please make sure your "Full name" '
                      'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
-    @hear("(!forms)")
+    @respond_to("(!forms.*?)")
     def pco_forms(self, message):
         """!forms lists the forms available on people"""
         if authenticate.check_name(message):
