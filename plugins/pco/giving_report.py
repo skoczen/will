@@ -21,6 +21,7 @@ def get_giving(report_date=None):
     fund_totals = {}
     online_giving = 0
     total_giving = 0
+    fee_total = 0
     cal = parsedatetime.Calendar()
     report_date, parse_status = cal.parse(report_date)
     if parse_status:
@@ -33,6 +34,8 @@ def get_giving(report_date=None):
         if donation.payment_method == 'ach' or donation.payment_method == 'card':
             online_giving += donation.amount_cents
 
+        fee_total += donation.fee_cents
+
         for d in donation.rel.designations.list():
             if d.relationships['fund']['data']['id'] in fund_totals:
                 fund_totals[d.relationships['fund']['data']['id']] += d.amount_cents
@@ -44,8 +47,9 @@ def get_giving(report_date=None):
         total_giving += amount
         msg += ": $".join([pco.giving.funds.get(fund).name, '{:,.2f}'.format(amount / 100)]) + "\n"
     if online_giving:
-        msg += "\n".join(["Online Giving: %%%s" % '{:,.2f}'.format(online_giving / total_giving * 100),
-                          "---------------\nTotal: $%s" % (total_giving / 100)])
+        msg += "\n".join(["Online Giving: %s%%" % '{:,.2f}'.format(online_giving / total_giving * 100),
+                          "Fees: $%s" % '{:,.2f}'.format(fee_total / 100),
+                          "---------------\nTotal: $%s" % '{:,.2f}'.format(total_giving / 100)])
     else:
         msg += "---------------\nTotal: $%s" % '{:,.2f}'.format(total_giving / 100)
     attachment = SlackAttachment(msg, pco='giving', text=msg, button_url="https://giving.planningcenteronline.com/"
