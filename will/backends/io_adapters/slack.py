@@ -105,14 +105,14 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             if is_private_chat or event["text"].startswith(interpolated_handle) or event["text"].startswith(real_handle):
                 is_direct = True
 
+            if interpolated_handle in event["text"] or real_handle in event["text"]:
+                will_is_mentioned = True
+
             if event["text"].startswith(interpolated_handle):
                 event["text"] = event["text"][len(interpolated_handle):].strip()
 
             if event["text"].startswith(real_handle):
                 event["text"] = event["text"][len(real_handle):].strip()
-
-            if interpolated_handle in event["text"] or real_handle in event["text"]:
-                will_is_mentioned = True
 
             if event["user"] == self.me.id:
                 will_said_it = True
