@@ -1,8 +1,8 @@
 
 def deprecation_warning_for_admin(f):
     err = (
-        "admin_only=True is deprecated and is being used by the `%s` method.\n" % (f.__name__, ) +
-        "  Please use ACLs instead. admin_only will be removed at the end of 2017."
+        """admin_only=True is deprecated and is being used by the `{}` method.\n
+           Please use ACLs instead. admin_only will be removed at the end of 2017.""".format(f.__name__)
     )
     return err
 
