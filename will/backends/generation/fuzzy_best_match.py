@@ -72,15 +72,15 @@ class FuzzyBestMatch(GenerationBackend):
 
                         # It's not from me, or this search includes me, and
                         (
-                            message.will_said_it is False or
-                            ("include_me" in l and l["include_me"])
+                            message.will_said_it is False
+                            or ("include_me" in l and l["include_me"])
                         )
 
                         # I'm mentioned, or this is an overheard, or we're in a 1-1
                         and (
-                            message.is_private_chat or
-                            ("direct_mentions_only" not in l or not l["direct_mentions_only"]) or
-                            message.is_direct
+                            message.is_private_chat
+                            or ("direct_mentions_only" not in l or not l["direct_mentions_only"])
+                            or message.is_direct
                         )
                 ):
                     fuzzy_regex = self._generate_compiled_regex(l)

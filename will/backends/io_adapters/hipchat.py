@@ -729,9 +729,9 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
                     self.send_direct_message(send_source.sender.id, "I can't set the topic of a one-to-one chat.  Let's just talk.", **kwargs)
 
         elif (
-            event.type == "message.no_response" and
-            event.data.is_direct and
-            event.data.will_said_it is False
+            event.type == "message.no_response"
+            and event.data.is_direct
+            and event.data.will_said_it is False
         ):
             if event.data.original_incoming_event.type == "groupchat":
                 self.send_room_message(
@@ -794,7 +794,7 @@ class HipChatBackend(IOBackend, HipChatRosterMixin, HipChatRoomMixin, StorageMix
             self.bridge_thread.terminate()
 
         while (
-            (hasattr(self, "xmpp_thread") and self.xmpp_thread.is_alive()) or
-            (hasattr(self, "bridge_thread") and self.bridge_thread.is_alive())
+            (hasattr(self, "xmpp_thread") and self.xmpp_thread.is_alive())
+            or (hasattr(self, "bridge_thread") and self.bridge_thread.is_alive())
         ):
             time.sleep(0.2)
