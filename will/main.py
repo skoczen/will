@@ -1085,7 +1085,7 @@ To set your %(name)s:
                                         "Error bootstrapping %s.%s" % (
                                             plugin_info["class"],
                                             function_name,
-                                        ), e
+                                        )
                                     )
                             if len(plugin_warnings) > 0:
                                 show_invalid(plugin_name)
