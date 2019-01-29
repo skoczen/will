@@ -4,7 +4,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class RoomsPlugin(WillPlugin):
 
-    @respond_to("what are the rooms\?")
+    @respond_to(r"what are the rooms\?")
     def list_rooms(self, message):
         """what are the rooms?: List all the rooms I know about."""
         context = {"rooms": self.available_rooms.values(), }
@@ -15,7 +15,7 @@ class RoomsPlugin(WillPlugin):
         self.update_available_rooms()
         self.say("Done!", message=message)
 
-    @respond_to("who is in this room\?")
+    @respond_to(r"who is in this room\?")
     def participants_in_room(self, message):
         """who is in this room?: List all the participants of this room."""
         room = self.get_room_from_message(message)

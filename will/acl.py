@@ -51,8 +51,7 @@ def test_acl(message, acl):
                     "%s was just allowed to perform actions in %s because the backend does not support ACL.  This can be a security risk." % (
                         message.sender.handle,
                         acl,
-                    ) +
-                    "To fix this, set ACL groups in your config.py, or set DISABLE_ACL = True"
+                    ) + "To fix this, set ACL groups in your config.py, or set DISABLE_ACL = True"
                 )
                 return True
     except:
