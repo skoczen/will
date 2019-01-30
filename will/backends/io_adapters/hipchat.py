@@ -285,7 +285,7 @@ class HipChatXMPPClient(ClientXMPP, HipChatRosterMixin, HipChatRoomMixin, Storag
         else:
             for name, r in self.available_rooms.items():
                 if not hasattr(self, "default_room"):
-                        self.default_room = r
+                    self.default_room = r
                 self.rooms.append(r)
 
         self.nick = settings.HIPCHAT_HANDLE
