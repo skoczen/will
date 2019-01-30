@@ -36,7 +36,7 @@ from will.utils import show_valid, show_invalid, error, warn, note, print_head, 
 
 # Force UTF8
 if sys.version_info < (3, 0):
-    reload(sys)  # flake8: noqa
+    reload(sys)  # noqa
     sys.setdefaultencoding('utf8')
 else:
     raw_input = input
@@ -562,9 +562,9 @@ To set your %(name)s:
             # or
             # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
         ):
-                sys.stdout.write(".")
-                sys.stdout.flush()
-                time.sleep(0.5)
+            sys.stdout.write(".")
+            sys.stdout.flush()
+            time.sleep(0.5)
         print(". done.\n")
         sys.exit(1)
 
