@@ -37,7 +37,7 @@ def is_acl_allowed(nick, acl):
     return False
 
 
-def test_acl(message, acl):
+def verify_acl(message, acl):
     try:
         if settings.DISABLE_ACL:
             return True
