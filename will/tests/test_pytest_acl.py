@@ -1,7 +1,7 @@
 import pytest
 
 from will import settings
-from will.acl import is_acl_allowed
+from will.acl import get_acl_members, is_acl_allowed, verify_acl
 
 USERS_TEAM1 = ["bob", "Alice"]
 USERS_TEAM2 = ["eve"]
@@ -20,6 +20,8 @@ INVALID_GROUP = ((USERS_TEAM1, {TEAM2}),
 
 
 def map_user_to_teams(groups):
+    """Maps a single  user to one or more teams """
+
     return [(user, teams) for users, teams in groups for user in users]
 
 
@@ -38,11 +40,22 @@ def settings_acl():
     yield
 
 
-@pytest.mark.parametrize("users_and_acls", VALID_USER_AND_TEAMS)
-def test_is_acl_allowed_returns_true(users_and_acls, settings_acl):
-    assert is_acl_allowed(*users_and_acls)
+@pytest.mark.parametrize("team", [TEAM1, TEAM2])
+def test_get_acl_members(team, settings_acl):
+    assert get_acl_members(team) == settings.ACL[team]
 
 
-@pytest.mark.parametrize("users_and_acls", INVALID_USER_AND_TEAMS)
-def test_is_acl_allowed_returns_false(users_and_acls, settings_acl):
-    assert not is_acl_allowed(*users_and_acls)
+@pytest.mark.parametrize("user,acls", VALID_USER_AND_TEAMS)
+def test_is_acl_allowed_returns_true(user, acls, settings_acl):
+    assert is_acl_allowed(user, acls)
+
+
+@pytest.mark.parametrize("user,acls", INVALID_USER_AND_TEAMS)
+def test_is_acl_allowed_returns_false(user, acls, settings_acl):
+    assert not is_acl_allowed(user, acls)
+
+
+def test_verify_acl_is_disabled():
+    """DISABLE_ACL is True, means no ACLs everyone can execute"""
+    settings.DISABLE_ACL = True
+    assert verify_acl("some_message", "some_acl")
