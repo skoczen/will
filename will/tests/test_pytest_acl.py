@@ -30,18 +30,22 @@ INVALID_GROUP = [(USERS_GROUP1, {GROUP2}),
 def map_user_to_groups(groups):
     """Maps a single user to one or more groups """
 
-    return [(user, groups) for users, groups in groups for user in users]
+    return [(user, acls) for users, acls in groups for user in users]
+
 
 def get_ids_for_user_to_groups(groups):
     """Set IDs to be shown by pytest for different parametrizations"""
+
     return ["{}, {}".format(user, acls) for user, acls in groups]
+
 
 # Need to map each user to one or more groups, these are the values that are used
 # for the parametrized fixtures
 VALID_USERS_AND_GROUPS = map_user_to_groups(VALID_GROUP)
 INVALID_USERS_AND_GROUPS = map_user_to_groups(INVALID_GROUP)
 VALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(VALID_USERS_AND_GROUPS)
-INVALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(INVALID_USERS_AND_GROUPS)
+INVALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(
+    INVALID_USERS_AND_GROUPS)
 
 
 @pytest.fixture()
@@ -57,9 +61,10 @@ def build_message_with_acls(person, message):
     def _build_message_with_acls(user_and_groups):
         user, groups = user_and_groups
         p = person({"handle": user})
-        m = message({"sender": p})
+        m = message({"sender": p, "data": message({})})
 
         return m, groups
+
     return _build_message_with_acls
 
 
@@ -105,3 +110,10 @@ def test_verify_acl_is_not_allowed(not_allowed_message_with_acls):
     settings.DISABLE_ACL = False
     message, acls = not_allowed_message_with_acls
     assert not verify_acl(message, acls)
+
+
+def test_verify_acl_no_backend_support(not_allowed_message_with_acls):
+    settings.DISABLE_ACL = False
+    message, acls = not_allowed_message_with_acls
+    message.data.backend_supports_acl = False
+    assert verify_acl(message, acls)
