@@ -47,7 +47,7 @@ def verify_acl(message, acl):
             return True
         if hasattr(message, "data") and hasattr(message.data, "backend_supports_acl"):
             if not message.data.backend_supports_acl:
-                logging.warn(
+                logging.warning(
                     "%s was just allowed to perform actions in %s because the backend does not support ACL.  This can be a security risk." % (
                         message.sender.handle,
                         acl,
