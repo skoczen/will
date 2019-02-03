@@ -22,7 +22,7 @@ def get_acl_members(acl):
 
 def is_acl_allowed(nick, acl):
     if not getattr(settings, "ACL", None):
-        logging.warn(
+        logging.warning(
             "%s was just allowed to perform actions in %s because no ACL settings exist. This can be a security risk." % (
                 nick,
                 acl,
@@ -37,7 +37,7 @@ def is_acl_allowed(nick, acl):
     return False
 
 
-def test_acl(message, acl):
+def verify_acl(message, acl):
     try:
         if settings.DISABLE_ACL:
             return True
@@ -47,7 +47,7 @@ def test_acl(message, acl):
             return True
         if hasattr(message, "data") and hasattr(message.data, "backend_supports_acl"):
             if not message.data.backend_supports_acl:
-                logging.warn(
+                logging.warning(
                     "%s was just allowed to perform actions in %s because the backend does not support ACL.  This can be a security risk." % (
                         message.sender.handle,
                         acl,
