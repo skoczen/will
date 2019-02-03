@@ -10,3 +10,5 @@ nose
 coverage
 yappi
 tox
+pytest
+pytest-cov
