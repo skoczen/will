@@ -11,13 +11,15 @@ USERS_NO_GROUP = ["juan", "pedro"]
 GROUP1 = "ENGINEERING_OPS"
 GROUP2 = "engineering_devs"
 
+# our mock ACL object, just as a user would add to Will's config.py
 ACL = {
     GROUP1: USERS_GROUP1,
     GROUP2: USERS_GROUP2
 }
 
-# Plugins are assigned to one or more ACLs, that's why valid group and invalid group have
-# to have a test with one or more groups
+# More than one ACL group can be specified as allowed to trigger a `respond()`
+# or `hear()` event, that's why valid group and invalid group have to have
+# both a test with a single group and a test with multiple groups.
 VALID_GROUP = [(USERS_GROUP1, {GROUP1}),
                (USERS_GROUP2, {GROUP2}),
                (USERS_GROUP1 + USERS_GROUP2, {GROUP1, GROUP2})]
@@ -41,8 +43,13 @@ def get_ids_for_user_to_groups(groups):
 
 # Need to map each user to one or more groups, these are the values that are used
 # for the parametrized fixtures
+# https://docs.pytest.org/en/latest/fixture.html#parametrizing-fixtures
 VALID_USERS_AND_GROUPS = map_user_to_groups(VALID_GROUP)
 INVALID_USERS_AND_GROUPS = map_user_to_groups(INVALID_GROUP)
+
+# Just to provide clarity during test execution, this will ensure the fixture
+# paramaters are displayed explicitly by pytest if tests fail or if running
+# verbose
 VALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(VALID_USERS_AND_GROUPS)
 INVALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(
     INVALID_USERS_AND_GROUPS)
@@ -56,6 +63,8 @@ def settings_acl():
     yield
 
 
+# Leveraging the "factory as fixture" pattern
+# https://docs.pytest.org/en/latest/fixture.html#factories-as-fixtures
 @pytest.fixture()
 def build_message_with_acls(person, message):
     def _build_message_with_acls(user_and_groups):
@@ -68,6 +77,9 @@ def build_message_with_acls(person, message):
     return _build_message_with_acls
 
 
+# Any fixture which an iterable to the `params` argument will be called
+# once per element Any test which uses one of these fixtures will be executed
+# once per fixture generation.
 @pytest.fixture(params=VALID_USERS_AND_GROUPS, ids=VALID_USERS_AND_GROUPS_IDS)
 def allowed_message_with_acls(request, build_message_with_acls):
     return build_message_with_acls(request.param)
@@ -78,6 +90,9 @@ def not_allowed_message_with_acls(request, build_message_with_acls):
     return build_message_with_acls(request.param)
 
 
+# Skip parameterized fixtures and just call a test directly with an iterable
+# of test params.
+# https://docs.pytest.org/en/latest/parametrize.html#pytest-mark-parametrize-parametrizing-test-functions
 @pytest.mark.parametrize("group", [GROUP1, GROUP2])
 def test_get_acl_members(group, settings_acl):
     assert get_acl_members(group) == settings.ACL[group]
