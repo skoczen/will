@@ -1,36 +1,29 @@
 import pytest
-
 from will import settings
 from will.abstractions import Message, Person
 from will.acl import get_acl_members, is_acl_allowed, verify_acl
 
-USERS_GROUP1 = ["bob", "Alice"]
-USERS_GROUP2 = ["eve"]
-USERS_NO_GROUP = ["juan", "pedro"]
-
-GROUP1 = "ENGINEERING_OPS"
-GROUP2 = "engineering_devs"
-
 ACL = {
-    GROUP1: USERS_GROUP1,
-    GROUP2: USERS_GROUP2
+    'ENGINEERING_OPS': ['bob', 'Alice'],
+    'engineering_devs': ['eve']
 }
 
-# Plugins are assigned to one or more ACLs, that's why valid group and invalid group have
-# to have a test with one or more groups
-VALID_GROUP = [(USERS_GROUP1, {GROUP1}),
-               (USERS_GROUP2, {GROUP2}),
-               (USERS_GROUP1 + USERS_GROUP2, {GROUP1, GROUP2})]
+VALID_USERS_AND_GROUPS = [
+    ('bob', {'ENGINEERING_OPS'}),
+    ('Alice', {'ENGINEERING_OPS'}),
+    ('eve', {'engineering_devs'}),
+    ('bob', {'ENGINEERING_OPS', 'engineering_devs'}),
+    ('Alice', {'ENGINEERING_OPS', 'engineering_devs'}),
+    ('eve', {'ENGINEERING_OPS', 'engineering_devs'})
+]
 
-INVALID_GROUP = [(USERS_GROUP1, {GROUP2}),
-                 (USERS_GROUP2, {GROUP1}),
-                 (USERS_NO_GROUP, {GROUP1, GROUP2})]
-
-
-def map_user_to_groups(groups):
-    """Maps a single user to one or more groups """
-
-    return [(user, acls) for users, acls in groups for user in users]
+INVALID_USERS_AND_GROUPS = [
+    ('bob', {'engineering_devs'}),
+    ('Alice', {'engineering_devs'}),
+    ('eve', {'ENGINEERING_OPS'}),
+    ('juan', {'ENGINEERING_OPS', 'engineering_devs'}),
+    ('pedro', {'ENGINEERING_OPS', 'engineering_devs'})
+]
 
 
 def get_ids_for_user_to_groups(groups):
@@ -41,8 +34,6 @@ def get_ids_for_user_to_groups(groups):
 
 # Need to map each user to one or more groups, these are the values that are used
 # for the parametrized fixtures
-VALID_USERS_AND_GROUPS = map_user_to_groups(VALID_GROUP)
-INVALID_USERS_AND_GROUPS = map_user_to_groups(INVALID_GROUP)
 VALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(VALID_USERS_AND_GROUPS)
 INVALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(
     INVALID_USERS_AND_GROUPS)
@@ -52,8 +43,6 @@ INVALID_USERS_AND_GROUPS_IDS = get_ids_for_user_to_groups(
 def settings_acl():
     """Set settings.ACL values"""
     settings.ACL = ACL
-
-    yield
 
 
 @pytest.fixture()
@@ -78,7 +67,7 @@ def not_allowed_message_with_acls(request, build_message_with_acls):
     return build_message_with_acls(request.param)
 
 
-@pytest.mark.parametrize("group", [GROUP1, GROUP2])
+@pytest.mark.parametrize("group", ACL.keys())
 def test_get_acl_members(group, settings_acl):
     assert get_acl_members(group) == settings.ACL[group]
 
