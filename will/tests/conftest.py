@@ -6,6 +6,7 @@ from will.abstractions import Message, Person
 # discovered tests.
 # https://docs.pytest.org/en/latest/fixture.html#conftest-py-sharing-fixture-functions
 
+
 @pytest.fixture()
 def person():
     """Mimic person abstraction"""
