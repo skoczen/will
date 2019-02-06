@@ -2,6 +2,10 @@ import pytest
 
 from will.abstractions import Message, Person
 
+# Any fixtures defined in this file will be automatically imported into
+# discovered tests.
+# https://docs.pytest.org/en/latest/fixture.html#conftest-py-sharing-fixture-functions
+
 
 @pytest.fixture()
 def person():
