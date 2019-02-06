@@ -13,7 +13,7 @@ class ExecutionBackend(object):
     is_will_execution_backend = True
 
     def handle_execution(self, message, context):
-        raise NotImplemented
+        raise NotImplementedError
 
     def no_response(self, message):
         self.bot.pubsub.publish(

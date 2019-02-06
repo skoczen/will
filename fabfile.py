@@ -66,7 +66,7 @@ def deploy_docs():
     local("mv %s/* %s" % (SITE_DIR, tempdir))
 
     current_branch = local("git rev-parse --abbrev-ref HEAD", capture=True)
-    last_commit = local("git log -1 --pretty=\%B", capture=True)
+    last_commit = local(r"git log -1 --pretty=\%B", capture=True)
 
     # Add the new site to build
     local("git checkout gh-pages")

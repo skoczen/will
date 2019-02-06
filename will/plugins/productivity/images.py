@@ -13,8 +13,8 @@ class ImagesPlugin(WillPlugin):
         """image me ___ : Search google images for ___, and post a random one."""
 
         if (
-                getattr(settings, "GOOGLE_API_KEY", False) and
-                getattr(settings, "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", False)
+                getattr(settings, "GOOGLE_API_KEY", False)
+                and getattr(settings, "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", False)
         ):
             self.say(
                 "Sorry, I'm missing my GOOGLE_API_KEY and GOOGLE_CUSTOM_SEARCH_ENGINE_ID."
@@ -63,8 +63,8 @@ class ImagesPlugin(WillPlugin):
     def gif_me(self, message, search_query):
 
         if (
-                getattr(settings, "GOOGLE_API_KEY", False) and
-                getattr(settings, "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", False)
+                getattr(settings, "GOOGLE_API_KEY", False)
+                and getattr(settings, "GOOGLE_CUSTOM_SEARCH_ENGINE_ID", False)
         ):
             self.say(
                 "Sorry, I'm missing my GOOGLE_API_KEY and GOOGLE_CUSTOM_SEARCH_ENGINE_ID."
