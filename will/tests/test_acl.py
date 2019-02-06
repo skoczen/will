@@ -39,7 +39,6 @@ def get_ids_for_user_to_groups(groups):
     return ["{}, {}".format(user, acls) for user, acls in groups]
 
 
-
 # Just to provide clarity during test execution, this will ensure the fixture
 # paramaters are displayed explicitly by pytest if tests fail or if running
 # verbose
