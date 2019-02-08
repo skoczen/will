@@ -202,6 +202,10 @@ class Attachment(Bunch):
         else:
             self.footer_icon = kwargs["footer_icon"]
 
+        if button_color is None:
+            self.button_color = "#3B80C6"
+        else:
+            self.button_color = button_color
         if style == "default":
             self.color = "#555555"
             self.button_color = "#555555"
@@ -223,11 +227,6 @@ class Attachment(Bunch):
         if style == "teal":
             self.color = "#007AB8"
             self.button_color = "#007AB8"
-        if style[0] is '#':
-            self.color = style
-            self.button_color = style
-        if button_color:
-            self.button_color = button_color
         self.action_type = action_type
         self.button_text = button_text
         self.button_url = button_url
