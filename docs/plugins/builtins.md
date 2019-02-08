@@ -61,6 +61,66 @@ A note on `TEMPLATE_DIRS` - Will automatically includes the following:
 - Your Will's `templates` directory,
 - All `templates` directories in the root of modules specified in `settings.PLUGINS`.
 
+## Rich Format Message Attachments
+
+Will includes the Attachment object for building richly formatted messages.
+
+```python
+from will.abstractions import Attachment
+demo_attachment = Attachment(
+    fallback="This is incase webcontent doesn't load. Here's the sample content!",
+    text="Here's the sample content!",
+    style="yellow",
+    button_text="Click Me!",
+    button_url="http://heywill.io")
+```
+
+- **`fallback`**: the text to display if the message can not be rendered properly.
+- **`text`**: the body of the richly formatted message.
+- **`style`**: a color for the message. [default, blue, green, purple, orange, yellow, teal]
+- **`button_text`**: the text on the button(optional).
+- **`button_url`**: the url the button will open(optional.)
+
+We can add as many buttons as we like after initialization
+```python
+demo_attachment.add_button(text="Go to google!", url="https://google.com")
+```
+
+You can paackage multiple attachments and append them to a list.
+You can pass a list of attachments with your message to send multiple attachments at once.
+```python
+people = ['Ron', 'Bill', 'Gina', 'Rachael']
+attachments = []
+for person in people:
+    attachments.append(Attachment(fallback='The name is %s' % person,
+                                  style='yellow',
+                                  text='The name is %s' % person,
+                                  button_text='Open %s in database' % person,
+                                  button_url='https://my.database.url/people/v2/' + person))
+```
+
+If your backend supports Attachments you can send them with your message.
+
+```python
+    @respond_to("test_attachment")
+    def test_attachment(self, message):
+        demo_attachment = Attachment(
+            fallback="This is incase webcontent doesn't load. Here's the sample content!",
+            text="Here's the sample content!",
+            style="green",
+            button_text="Click Me!",
+            button_url="http://heywill.io")
+        demo_attachment.add_button(text="Google Will", url='http://www.google.com/search?q=will+bot')
+        self.reply("Here is your Attachment Test", attachments=demo_attachment)
+```
+
+This payload would look like this on slack:
+![Attachment Demo](../img/attachment.png)
+
+
+Currently Supported Backends:
+- **Slack**: https://api.slack.com/docs/message-formatting
+
 
 ## Help and documentation
 
