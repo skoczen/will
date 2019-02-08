@@ -15,7 +15,7 @@ from .base import IOBackend
 from will.utils import Bunch, UNSURE_REPLIES, clean_for_pickling
 from will.mixins import SleepMixin, StorageMixin
 from multiprocessing import Process
-from will.abstractions import Event, Message, Person, Channel
+from will.abstractions import Event, Message, Person, Channel, Attachment
 from slackclient import SlackClient
 from slackclient.server import SlackConnectionError
 
@@ -28,6 +28,49 @@ class SlackMarkdownConverter(MarkdownConverter):
 
     def convert_strong(self, el, text):
         return '*%s*' % text if text else ''
+
+
+class SlackAttachmentConverter:
+    """ This takes an Attachment object or list of Attachment objects and renders
+    a Slack ready Message Attachment JSON payload using the render() method. """
+
+    def __init__(self, attachments):
+        self.attachments = attachments
+
+    def render(self):
+        """ Builds a json payload for Slack Rich Format Message Attachments.
+         It takes either a single Attachment object or a list or Attachment objects."""
+        attachments = ""
+        try:
+            for a in self.attachments:
+                attachments += str(
+                    [
+                        {
+                            "fallback": a.fallback,
+                            "color": a.color,
+                            "text": a.text,
+                            "actions": a.actions,
+                            "footer": a.footer,
+                            "footer_icon": a.footer_icon,
+                        }
+                    ]
+                )
+        except AttributeError:
+            attachments += str(
+                [
+                    {
+                        "fallback": self.attachments.fallback,
+                        "color": self.attachments.color,
+                        "text": self.attachments.text,
+                        "actions": self.attachments.actions,
+                        "footer": self.attachments.footer,
+                        "footer_icon": self.attachments.footer_icon,
+                    }
+                ]
+            )
+
+        finally:
+            return attachments
 
 
 class SlackBackend(IOBackend, SleepMixin, StorageMixin):
@@ -316,10 +359,17 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                     ]),
                 })
             elif "attachments" in event.kwargs:
-                data.update({
-                    "text": event.content,
-                    "attachments": json.dumps(event.kwargs["attachments"])
-                })
+
+                if isinstance(event.kwargs["attachments"], Attachment):
+                    data.update({
+                        "text": event.content,
+                        "attachments": SlackAttachmentConverter(event.kwargs["attachments"]).render()
+                    })
+                else:
+                    data.update({
+                        "text": event.content,
+                        "attachments": json.dumps(event.kwargs["attachments"])
+                    })
             else:
                 data.update({
                     "text": event.content,
