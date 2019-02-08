@@ -5,36 +5,36 @@ from will.backends.io_adapters.slack import SlackAttachmentConverter, SlackBacke
 
 def test_no_fallback():
     with pytest.raises(Exception):
-        attachment = Attachment(text="Test Text")
+        Attachment(text="Test Text")
 
 
 def test_no_text():
     with pytest.raises(Exception):
-        attachment = Attachment(fallback="Test Text")
+        Attachment(fallback="Test Text")
 
 
 def test_no_footer():
     attachment = Attachment(fallback="Test Fallback",
                             text="Test Text")
-    assert attachment.footer is "Will"
+    assert attachment.footer == "Will"
 
 
 def test_custom_footer():
     attachment = Attachment(fallback="Test Fallback",
                             text="Test Text", footer="My Awesome Bot")
-    assert attachment.footer is "My Awesome Bot"
+    assert attachment.footer == "My Awesome Bot"
 
 
 def test_no_footer_icon():
-        attachment = Attachment(fallback="Test Fallback",
-                                text="Test Text")
-        assert attachment.footer_icon == "http://heywill.io/img/favicon.png"
+    attachment = Attachment(fallback="Test Fallback",
+                            text="Test Text")
+    assert attachment.footer_icon == "http://heywill.io/img/favicon.png"
 
 
 def test_custoom_footer_icon():
-        attachment = Attachment(fallback="Test Fallback",
-                                text="Test Text", footer_icon="https://picture.png")
-        assert attachment.footer_icon == "https://picture.png"
+    attachment = Attachment(fallback="Test Fallback",
+                            text="Test Text", footer_icon="https://picture.png")
+    assert attachment.footer_icon == "https://picture.png"
 
 
 def test_button_on_create():
@@ -42,8 +42,8 @@ def test_button_on_create():
                             text="Test Text",
                             button_text="Test Button",
                             button_url="google.com")
-    assert attachment.button_url is "google.com"
-    assert attachment.button_text is "Test Button"
+    assert attachment.button_url == "google.com"
+    assert attachment.button_text == "Test Button"
 
 
 def test_custom_color_button_on_create():
@@ -52,7 +52,7 @@ def test_custom_color_button_on_create():
                             button_text="Test Button",
                             button_url="google.com",
                             button_color="#62f442")
-    assert attachment.button_color is "#62f442"
+    assert attachment.button_color == "#62f442"
 
 
 def test_style_default():
@@ -97,7 +97,7 @@ def test_style_yellow():
     assert attachment.button_color == '#f4c551'
 
 
-def test_style_yellow():
+def test_style_teal():
     attachment = Attachment(fallback="Test Fallback",
                             text="Test Text", style='teal')
     assert attachment.color == '#007AB8'
