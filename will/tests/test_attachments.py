@@ -1,40 +1,40 @@
 import pytest
 from will.abstractions import Attachment
-from will.backends.io_adapters.slack import SlackAttachmentConverter
+from will.backends.io_adapters.slack import SlackAttachmentConverter, SlackBackend
 
 
 def test_no_fallback():
     with pytest.raises(Exception):
-        Attachment(text="Test Text")
+        attachment = Attachment(text="Test Text")
 
 
 def test_no_text():
     with pytest.raises(Exception):
-        Attachment(fallback="Test Text")
+        attachment = Attachment(fallback="Test Text")
 
 
 def test_no_footer():
     attachment = Attachment(fallback="Test Fallback",
                             text="Test Text")
-    assert attachment.footer == "Will"
+    assert attachment.footer is "Will"
 
 
 def test_custom_footer():
     attachment = Attachment(fallback="Test Fallback",
                             text="Test Text", footer="My Awesome Bot")
-    assert attachment.footer == "My Awesome Bot"
+    assert attachment.footer is "My Awesome Bot"
 
 
 def test_no_footer_icon():
-    attachment = Attachment(fallback="Test Fallback",
-                            text="Test Text")
-    assert attachment.footer_icon == "http://heywill.io/img/favicon.png"
+        attachment = Attachment(fallback="Test Fallback",
+                                text="Test Text")
+        assert attachment.footer_icon == "http://heywill.io/img/favicon.png"
 
 
 def test_custoom_footer_icon():
-    attachment = Attachment(fallback="Test Fallback",
-                            text="Test Text", footer_icon="https://picture.png")
-    assert attachment.footer_icon == "https://picture.png"
+        attachment = Attachment(fallback="Test Fallback",
+                                text="Test Text", footer_icon="https://picture.png")
+        assert attachment.footer_icon == "https://picture.png"
 
 
 def test_button_on_create():
@@ -42,8 +42,8 @@ def test_button_on_create():
                             text="Test Text",
                             button_text="Test Button",
                             button_url="google.com")
-    assert attachment.button_url == "google.com"
-    assert attachment.button_text == "Test Button"
+    assert attachment.button_url is "google.com"
+    assert attachment.button_text is "Test Button"
 
 
 def test_custom_color_button_on_create():
@@ -52,7 +52,7 @@ def test_custom_color_button_on_create():
                             button_text="Test Button",
                             button_url="google.com",
                             button_color="#62f442")
-    assert attachment.button_color == "#62f442"
+    assert attachment.button_color is "#62f442"
 
 
 def test_style_default():
@@ -97,18 +97,11 @@ def test_style_yellow():
     assert attachment.button_color == '#f4c551'
 
 
-def test_style_teal():
+def test_style_yellow():
     attachment = Attachment(fallback="Test Fallback",
                             text="Test Text", style='teal')
     assert attachment.color == '#007AB8'
     assert attachment.button_color == '#007AB8'
-
-
-def test_style_custom():
-    attachment = Attachment(fallback="Test Fallback",
-                            text="Test Text", style='#FF6666')
-    assert attachment.color == '#FF6666'
-    assert attachment.button_color == '#FF6666'
 
 
 def test_add_button():
@@ -158,7 +151,6 @@ def test_slack_converter_single_attachment():
 def test_slack_converter_list_attachments():
     x = ['Ron', 'Bill', 'Gina', 'Rachael']
     attachments = []
-    payload = ""
     for i in x:
         attachments.append(Attachment(fallback='The name is %s' % i,
                                       style='yellow',
@@ -166,18 +158,20 @@ def test_slack_converter_list_attachments():
                                       button_text='Open in database',
                                       button_url='https://my.database.url/people/v2/' + i))
 
-    for a in attachments:
-        payload += str(
-            [
-                {
-                    "fallback": a.fallback,
-                    "color": a.color,
-                    "text": a.text,
-                    "actions": a.actions,
-                    "footer": a.footer,
-                    "footer_icon": a.footer_icon,
-                }
-            ]
-        )
-
-    assert SlackAttachmentConverter(attachments).render() == payload
+    assert SlackAttachmentConverter(
+        attachments).render() == "[{'fallback': 'The name is Ron', 'color': '#f4c551', 'text': 'The name is Ron'," \
+                                 " 'actions': [{'color': '#f4c551', 'type': 'button', 'text': 'Open in database'," \
+                                 " 'url': 'https://my.database.url/people/v2/Ron'}], 'footer': 'Will'," \
+                                 " 'footer_icon': 'http://heywill.io/img/favicon.png'}]" \
+                                 "[{'fallback': 'The name is Bill', 'color': '#f4c551', 'text': 'The name is Bill'," \
+                                 " 'actions': [{'color': '#f4c551', 'type': 'button', 'text': 'Open in database'," \
+                                 " 'url': 'https://my.database.url/people/v2/Bill'}], 'footer': 'Will'," \
+                                 " 'footer_icon': 'http://heywill.io/img/favicon.png'}]" \
+                                 "[{'fallback': 'The name is Gina', 'color': '#f4c551', 'text': 'The name is Gina'," \
+                                 " 'actions': [{'color': '#f4c551', 'type': 'button', 'text': 'Open in database'," \
+                                 " 'url': 'https://my.database.url/people/v2/Gina'}], 'footer': 'Will'," \
+                                 " 'footer_icon': 'http://heywill.io/img/favicon.png'}]" \
+                                 "[{'fallback': 'The name is Rachael', 'color': '#f4c551'," \
+                                 " 'text': 'The name is Rachael', 'actions': [{'color': '#f4c551', 'type': 'button'," \
+                                 " 'text': 'Open in database', 'url': 'https://my.database.url/people/v2/Rachael'}]," \
+                                 " 'footer': 'Will', 'footer_icon': 'http://heywill.io/img/favicon.png'}]"
