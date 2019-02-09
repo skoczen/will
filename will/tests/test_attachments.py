@@ -151,6 +151,7 @@ def test_slack_converter_single_attachment():
 def test_slack_converter_list_attachments():
     x = ['Ron', 'Bill', 'Gina', 'Rachael']
     attachments = []
+    payload = ""
     for i in x:
         attachments.append(Attachment(fallback='The name is %s' % i,
                                       style='yellow',
@@ -158,20 +159,18 @@ def test_slack_converter_list_attachments():
                                       button_text='Open in database',
                                       button_url='https://my.database.url/people/v2/' + i))
 
-    assert SlackAttachmentConverter(
-        attachments).render() == "[{'fallback': 'The name is Ron', 'color': '#f4c551', 'text': 'The name is Ron'," \
-                                 " 'actions': [{'color': '#f4c551', 'type': 'button', 'text': 'Open in database'," \
-                                 " 'url': 'https://my.database.url/people/v2/Ron'}], 'footer': 'Will'," \
-                                 " 'footer_icon': 'http://heywill.io/img/favicon.png'}]" \
-                                 "[{'fallback': 'The name is Bill', 'color': '#f4c551', 'text': 'The name is Bill'," \
-                                 " 'actions': [{'color': '#f4c551', 'type': 'button', 'text': 'Open in database'," \
-                                 " 'url': 'https://my.database.url/people/v2/Bill'}], 'footer': 'Will'," \
-                                 " 'footer_icon': 'http://heywill.io/img/favicon.png'}]" \
-                                 "[{'fallback': 'The name is Gina', 'color': '#f4c551', 'text': 'The name is Gina'," \
-                                 " 'actions': [{'color': '#f4c551', 'type': 'button', 'text': 'Open in database'," \
-                                 " 'url': 'https://my.database.url/people/v2/Gina'}], 'footer': 'Will'," \
-                                 " 'footer_icon': 'http://heywill.io/img/favicon.png'}]" \
-                                 "[{'fallback': 'The name is Rachael', 'color': '#f4c551'," \
-                                 " 'text': 'The name is Rachael', 'actions': [{'color': '#f4c551', 'type': 'button'," \
-                                 " 'text': 'Open in database', 'url': 'https://my.database.url/people/v2/Rachael'}]," \
-                                 " 'footer': 'Will', 'footer_icon': 'http://heywill.io/img/favicon.png'}]"
+    for a in attachments:
+        payload += str(
+            [
+                {
+                    "fallback": a.fallback,
+                    "color": a.color,
+                    "text": a.text,
+                    "actions": a.actions,
+                    "footer": a.footer,
+                    "footer_icon": a.footer_icon,
+                }
+            ]
+        )
+
+    assert SlackAttachmentConverter(attachments).render() == payload
