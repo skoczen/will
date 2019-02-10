@@ -74,6 +74,7 @@ def test_get_backend_service_as_parameter(message, plugin, io_backend, all_io_ba
 
 # freeze_time to mock datetime.datetime.now() method which is invoked
 # when creating an event or message.
+# https://github.com/spulec/freezegun
 @freeze_time(WILLS_BIRTHDAY)
 def test_say_package_for_scheduling_is_true(plugin, content, message, event, io_backend):
     original_message = message({"backend": io_backend})
