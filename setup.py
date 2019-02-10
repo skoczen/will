@@ -39,7 +39,8 @@ tests_require = [
     'pytest',
     'pytest-cov',
     'pytest-runner',
-    'mock'
+    'mock',
+    'freezegun'
 ]
 
 setup_requires = []

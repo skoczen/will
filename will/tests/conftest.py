@@ -1,10 +1,28 @@
+import datetime
+
 import pytest
 
-from will.abstractions import Message, Person
+from will.abstractions import Event, Message, Person
 
 # Any fixtures defined in this file will be automatically imported into
 # discovered tests.
 # https://docs.pytest.org/en/latest/fixture.html#conftest-py-sharing-fixture-functions
+
+
+IO_BACKENDS = [
+    "will.backends.io_adapters.slack",
+    "will.backends.io_adapters.rocketchat",
+    "will.backends.io_adapters.shell"
+]
+
+@pytest.fixture()
+def all_io_backends():
+    return IO_BACKENDS
+
+@pytest.fixture(params=IO_BACKENDS)
+def io_backend(request):
+    """Parametrized fixture of available io backends"""
+    return request.param
 
 
 @pytest.fixture()
@@ -12,7 +30,7 @@ def person():
     """Mimic person abstraction"""
     def _person(fields):
         required_fields = {
-            "id": "TDB",
+            "id": "TBD",
             "mention_handle": "TBD",
             "source": "TBD",
             "handle": "TBD",
@@ -45,4 +63,17 @@ def message():
         required_fields.update(fields)
 
         return Message(**required_fields)
+
     return _message
+
+
+@pytest.fixture()
+def event():
+    """Mimic event abstraction"""
+    def _event(fields):
+        required_fields = {"type": "TBD", "version": 3}
+        required_fields.update(fields)
+
+        return Event(**required_fields)
+
+    return _event
