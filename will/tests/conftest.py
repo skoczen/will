@@ -15,13 +15,28 @@ IO_BACKENDS = [
     "will.backends.io_adapters.shell"
 ]
 
+ANALYZE_BACKENDS = [
+    "will.backends.analysis.nothing",
+    "will.backends.analysis.history"
+]
+
+
 @pytest.fixture()
 def all_io_backends():
     return IO_BACKENDS
 
+
 @pytest.fixture(params=IO_BACKENDS)
 def io_backend(request):
     """Parametrized fixture of available io backends"""
+
+    return request.param
+
+
+@pytest.fixture(params=ANALYZE_BACKENDS)
+def analysis(request):
+    """Parametrized fixture of available analysis backends"""
+
     return request.param
 
 
@@ -71,7 +86,7 @@ def message():
 def event():
     """Mimic event abstraction"""
     def _event(fields):
-        required_fields = {"type": "TBD", "version": 3}
+        required_fields = {"type": "TBD", "version": 1}
         required_fields.update(fields)
 
         return Event(**required_fields)
