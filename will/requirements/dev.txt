@@ -12,3 +12,4 @@ yappi
 tox
 pytest
 pytest-cov
+freezegun
