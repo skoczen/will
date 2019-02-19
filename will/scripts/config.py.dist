@@ -169,10 +169,24 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 # Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
 # in respond_to and hear actions.
-# Group names can be any string, and the list is composed of user handles.
-# ACL = {
-#     "admins": ["sarah", "sue", "steven"]
-# }
+# Group names can be any string, and the list is composed of user ids.
+#
+# In slack the user ID can be found by visiting the link below, selecting your slack account
+# from the dropdown, and then clicking your @name next to the `user` field.
+# https://api.slack.com/methods/users.info/test
+#
+# In rocketchat the user ID can by found by visiting /account/tokens and generating a new
+# (temporary) personal access token, the user ID will be presented with the new token, which
+# can then be deleted.
+#
+#    ACL = {
+#        "admins":
+#            [
+#                "U2A06UQHX", #sarah
+#                "UXHQU60A2", #sue
+#                "UABC1234"   #steven
+#            ]
+#    }
 #
 # By default, if no ACL is set, all users can perform all actions - but warnings
 # will be printed to the console.  To disable those warnings, set DISABLE_ACL to True
