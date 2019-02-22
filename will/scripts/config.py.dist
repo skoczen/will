@@ -171,13 +171,8 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # in respond_to and hear actions.
 # Group names can be any string, and the list is composed of user ids.
 #
-# In slack the user ID can be found by visiting the link below, selecting your slack account
-# from the dropdown, and then clicking your @name next to the `user` field.
-# https://api.slack.com/methods/users.info/test
-#
-# In rocketchat the user ID can by found by visiting /account/tokens and generating a new
-# (temporary) personal access token, the user ID will be presented with the new token, which
-# can then be deleted.
+# See the ACL docs for help locating user ids.
+# http://skoczen.github.io/will/plugins/builtins/#access-control
 #
 #    ACL = {
 #        "admins":
