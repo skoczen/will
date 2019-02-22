@@ -132,7 +132,7 @@ and then clicking your @name next to the `user` field.
 In rocketchat the user ID can by found by visiting the URI /account/tokens on your instance and generating a new (temporary) personal access token, the
 user ID will be presented with the new token, which can then be deleted.
 
-__NOTE__: As Hipchat is end-of-life it is not supported and will be removed completely from Will in an upcoming release.
+__NOTE__: As hipchat is end-of-life it is not supported and will be removed completely from Will in an upcoming release.
 
 ## Access settings and config
 
