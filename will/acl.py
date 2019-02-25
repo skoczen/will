@@ -42,7 +42,7 @@ def verify_acl(message, acl):
         if settings.DISABLE_ACL:
             return True
 
-        allowed = is_acl_allowed(message.sender.handle, message.sender.id, acl)
+        allowed = is_acl_allowed(message.sender.id, acl)
         if allowed:
             return True
         if hasattr(message, "data") and hasattr(message.data, "backend_supports_acl"):
