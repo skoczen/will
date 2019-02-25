@@ -31,7 +31,7 @@ def is_acl_allowed(id, acl):
         return True
     for a in acl:
         acl_members = get_acl_members(a)
-        if id in acl_members or nick.lower() in [x.lower() for x in acl_members]:
+        if id in acl_members:
             return True
 
     return False
