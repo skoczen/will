@@ -20,7 +20,7 @@ def get_acl_members(acl):
     return acl_members
 
 
-def is_acl_allowed(id, acl):
+def is_acl_allowed(_id, acl):
     if not getattr(settings, "ACL", None):
         logging.warning(
             "%s was just allowed to perform actions in %s because no ACL settings exist. This can be a security risk." % (
@@ -31,7 +31,7 @@ def is_acl_allowed(id, acl):
         return True
     for a in acl:
         acl_members = get_acl_members(a)
-        if id in acl_members:
+        if _id in acl_members:
             return True
 
     return False
