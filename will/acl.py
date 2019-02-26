@@ -24,7 +24,7 @@ def is_acl_allowed(_id, acl):
     if not getattr(settings, "ACL", None):
         logging.warning(
             "%s was just allowed to perform actions in %s because no ACL settings exist. This can be a security risk." % (
-                nick,
+                _id,
                 acl,
             )
         )
