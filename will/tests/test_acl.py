@@ -59,7 +59,7 @@ def settings_acl():
 def build_message_with_acls(person, message):
     def _build_message_with_acls(user_and_groups):
         user_id, groups = user_and_groups
-        p = person({"id": user_id, "handle": "testhandle"})
+        p = person({"id": user_id})
         m = message({"sender": p, "data": message({})})
 
         return m, groups
@@ -90,12 +90,12 @@ def test_get_acl_members(group, settings_acl):
 
 def test_is_acl_allowed_returns_true(allowed_message_with_acls):
     message, acls = allowed_message_with_acls
-    assert is_acl_allowed(message.sender.handle, message.sender.id, acls)
+    assert is_acl_allowed(message.sender.id, acls)
 
 
 def test_is_acl_allowed_returns_false(not_allowed_message_with_acls):
     message, acls = not_allowed_message_with_acls
-    assert not is_acl_allowed(message.sender.handle, message.sender.id, acls)
+    assert not is_acl_allowed(message.sender.id, acls)
 
 
 def test_verify_acl_is_disabled(not_allowed_message_with_acls):
