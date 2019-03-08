@@ -1,6 +1,6 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from plugins.pco import birthday, msg_attachment, announcements
+from plugins.pco import birthday, msg_attachment, announcements, giving_report
 import logging
 
 
@@ -12,6 +12,24 @@ class ScheduledAnnounce(WillPlugin):
     def announce_birthdays(self):
         if announcements.announcement_is_enabled(self, announcement='birthdays'):
             birthday.announce_todays_birthdays(self, channel=announcements.announcement_channel(self))
+
+    @periodic(day='Sunday', hour='15')
+    # @periodic(second=0)
+    # @hear("(!test_giving)", acl=["admins"])
+    def report_giving(self, message):
+        # if announcements.announcement_is_enabled(self, announcement='giving'):
+        g_report = giving_report.get_giving(report_date="Last Monday")
+        for g in g_report:
+            attachment = g.slack()
+        self.say("Giving Report", attachments=attachment, channel='giving')
+
+    @hear("(!test_giving)", acl=["admins"])
+    def report_giving(self, message):
+        # if announcements.announcement_is_enabled(self, announcement='giving'):
+        g_report = giving_report.get_giving(report_date="Last Monday")
+        for g in g_report:
+            attachment = g.slack()
+        self.say("Giving Report", attachments=attachment, channel='giving')
 
     # @periodic(hour='14', minute='10')  # at a certain time
     # @periodic(second=0)  # every minute at 0 seconds

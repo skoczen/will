@@ -3,7 +3,7 @@ import logging
 
 
 def get_slack_channel_link(will, new_channel):
-    """Retrieves a slack formated link from a channel name. This should probably be moved somewhere else."""
+    """Retrieves a slack formatted link from a channel name. This should probably be moved somewhere else."""
     channels = will.load("slack_channel_cache")
     channel = None
     for key in channels:

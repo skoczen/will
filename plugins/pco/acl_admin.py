@@ -12,8 +12,8 @@ class AclAdmin(WillPlugin):
         msg = ""
         attachment = []
         acl_groups = get_acl_groups()
-        for acl in acl_groups:
-            print(acl)
+        for acl_grp in acl_groups:
+            print(acl_grp)
             msg += "*" + acl + ":*\n"
             print(msg)
             for x in get_acl_members(acl):

@@ -14,6 +14,8 @@ services:
         volumes:
             - ../plugins/pco:/opt/will/plugins/pco
             - ../will/templates:/opt/will/templates
+            - ../will/backends:/opt/will/backends
+            - ../will/mixins:/opt/will/mixins
             - ../will/plugins:/opt/will/plugins
             - ./config.py:/opt/will/config.py
         depends_on:

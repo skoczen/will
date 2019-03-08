@@ -47,8 +47,8 @@ def get_todays_birthdays():
     msg = "*Today's Birthdays!*\n"
     today = datetime.datetime.today().strftime('%m-%d')
     for x in pco.people.people.list():
-        if today in str(x.birthdate)[5:]:
-            msg += "%s\n" % x.name
+        if today in str(x.birthdate)[5:] and x.status == 'active':
+                msg += "%s\n" % x.name
     attachment = msg_attachment.SlackAttachment(fallback=msg, text=msg)
     return attachment
 

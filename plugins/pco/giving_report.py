@@ -17,7 +17,7 @@ today = datetime.datetime.today().strftime('%Y-%m-%d')
 # print("Today: %s" % today)
 
 
-def get_giving(report_date=None):
+def get_giving(report_date="Last Monday"):
     fund_totals = {}
     online_giving = 0
     total_giving = 0
@@ -27,10 +27,11 @@ def get_giving(report_date=None):
     if parse_status:
         report_date = datetime.datetime(*report_date[:6])
         report_date = report_date.strftime('%Y-%m-%d')
-    msg = "Giving Since: %s" % report_date + "\n"
+    msg = "Giving: %s - %s" % (report_date, datetime.date.today()) + "\n"
     for donation in pco.giving.donations.list(where={"[created_at][gte]": report_date},
                                               include={'designations, labels'}):
-
+        for label in donation.rel.labels.list():
+            print(label.attributes['slug'])
         if donation.payment_method == 'ach' or donation.payment_method == 'card':
             online_giving += donation.amount_cents
 
@@ -61,6 +62,6 @@ def get_giving(report_date=None):
 
 
 if __name__ == '__main__':
-    x = get_giving("last sunday")
+    x = get_giving()
     for attachment in x:
         print(attachment.slack())

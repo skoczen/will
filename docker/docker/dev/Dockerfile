@@ -10,6 +10,7 @@ ENV PACKAGES="\
   python2 \
   py-setuptools \
   libffi-dev \
+  openssl-dev \
 "
 # Maintainer
 # ----------

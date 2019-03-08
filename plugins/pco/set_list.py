@@ -18,6 +18,7 @@ def get(set_date="sunday"):
     attachment_list = []
     # Get the Order of Service of a date and return a formatted string ready to send back.
     # This only works for future dates since PCO API doesn't let us quarry plans by date.
+    # TODO PCO added ability to query plans by date
     cal = parsedatetime.Calendar()
     set_date, parse_status = cal.parse(set_date)
     set_date = datetime.datetime(*set_date[:6])

@@ -12,8 +12,8 @@ services:
         env_file:
             - default.env
         volumes:
-            - ./plugins:/opt/will/plugins
-            - ./config.py:/opt/will/config.py
+            - ../plugins:/opt/plugins
+            - ../config.py:/opt/will/config.py
         depends_on:
             - redis
             
