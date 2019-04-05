@@ -100,11 +100,26 @@ To change the access control list, see configuration instructions below and this
 ## Installation
 ----------------------------------
 
-
 ### Install on Heroku
 Click the button!
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+If everything goes well, you will have your own instance of pcobot running.
+
+Update existing One-Click Heroku Deployment
+Prepare for updates:
+
+# create local repo pointing to the Heroku remote
+`heroku git:clone --app YOUR_HEROKU_APPNAME && cd YOUR_HEROKU_APPNAME`
+
+# attach the GitHub repository of pcobot as a new remote
+`git remote add origin https://github.com/pastorhudson/pcobot`
+From now on you can simply update your Heroku instance by running:
+
+cd YOUR_HEROKU_APPNAME
+`git pull origin master # pull down the latest version from GitHub`
+`git push heroku master # push all updates back to your Heroku app instance`
 
 ### Install on Linux 
 *(example code assumes Debian - including Ubuntu, Mint, KNOPPIX, Raspbian)*
