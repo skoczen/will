@@ -44,6 +44,15 @@ If no app name is provided it will list all the apps you can access.
 * ```Show the set list for *[Any future service date]*```
 * ```Show the set list for *[Any future service date]*```
 * ```What is the arrangement for [Any Song]?```
+* ```Who is *[serving|scheduled]* *[on|for]* the *[Any Services team]* team *[Any future day/date/time]*?```
+    * Examples:
+    * "Who is serving on the band team on Sunday at 10a?"
+    * "Who is scheduled for the Downtown Band team today?"
+* ```[!serving|!scheduled] *[Any Services team]* *[Any future day/date/time]*```
+    * Note: for teams with more than one word in the name, wrap the team name in quotes. E.g. `!serving 'Downtown Band' Sunday`
+
+
+If you specify a time, it will try to find the team for that precise service time—if you do not, it will simply try to match the team for the day provided.
 
 #### Access Control Lists
 This isn't really used in the pcobot but it is used for Will bot commands
