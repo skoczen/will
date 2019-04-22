@@ -1,4 +1,3 @@
-import datetime
 import re
 
 import pytest
@@ -7,8 +6,8 @@ from freezegun import freeze_time
 from will import settings
 from will.plugin import WillPlugin
 
-# Used to freeze_time
-WILLS_BIRTHDAY = "2013-12-04 01:11:00"
+from const import WILLS_BIRTHDAY
+
 
 
 @pytest.fixture
