@@ -9,7 +9,6 @@ from will.plugin import WillPlugin
 from const import WILLS_BIRTHDAY
 
 
-
 @pytest.fixture
 def plugin():
     return WillPlugin()
@@ -94,7 +93,7 @@ def test_reply_package_for_scheduling_is_true(plugin, content, message, event, i
     backend = plugin.get_backend(original_message, None)
     e = event({'type': "reply",
                'content': content,
-               'topic': "message.outgoing.%s" % backend,
+               'topic': "message.outgoing.{}".format(backend),
                'source_message': original_message,
                'kwargs': {}})
     plugin_reply = plugin.reply(incoming_event, content, package_for_scheduling=True)
