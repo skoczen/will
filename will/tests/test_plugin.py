@@ -91,12 +91,12 @@ def test_say_package_for_scheduling_is_true(plugin, content, message, event, io_
 @freeze_time(WILLS_BIRTHDAY)
 def test_reply_package_for_scheduling_is_true(plugin, content, message, event, io_backend):
     original_message = message({"backend": io_backend})
-    incomming_event = event({"data": original_message})
+    incoming_event = event({"data": original_message})
     backend = plugin.get_backend(original_message, None)
     e = event({'type': "reply",
                'content': content,
                'topic': "message.outgoing.%s" % backend,
                'source_message': original_message,
                'kwargs': {}})
-    plugin_reply = plugin.reply(incomming_event, content, package_for_scheduling=True)
+    plugin_reply = plugin.reply(incoming_event, content, package_for_scheduling=True)
     assert plugin_reply == e
