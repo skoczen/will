@@ -19,6 +19,11 @@ def content():
     return "This is a test content"
 
 
+@pytest.fixture
+def backend_message(message, io_backend):
+    return message({"backend": io_backend})
+
+
 def test__prepared_content(plugin, content):
     assert plugin._prepared_content(
         content, "", "") == re.sub(r'>\s+<', '><', content)
@@ -34,13 +39,12 @@ def test__trim_for_execution_has_analysis_attribute_in_source_message(plugin, me
     assert plugin._trim_for_execution(m) == m
 
 
-def test_get_backend_has_backend_atrribute(plugin, message, io_backend):
-    m = message({"backend": io_backend})
-    assert plugin.get_backend(m) == m.backend
+def test_get_backend_has_backend_atrribute(plugin, backend_message):
+    assert plugin.get_backend(backend_message) == backend_message.backend
 
 
-def test_get_backend_message_has_backend_atrribute_in_data(plugin, message, io_backend):
-    m = message({"data": message({"backend": io_backend})})
+def test_get_backend_message_has_backend_atrribute_in_data(plugin, message, backend_message):
+    m = message({"data": backend_message})
     del m.backend
     assert plugin.get_backend(m) == m.data.backend
 
@@ -74,27 +78,36 @@ def test_get_backend_service_as_parameter(message, plugin, io_backend, all_io_ba
 # when creating an event or message.
 # https://github.com/spulec/freezegun
 @freeze_time(WILLS_BIRTHDAY)
-def test_say_package_for_scheduling_is_true(plugin, content, message, event, io_backend):
-    original_message = message({"backend": io_backend})
-    backend = plugin.get_backend(original_message, None)
+def test_say_package_for_scheduling_is_true(plugin, content, event, backend_message):
+    backend = plugin.get_backend(backend_message, None)
     e = event({'type': "say",
                'content': content,
-               'source_message': original_message,
+               'source_message': backend_message,
                'kwargs': {}})
-    # Package plugin.say in a tuple to be able to make an assertion
-    plugin_say = (plugin.say(content, message=original_message, package_for_scheduling=True))
-    assert plugin_say == ("message.outgoing.%s" % backend, e)
+    topic, event = plugin.say(content, message=backend_message, package_for_scheduling=True)
+    assert topic == "message.outgoing.%s" % backend
+    assert event == e
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_reply_package_for_scheduling_is_true(plugin, content, message, event, io_backend):
-    original_message = message({"backend": io_backend})
-    incoming_event = event({"data": original_message})
-    backend = plugin.get_backend(original_message, None)
+def test_say_package_for_scheduling_is_false(plugin, content, event, mocker, backend_message):
+    backend = plugin.get_backend(backend_message, None)
+    e = event({'type': "say",
+               'content': content,
+               'source_message': backend_message,
+               'kwargs': {}})
+    mocker.patch.object(WillPlugin, "publish", return_value=None)
+    plugin.say(content, message=backend_message, package_for_scheduling=False)
+    WillPlugin.publish.assert_called_once_with("message.outgoing.%s" % backend, e)
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_reply_package_for_scheduling_is_true(plugin, content, event, backend_message):
+    incoming_event = event({"data": backend_message})
+    backend = plugin.get_backend(backend_message, None)
     e = event({'type': "reply",
                'content': content,
                'topic': "message.outgoing.{}".format(backend),
-               'source_message': original_message,
+               'source_message': backend_message,
                'kwargs': {}})
     plugin_reply = plugin.reply(incoming_event, content, package_for_scheduling=True)
     assert plugin_reply == e
