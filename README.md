@@ -107,14 +107,15 @@ Click the button!
 
 If everything goes well, you will have your own instance of pcobot running.
 
-Update existing One-Click Heroku Deployment
+###Update existing One-Click Heroku Deployment
 Prepare for updates:
+ - [Install the heroku command line interface](https://devcenter.heroku.com/categories/command-line)
 
-#### create local repo pointing to the Heroku remote
+#### Create local repo pointing to the Heroku remote
 `heroku git:clone --app YOUR_HEROKU_APPNAME && cd YOUR_HEROKU_APPNAME`
 It may tell you that you've cloned an empty repository. That is fine. 
 
-#### attach the GitHub repository of pcobot as a new remote
+#### Attach the GitHub repository of pcobot as a new remote
 `git remote add origin https://github.com/pastorhudson/pcobot`
 
 From now on you can simply update your Heroku instance by running:
