@@ -62,7 +62,7 @@ class ScheduledAnnounce(WillPlugin):
                     self.save('announcement_toggles', announcement_toggles)
                     self.reply("", message=message, attachments=announcements.get_toggles(self))
                 except KeyError:
-                    self.reply("Sorry I need the fully toggle name. Like `!toggle birthdays`",
+                    self.reply("Sorry I need the full toggle name. Like `!toggle birthdays`",
                                attachments=announcements.get_toggles(self))
         else:
             announcements.initialize_announcement_toggles(self)

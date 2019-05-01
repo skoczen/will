@@ -160,12 +160,16 @@ You'll need to invite the bot to any channel you want it to post.
 
 * :lock:```!toggle``` Responds with a list of the current announcement toggles.
 * :lock:```!toggle <announcement name>``` Turns announcements on and off.
+* :lock:```!twipe``` Clears and revitalizes the announcement toggles. Use this after you upgrade if you are missing new toggles.
+
+
 
 #### WebHooks
 Some announcements like "New Person Created" need to have Planning Center webhooks configured.
 
 Current webhooks PCObot will need:
 * people.v2.events.person.created (Needed for "New Person Created Announcement")
+* services.v2.events.plan.live.updated (Needed for "Live Service Update Announcement")
 
 ##### Create the webhook:
 * [Open PCO Webhooks](https://api.planningcenteronline.com/webhooks#/)

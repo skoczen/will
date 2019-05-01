@@ -1,7 +1,8 @@
 from will.plugin import WillPlugin
 from will.decorators import respond_to, periodic, hear, randomly, route, rendered_template, require_settings
-from plugins.pco import msg_attachment, announcements
+from plugins.pco import msg_attachment, announcements, live
 import json
+import logging
 
 
 class PcoWebhook(WillPlugin):
@@ -9,6 +10,8 @@ class PcoWebhook(WillPlugin):
 
     @route("/pco/webhook", method='POST')
     def pco_webhook_endpoint(self):
+        print("Got webhook")
+        logging.info("Got a webhook")
         data = self.request.json
         self.parse_pco_webhook(data)
         return "Successfully recieved webhook!"
@@ -20,11 +23,16 @@ class PcoWebhook(WillPlugin):
         payload = json.loads(data['attributes']['payload'])
         payload = payload['data']
         if endpoint == 'people.v2.events.person.updated':
-            # logging.info(("Person ID: %s" % payload['id']))
-            # logging.info(payload['attributes']['name'])
+            logging.info(("Person ID: %s" % payload['id']))
+            logging.info(endpoint)
             pass
         elif endpoint == 'people.v2.events.person.created':
             self.person_created(payload)
+        elif endpoint == 'services.v2.events.plan.live.updated':
+            logging.info(endpoint)
+            logging.info(("%s" % payload))
+            self.live_service_updated(payload)
+        return
 
     def person_created(self, data):
         if announcements.announcement_is_enabled(self, announcement='new_person_created'):
@@ -35,4 +43,11 @@ class PcoWebhook(WillPlugin):
                                                              data['attributes']['name'],
                                                         button_text="Open in People",
                                                         button_url=pcoaddress)
+            self.say("", channel=announcements.announcement_channel(self), attachments=attachment.slack())
+
+    def live_service_updated(self, data):
+        if announcements.announcement_is_enabled(self, announcement='live_service_update'):
+            # pcoaddress = "https://people.planningcenteronline.com/people/" + data['id']
+            meta_data = live.parse_live_hook(data)
+            attachment = live.get_plan_item(meta_data['service_type'], meta_data['plan_id'], meta_data['item_id'])
             self.say("", channel=announcements.announcement_channel(self), attachments=attachment.slack())
