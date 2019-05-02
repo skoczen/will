@@ -36,10 +36,11 @@ for req_file in ["base.txt", "slack.txt", "hipchat.txt", "rocketchat.txt"]:
 
 
 tests_require = [
+    'mock',
     'pytest',
     'pytest-cov',
     'pytest-runner',
-    'mock',
+    'pytest-mock',
     'freezegun'
 ]
 
