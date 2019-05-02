@@ -162,7 +162,7 @@ def test_say_package_for_scheduling_is_false(plugin, content, source_message, sa
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_reply_package_for_scheduling_is_true(plugin, content, event, 
+def test_reply_package_for_scheduling_is_true(plugin, content, event,
                                               reply_event, source_message):
     incoming_event = event({"data": source_message})
     plugin_reply = plugin.reply(incoming_event,
@@ -201,7 +201,7 @@ def test_reply_room_in_kwargs(plugin, event, content, source_message):
 @freeze_time(WILLS_BIRTHDAY)
 def test_set_topic(plugin, content, topic_event, source_message, outgoing_topic):
     plugin.set_topic(content, message=source_message)
-    plugin.publish.assert_called_once_with(outgoing_topic, 
+    plugin.publish.assert_called_once_with(outgoing_topic,
                                            topic_event)
 
 
