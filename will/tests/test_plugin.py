@@ -132,7 +132,7 @@ def test_say_package_for_scheduling_is_false(plugin, content, backend_message, s
     backend = plugin.get_backend(backend_message, None)
     plugin.say(content, message=backend_message, package_for_scheduling=False)
     plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
-                                               say_event)
+                                           say_event)
 
 
 @freeze_time(WILLS_BIRTHDAY)
@@ -150,16 +150,14 @@ def test_reply_package_for_scheduling_is_false(plugin, content, event, reply_eve
     incoming_event = event({"data": backend_message})
     plugin.reply(incoming_event, content, package_for_scheduling=False)
     backend, event = reply_event
-    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
-                                               event)
+    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend, event)
 
 
 @freeze_time(WILLS_BIRTHDAY)
 def test_set_topic(plugin, content, topic_event, backend_message):
     plugin.set_topic(content, message=backend_message)
     backend, event = topic_event
-    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
-                                               event)
+    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend, event)
 
 
 @freeze_time(WILLS_BIRTHDAY)
