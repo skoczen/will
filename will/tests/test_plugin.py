@@ -12,6 +12,8 @@ from will.plugin import WillPlugin
 @pytest.fixture
 def plugin(mocker):
     mocker.patch.object(WillPlugin, "publish", return_value=None)
+    mocker.patch.object(WillPlugin, "add_outgoing_event_to_schedule",
+                        return_value=None)
     return WillPlugin()
 
 
@@ -206,7 +208,8 @@ def test_set_topic(plugin, content, topic_event, source_message, outgoing_topic)
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_set_topic_with_room_arg(plugin, content, topic_event, source_message, outgoing_topic):
+def test_set_topic_with_room_arg(plugin, content, topic_event, source_message,
+                                 outgoing_topic):
     room = "test"
     plugin.set_topic(content, message=source_message, room=room)
     plugin.publish.assert_called_once_with(outgoing_topic,
@@ -214,22 +217,49 @@ def test_set_topic_with_room_arg(plugin, content, topic_event, source_message, o
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_topic_with_channel_arg(plugin, content, topic_event, source_message, outgoing_topic):
+def test_set_topic_with_channel_arg(plugin, content, topic_event, source_message,
+                                    outgoing_topic):
     channel = "test"
     plugin.set_topic(content, message=source_message, channel=channel)
     plugin.publish.assert_called_once_with(outgoing_topic, topic_event)
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_schedule_say(mocker, plugin, content, source_message):
-    mocker.patch.object(plugin,
-                        "add_outgoing_event_to_schedule",
-                        return_value=None)
+def test_schedule_say(plugin, content, source_message):
     when = datetime.now()
     topic, event = plugin.say(content,
                               message=source_message,
                               package_for_scheduling=True)
     plugin.schedule_say(content, when, message=source_message)
+    plugin.add_outgoing_event_to_schedule.assert_called_once_with(
+        when, {
+            "type": "message",
+            "topic": topic,
+            "event": event
+        })
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_schedule_say_with_room_arg(plugin, content, source_message):
+    room = "test"
+    when = datetime.now()
+    topic, event = plugin.say(content, message=source_message, package_for_scheduling=True)
+    event.kwargs["channel"] = room
+    plugin.schedule_say(content, when, message=source_message, room=room)
+    plugin.add_outgoing_event_to_schedule.assert_called_once_with(
+        when, {"type": "message", "topic": topic, "event": event}
+    )
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_schedule_say_with_channel_arg(plugin, content, source_message):
+    channel = "test"
+    when = datetime.now()
+    topic, event = plugin.say(content,
+                              message=source_message,
+                              package_for_scheduling=True)
+    event.kwargs["channel"] = channel
+    plugin.schedule_say(content, when, message=source_message, channel=channel)
     plugin.add_outgoing_event_to_schedule.assert_called_once_with(
         when, {
             "type": "message",
