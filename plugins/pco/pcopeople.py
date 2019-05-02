@@ -122,7 +122,7 @@ class PcoPeoplePlugin(WillPlugin):
 
     @respond_to("(!forms.*?)")
     def pco_forms(self, message):
-        """!forms lists the forms available on people"""
+        """!forms: lists the forms available on people and provides a button to open it."""
         if authenticate.check_name(message):
             if authenticate.get(message, app):
                 self.reply("Looking up forms. . .")
