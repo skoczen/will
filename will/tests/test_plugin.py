@@ -64,6 +64,12 @@ def topic_event(plugin, event, content, backend_message):
     })
 
 
+def test__init__(plugin):
+    kwargs = {"bot": "test"}
+    plugin = WillPlugin(**kwargs)
+    assert plugin.bot == "test"
+
+
 def test__prepared_content(plugin, content):
     assert plugin._prepared_content(content, "",
                                     "") == re.sub(r'>\s+<', '><', content)
@@ -75,7 +81,7 @@ def test__trim_for_execution_has_analysis_attribute(plugin, message, analysis):
 
 
 def test__trim_for_execution_has_analysis_attribute_in_source_message(plugin, message, analysis):
-    m = message({"source_message": {"analysis": analysis}})
+    m = message({"source_message": message({"analysis": analysis})})
     assert plugin._trim_for_execution(m) == m
 
 
