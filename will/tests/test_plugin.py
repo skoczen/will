@@ -26,6 +26,11 @@ def backend_message(message, io_backend):
 
 
 @pytest.fixture
+def backend(plugin, backend_message):
+    return plugin.get_backend(backend_message, None)
+
+
+@pytest.fixture
 @freeze_time(WILLS_BIRTHDAY)
 def say_event(event, content, backend_message):
     return event({
@@ -52,10 +57,9 @@ def reply_event(plugin, event, content, backend_message):
 
 @pytest.fixture
 @freeze_time(WILLS_BIRTHDAY)
-def topic_event(plugin, event, content, backend_message):
-    backend = plugin.get_backend(backend_message, None)
+def topic_event(plugin, event, content, backend, backend_message):
 
-    return backend, event({
+    return event({
         'type': "topic_change",
         'content': content,
         'topic': "message.outgoing.{}".format(backend),
@@ -197,10 +201,26 @@ def test_reply_room_in_kwargs(plugin, event, content, backend_message):
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_set_topic(plugin, content, topic_event, backend_message):
+def test_set_topic(plugin, content, topic_event, backend_message, backend):
     plugin.set_topic(content, message=backend_message)
-    backend, event = topic_event
-    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend, event)
+    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend, 
+                                           topic_event)
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_set_topic_with_room_arg(plugin, content, topic_event, backend_message, backend):
+    room = "test"
+    plugin.set_topic(content, message=backend_message, room=room)
+    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
+                                           topic_event)
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_topic_with_channel_arg(plugin, content, topic_event, backend_message, backend):
+    channel = "test"
+    plugin.set_topic(content, message=backend_message, channel=channel)
+    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
+                                           topic_event)
 
 
 @freeze_time(WILLS_BIRTHDAY)
