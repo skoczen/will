@@ -153,6 +153,24 @@ def test_reply_package_for_scheduling_is_false(plugin, content, event, reply_eve
     plugin.publish.assert_called_once_with("message.outgoing.%s" % backend, event)
 
 
+def test_reply_channel_in_kwargs(plugin, event, content, backend_message):
+    incoming_event = event({"data": backend_message})
+    reply = plugin.reply(incoming_event, content, channel="test")
+    assert reply is None
+
+
+def test_reply_service_in_kwargs(plugin, event, content, backend_message):
+    incoming_event = event({"data": backend_message})
+    reply = plugin.reply(incoming_event, content, service="test")
+    assert reply is None
+
+
+def test_reply_room_in_kwargs(plugin, event, content, backend_message):
+    incoming_event = event({"data": backend_message})
+    reply = plugin.reply(incoming_event, content, room="test")
+    assert reply is None
+
+
 @freeze_time(WILLS_BIRTHDAY)
 def test_set_topic(plugin, content, topic_event, backend_message):
     plugin.set_topic(content, message=backend_message)
