@@ -119,10 +119,29 @@ def test_get_backend_service_as_parameter(message, plugin, io_backend, all_io_ba
     settings.IO_BACKENDS = all_io_backends
     assert plugin.get_backend(m, service) == service
 
-
 # freeze_time to mock datetime.datetime.now() method which is invoked
 # when creating an event or message.
 # https://github.com/spulec/freezegun
+@freeze_time(WILLS_BIRTHDAY)
+def test_say_with_room_arg(plugin, content, say_event, backend_message):
+    room = "test"
+    backend = plugin.get_backend(backend_message, None)
+    plugin.say(content, message=backend_message, room=room)
+    say_event.kwargs["channel"] = room
+    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
+                                           say_event)
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_say_with_channel_arg(plugin, content, say_event, backend_message):
+    channel = "test"
+    backend = plugin.get_backend(backend_message, None)
+    plugin.say(content, message=backend_message, channel=channel)
+    say_event.kwargs["channel"] = channel
+    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
+                                           say_event)
+
+
 @freeze_time(WILLS_BIRTHDAY)
 def test_say_package_for_scheduling_is_true(plugin, content, say_event, backend_message):
     backend = plugin.get_backend(backend_message, None)
