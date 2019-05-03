@@ -17,7 +17,7 @@ class ErrorMixin(object):
         traceback.print_exc()
         error_message = "%s%s" % (
             error_message,
-            ":\n\n%s\nContinuing...\n" % traceback.format_exc(exception_instance)
+            ":\n\n%s\nContinuing...\n" % traceback.format_exc()
         )
         self.add_startup_error(error_message)
         logging.critical(error_message)

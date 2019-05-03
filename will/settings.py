@@ -205,9 +205,11 @@ IO_BACKENDS = "
         # Set for hipchat
         for b in settings["IO_BACKENDS"]:
             if "hipchat" in b:
-                if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings and\
-                        (settings["ALLOW_INSECURE_HIPCHAT_SERVER"] is True or
-                         settings["ALLOW_INSECURE_HIPCHAT_SERVER"].lower() == "true"):
+                if "ALLOW_INSECURE_HIPCHAT_SERVER" in settings \
+                        and (
+                        settings["ALLOW_INSECURE_HIPCHAT_SERVER"] is True
+                        or settings["ALLOW_INSECURE_HIPCHAT_SERVER"].lower() == "true"
+                        ):
                     warn("You are choosing to run will with SSL disabled. "
                          "This is INSECURE and should NEVER be deployed outside a development environment.")
                     settings["ALLOW_INSECURE_HIPCHAT_SERVER"] = True
@@ -224,8 +226,8 @@ IO_BACKENDS = "
                         settings["HIPCHAT_ROOMS"] = None
 
                 if (
-                    "HIPCHAT_DEFAULT_ROOM" not in settings and "HIPCHAT_ROOMS" in settings and
-                    settings["HIPCHAT_ROOMS"] and len(settings["HIPCHAT_ROOMS"]) > 0
+                    "HIPCHAT_DEFAULT_ROOM" not in settings and "HIPCHAT_ROOMS" in settings
+                    and settings["HIPCHAT_ROOMS"] and len(settings["HIPCHAT_ROOMS"]) > 0
                 ):
                     if not quiet:
                         warn("no HIPCHAT_DEFAULT_ROOM found in the environment or config.  "
@@ -235,16 +237,16 @@ IO_BACKENDS = "
             if "HIPCHAT_HANDLE" in settings and "HIPCHAT_HANDLE_NOTED" not in settings:
                 if not quiet:
                     note(
-                        "HIPCHAT_HANDLE is no longer required (or used), as Will knows how to get\n" +
-                        "        his current handle from the HipChat servers."
+                        """HIPCHAT_HANDLE is no longer required (or used), as Will knows how to get\n
+                                his current handle from the HipChat servers."""
                     )
                     settings["HIPCHAT_HANDLE_NOTED"] = True
 
             if "HIPCHAT_NAME" in settings and "HIPCHAT_NAME_NOTED" not in settings:
                 if not quiet:
                     note(
-                        "HIPCHAT_NAME is no longer required (or used), as Will knows how to get\n" +
-                        "        his current name from the HipChat servers."
+                        """HIPCHAT_NAME is no longer required (or used), as Will knows how to get\n
+                                his current name from the HipChat servers."""
                     )
                     settings["HIPCHAT_NAME_NOTED"] = True
 
@@ -258,8 +260,8 @@ IO_BACKENDS = "
                         settings["ROCKETCHAT_URL"] = settings["ROCKETCHAT_URL"][:-1]
 
         if (
-            "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings and
-            settings["IO_BACKENDS"] and len(settings["IO_BACKENDS"]) > 0
+            "DEFAULT_BACKEND" not in settings and "IO_BACKENDS" in settings
+            and settings["IO_BACKENDS"] and len(settings["IO_BACKENDS"]) > 0
         ):
             if not quiet:
                 note("no DEFAULT_BACKEND found in the environment or config.\n  "
@@ -403,17 +405,17 @@ IO_BACKENDS = "
                     key = auto_key()
                     if key:
                         warn(
-                            "No SECRET_KEY specified and ENABLE_INTERNAL_ENCRYPTION is on.\n" +
-                            "  Temporarily auto-generating a key specific to this computer:\n    %s\n" % (key,) +
-                            "  Please set WILL_SECRET_KEY in the environment as soon as possible to ensure \n" +
-                            "  Will is able to access information from previous runs."
+                            """No SECRET_KEY specified and ENABLE_INTERNAL_ENCRYPTION is on.\n
+                               Temporarily auto-generating a key specific to this computer:\n    {}\n
+                               Please set WILL_SECRET_KEY in the environment as soon as possible to ensure \n
+                               Will is able to access information from previous runs.""".format(key)
                         )
                     else:
                         error(
-                            "ENABLE_INTERNAL_ENCRYPTION is turned on, but a SECRET_KEY has not been given.\n" +
-                            "We tried to automatically generate temporary SECRET_KEY, but this appears to be a \n" +
-                            "shared or virtualized environment.\n Please set a unique secret key in the " +
-                            "environment as WILL_SECRET_KEY to run will."
+                            """ENABLE_INTERNAL_ENCRYPTION is turned on, but a SECRET_KEY has not been given.\n
+                               We tried to automatically generate temporary SECRET_KEY, but this appears to be a \n"
+                               shared or virtualized environment.\n Please set a unique secret key in the
+                               environment as WILL_SECRET_KEY to run will."""
                         )
                         print("  Unable to start will without a SECRET_KEY while encryption is turned on. Shutting down.")
                         sys.exit(1)
