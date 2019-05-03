@@ -29,13 +29,13 @@ class BaseStorageBackend(PrivateBaseStorageBackend):
     """
 
     def do_save(self, key, value, expire=None):
-        raise NotImplemented
+        raise NotImplementedError
 
     def do_load(self, key):
-        raise NotImplemented
+        raise NotImplementedError
 
     def clear(self, key):
-        raise NotImplemented
+        raise NotImplementedError
 
     def clear_all_keys(self):
-        raise NotImplemented
+        raise NotImplementedError

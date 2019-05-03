@@ -34,7 +34,7 @@ class GenerationBackend(PubSubMixin, SleepMixin, object):
 
     def do_generate(self, message):
         # Take message, return a list of possible responses/matches
-        raise NotImplemented
+        raise NotImplementedError
 
     def start(self, name, **kwargs):
         for k, v in kwargs.items():

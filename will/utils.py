@@ -99,7 +99,7 @@ def note(warn_string):
 
 
 def print_head():
-        puts("""
+    puts(r"""
       ___/-\___
   ___|_________|___
      |         |

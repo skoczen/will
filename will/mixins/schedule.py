@@ -57,8 +57,8 @@ class ScheduleMixin(PubSubMixin, object):
     def add_to_schedule(self, when, item, periodic_list=False, ignore_scheduler_lock=False):
         try:
             while (
-                (ignore_scheduler_lock is False and self.load("scheduler_lock", False)) or
-                self.load("scheduler_add_lock", False)
+                (ignore_scheduler_lock is False and self.load("scheduler_lock", False))
+                or self.load("scheduler_add_lock", False)
             ):
                 import sys
                 sys.stdout.write("waiting for lock to clear\n")

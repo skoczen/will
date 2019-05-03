@@ -20,39 +20,38 @@ def get_acl_members(acl):
     return acl_members
 
 
-def is_acl_allowed(nick, acl):
+def is_acl_allowed(user_id, acl):
     if not getattr(settings, "ACL", None):
-        logging.warn(
+        logging.warning(
             "%s was just allowed to perform actions in %s because no ACL settings exist. This can be a security risk." % (
-                nick,
+                user_id,
                 acl,
             )
         )
         return True
     for a in acl:
         acl_members = get_acl_members(a)
-        if nick in acl_members or nick.lower() in [x.lower() for x in acl_members]:
+        if user_id in acl_members:
             return True
 
     return False
 
 
-def test_acl(message, acl):
+def verify_acl(message, acl):
     try:
         if settings.DISABLE_ACL:
             return True
 
-        allowed = is_acl_allowed(message.sender.handle, acl)
+        allowed = is_acl_allowed(message.sender.id, acl)
         if allowed:
             return True
         if hasattr(message, "data") and hasattr(message.data, "backend_supports_acl"):
             if not message.data.backend_supports_acl:
-                logging.warn(
+                logging.warning(
                     "%s was just allowed to perform actions in %s because the backend does not support ACL.  This can be a security risk." % (
                         message.sender.handle,
                         acl,
-                    ) +
-                    "To fix this, set ACL groups in your config.py, or set DISABLE_ACL = True"
+                    ) + "To fix this, set ACL groups in your config.py, or set DISABLE_ACL = True"
                 )
                 return True
     except:

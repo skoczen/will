@@ -174,9 +174,9 @@ class RocketChatBackend(IOBackend, StorageMixin):
         if event.type in ["topic_change", ]:
             self.set_topic(event.content)
         elif (
-            event.type == "message.no_response" and
-            event.data.is_direct and
-            event.data.will_said_it is False
+            event.type == "message.no_response"
+            and event.data.is_direct
+            and event.data.will_said_it is False
         ):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)

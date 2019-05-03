@@ -59,12 +59,12 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
     def normalize_incoming_event(self, event):
 
         if (
-            "type" in event and
-            event["type"] == "message" and
-            ("subtype" not in event or event["subtype"] != "message_changed") and
+            "type" in event
+            and event["type"] == "message"
+            and ("subtype" not in event or event["subtype"] != "message_changed")
             # Ignore thread summary events (for now.)
             # TODO: We should stack these into the history.
-            ("subtype" not in event or ("message" in event and "thread_ts" not in event["message"]))
+            and ("subtype" not in event or ("message" in event and "thread_ts" not in event["message"]))
         ):
             # print("slack: normalize_incoming_event - %s" % event)
             # Sample of group message
@@ -172,7 +172,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 event.content = SlackMarkdownConverter().convert(event.content)
 
             event.content = event.content.replace("&", "&amp;")
-            event.content = event.content.replace("\_", "_")
+            event.content = event.content.replace(r"\_", "_")
 
             kwargs = {}
             if "kwargs" in event:
@@ -210,9 +210,9 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         if event.type in ["topic_change", ]:
             self.set_topic(event)
         elif (
-            event.type == "message.no_response" and
-            event.data.is_direct and
-            event.data.will_said_it is False
+            event.type == "message.no_response"
+            and event.data.is_direct
+            and event.data.will_said_it is False
         ):
             event.content = random.choice(UNSURE_REPLIES)
             self.send_message(event)
@@ -275,9 +275,9 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                             "thread_ts": event.source_message.original_incoming_event["ts"]
                         })
                     elif (
-                        hasattr(event.source_message, "data") and
-                        hasattr(event.source_message.data, "original_incoming_event") and
-                        "ts" in event.source_message.data.original_incoming_event
+                        hasattr(event.source_message, "data")
+                        and hasattr(event.source_message.data, "original_incoming_event")
+                        and "ts" in event.source_message.data.original_incoming_event
                     ):
                         logging.error(
                             "Hm.  I was told to start a new thread, but while using .say(), instead of .reply().\n"
@@ -306,6 +306,9 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
         return data
 
     def send_message(self, event):
+        if event.content == '' or event.content is None:
+            # slack errors with no_text if empty message
+            return
         data = {}
         if hasattr(event, "kwargs"):
             data.update(event.kwargs)

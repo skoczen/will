@@ -125,7 +125,7 @@ class PagerDutyPlugin(WillPlugin):
         self._update_incident(message, None, 'resolve_all')
 
     @require_settings("PAGERDUTY_SUBDOMAIN", "PAGERDUTY_API_KEY")
-    @respond_to("^pd maintenance (?P<service_name>[\S+ ]+) (?P<interval>[1-9])h$")
+    @respond_to(r"^pd maintenance (?P<service_name>[\S+ ]+) (?P<interval>[1-9])h$")
     def set_service_maintenance(self, message, service_name=None, interval=None):
         if not interval:
             interval = 1

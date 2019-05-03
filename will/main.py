@@ -36,7 +36,7 @@ from will.utils import show_valid, show_invalid, error, warn, note, print_head, 
 
 # Force UTF8
 if sys.version_info < (3, 0):
-    reload(sys)  # flake8: noqa
+    reload(sys)  # noqa
     sys.setdefaultencoding('utf8')
 else:
     raw_input = input
@@ -255,23 +255,23 @@ To set your %(name)s:
                     module = import_module(b)
                     for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                         if (
-                            hasattr(cls, "is_will_iobackend") and
-                            cls.is_will_iobackend and
-                            class_name != "IOBackend" and
-                            class_name != "StdInOutIOBackend"
+                            hasattr(cls, "is_will_iobackend")
+                            and cls.is_will_iobackend
+                            and class_name != "IOBackend"
+                            and class_name != "StdInOutIOBackend"
                         ):
                             c = cls()
                             show_valid(c.friendly_name)
                             c.verify_settings()
                             one_valid_backend = True
                             self.valid_io_backends.append(b)
-                except EnvironmentError as e:
+                except EnvironmentError:
                     puts(colored.red("  ✗ %s is missing settings, and will be disabled." % b))
                     puts()
 
                     missing_settings = True
 
-                except Exception as e:
+                except Exception:
                     error_message = (
                         "IO backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_IO_BACKENDS, or provide it somehow (pip install, etc)."
@@ -316,7 +316,7 @@ To set your %(name)s:
 
                     one_valid_backend = True
                     show_valid("%s" % b)
-                except ImportError as e:
+                except ImportError:
                     error_message = (
                         "Analysis backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_ANALYZE_BACKENDS, or provide it somehow (pip install, etc)."
@@ -359,7 +359,7 @@ To set your %(name)s:
 
                     one_valid_backend = True
                     show_valid("%s" % b)
-                except ImportError as e:
+                except ImportError:
                     error_message = (
                         "Generation backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_GENERATION_BACKENDS, or provide it somehow (pip install, etc)."
@@ -402,7 +402,7 @@ To set your %(name)s:
 
                     one_valid_backend = True
                     show_valid("%s" % b)
-                except ImportError as e:
+                except ImportError:
                     error_message = (
                         "Execution backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_EXECUTION_BACKENDS, or provide it somehow (pip install, etc)."
@@ -435,14 +435,14 @@ To set your %(name)s:
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
                     if (
-                        hasattr(cls, "is_will_execution_backend") and
-                        cls.is_will_execution_backend and
-                        class_name != "ExecutionBackend"
+                        hasattr(cls, "is_will_execution_backend")
+                        and cls.is_will_execution_backend
+                        and class_name != "ExecutionBackend"
                     ):
                         c = cls(bot=self)
                         self.execution_backends.append(c)
                         show_valid("Execution: %s Backend started." % cls.__name__)
-                except ImportError as e:
+                except ImportError:
                     error_message = (
                         "Execution backend %s is missing. Please either remove it \nfrom config.py "
                         "or WILL_EXECUTION_BACKENDS, or provide it somehow (pip install, etc)."
@@ -551,20 +551,20 @@ To set your %(name)s:
             sys.exit(1)
 
         while (
-            (hasattr(self, "scheduler_thread") and self.scheduler_thread and self.scheduler_thread and self.scheduler_thread.is_alive()) or
-            (hasattr(self, "scheduler_thread") and self.scheduler_thread and self.bottle_thread and self.bottle_thread.is_alive()) or
-            (hasattr(self, "scheduler_thread") and self.scheduler_thread and self.incoming_event_thread and self.incoming_event_thread.is_alive()) or
-            # self.stdin_listener_thread.is_alive() or
-            any([t.is_alive() for t in self.io_threads]) or
-            any([t.is_alive() for t in self.analysis_threads]) or
-            any([t.is_alive() for t in self.generation_threads]) or
-            any([t.is_alive() for t in self.running_execution_threads])
+            (hasattr(self, "scheduler_thread") and self.scheduler_thread and self.scheduler_thread and self.scheduler_thread.is_alive())
+            or (hasattr(self, "scheduler_thread") and self.scheduler_thread and self.bottle_thread and self.bottle_thread.is_alive())
+            or (hasattr(self, "scheduler_thread") and self.scheduler_thread and self.incoming_event_thread and self.incoming_event_thread.is_alive())
+            # or self.stdin_listener_thread.is_alive()
+            or any([t.is_alive() for t in self.io_threads])
+            or any([t.is_alive() for t in self.analysis_threads])
+            or any([t.is_alive() for t in self.generation_threads])
+            or any([t.is_alive() for t in self.running_execution_threads])
             # or
             # ("hipchat" in settings.CHAT_BACKENDS and xmpp_thread and xmpp_thread.is_alive())
         ):
-                sys.stdout.write(".")
-                sys.stdout.flush()
-                time.sleep(0.5)
+            sys.stdout.write(".")
+            sys.stdout.flush()
+            time.sleep(0.5)
         print(". done.\n")
         sys.exit(1)
 
@@ -612,8 +612,7 @@ To set your %(name)s:
                             generation_threads[event.original_incoming_event_hash] = {
                                 "count": 0,
                                 "timeout_end": (
-                                    now +
-                                    datetime.timedelta(seconds=self.generation_timeout / 1000)
+                                    now + datetime.timedelta(seconds=self.generation_timeout / 1000)
                                 ),
                                 "original_incoming_event": q["original_incoming_event"],
                                 "working_event": q["working_event"],
@@ -696,7 +695,7 @@ To set your %(name)s:
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
-        except ImportError :
+        except ImportError:
             module_name = traceback.format_exc().split(" ")[-1]
             error("Unable to bootstrap storage - attempting to load %s" % module_name)
             puts(traceback.format_exc())
@@ -716,12 +715,12 @@ To set your %(name)s:
             with indent(2):
                 show_valid("Bootstrapped!")
             puts("")
-        except ImportError as e:
+        except ImportError:
             module_name = traceback.format_exc().split(" ")[-1]
             error("Unable to bootstrap pubsub - attempting to load %s" % module_name)
             puts(traceback.format_exc())
             sys.exit(1)
-        except Exception as e:
+        except Exception:
             error("Unable to bootstrap pubsub!")
             puts(traceback.format_exc())
             sys.exit(1)
@@ -793,10 +792,10 @@ To set your %(name)s:
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
                     if (
-                        hasattr(cls, "is_will_iobackend") and
-                        cls.is_will_iobackend and
-                        class_name != "IOBackend" and
-                        class_name != "StdInOutIOBackend"
+                        hasattr(cls, "is_will_iobackend")
+                        and cls.is_will_iobackend
+                        and class_name != "IOBackend"
+                        and class_name != "StdInOutIOBackend"
                     ):
                         c = cls()
 
@@ -835,9 +834,9 @@ To set your %(name)s:
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
                     if (
-                        hasattr(cls, "is_will_analysisbackend") and
-                        cls.is_will_analysisbackend and
-                        class_name != "AnalysisBackend"
+                        hasattr(cls, "is_will_analysisbackend")
+                        and cls.is_will_analysisbackend
+                        and class_name != "AnalysisBackend"
                     ):
                         c = cls()
                         thread = Process(
@@ -864,9 +863,9 @@ To set your %(name)s:
             for class_name, cls in inspect.getmembers(module, predicate=inspect.isclass):
                 try:
                     if (
-                        hasattr(cls, "is_will_generationbackend") and
-                        cls.is_will_generationbackend and
-                        class_name != "GenerationBackend"
+                        hasattr(cls, "is_will_generationbackend")
+                        and cls.is_will_generationbackend
+                        and class_name != "GenerationBackend"
                     ):
                         c = cls()
                         thread = Process(
@@ -1016,9 +1015,9 @@ To set your %(name)s:
                                                         "setting_name": s,
                                                     }
                                             if (
-                                                "listens_to_messages" in meta and
-                                                meta["listens_to_messages"] and
-                                                "listener_regex" in meta
+                                                "listens_to_messages" in meta
+                                                and meta["listens_to_messages"]
+                                                and "listener_regex" in meta
                                             ):
                                                 # puts("- %s" % function_name)
                                                 regex = meta["listener_regex"]
@@ -1080,13 +1079,13 @@ To set your %(name)s:
                                                 # puts("- %s" % function_name)
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
 
-                                except Exception as e :
+                                except Exception:
                                     error(plugin_name)
                                     self.startup_error(
                                         "Error bootstrapping %s.%s" % (
                                             plugin_info["class"],
                                             function_name,
-                                        ), e
+                                        )
                                     )
                             if len(plugin_warnings) > 0:
                                 show_invalid(plugin_name)
