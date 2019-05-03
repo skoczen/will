@@ -185,6 +185,11 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         elif room:
             channel = room
 
+        # This does not look like testable code, or  something that will ever
+        # happen. If we have a required "content" positional argument, if
+        # a "content" key commes in kwargs, python will fail with a:
+        # TypeError: schedule_say() got multiple values for keyword argument
+        # 'content'
         if "content" in kwargs:
             if content:
                 del kwargs["content"]
