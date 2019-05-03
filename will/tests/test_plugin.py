@@ -70,7 +70,7 @@ def topic_event(plugin, event, content, outgoing_topic, source_message):
     })
 
 
-def test__init__(plugin):
+def test__init__():
     kwargs = {"bot": "test"}
     plugin = WillPlugin(**kwargs)
     assert plugin.bot == "test"
@@ -179,6 +179,33 @@ def test_reply_package_for_scheduling_is_false(plugin, content, event,
                                                source_message):
     incoming_event = event({"data": source_message})
     plugin.reply(incoming_event, content, package_for_scheduling=False)
+    plugin.publish.assert_called_once_with(outgoing_topic, reply_event)
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_reply_event_has_words_and_no_content(plugin, content, event, reply_event,
+                                              source_message, outgoing_topic):
+    incoming_event = event({"data": source_message})
+    plugin.message = incoming_event
+    plugin.reply(event=content)
+    plugin.publish.assert_called_once_with(outgoing_topic, reply_event)
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_reply_event_and_content_passed_backwards(plugin, reply_event, content,
+                                                  event, source_message,
+                                                  outgoing_topic):
+    incoming_event = event({"data": source_message})
+    plugin.reply(event=content, content=incoming_event)
+    plugin.publish.assert_called_once_with(outgoing_topic, reply_event)
+
+
+@freeze_time(WILLS_BIRTHDAY)
+def test_reply_message_has_data(plugin, content, event, reply_event,
+                                source_message, outgoing_topic):
+    incoming_event = event({"data": source_message})
+    plugin.message = incoming_event
+    plugin.reply(event=content, content=content)
     plugin.publish.assert_called_once_with(outgoing_topic, reply_event)
 
 
