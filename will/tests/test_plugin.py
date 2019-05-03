@@ -30,7 +30,7 @@ def source_message(message, io_backend):
 @pytest.fixture
 def outgoing_topic(plugin, source_message):
     backend = plugin.get_backend(source_message, None)
-    return "message.outgoing.%s" % backend
+    return "message.outgoing.{}".format(backend)
 
 
 @pytest.fixture
@@ -146,21 +146,20 @@ def test_say_with_channel_arg(plugin, content, say_event, source_message, outgoi
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_say_package_for_scheduling_is_true(plugin, content, say_event, source_message):
-    backend = plugin.get_backend(source_message, None)
+def test_say_package_for_scheduling_is_true(plugin, content, say_event,
+                                            outgoing_topic, source_message):
     topic, event = plugin.say(content,
                               message=source_message,
                               package_for_scheduling=True)
-    assert topic == "message.outgoing.%s" % backend
+    assert topic == outgoing_topic
     assert event == say_event
 
 
 @freeze_time(WILLS_BIRTHDAY)
-def test_say_package_for_scheduling_is_false(plugin, content, source_message, say_event):
-    backend = plugin.get_backend(source_message, None)
+def test_say_package_for_scheduling_is_false(plugin, content, source_message,
+                                             outgoing_topic, say_event):
     plugin.say(content, message=source_message, package_for_scheduling=False)
-    plugin.publish.assert_called_once_with("message.outgoing.%s" % backend,
-                                           say_event)
+    plugin.publish.assert_called_once_with(outgoing_topic, say_event)
 
 
 @freeze_time(WILLS_BIRTHDAY)
