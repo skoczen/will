@@ -11,6 +11,7 @@ from will.plugin import WillPlugin
 
 @pytest.fixture
 def plugin(mocker):
+    """Initialize plugin module and mock methods"""
     mocker.patch.object(WillPlugin, "publish", return_value=None)
     mocker.patch.object(WillPlugin, "add_outgoing_event_to_schedule",
                         return_value=None)
@@ -19,16 +20,19 @@ def plugin(mocker):
 
 @pytest.fixture
 def content():
+    """Response to be shown on the io_backend"""
     return "This is a test content"
 
 
 @pytest.fixture
 def source_message(message, io_backend):
+    """Message comming from an io_backend"""
     return message({"backend": io_backend})
 
 
 @pytest.fixture
 def outgoing_topic(plugin, source_message):
+    """Topic with which an event is published"""
     backend = plugin.get_backend(source_message, None)
     return "message.outgoing.{}".format(backend)
 
@@ -36,6 +40,7 @@ def outgoing_topic(plugin, source_message):
 @pytest.fixture
 @freeze_time(WILLS_BIRTHDAY)
 def say_event(event, content, source_message):
+    """Mimics an event abstraction for say method"""
     return event({
         'type': "say",
         'content': content,
@@ -47,6 +52,7 @@ def say_event(event, content, source_message):
 @pytest.fixture
 @freeze_time(WILLS_BIRTHDAY)
 def reply_event(plugin, event, content, source_message, outgoing_topic):
+    """Mimics an event abstraction for reply method"""
 
     return event({
         'type': "reply",
@@ -60,6 +66,7 @@ def reply_event(plugin, event, content, source_message, outgoing_topic):
 @pytest.fixture
 @freeze_time(WILLS_BIRTHDAY)
 def topic_event(plugin, event, content, outgoing_topic, source_message):
+    """Mimics an event abstraction for set_topic method"""
 
     return event({
         'type': "topic_change",
