@@ -19,7 +19,7 @@ pyasn1==0.1.7
 pycrypto==2.6.1
 pygerduty==0.28
 pytz==2017.2
-PyYAML==3.13
+PyYAML==5.1
 regex==2017.9.23
 redis==2.10.6
 requests==2.20.0
