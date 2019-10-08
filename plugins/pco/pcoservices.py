@@ -50,7 +50,7 @@ class PcoServicesPlugin(WillPlugin):
             self.reply("Sorry I don't find " + song + "in services.")
         self.reply("", message=message, attachments=attachment)
 
-    @respond_to("(!teams|!team)(?P<pco_team>.*?(?=(?:\?)|$))")
+    @respond_to("(!teams|!team) (?P<pco_team>.*?(?=(?:\?)|$))")
     def pco_team_lookup(self, message, pco_team):
         """!team <team name>: returns a list of people serving on the team"""
         pco_team = pco_team.strip()
@@ -88,6 +88,39 @@ class PcoServicesPlugin(WillPlugin):
         if pco_team.strip() == '':
             pco_team = pco_team_unquoted
         self.pco_team_schedule_lookup(message, pco_team, pco_date)
+
+    @respond_to("!notify-team (?P<pco_team>[\w ]+) in channel (?P<channel>[\w]+)")
+    def add_team_notification(self, message, pco_team, channel):
+        teams.add_team_notification(self, pco_team, channel)
+        self.say('Team notifications turned on for {} in the {} channel.'.format(pco_team, channel))
+
+    @respond_to("!remove-notification (?P<pco_team>[\w ]+)")
+    def remove_team_notification(self, message, pco_team):
+        success = teams.remove_team_notification(self, pco_team.strip())
+        if success:
+            self.say('Removed notification for {}.'.format(pco_team))
+        else:
+            self.say('Could not find specified team. Check `!team-notifications` to see teams with notifications.')
+
+    @respond_to("!team-notifications")
+    def show_team_notifications(self, message):
+        attachment = []
+        attachments = teams.get_team_notifications(self)
+        for returned_attachment in attachments:
+            attachment += returned_attachment.slack()
+        self.say('', message=message, attachments=attachment)
+
+    @periodic(minute='*/15')
+    def test_every_15(self):
+        watched_teams = teams.team_notification_list(self)
+        for team in watched_teams:
+            is_scheduled, confirmed_attachment = teams.team_is_scheduled(team)
+            if is_scheduled:
+                attachment = []
+                attachments = confirmed_attachment
+                for returned_attachment in attachments:
+                    attachment += returned_attachment.slack()
+                self.say('', channel=watched_teams[team], attachments=attachment)
 
 
 # Test your setup by running this file.

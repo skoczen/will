@@ -1,12 +1,13 @@
 import pypco
 import os
 import parsedatetime
-from datetime import datetime
+from datetime import datetime, timedelta
 from plugins.pco import msg_attachment
 import pytz
 
 pco = pypco.PCO(os.environ["WILL_PCO_APPLICATION_KEY"], os.environ["WILL_PCO_API_SECRET"])
 attachment_list = []
+TEAM_NOTIFICATIONS_KEY = 'team_notifications'
 
 
 def get_for_date(team, date_expression):
@@ -55,9 +56,9 @@ def get_for_date(team, date_expression):
         for status in ['confirmed', 'unconfirmed']:
             msg += '\n\n{}:'.format(status.capitalize())
             for plan_person_tuple in team_members[status]:
-                msg += '\n- {}'.format(plan_person_tuple[0].name)
+                msg += '\n- {} | {} '.format(plan_person_tuple[0].name, plan_person_tuple[0].team_position_name)
                 if not is_specific:
-                    msg += ' ({})'.format(plan_person_tuple[1])
+                    msg += '({})'.format(plan_person_tuple[1])
     attachment_list.append(msg_attachment.
                            SlackAttachment(fallback=msg, text=msg))
     return attachment_list
@@ -118,6 +119,74 @@ def dates_match(date_one, date_two, is_specific):
         return date_one == date_two
     else:
         return date_one.day == date_two.day and date_one.month == date_two.month and date_one.year == date_two.year
+
+
+def get_team_notifications(will):
+    watched_teams = team_notification_list(will)
+    msg = 'Teams with schedule notifications turned on:\n'
+    if len(watched_teams.keys()) == 0:
+        msg = 'No teams have schedule notifications turned on.'
+    else:
+        for team in watched_teams:
+            msg += '- *{}* in channel *{}*\n'.format(team, watched_teams[team])
+    print(msg)
+    return [msg_attachment.SlackAttachment(fallback=msg, text=msg)]
+
+
+def team_is_scheduled(team_name):
+    start_time = datetime.now() + timedelta(minutes=15)
+    start_time = start_time.replace(second=0, microsecond=0, minute=round_to_nearest(start_time.minute))
+    start_time = start_time.astimezone().astimezone(pytz.utc)
+    print(start_time)
+    is_scheduled = False
+    confirmed = []
+    for t in pco.services.teams.list(where={'name': team_name}, include='people'):
+        for member in t.rel.people.list():
+            for plan_person in member.rel.plan_people.list():
+                for plan_time in plan_person.rel.plan_times.list():
+                    starts_at = pytz.utc.localize(datetime.strptime(plan_time.starts_at, '%Y-%m-%dT%H:%M:%SZ'))
+                    starts_at = starts_at.replace(minute=round_to_nearest(start_time.minute), second=0)
+                    if starts_at == start_time:
+                        is_scheduled = True
+                        if plan_person.status in ('C', 'Confirmed'):
+                            confirmed.append(plan_person.name)
+    confirmed_string = ''
+    for name in confirmed:
+        confirmed_string += '- {}\n'.format(name)
+    message = 'The {} is scheduled to be on duty in 15 minutes!\nConfirmed team members:\n{}' \
+        .format(team_name, confirmed_string)
+    return is_scheduled, [msg_attachment.SlackAttachment(fallback=message, text=message)]
+
+
+def team_notification_list(will):
+    notifications = will.load(TEAM_NOTIFICATIONS_KEY)
+    if notifications:
+        return notifications
+    notifications = {}
+    will.save(TEAM_NOTIFICATIONS_KEY, notifications)
+    return notifications
+
+
+def add_team_notification(will, team_name, channel_name):
+    team_name = team_name.strip()
+    teams_to_watch = team_notification_list(will)
+    teams_to_watch[team_name] = channel_name
+    will.save(TEAM_NOTIFICATIONS_KEY, teams_to_watch)
+
+
+def remove_team_notification(will, team_name):
+    team_name = team_name.strip()
+    teams_to_watch = team_notification_list(will)
+    if teams_to_watch.get(team_name):
+        del teams_to_watch[team_name]
+        will.save(TEAM_NOTIFICATIONS_KEY, teams_to_watch)
+        return True
+    else:
+        return False
+
+
+def round_to_nearest(num, base=15):
+    return base * round(num/base)
 
 
 if __name__ == '__main__':

@@ -50,7 +50,14 @@ If no app name is provided it will list all the apps you can access.
     * "Who is scheduled for the Downtown Band team today?"
 * ```[!serving|!scheduled] *[Any Services team]* *[Any future day/date/time]*```
     * Note: for teams with more than one word in the name, wrap the team name in quotes. E.g. `!serving 'Downtown Band' Sunday`
-
+* ```!notify-team *[Any Services team]* in channel [channel name]```
+    * Example: "!notify-team Band in channel band"
+    * This sets pcobot to check every 15 minutes if the team is scheduled to be on duty in 15 minutes. If so, it sends a message to the specified channel.
+* ```!team-notifications```
+    * Displays a list of team notifications set up.
+* ```!remove-notification *[Services team set up with notifications]*```
+    * Removes a team from on-duty notifications.
+    
 
 If you specify a time, it will try to find the team for that precise service time—if you do not, it will simply try to match the team for the day provided.
 
