@@ -50,7 +50,6 @@ class PcoWebhook(WillPlugin):
 
     def live_service_updated(self, data):
         if announcements.announcement_is_enabled(self, announcement='live_service_update'):
-            # pcoaddress = "https://people.planningcenteronline.com/people/" + data['id']
             meta_data = live.parse_live_hook(data)
             attachment = live.get_plan_item(meta_data['service_type'], meta_data['plan_id'], meta_data['item_id'])
             time.sleep(10)

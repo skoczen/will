@@ -15,7 +15,7 @@ app = "people"
 class PcoPeoplePlugin(WillPlugin):
 
     @respond_to("(?:do you |find |got |a |need to |can somebody )?(number for |!number |!phone |call )"
-                "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
+                "(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_phone_lookup(self, message, pco_name):
         """!phone | "number for" (name): tells you the phone number of a certain user"""
         if authenticate.check_name(message):
@@ -92,9 +92,9 @@ class PcoPeoplePlugin(WillPlugin):
             self.say('I could not authenticate you. Please make sure your "Full name" '
                      'is in your Slack profile and matches your Planning Center Profile.', channel=wl_chan_id(self))
 
-    @hear("(!email)(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
+    @hear("(!email)(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     @respond_to("(?:do you |find |got |a |need to |can somebody )?(email for |!email |email )"
-                "(?P<pco_name>.*?(?=(?:\'|\?|\.|and)|$))")
+                "(?P<pco_name>.*?(?=(?:\'|\?)|$))")
     def pco_email_lookup(self, message, pco_name):
         """!email | "email for" (name): tells you the email address of a certain user"""
         if authenticate.check_name(message):
