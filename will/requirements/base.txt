@@ -6,7 +6,7 @@ clint==0.3.7
 dill==0.2.1
 dnspython==1.15.0
 fuzzywuzzy==0.15.1
-Jinja2==2.7.3
+Jinja2>=2.10.1
 Markdown==2.3.1
 MarkupSafe==0.23
 more-itertools==5.0.0
@@ -21,7 +21,7 @@ pycrypto==2.6.1
 pygerduty==0.28
 pytz==2017.2
 # Moved to 3.13 for python 3.7
-PyYAML==3.13
+PyYAML==5.1
 regex==2017.9.23
 redis==2.10.6
 requests>=2.21.0
