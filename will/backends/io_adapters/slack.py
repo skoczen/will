@@ -48,7 +48,7 @@ class SlackAttachmentConverter:
 
     def render(self):
         """ Builds a json payload for Slack Rich Format Message Attachments.
-         It takes either a single Attachment object or a list or Attachment objects."""
+         It takes either a single Attachment object or a list of Attachment objects."""
         attachments = ""
         try:
             for a in self.attachments:
