@@ -223,6 +223,9 @@ class Attachment(Bunch):
         if style == "teal":
             self.color = "#007AB8"
             self.button_color = "#007AB8"
+        if style[0] is '#':
+            self.color = style
+            self.button_color = style
         if button_color:
             self.button_color = button_color
         self.action_type = action_type
