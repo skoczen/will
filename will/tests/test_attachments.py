@@ -1,6 +1,6 @@
 import pytest
 from will.abstractions import Attachment
-from will.backends.io_adapters.slack import SlackAttachmentConverter, SlackBackend
+from will.backends.io_adapters.slack import SlackAttachmentConverter
 
 
 def test_no_fallback():
@@ -102,6 +102,13 @@ def test_style_teal():
                             text="Test Text", style='teal')
     assert attachment.color == '#007AB8'
     assert attachment.button_color == '#007AB8'
+
+
+def test_style_custom():
+    attachment = Attachment(fallback="Test Fallback",
+                            text="Test Text", style='#FF6666')
+    assert attachment.color == '#FF6666'
+    assert attachment.button_color == '#FF6666'
 
 
 def test_add_button():
