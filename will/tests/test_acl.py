@@ -6,8 +6,8 @@ from will.acl import get_acl_members, is_acl_allowed, verify_acl
 
 # our mock ACL object, just as a user would add to Will's config.py
 ACL = {
-    'ENGINEERING_OPS': ['bob', 'Alice'],
-    'engineering_devs': ['eve']
+    'ENGINEERING_OPS': ['U2A06UQHX', 'UXHQU60A2'],           # slack style user ids
+    'engineering_devs': ['nSYqWzZ4GsKTX4dyK']                # rocketchat style user id
 }
 
 # More than one ACL group can be specified as allowed to trigger a `respond()`
@@ -16,20 +16,20 @@ ACL = {
 # https://docs.pytest.org/en/latest/fixture.html#parametrizing-fixtures
 
 VALID_USERS_AND_GROUPS = [
-    ('bob', {'ENGINEERING_OPS'}),
-    ('Alice', {'ENGINEERING_OPS'}),
-    ('eve', {'engineering_devs'}),
-    ('bob', {'ENGINEERING_OPS', 'engineering_devs'}),
-    ('Alice', {'ENGINEERING_OPS', 'engineering_devs'}),
-    ('eve', {'ENGINEERING_OPS', 'engineering_devs'})
+    ('U2A06UQHX', {'ENGINEERING_OPS'}),
+    ('UXHQU60A2', {'ENGINEERING_OPS'}),
+    ('nSYqWzZ4GsKTX4dyK', {'engineering_devs'}),
+    ('U2A06UQHX', {'ENGINEERING_OPS', 'engineering_devs'}),
+    ('UXHQU60A2', {'ENGINEERING_OPS', 'engineering_devs'}),
+    ('nSYqWzZ4GsKTX4dyK', {'ENGINEERING_OPS', 'engineering_devs'})
 ]
 
 INVALID_USERS_AND_GROUPS = [
-    ('bob', {'engineering_devs'}),
-    ('Alice', {'engineering_devs'}),
-    ('eve', {'ENGINEERING_OPS'}),
-    ('juan', {'ENGINEERING_OPS', 'engineering_devs'}),
-    ('pedro', {'ENGINEERING_OPS', 'engineering_devs'})
+    ('U2A06UQHX', {'engineering_devs'}),
+    ('UXHQU60A2', {'engineering_devs'}),
+    ('nSYqWzZ4GsKTX4dyK', {'ENGINEERING_OPS'}),
+    ('UABC1234', {'ENGINEERING_OPS', 'engineering_devs'}),
+    ('UDEF5678', {'ENGINEERING_OPS', 'engineering_devs'})
 ]
 
 
@@ -58,8 +58,8 @@ def settings_acl():
 @pytest.fixture()
 def build_message_with_acls(person, message):
     def _build_message_with_acls(user_and_groups):
-        user, groups = user_and_groups
-        p = person({"handle": user})
+        user_id, groups = user_and_groups
+        p = person({"id": user_id})
         m = message({"sender": p, "data": message({})})
 
         return m, groups
@@ -90,12 +90,12 @@ def test_get_acl_members(group, settings_acl):
 
 def test_is_acl_allowed_returns_true(allowed_message_with_acls):
     message, acls = allowed_message_with_acls
-    assert is_acl_allowed(message.sender.handle, acls)
+    assert is_acl_allowed(message.sender.id, acls)
 
 
 def test_is_acl_allowed_returns_false(not_allowed_message_with_acls):
     message, acls = not_allowed_message_with_acls
-    assert not is_acl_allowed(message.sender.handle, acls)
+    assert not is_acl_allowed(message.sender.id, acls)
 
 
 def test_verify_acl_is_disabled(not_allowed_message_with_acls):

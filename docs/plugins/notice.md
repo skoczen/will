@@ -68,7 +68,7 @@ It's one of the best things about robots - they never, ever forget.  Will's no e
 ```python
 @periodic(hour='10', minute='0', day_of_week="mon-fri")
 def standup(self):
-    self.say("@all Standup! %s" % settings.WILL_HANGOUT_URL)
+    self.say("@all Standup! %s" % settings.STANDUP_URL)
 ```
 
 Under the hood, `@periodic` uses [apscheduler](https://apscheduler.readthedocs.io/en/v2.1.2/cronschedule.html#available-fields) to provide its options, so you can use any of the following as keyword arguments:
