@@ -12,3 +12,5 @@ yappi
 tox
 pytest==4.6.6
 pytest-cov
+pytest-mock
+freezegun
