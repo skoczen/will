@@ -61,7 +61,6 @@ PLUGINS = [
 
 # Don't load any of the plugins in this list.  Same options as above.
 PLUGIN_BLACKLIST = [
-    "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
     "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
     "will.plugins.devops.bitbucket_is_up",   # Because most folks use github.
     "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
@@ -169,10 +168,19 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 
 # Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
 # in respond_to and hear actions.
-# Group names can be any string, and the list is composed of user handles.
-# ACL = {
-#     "admins": ["sarah", "sue", "steven"]
-# }
+# Group names can be any string, and the list is composed of user ids.
+#
+# See the ACL docs for help locating user ids.
+# http://skoczen.github.io/will/plugins/builtins/#access-control
+#
+#    ACL = {
+#        "admins":
+#            [
+#                "U2A06UQHX", #sarah
+#                "UXHQU60A2", #sue
+#                "UABC1234"   #steven
+#            ]
+#    }
 #
 # By default, if no ACL is set, all users can perform all actions - but warnings
 # will be printed to the console.  To disable those warnings, set DISABLE_ACL to True
