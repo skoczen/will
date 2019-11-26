@@ -166,3 +166,106 @@ class Channel(Bunch):
         for id, m in self.members.items():
             if not m.will_is_person:
                 raise Exception("Someone in the member list is not a Person instance.\n%s" % m)
+
+
+class Attachment(Bunch):
+    """ Attachment lets you build interactive dynamic message attachments.
+    These are then rendered by io backends to send properly formated json attachments"""
+
+    will_internal_type = "Attachment"
+    REQUIRED_FIELDS = [
+        "fallback",  # The Fallback for when the attachment can't be rendered
+        "text",  # The text of the attachment
+    ]
+
+    def __init__(self, style="default",
+                 button_color=None,
+                 action_type="button",
+                 button_text="Open Link",
+                 button_url="", *args, **kwargs):
+
+        super(Attachment, self).__init__(*args, **kwargs)
+
+        for f in self.REQUIRED_FIELDS:
+            if f not in kwargs:
+                raise Exception("Missing %s in Attachment construction." % f)
+        for f in kwargs:
+            self.__dict__[f] = kwargs[f]
+
+        if "footer" not in kwargs:
+            self.footer = "Will"
+        else:
+            self.footer = kwargs["footer"]
+
+        if "footer_icon" not in kwargs:
+            self.footer_icon = "http://heywill.io/img/favicon.png"
+        else:
+            self.footer_icon = kwargs["footer_icon"]
+
+        if style == u"default":
+            self.color = "#555555"
+            self.button_color = "#555555"
+        if style == u"blue":
+            self.color = "#3B80C6"
+            self.button_color = "#3B80C6"
+        if style == u"green":
+            self.color = "#0e8a16"
+            self.button_color = "#0e8a16"
+        if style == u"purple":
+            self.color = "#876096"
+            self.button_color = "#876096"
+        if style == u"orange":
+            self.color = "#FB7642"
+            self.button_color = "#FB7642"
+        if style == u"yellow":
+            self.color = "#f4c551"
+            self.button_color = "#f4c551"
+        if style == u"teal":
+            self.color = "#007AB8"
+            self.button_color = "#007AB8"
+        if style == u"red":
+            self.color = "#E73A23"
+            self.button_color = "#E73A23"
+        if style[0] == u'#':
+            self.color = style
+            self.button_color = style
+        if button_color:
+            self.button_color = button_color
+        self.action_type = action_type
+        self.button_text = button_text
+        self.button_url = button_url
+        self.actions = []
+        if button_url:
+            self.set_actions(button_text, button_url)
+
+    def set_actions(self, text, url):
+        """ This changes the current button. It only works if there is only one button."""
+
+        self.button_text = text
+        self.button_url = url
+        self.actions = [
+            {
+                "color": self.button_color,
+                "type": self.action_type,
+                "text": self.button_text,
+                "url": self.button_url
+            }
+        ]
+
+    def add_button(self, text, url, button_color=None, button_action_type="button", *args, **kwargs):
+        """ This adds extra buttons"""
+        if button_color is None:
+            button_color = self.button_color
+
+        self.actions += [
+                {
+                    "color": button_color,
+                    "type": button_action_type,
+                    "text": text,
+                    "url": url
+                }
+            ]
+
+    def txt(self):
+        text = " ".join([self.text, self.button_url])
+        return text
