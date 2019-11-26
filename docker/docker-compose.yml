@@ -1,19 +1,19 @@
-version: "2.0"
+version: '3.2'
 
 services:
     redis:
         image: redis:alpine
         volumes:
             - ./data/redis:/data
-    pcobot:
-        image: pastorhudson/pcobot
+    will:
+        image: heywill/will:latest
         ports:
-            - 8081:8080
+            - 8080:8080
         env_file:
             - default.env
         volumes:
-            - ../plugins:/opt/plugins
-            - ../config.py:/opt/will/config.py
+            - ./plugins:/opt/will/plugins
+            - ./templates:/opt/will/templates
+            - ./config.py:/opt/will/config.py
         depends_on:
             - redis
-            

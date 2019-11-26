@@ -112,16 +112,16 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         # Be really smart about what we're getting back.
         if (
             (
-                (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Message") or
-                (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Event")
+                (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Message")
+                or (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Event")
             ) and type(content) == type("words")
         ):
             # "1.x world - user passed a message and a string.  Keep rolling."
             pass
         elif (
                 (
-                    (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Message") or
-                    (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Event")
+                    (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Message")
+                    or (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Event")
                 ) and type(event) == type("words")
         ):
             # "User passed the string and message object backwards, and we're in a 1.x world"
@@ -130,8 +130,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             event = temp_content
             del temp_content
         elif (
-            type(event) == type("words") and
-            not content
+            type(event) == type("words")
+            and not content
         ):
             # "We're in the Will 2.0 automagic event finding."
             content = event
@@ -185,6 +185,11 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         elif room:
             channel = room
 
+        # This does not look like testable code, or  something that will ever
+        # happen. If we have a required "content" positional argument, if
+        # a "content" key commes in kwargs, python will fail with a:
+        # TypeError: schedule_say() got multiple values for keyword argument
+        # 'content'
         if "content" in kwargs:
             if content:
                 del kwargs["content"]

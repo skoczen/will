@@ -1,5 +1,0 @@
-#requests_oauthlib
-#bottle_session
-# Using this fork because it has all the Planning Center Endpoints
--e git://github.com/pastorhudson/pypco.git#egg=pypco
-# -e git://github.com/pastorhudson/PCO-oauth2.git#egg=requests_oauth2

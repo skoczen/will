@@ -4,7 +4,7 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class RemindPlugin(WillPlugin):
 
-    @respond_to("(?:can |will you )?remind me(?P<to_string> to)? (?P<reminder_text>.*?) (at|on|in) (?P<remind_time>.*)?\??")
+    @respond_to(r"(?:can |will you )?remind me(?P<to_string> to)? (?P<reminder_text>.*?) (at|on|in) (?P<remind_time>.*)?\??")
     def remind_me_at(self, message, reminder_text=None, remind_time=None, to_string=""):
         """remind me to ___ at ___: Set a reminder for a thing, at a time."""
         parsed_time = self.parse_natural_time(remind_time)
@@ -22,7 +22,7 @@ class RemindPlugin(WillPlugin):
         self.schedule_say(formatted_reminder_text, parsed_time, message=message, notify=True)
         self.say("%(reminder_text)s %(natural_datetime)s. Got it." % locals(), message=message)
 
-    @respond_to("(?:can|will you )?remind (?P<reminder_recipient>(?!me).*?)(?P<to_string> to>) ?(?P<reminder_text>.*?) (at|on|in) (?P<remind_time>.*)?\??")
+    @respond_to(r"(?:can|will you )?remind (?P<reminder_recipient>(?!me).*?)(?P<to_string> to>) ?(?P<reminder_text>.*?) (at|on|in) (?P<remind_time>.*)?\??")
     def remind_somebody_at(self, message, reminder_recipient=None, reminder_text=None, remind_time=None, to_string=""):
         """remind ___ to ___ at ___: Set a reminder for a thing, at a time for somebody else."""
         parsed_time = self.parse_natural_time(remind_time)

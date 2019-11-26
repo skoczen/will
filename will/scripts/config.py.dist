@@ -47,14 +47,13 @@
 PLUGINS = [
     # Built-ins
     "will.plugins.admin",
-    # "will.plugins.chat_room",
-    # "will.plugins.devops",
+    "will.plugins.chat_room",
+    "will.plugins.devops",
     "will.plugins.friendly",
-    # "will.plugins.fun",
+    "will.plugins.fun",
     "will.plugins.help",
-    # "will.plugins.productivity",
+    "will.plugins.productivity",
     "will.plugins.web",
-    "will.plugins.slack",
 
     # All plugins in your project.
     "plugins",
@@ -62,7 +61,6 @@ PLUGINS = [
 
 # Don't load any of the plugins in this list.  Same options as above.
 PLUGIN_BLACKLIST = [
-    "will.plugins.productivity.hangout",   # Because it requires a HANGOUT_URL
     "will.plugins.productivity.bitly",   # Because it requires a BITLY_ACCESS_TOKEN key and the bitly_api library
     "will.plugins.devops.bitbucket_is_up",   # Because most folks use github.
     "will.plugins.devops.pagerduty",  # Because it requires a PAGERDUTY_SUBDOMAIN and PAGERDUTY_API_KEY key
@@ -82,9 +80,9 @@ PLUGIN_BLACKLIST = [
 # Platforms and mediums messages can come in and go out on.
 IO_BACKENDS = [
     "will.backends.io_adapters.slack",
-    # "will.backends.io_adapters.hipchat",
-    # "will.backends.io_adapters.rocketchat",
-    # "will.backends.io_adapters.shell",
+    "will.backends.io_adapters.hipchat",
+    "will.backends.io_adapters.rocketchat",
+    "will.backends.io_adapters.shell",
 ]
 
 # Backends to analyze messages and generate useful metadata
@@ -121,7 +119,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # ------------------------------------------------------------------------------------
 # Slack settings
 # ------------------------------------------------------------------------------------
-# SLACK_DEFAULT_CHANNEL = "bot"
+# SLACK_DEFAULT_CHANNEL = "alpha"
 
 # ------------------------------------------------------------------------------------
 # Rocket.chat settings
@@ -150,7 +148,7 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # Note no trailing slash.
 # PUBLIC_URL = "http://my-will.herokuapp.com"
 
-# The hipchat backend and room Will should talk to if the trigger is a webhook and he isn't told
+# The backend and room Will should talk to if the trigger is a webhook and he isn't told
 # a specific room.  Default is the first of IO_BACKENDS and ROOMS.
 # DEFAULT_BACKEND = "will.backends.io_adapters.slack"
 # DEFAULT_ROOM = 'Notifications'
@@ -168,12 +166,21 @@ FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 # ]
 
 
-# Access Control: Specify groups of users to be used in the acl=["botadmin"] parameter
+# Access Control: Specify groups of users to be used in the acl=["admins","ceos"] parameter
 # in respond_to and hear actions.
-# Group names can be any string, and the list is composed of user handles.
-# ACL = {
-#     "admins": [""],
-# }
+# Group names can be any string, and the list is composed of user ids.
+#
+# See the ACL docs for help locating user ids.
+# http://skoczen.github.io/will/plugins/builtins/#access-control
+#
+#    ACL = {
+#        "admins":
+#            [
+#                "U2A06UQHX", #sarah
+#                "UXHQU60A2", #sue
+#                "UABC1234"   #steven
+#            ]
+#    }
 #
 # By default, if no ACL is set, all users can perform all actions - but warnings
 # will be printed to the console.  To disable those warnings, set DISABLE_ACL to True

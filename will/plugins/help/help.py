@@ -4,13 +4,13 @@ from will.decorators import respond_to, periodic, hear, randomly, route, rendere
 
 class HelpPlugin(WillPlugin):
 
-    @respond_to("help(?: (?P<plugin>.*))?$")
+    @respond_to("^help(?: (?P<plugin>.*))?$")
     def help(self, message, plugin=None):
         """help: the normal help you're reading."""
         # help_data = self.load("help_files")
         selected_modules = help_modules = self.load("help_modules")
 
-        self.say("Sure thing, %s." % message.sender.first_name)
+        self.say("Sure thing, %s." % message.sender.handle)
 
         help_text = "Here's what I know how to do:"
         if plugin and plugin in help_modules:
