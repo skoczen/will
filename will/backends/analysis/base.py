@@ -40,7 +40,7 @@ class AnalysisBackend(PubSubMixin, SleepMixin, object):
 
     def do_analyze(self, message):
         # Take message, return a dict to add to its context.
-        raise NotImplemented
+        raise NotImplementedError
 
     def start(self, name, **kwargs):
         signal.signal(signal.SIGINT, signal.SIG_IGN)

@@ -1,16 +1,23 @@
+dist: xenial
 language: python
+python:
+  - '2.7'
+  - '3.4'
+  - '3.5'
+  - '3.6'
+  - '3.7'
 sudo: false
 services:
-    - docker
+  - docker
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libffi-dev libxml2-dev
 install:
-- pip install -U tox
-- pip install -r will/requirements/dev.txt
+  - pip install tox-travis
+  - pip install -r will/requirements/dev.txt
 script:
-- tox
-- export CTAG="-$TRAVIS_COMMIT"
+  - tox
+  - export CTAG="-$TRAVIS_COMMIT"
 # - "fab docker_build"
 # deploy:
 #   skip_cleanup: true

@@ -4,7 +4,7 @@ import signal
 import traceback
 from will import settings
 from will.decorators import require_settings
-from will.acl import test_acl
+from will.acl import verify_acl
 from will.abstractions import Event
 from multiprocessing import Process
 
@@ -13,7 +13,7 @@ class ExecutionBackend(object):
     is_will_execution_backend = True
 
     def handle_execution(self, message, context):
-        raise NotImplemented
+        raise NotImplementedError
 
     def no_response(self, message):
         self.bot.pubsub.publish(
@@ -42,7 +42,7 @@ class ExecutionBackend(object):
 
             allowed = True
             if len(acl) > 0:
-                allowed = test_acl(message, acl)
+                allowed = verify_acl(message, acl)
 
             if not allowed:
                 acl_list = ""

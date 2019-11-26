@@ -10,7 +10,7 @@ class NaturalTimeMixin(object):
 
     def strip_leading_zeros(self, date_str):
         date_str = date_str.replace(":0", "__&&")
-        date_str = re.sub("0*(\d+)", "\g<1>", date_str)
+        date_str = re.sub(r"0*(\d+)", r"\g<1>", date_str)
         date_str = date_str.replace("__&&", ":0")
         return date_str
 
