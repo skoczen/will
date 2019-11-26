@@ -181,12 +181,6 @@ If you want to shorten long URL using Bitly API, Will can do that for you in a f
 
 ![Bitly](../img/bitly.png)
 
-#### Hangout
-
-If you've set a `HANGOUT_URL`, will will toss it in chat for you:
-
-![Hangout](../img/hangout.gif)
-
 #### Image me
 
 Sometimes, a picture is worth a thousand words.
