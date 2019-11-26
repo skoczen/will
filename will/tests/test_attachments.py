@@ -104,6 +104,13 @@ def test_style_teal():
     assert attachment.button_color == '#007AB8'
 
 
+def test_style_red():
+    attachment = Attachment(fallback="Test Fallback",
+                            text="Test Text", style='red')
+    assert attachment.color == '#E73A23'
+    assert attachment.button_color == '#E73A23'
+
+
 def test_style_custom():
     attachment = Attachment(fallback="Test Fallback",
                             text="Test Text", style='#FF6666')

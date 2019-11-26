@@ -223,6 +223,9 @@ class Attachment(Bunch):
         if style == u"teal":
             self.color = "#007AB8"
             self.button_color = "#007AB8"
+        if style == u"red":
+            self.color = "#E73A23"
+            self.button_color = "#E73A23"
         if style[0] == u'#':
             self.color = style
             self.button_color = style
