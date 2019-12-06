@@ -204,7 +204,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
                 else:
                     logging.critical(
                         "I was asked to post to a slack default channel, but I'm nowhere."
-                        "Please invite me somewhere with '/invite @%s'", self.me.handle
+                        "Please invite me somewhere with '/invite @%s'" % (self.me.name if self.me.name else self.me.handle)
                     )
 
         if event.type in ["topic_change", ]:
@@ -214,7 +214,8 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
             and event.data.is_direct
             and event.data.will_said_it is False
         ):
-            event.content = random.choice(UNSURE_REPLIES)
+            self.people  # get the object that contains bot's handle
+            event.content = random.choice(UNSURE_REPLIES) + " Try `@%s help`" % (self.me.name if self.me.name else self.me.handle)
             self.send_message(event)
 
     def handle_request(self, r, data):
@@ -227,7 +228,7 @@ class SlackBackend(IOBackend, SleepMixin, StorageMixin):
 
                 logging.critical(
                     "I was asked to post to the slack %s channel, but I haven't been invited. "
-                    "Please invite me with '/invite @%s'" % (channel.name, self.me.handle)
+                    "Please invite me with '/invite @%s'" % (channel.name, (self.me.name if self.me.name else self.me.handle))
                 )
             else:
                 logging.error("Error sending to slack: %s" % resp_json["error"])
