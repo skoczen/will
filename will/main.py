@@ -29,7 +29,7 @@ from will import settings
 from will.backends import analysis, execution, generation, io_adapters
 from will.backends.io_adapters.base import Event
 from will.mixins import ScheduleMixin, StorageMixin, ErrorMixin, SleepMixin,\
-    PluginModulesLibraryMixin, EmailMixin, PubSubMixin
+    PluginModulesLibraryMixin, EmailMixin, PubSubMixin, SmsMixin
 from will.scheduler import Scheduler
 from will.utils import show_valid, show_invalid, error, warn, note, print_head, Bunch
 
@@ -64,7 +64,7 @@ def yappi_aggregate(func, stats):
 
 
 class WillBot(EmailMixin, StorageMixin, ScheduleMixin, PubSubMixin, SleepMixin,
-              ErrorMixin, PluginModulesLibraryMixin):
+              ErrorMixin, PluginModulesLibraryMixin, SmsMixin):
 
     def __init__(self, **kwargs):
         if "template_dirs" in kwargs:
