@@ -1,7 +1,7 @@
 import logging
 import regex
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process as fuzz_process
+from rapidfuzz import fuzz
+from rapidfuzz import process as fuzz_process
 from will import settings
 from will.decorators import require_settings
 from will.utils import Bunch
@@ -62,7 +62,11 @@ class FuzzyAllMatchesBackend(GenerationBackend):
                     self.match_methods[l["regex_pattern"]] = l
                     self.match_choices.append(l["regex_pattern"])
 
-            search_matches = fuzz_process.extract(message.content, self.match_choices)
+            search_matches = fuzz_process.extract(
+                message.content,
+                self.match_choices,
+                score_cutoff=settings.FUZZY_MINIMUM_MATCH_CONFIDENCE
+            )
 
             for match_str, confidence in search_matches:
                 logging.debug(" Potential (%s) - %s" % (confidence, match_str))

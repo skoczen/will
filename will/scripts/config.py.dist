@@ -111,7 +111,7 @@ EXECUTION_BACKENDS = [
 # ------------------------------------------------------------------------------------
 
 # Confidence fuzzy generation backends require before Will responds
-# https://pypi.python.org/pypi/fuzzywuzzy
+# https://pypi.python.org/pypi/rapidfuzz
 FUZZY_MINIMUM_MATCH_CONFIDENCE = 91
 FUZZY_REGEX_ALLOWABLE_ERRORS = 3
 

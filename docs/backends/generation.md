@@ -20,7 +20,7 @@ Here's a bit more about the built-ins, and when they'd be a good fit:
 
 #### Fuzzy Match (all) (`will.backends.generation.fuzzy_all_matches`)
 
-This uses the fantastic [fuzzywuzzy](https://github.com/seatgeek/fuzzywuzzy) library to match strings with some fuzziness, as specified by `FUZZY_MINIMUM_MATCH_CONFIDENCE` (defaults to 90% confidence) and `FUZZY_REGEX_ALLOWABLE_ERRORS` (defaults to 3).
+This uses the fantastic [rapidfuzz](https://github.com/rhasspy/rapidfuzz) library to match strings with some fuzziness, as specified by `FUZZY_MINIMUM_MATCH_CONFIDENCE` (defaults to 90% confidence) and `FUZZY_REGEX_ALLOWABLE_ERRORS` (defaults to 3).
 
 Great if you'd like your Will to be a little flexible, sometimes get things wrong, but to handle typos.
 

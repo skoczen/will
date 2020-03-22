@@ -1,5 +1,5 @@
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process as fuzz_process
+from rapidfuzz import fuzz
+from rapidfuzz import process as fuzz_process
 import regex
 from will import settings
 from will.decorators import require_settings
