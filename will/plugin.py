@@ -1,3 +1,4 @@
+'Standard Will plugin functionality'
 import re
 import logging
 
@@ -6,14 +7,15 @@ from bottle import request
 from will import settings
 from will.abstractions import Event, Message
 # Backwards compatability with 1.x, eventually to be deprecated.
-from will.backends.io_adapters.hipchat import HipChatRosterMixin, HipChatRoomMixin
 from will.mixins import NaturalTimeMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
     EmailMixin, PubSubMixin
-from will.utils import html_to_text
+
+FILENAME_CLEANER = re.compile(r'[^-_0-9a-zA-Z]+')
 
 
-class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, HipChatRosterMixin,
+class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin,
                  ScheduleMixin, SettingsMixin, PubSubMixin):
+    'Basic things needed by all plugins'
     is_will_plugin = True
     request = request
 
@@ -25,13 +27,15 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             self.message = kwargs["message"]
             del kwargs["message"]
 
-        super(WillPlugin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-    def _prepared_content(self, content, message, kwargs):
+    @staticmethod
+    def _prepared_content(content, _, __):
         content = re.sub(r'>\s+<', '><', content)
         return content
 
-    def _trim_for_execution(self, message):
+    @staticmethod
+    def _trim_for_execution(message):
         # Trim it down
         if hasattr(message, "analysis"):
             message.analysis = None
@@ -39,10 +43,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             message.source_message.analysis = None
         return message
 
-    def get_backend(self, message, service=None):
+    @staticmethod
+    def get_backend(message: Message, service: str = None):
+        'Select the correct backend (module path)'
         backend = False
         if service:
-            for b in settings.IO_BACKENDS:
+            for b in settings.IO_BACKENDS:  # pylint: disable=no-member
                 if service in b:
                     return b
 
@@ -51,23 +57,23 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         elif message and hasattr(message, "data") and hasattr(message.data, "backend"):
             backend = message.data.backend
         else:
-            backend = settings.DEFAULT_BACKEND
+            backend = settings.DEFAULT_BACKEND  # pylint: disable=no-member
         return backend
 
     def get_message(self, message_passed):
+        'Try to find a message'
         if not message_passed and hasattr(self, "message"):
             return self.message
         return message_passed
 
     def say(self, content, message=None, room=None, channel=None, service=None, package_for_scheduling=False, **kwargs):
-        logging.info("self.say")
-        logging.info(content)
+        'Publish an event to be shipped to one of the IO backends.'
         if channel:
             room = channel
         elif room:
             channel = room
 
-        if not "channel" in kwargs and channel:
+        if "channel" not in kwargs and channel:
             kwargs["channel"] = channel
 
         message = self.get_message(message)
@@ -83,38 +89,69 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             )
             if package_for_scheduling:
                 return "message.outgoing.%s" % backend, e
-            else:
-                logging.info("putting in queue: %s" % content)
-                self.publish("message.outgoing.%s" % backend, e)
+            logging.info("putting in queue: %s", content)
+            self.publish("message.outgoing.%s" % backend, e)
+        return None
+
+    def send_file(self, message, content, filename, text=None, filetype='text',
+                  service=None, room=None, channel=None, **kwargs):
+        'Sometimes you need to upload an image or file'
+        if channel:
+            room = channel
+        elif room:
+            channel = room
+
+        if "channel" not in kwargs and channel:
+            kwargs["channel"] = channel
+
+        message = self.get_message(message)
+        message = self._trim_for_execution(message)
+        backend = self.get_backend(message, service=service)
+
+        if backend:
+            if isinstance(content, str):
+                content = content.encode('utf-8')
+            e = Event(
+                type="file.upload",
+                file=content,
+                filename=FILENAME_CLEANER.sub('_', filename),
+                filetype=filetype,
+                source_message=message,
+                title=text,
+                kwargs=kwargs,
+            )
+            logging.info("putting in queue: %s", content)
+            self.publish("message.outgoing.%s" % backend, e)
 
     def reply(self, event, content=None, message=None, package_for_scheduling=False, **kwargs):
+        'Publish an event to be shipped to one of the IO backends.'
         message = self.get_message(message)
 
         if "channel" in kwargs:
             logging.error(
                 "I was just asked to talk to %(channel)s, but I can't use channel using .reply() - "
-                "it's just for replying to the person who talked to me.  Please use .say() instead." % kwargs
+                "it's just for replying to the person who talked to me.  Please use .say() instead.", kwargs
             )
-            return
+            return None
         if "service" in kwargs:
             logging.error(
                 "I was just asked to talk to %(service)s, but I can't use a service using .reply() - "
-                "it's just for replying to the person who talked to me.  Please use .say() instead." % kwargs
+                "it's just for replying to the person who talked to me.  Please use .say() instead.", kwargs
             )
-            return
+            return None
         if "room" in kwargs:
             logging.error(
                 "I was just asked to talk to %(room)s, but I can't use room using .reply() - "
-                "it's just for replying to the person who talked to me.  Please use .say() instead." % kwargs
+                "it's just for replying to the person who talked to me.  Please use .say() instead.", kwargs
             )
-            return
+            return None
 
         # Be really smart about what we're getting back.
         if (
             (
                 (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Message")
                 or (event and hasattr(event, "will_internal_type") and event.will_internal_type == "Event")
-            ) and type(content) == type("words")
+            ) and isinstance(content, str)
         ):
             # "1.x world - user passed a message and a string.  Keep rolling."
             pass
@@ -122,15 +159,12 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
                 (
                     (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Message")
                     or (content and hasattr(content, "will_internal_type") and content.will_internal_type == "Event")
-                ) and type(event) == type("words")
+                ) and isinstance(event, str)
         ):
             # "User passed the string and message object backwards, and we're in a 1.x world"
-            temp_content = content
-            content = event
-            event = temp_content
-            del temp_content
+            content, event = event, content
         elif (
-            type(event) == type("words")
+            isinstance(event, str)
             and not content
         ):
             # "We're in the Will 2.0 automagic event finding."
@@ -158,10 +192,11 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
             )
             if package_for_scheduling:
                 return e
-            else:
-                self.publish("message.outgoing.%s" % backend, e)
+            self.publish("message.outgoing.%s" % backend, e)
+        return None
 
     def set_topic(self, topic, message=None, room=None, channel=None, service=None, **kwargs):
+        'Try to set the room/channel topic.'
         if channel:
             room = channel
         elif room:
@@ -180,10 +215,8 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin, HipChatRoomMixin, H
         self.publish("message.outgoing.%s" % backend, e)
 
     def schedule_say(self, content, when, message=None, room=None, channel=None, service=None, *args, **kwargs):
-        if channel:
-            room = channel
-        elif room:
-            channel = room
+        'Publish an event to for the future'
+        channel = channel or room
 
         # This does not look like testable code, or  something that will ever
         # happen. If we have a required "content" positional argument, if
