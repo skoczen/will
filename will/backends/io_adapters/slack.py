@@ -631,10 +631,10 @@ class SlackBackend(
                     user_timezone = member.get("tz")
                     people[member_id] = Person(
                         id=member_id,
-                        mention_handle=member.get("mention_handle", "SECRETAGENTMAN"),
+                        mention_handle=member.get("mention_handle", ""),
                         handle=member["name"],
                         source=clean_for_pickling(member),
-                        name=member.get("real_name", "SECRETAGENTMAN"),
+                        name=member.get("real_name", ""),
                     )
                     if member["name"] == self.handle:
                         self.me = people[member_id]
@@ -671,10 +671,7 @@ class SlackBackend(
         "This is our main loop."
         # The decorators don't work on unbound methods.  Sigh.
         # These are all events that should spark an update of our inventory
-        # RTMClient.run_on(event="hello")(self._update_backend_metadata)
         RTMClient.run_on(event="open")(self._update_backend_metadata)
-        # RTMClient.run_on(event="bot_added")(self._update_backend_metadata)
-        # RTMClient.run_on(event="bot_changed")(self._update_backend_metadata)
         RTMClient.run_on(event="channel_added")(self._update_backend_metadata)
         RTMClient.run_on(event="user_changed")(self._update_backend_metadata)
         # This just handles messages
