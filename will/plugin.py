@@ -10,6 +10,8 @@ from will.abstractions import Event, Message
 from will.mixins import NaturalTimeMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
     EmailMixin, PubSubMixin
 
+FILENAME_CLEANER = re.compile(r'[^-_0-9a-zA-Z]+')
+
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin,
                  ScheduleMixin, SettingsMixin, PubSubMixin):
