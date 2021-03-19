@@ -56,10 +56,10 @@ class SlackBackend(
     required_settings = [
         {
             "name": "SLACK_API_TOKEN",
-            "obtain_at": "1. Go to https://api.slack.com/custom-integrations/legacy-tokens"
-            " and sign in as yourself (or a user for Will).\n"
-            '2. Find the workspace you want to use, and click "Create token.\n'
-            "3. Set this token as SLACK_API_TOKEN.",
+            "obtain_at": "1. Go to https://api.slack.com/apps?new_classic_app=1"
+            " and Configure your app.\n"
+            '2. Install app in your workspace.\n'
+            "3. Set Bot User OAuth Token (beginning with xoxb) as SLACK_API_TOKEN.",
         }
     ]
     PAGE_LIMIT = 1000
