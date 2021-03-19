@@ -10,7 +10,6 @@ Jinja2==2.7.3
 Markdown==3.3.4
 MarkupSafe==0.23
 # Temporary fork of natural, until python 3 support is merged: https://github.com/tehmaze/natural/pull/13
-# Temporary fork of natural, until python 3 support is merged: https://github.com/tehmaze/natural/pull/13
 # natural==0.2.1
 will-natural==0.2.1.1
 parsedatetime==1.1.2
