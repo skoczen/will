@@ -51,6 +51,7 @@ Config.py is where all of your non-sensitive settings should go.   This includes
 - `ENABLE_INTERNAL_ENCRYPTION`: the option to turn off internal encryption (not recommended, but you can do it.)
 - `PROXY_URL`: Proxy server to use, consider exporting it as `WILL_PROXY_URL` environment variable, if it contains sensitive information
 - `ACL`: Define arbitrary groups of users which can be used to restrict access to certain Will commands. See [access control](plugins/builtins/#access-control) for details.
+- `IGNORED_USERS`: A list of Slack userids which should be ignored.  Particularly useful to prevent bots from talking to each other.  Slack only.
 - and all of your non-sensitive plugin settings.
 
 
