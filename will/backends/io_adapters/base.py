@@ -40,6 +40,11 @@ class IOBackend(PubSubMixin, SleepMixin, SettingsMixin, object):
 
     def handle_incoming_event(self, event):
         try:
+            user_id = event.get('user')
+            if user_id in getattr(settings, 'IGNORED_USERS', list()):
+                logging.debug('Ignored %s, %s', user_id, event)
+                return
+
             m = self.normalize_incoming_event(event)
             if m:
                 self.pubsub.publish("message.incoming", m, reference_message=m)

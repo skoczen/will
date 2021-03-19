@@ -1079,13 +1079,13 @@ To set your %(name)s:
                                                 # puts("- %s" % function_name)
                                                 self.bottle_routes.append((plugin_info["class"], function_name))
 
-                                except Exception:
+                                except Exception as e:
                                     error(plugin_name)
                                     self.startup_error(
                                         "Error bootstrapping %s.%s" % (
                                             plugin_info["class"],
                                             function_name,
-                                        )
+                                        ), e
                                     )
                             if len(plugin_warnings) > 0:
                                 show_invalid(plugin_name)

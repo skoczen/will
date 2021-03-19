@@ -20,6 +20,8 @@ DO_NOT_PICKLE = [
     "server",
     "send_message",
     "_updatedAt",
+    "rtm_client",               # slack-specific
+    "web_client"                # slack-specific
 ]
 
 
