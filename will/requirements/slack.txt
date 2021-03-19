@@ -1,4 +1,4 @@
 -r base.txt
 slack-sdk==3.0.0
 markdownify==0.5.3
-aiohttp
+aiohttp>=3.7.3,<4
