@@ -10,7 +10,7 @@ Jinja2==2.7.3
 Markdown==3.3.4
 MarkupSafe==0.23
 # Pin natural to repo since release is not updated
--egit+git://github.com/tehmaze/natural.git#egg=natural
+-egit+git://github.com/tehmaze/natural.git@4d41ed6708965420ad884339e0e9ca5f089b2202#egg=natural
 # Temporary fork of natural, until python 3 support is merged: https://github.com/tehmaze/natural/pull/13
 # will-natural==0.2.1.1
 parsedatetime==1.1.2
