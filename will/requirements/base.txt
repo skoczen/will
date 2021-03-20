@@ -9,9 +9,10 @@ fuzzywuzzy==0.15.1
 Jinja2==2.7.3
 Markdown==3.3.4
 MarkupSafe==0.23
+# Pin natural to repo since release is not updated
+-egit+git://github.com/tehmaze/natural.git#egg=natural
 # Temporary fork of natural, until python 3 support is merged: https://github.com/tehmaze/natural/pull/13
-# natural==0.2.1
-will-natural==0.2.1.1
+# will-natural==0.2.1.1
 parsedatetime==1.1.2
 python-Levenshtein==0.12.1
 pyasn1-modules==0.0.5
