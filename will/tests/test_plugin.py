@@ -135,6 +135,8 @@ def test_get_backend_service_as_parameter(message, plugin, io_backend, all_io_ba
 # freeze_time to mock datetime.datetime.now() method which is invoked
 # when creating an event or message.
 # https://github.com/spulec/freezegun
+
+
 @freeze_time(WILLS_BIRTHDAY)
 def test_say_with_room_arg(plugin, content, say_event, source_message, outgoing_topic):
     room = "test"

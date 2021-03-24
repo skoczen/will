@@ -15,7 +15,6 @@ class RemindPlugin(WillPlugin):
             formatted_to_string = ""
         formatted_reminder_text = "%(mention_handle)s, you asked me to remind you%(to_string)s %(reminder_text)s" % {
             "mention_handle": message.sender.mention_handle,
-            "from_handle": message.sender.handle,
             "reminder_text": reminder_text,
             "to_string": formatted_to_string,
         }
