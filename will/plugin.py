@@ -11,7 +11,6 @@ from will.mixins import NaturalTimeMixin, ScheduleMixin, StorageMixin, SettingsM
     EmailMixin, PubSubMixin
 
 
-
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin,
                  ScheduleMixin, SettingsMixin, PubSubMixin):
     'Basic things needed by all plugins'
