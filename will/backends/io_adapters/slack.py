@@ -112,17 +112,6 @@ class SlackBackend(
             if c.name.lower() == name.lower() or c.id.lower() == name.lower():
                 return c.name
 
-    @staticmethod
-    def is_allowed_channel(channel):
-        if hasattr(settings, "SLACK_ROOMS"):
-            if channel.lower() in settings.SLACK_ROOMS:
-                return True
-            else:
-                logging.warning('Will has been added to {0} but it should not be here!'.format(channel))
-                return False
-        else:
-            return True
-
     def normalize_incoming_event(self, event):
         "Makes a Slack event look like all the other events we handle"
         event_type = event.get("type")
