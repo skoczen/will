@@ -78,6 +78,10 @@ class SlackBackend(
         for c in self.channels.values():
             if c.name.lower() == name.lower() or c.id.lower() == name.lower():
                 return c
+            # We need to check if a user id was passed as a channel
+            # and get the correct IM channel if it was.
+            elif name.startswith('U') or name.startswith('W'):
+                return self.open_direct_message(name)
         webclient = self.client._web_client  # pylint: disable=protected-access
         try:
             channel_info = webclient.conversations_info(channel=name)["channel"]
@@ -102,6 +106,11 @@ class SlackBackend(
             is_im=channel_info["is_im"],
             is_private=True,
         )
+
+    def get_channel_name_from_id(self, name):
+        for k, c in self.channels.items():
+            if c.name.lower() == name.lower() or c.id.lower() == name.lower():
+                return c.name
 
     def normalize_incoming_event(self, event):
         "Makes a Slack event look like all the other events we handle"
@@ -141,8 +150,21 @@ class SlackBackend(
             # u'type': u'message', u'bot_id': u'B5HL9ABFE'},
             # u'type': u'message', u'hidden': True, u'channel': u'D5HGP0YE7'}
             logging.debug("we like that event!")
-            sender = self.people[event["user"]]
-            channel = self.get_channel_from_name(event["channel"])
+            if event_subtype == "bot_message":
+                sender = Person(
+                    id=event["bot_id"],
+                    mention_handle="<@%s>" % event["bot_id"],
+                    handle=event["username"],
+                    source=event,
+                    name=event["username"],
+                )
+            else:
+                sender = self.people[event["user"]]
+            try:
+                channel = self.get_channel_from_name(event["channel"])
+            except KeyError:
+                self._update_channels()
+                channel = self.get_channel_from_name(event["channel"])
             is_private_chat = getattr(channel, "is_private", False)
             is_direct = getattr(getattr(channel, "source", None), 'is_im', False)
             channel = clean_for_pickling(channel)
@@ -169,7 +191,7 @@ class SlackBackend(
             if will_is_mentioned and event["text"][0] == ":":
                 event["text"] = event["text"][1:]
 
-            if event["user"] == self.me.id:
+            if event.get("user") == self.me.id:
                 will_said_it = True
 
             m = Message(
@@ -206,10 +228,14 @@ class SlackBackend(
 
         try:
             logging.info('EVENT: %s', str(event))
-            data = {
+            data = {}
+            if hasattr(event, "kwargs"):
+                data.update(event.kwargs)
+
+            data.update({
                 'filename': event.filename,
                 'filetype': event.filetype
-            }
+            })
             self.set_data_channel_and_thread(event, data)
             # This is just *silly*
             if 'thread_ts' in data:
@@ -303,6 +329,10 @@ class SlackBackend(
     @staticmethod
     def set_data_channel_and_thread(event, data=None):
         "Update data with the channel/thread information from event"
+        if event.type == "file.upload":
+            # We already know what to do when it's a file DM
+            if event.kwargs.get("is_direct") is True:
+                return
         if data is None:
             data = dict()
         if "channel" in event:
@@ -488,6 +518,13 @@ class SlackBackend(
         self.client._web_client.api_call(  # pylint: disable=protected-access
             "chat.postMessage", data=data
         )
+
+    def open_direct_message(self, user_id):
+        """Opens a DM channel."""
+        return self.client._web_client.api_call(  # pylint: disable=protected-access
+            "conversations.open",
+            users=[user_id]
+        )['channel']['id']
 
     def update_message(self, event):
         "Update a Slack message"
