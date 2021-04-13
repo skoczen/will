@@ -10,8 +10,6 @@ from will.abstractions import Event, Message
 from will.mixins import NaturalTimeMixin, ScheduleMixin, StorageMixin, SettingsMixin, \
     EmailMixin, PubSubMixin
 
-FILENAME_CLEANER = re.compile(r'[^-_0-9a-zA-Z]+')
-
 
 class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin,
                  ScheduleMixin, SettingsMixin, PubSubMixin):
@@ -114,7 +112,7 @@ class WillPlugin(EmailMixin, StorageMixin, NaturalTimeMixin,
             e = Event(
                 type="file.upload",
                 file=content,
-                filename=FILENAME_CLEANER.sub('_', filename),
+                filename=filename,
                 filetype=filetype,
                 source_message=message,
                 title=text,
