@@ -6,7 +6,7 @@ clint==0.5.1
 dill==0.3.3
 dnspython==1.15.0
 fuzzywuzzy==0.15.1
-Jinja2==2.7.3
+Jinja2==2.11.3
 Markdown==3.3.4
 MarkupSafe==0.23
 # Pin natural to repo since release is not updated
